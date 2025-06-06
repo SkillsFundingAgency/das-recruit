@@ -52,7 +52,8 @@ public class TrainingOrchestrator(
             Programmes = programmes.ToViewModel(),
             IsUsersFirstVacancy = isUsersFirstVacancyTask.Result && vacancy.TrainingProvider == null,
             PageInfo = utility.GetPartOnePageInfo(vacancy),
-            HasMoreThanOneLegalEntity = getEmployerDataTask.Result.LegalEntities.Count() > 1
+            HasMoreThanOneLegalEntity = getEmployerDataTask.Result.LegalEntities.Count() > 1,
+            VacancyTitle = vacancy.Title,
         };
 
         if (vacancy.Status == VacancyStatus.Referred)
@@ -77,7 +78,10 @@ public class TrainingOrchestrator(
     {
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Training_First_Time_Get);
 
-        return new TrainingFirstVacancyViewModel();
+        return new TrainingFirstVacancyViewModel
+        {
+            VacancyTitle = vacancy.Title,
+        };
     }
 
     public async Task<ConfirmTrainingViewModel> GetConfirmTrainingViewModelAsync(VacancyRouteModel vrm, string programmeId)
@@ -108,6 +112,7 @@ public class TrainingOrchestrator(
             IsFoundation = programme.ApprenticeshipType == TrainingType.Foundation,
             IsChangingApprenticeshipType = vacancy.IsChangingApprenticeshipType(programmes, programme),
             WillTaskListBeCompleted = utility.IsTaskListCompleted(VacancyWithProposedChanges(vacancy, programme)),
+            VacancyTitle = vacancy.Title,
         };
     }
 

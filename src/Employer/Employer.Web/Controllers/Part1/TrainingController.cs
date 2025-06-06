@@ -72,7 +72,6 @@ public class TrainingController(TrainingOrchestrator orchestrator) : Controller
     public async Task<IActionResult> TrainingFirstVacancy(VacancyRouteModel vrm)
     {
         var vm = await orchestrator.GetTrainingFirstVacancyViewModelAsync(vrm);
-
         return View(vm);
     }
 

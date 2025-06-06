@@ -65,6 +65,41 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
         }
 
+        public async Task<GetAllAccountLegalEntitiesApiResponse> GetAllLegalEntitiesConnectedToAccountAsync(
+            List<string> hashedAccountIds,
+            string searchTerm,
+            int pageNumber,
+            int pageSize,
+            string sortColumn,
+            bool isAscending)
+        {
+            try
+            {
+                var accountIds = hashedAccountIds
+                    .Select(hashedAccountId => encodingService.Decode(hashedAccountId, EncodingType.AccountId))
+                    .ToList();
+
+                var legalEntities =
+                    await outerApiClient.Post<GetAllAccountLegalEntitiesApiResponse>(
+                        new GetAllAccountLegalEntitiesApiRequest(new GetAllAccountLegalEntitiesApiRequest.GetAllAccountLegalEntitiesApiRequestData
+                        {
+                            SearchTerm = searchTerm,
+                            AccountIds = accountIds,
+                            PageNumber = pageNumber,
+                            PageSize = pageSize,
+                            SortColumn = sortColumn,
+                            IsAscending = isAscending
+                        }));
+
+                return legalEntities;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to retrieve legal entities information");
+                throw;
+            }
+        }
+
         public async Task<string> GetEmployerAccountPublicHashedIdAsync(string hashedAccountId)
         {
             try
