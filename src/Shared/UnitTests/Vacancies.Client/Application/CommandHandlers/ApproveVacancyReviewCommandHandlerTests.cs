@@ -16,6 +16,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -28,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
     {
         private readonly Guid _existingReviewId;
         private readonly Fixture _autoFixture = new Fixture();
-        private readonly Mock<IVacancyReviewRepository> _mockVacancyReviewRepository;
+        private readonly Mock<IVacancyReviewRespositoryRunner> _mockVacancyReviewRepository;
         private readonly Mock<IVacancyReviewQuery> _mockVacancyReviewQuery;
         private readonly Mock<IVacancyRepository> _mockVacancyRepository;
         private readonly Mock<ITimeProvider> _mockTimeProvider;
@@ -42,7 +43,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
         public ApproveVacancyReviewCommandHandlerTests()
         {
             _existingReviewId = Guid.NewGuid();
-            _mockVacancyReviewRepository = new Mock<IVacancyReviewRepository>();
+            _mockVacancyReviewRepository = new Mock<IVacancyReviewRespositoryRunner>();
             _mockVacancyRepository = new Mock<IVacancyRepository>();
 
             _mockMessaging = new Mock<IMessaging>();

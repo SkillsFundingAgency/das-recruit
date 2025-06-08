@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -10,12 +11,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
     public class UnassignVacancyReviewCommandHandler : IRequestHandler<UnassignVacancyReviewCommand, Unit>
     {
-        private readonly IVacancyReviewRepository _repository;
+        private readonly IVacancyReviewRespositoryRunner _repository;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly ILogger<UnassignVacancyReviewCommandHandler> _logger;
 
         public UnassignVacancyReviewCommandHandler(
-            IVacancyReviewRepository repository,
+            IVacancyReviewRespositoryRunner repository,
             IVacancyReviewQuery vacancyReviewQuery,
             ILogger<UnassignVacancyReviewCommandHandler> logger)
         {

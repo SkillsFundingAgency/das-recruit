@@ -20,7 +20,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
     public class QaVacancyClient : IQaVacancyClient
     {
         private readonly IQueryStoreReader _queryStoreReader;
-        private readonly IVacancyReviewRepository _vacancyReviewRepository;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
@@ -33,7 +32,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public QaVacancyClient(
                     IQueryStoreReader queryStoreReader,
-                    IVacancyReviewRepository vacancyReviewRepository,
                     IVacancyReviewQuery vacancyReviewQuery,
                     IVacancyRepository vacancyRepository,
                     IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
@@ -44,7 +42,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     IQualificationsProvider qualificationsProvider)
         {
             _queryStoreReader = queryStoreReader;
-            _vacancyReviewRepository = vacancyReviewRepository;
             _vacancyReviewQuery = vacancyReviewQuery;
             _vacancyRepository = vacancyRepository;
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;

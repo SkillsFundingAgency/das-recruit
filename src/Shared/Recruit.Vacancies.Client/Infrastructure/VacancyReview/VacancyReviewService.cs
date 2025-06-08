@@ -11,8 +11,41 @@ using SFA.DAS.Encoding;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 
+
+public interface IVacancyReviewRespositoryRunner
+{
+    Task CreateAsync(Domain.Entities.VacancyReview vacancy);
+    Task UpdateAsync(Domain.Entities.VacancyReview review);
+}
+
+public class VacancyReviewRespositoryRunner : IVacancyReviewRespositoryRunner
+{
+    private readonly IEnumerable<IVacancyReviewRepository> _vacancyReviewResolver;
+
+    public VacancyReviewRespositoryRunner(IEnumerable<IVacancyReviewRepository> vacancyReviewResolver)
+    {
+        _vacancyReviewResolver = vacancyReviewResolver;
+    }
+
+    public async Task UpdateAsync(Domain.Entities.VacancyReview vacancyReview)
+    {
+        foreach (var vacancyReviewResolver in _vacancyReviewResolver)
+        {
+            await vacancyReviewResolver.UpdateAsync(vacancyReview);
+        }
+    }
+    public async Task CreateAsync(Domain.Entities.VacancyReview vacancyReview)
+    {
+        foreach (var vacancyReviewResolver in _vacancyReviewResolver)
+        {
+            await vacancyReviewResolver.CreateAsync(vacancyReview);
+        }
+    }
+}
+
 public class VacancyReviewService(IOuterApiClient outerApiClient, IEncodingService encodingService) : IVacancyReviewRepository, IVacancyReviewQuery
 {
+    public string Key { get; } = "OuterApiVacancyReview";
     public async Task CreateAsync(Domain.Entities.VacancyReview vacancy)
     {
         await outerApiClient.Post(new PostVacancyReviewRequest((VacancyReviewDto)vacancy));

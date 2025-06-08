@@ -7,6 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Services
@@ -18,13 +19,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
         private readonly ITimeProvider _timeProvider;
         private readonly IMessaging _messaging;
         private readonly RuleSet<Vacancy> _vacancyRuleSet;
-        private readonly IVacancyReviewRepository _vacancyReviewRepository;
+        private readonly IVacancyReviewRespositoryRunner _vacancyReviewRepository;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
 
         public VacancyService(
             ILogger<VacancyService> logger, IVacancyRepository vacancyRepository, 
             ITimeProvider timeProvider, IMessaging messaging,
-            RuleSet<Vacancy> vacancyRuleSet, IVacancyReviewRepository vacancyReviewRepository,IVacancyReviewQuery vacancyReviewQuery)
+            RuleSet<Vacancy> vacancyRuleSet, IVacancyReviewRespositoryRunner vacancyReviewRepository,IVacancyReviewQuery vacancyReviewQuery)
         {
             _logger = logger;
             _vacancyRepository = vacancyRepository;

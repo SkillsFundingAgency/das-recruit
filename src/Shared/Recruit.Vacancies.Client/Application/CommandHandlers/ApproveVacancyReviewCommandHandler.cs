@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
@@ -19,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         private readonly ILogger<ApproveVacancyReviewCommandHandler> _logger;
         private readonly IVacancyRepository _vacancyRepository;
-        private readonly IVacancyReviewRepository _vacancyReviewRepository;
+        private readonly IVacancyReviewRespositoryRunner _vacancyReviewRespositoryRunner;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly IMessaging _messaging;
         private readonly AbstractValidator<VacancyReview> _vacancyReviewValidator;
@@ -28,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly ICommunicationQueueService _communicationQueueService;
 
         public ApproveVacancyReviewCommandHandler(ILogger<ApproveVacancyReviewCommandHandler> logger,
-                                        IVacancyReviewRepository vacancyReviewRepository,
+                                        IVacancyReviewRespositoryRunner vacancyReviewRespositoryRunner,
                                         IVacancyReviewQuery vacancyReviewQuery,
                                         IVacancyRepository vacancyRepository,
                                         IMessaging messaging,
@@ -39,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             _logger = logger;
             _vacancyRepository = vacancyRepository;
-            _vacancyReviewRepository = vacancyReviewRepository;
+            _vacancyReviewRespositoryRunner = vacancyReviewRespositoryRunner;
             _vacancyReviewQuery = vacancyReviewQuery;
             _messaging = messaging;
             _vacancyReviewValidator = vacancyReviewValidator;
@@ -75,7 +76,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             Validate(review);
 
-            await _vacancyReviewRepository.UpdateAsync(review);
+            await _vacancyReviewRespositoryRunner.UpdateAsync(review);
 
             var closureReason = await TryGetReasonToCloseVacancy(review, vacancy);
 
