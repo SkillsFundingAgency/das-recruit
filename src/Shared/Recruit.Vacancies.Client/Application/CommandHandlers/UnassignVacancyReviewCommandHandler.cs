@@ -11,12 +11,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     public class UnassignVacancyReviewCommandHandler : IRequestHandler<UnassignVacancyReviewCommand, Unit>
     {
         private readonly IVacancyReviewRepository _repository;
+        private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly ILogger<UnassignVacancyReviewCommandHandler> _logger;
 
         public UnassignVacancyReviewCommandHandler(
-            IVacancyReviewRepository repository, ILogger<UnassignVacancyReviewCommandHandler> logger)
+            IVacancyReviewRepository repository,
+            IVacancyReviewQuery vacancyReviewQuery,
+            ILogger<UnassignVacancyReviewCommandHandler> logger)
         {
             _repository = repository;
+            _vacancyReviewQuery = vacancyReviewQuery;
             _logger = logger;
         }
 
@@ -24,7 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             _logger.LogInformation("Attempting to unassign review {reviewId}.", message.ReviewId);
 
-            var review = await _repository.GetAsync(message.ReviewId);
+            var review = await _vacancyReviewQuery.GetAsync(message.ReviewId);
 
             if (!review.CanUnassign)
             {

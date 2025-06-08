@@ -20,6 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly ILogger<ApproveVacancyReviewCommandHandler> _logger;
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IVacancyReviewRepository _vacancyReviewRepository;
+        private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly IMessaging _messaging;
         private readonly AbstractValidator<VacancyReview> _vacancyReviewValidator;
         private readonly ITimeProvider _timeProvider;
@@ -28,6 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public ApproveVacancyReviewCommandHandler(ILogger<ApproveVacancyReviewCommandHandler> logger,
                                         IVacancyReviewRepository vacancyReviewRepository,
+                                        IVacancyReviewQuery vacancyReviewQuery,
                                         IVacancyRepository vacancyRepository,
                                         IMessaging messaging,
                                         AbstractValidator<VacancyReview> vacancyReviewValidator,
@@ -38,6 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _logger = logger;
             _vacancyRepository = vacancyRepository;
             _vacancyReviewRepository = vacancyReviewRepository;
+            _vacancyReviewQuery = vacancyReviewQuery;
             _messaging = messaging;
             _vacancyReviewValidator = vacancyReviewValidator;
             _timeProvider = timeProvider;
@@ -49,7 +52,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             _logger.LogInformation("Approving review {reviewId}.", message.ReviewId);
 
-            var review = await _vacancyReviewRepository.GetAsync(message.ReviewId);
+            var review = await _vacancyReviewQuery.GetAsync(message.ReviewId);
             var vacancy = await _vacancyRepository.GetVacancyAsync(review.VacancyReference);
 
             if (!review.CanApprove)

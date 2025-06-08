@@ -126,7 +126,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task<Domain.Entities.VacancyReview> GetVacancyReviewAsync(Guid reviewId)
         {
-            return _vacancyReviewRepository.GetAsync(reviewId);
+            return _vacancyReviewQuery.GetAsync(reviewId);
         }
 
         public Task AssignNextVacancyReviewAsync(VacancyUser user)

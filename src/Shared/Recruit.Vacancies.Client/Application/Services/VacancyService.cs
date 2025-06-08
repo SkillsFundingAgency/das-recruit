@@ -19,11 +19,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
         private readonly IMessaging _messaging;
         private readonly RuleSet<Vacancy> _vacancyRuleSet;
         private readonly IVacancyReviewRepository _vacancyReviewRepository;
+        private readonly IVacancyReviewQuery _vacancyReviewQuery;
 
         public VacancyService(
             ILogger<VacancyService> logger, IVacancyRepository vacancyRepository, 
             ITimeProvider timeProvider, IMessaging messaging,
-            RuleSet<Vacancy> vacancyRuleSet, IVacancyReviewRepository vacancyReviewRepository)
+            RuleSet<Vacancy> vacancyRuleSet, IVacancyReviewRepository vacancyReviewRepository,IVacancyReviewQuery vacancyReviewQuery)
         {
             _logger = logger;
             _vacancyRepository = vacancyRepository;
@@ -31,6 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             _messaging = messaging;
             _vacancyRuleSet = vacancyRuleSet;
             _vacancyReviewRepository = vacancyReviewRepository;
+            _vacancyReviewQuery = vacancyReviewQuery;
         }
 
         public async Task CloseExpiredVacancy(Guid vacancyId)
@@ -54,7 +56,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
 
         public async Task PerformRulesCheckAsync(Guid reviewId)
         {
-            var review = await _vacancyReviewRepository.GetAsync(reviewId);
+            var review = await _vacancyReviewQuery.GetAsync(reviewId);
             var outcome = await _vacancyRuleSet.EvaluateAsync(review.VacancySnapshot);
             review.AutomatedQaOutcome = outcome;
             review.Status = ReviewStatus.PendingReview;

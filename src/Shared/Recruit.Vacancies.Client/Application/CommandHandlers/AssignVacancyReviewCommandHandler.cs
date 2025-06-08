@@ -15,6 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         private readonly ILogger<AssignVacancyReviewCommand> _logger;
         private readonly IVacancyReviewRepository _vacancyReviewRepository;
+        private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly ITimeProvider _time;
         private readonly INextVacancyReviewService _nextVacancyReviewService;
 
@@ -22,12 +23,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             ILogger<AssignVacancyReviewCommand> logger,
             IVacancyReviewRepository vacancyReviewRepository, 
             ITimeProvider timeProvider,
-            INextVacancyReviewService nextVacancyReviewService)
+            INextVacancyReviewService nextVacancyReviewService,
+            IVacancyReviewQuery vacancyReviewQuery)
         {
             _logger = logger;
             _vacancyReviewRepository = vacancyReviewRepository;
             _time = timeProvider;
             _nextVacancyReviewService = nextVacancyReviewService;
+            _vacancyReviewQuery = vacancyReviewQuery;
         }
 
         public async Task<Unit> Handle(AssignVacancyReviewCommand message, CancellationToken cancellationToken)
@@ -58,7 +61,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         private async Task<VacancyReview> GetVacancyReviewAsync(Guid reviewId)
         {
-            var review = await _vacancyReviewRepository.GetAsync(reviewId);
+            var review = await _vacancyReviewQuery.GetAsync(reviewId);
 
             if (_nextVacancyReviewService.VacancyReviewCanBeAssigned(review.Status, review.ReviewedDate))
                 return review;

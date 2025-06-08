@@ -18,6 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         private readonly ILogger<ReferVacancyReviewCommandHandler> _logger;
         private readonly IVacancyReviewRepository _reviewRepository;
+        private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly IMessaging _messaging;
         private readonly AbstractValidator<VacancyReview> _vacancyReviewValidator;
         private readonly ITimeProvider _timeProvider;
@@ -25,12 +26,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         public ReferVacancyReviewCommandHandler(
             ILogger<ReferVacancyReviewCommandHandler> logger,
             IVacancyReviewRepository reviewRepository,
+            IVacancyReviewQuery vacancyReviewQuery,
             IMessaging messaging,
             AbstractValidator<VacancyReview> vacancyReviewValidator,
             ITimeProvider timeProvider)
         {
             _logger = logger;
             _reviewRepository = reviewRepository;
+            _vacancyReviewQuery = vacancyReviewQuery;
             _messaging = messaging;
             _timeProvider = timeProvider;
             _vacancyReviewValidator = vacancyReviewValidator;
@@ -40,7 +43,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             _logger.LogInformation("Referring vacancy review {reviewId}.", message.ReviewId);
 
-            var review = await _reviewRepository.GetAsync(message.ReviewId);
+            var review = await _vacancyReviewQuery.GetAsync(message.ReviewId);
 
             if (!review.CanRefer)
             {
