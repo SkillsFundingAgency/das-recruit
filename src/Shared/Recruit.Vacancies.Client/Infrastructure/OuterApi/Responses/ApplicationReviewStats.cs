@@ -12,6 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses
         public int SuccessfulApplications { get; set; }
         public int UnsuccessfulApplications { get; set; }
         public int EmployerReviewedApplications { get; set; }
+        public bool HasNoApplications { get; set; }
     }
 
     public record GetApplicationReviewStatsResponse
