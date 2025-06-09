@@ -7,10 +7,8 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <a asp-route="@RouteNames.Title_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
-
-        <h1 class="govuk-heading-xl">Have you already found apprenticeship training?</h1>
+        <vacancy-heading vacancy-title="@Model.VacancyTitle" heading="Have you already found apprenticeship training?" class="govuk-!-margin-bottom-6" />
         <p class="govuk-body">If you’re looking to take on apprentices, you’ll need to provide training through a registered provider. If you haven't found training yet, we can help you to find it.</p>
         <form asp-route="@RouteNames.Training_First_Time_Post" asp-all-route-data="@Model.RouteDictionary" novalidate>
             <fieldset class="govuk-fieldset">

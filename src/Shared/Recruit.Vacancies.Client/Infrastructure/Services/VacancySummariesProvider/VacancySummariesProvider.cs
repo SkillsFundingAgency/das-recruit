@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
@@ -15,14 +14,12 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Polly;
-using FeatureNames = Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider
 {
     internal sealed class VacancySummariesProvider(
         ILoggerFactory loggerFactory,
         IOptions<MongoDbConnectionDetails> details,
-        IVacancyTaskListStatusService vacancyTaskListStatusService,
         IFeature features)
         : MongoDbCollectionBase(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details),
             IVacancySummariesProvider
@@ -39,9 +36,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             IOptions<MongoDbConnectionDetails> details,
             IFeature feature,
             ITrainingProviderService trainingProviderService,
-            IEmployerAccountProvider employerAccountProvider,
-            IVacancyTaskListStatusService vacancyTaskListStatusService)
-            : this(loggerFactory, details, vacancyTaskListStatusService, feature)
+            IEmployerAccountProvider employerAccountProvider)
+            : this(loggerFactory, details, feature)
         {
             _trainingProviderService = trainingProviderService;
             _employerAccountProvider = employerAccountProvider;

@@ -14,11 +14,8 @@
     <div class="govuk-grid-column-two-thirds">
         
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
-
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
-
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Duration and working hours</h1>
-
+        <vacancy-heading vacancy-title="@Model.VacancyTitle" heading="Duration and working hours" class="govuk-!-margin-bottom-6" />
         <form asp-route="@RouteNames.Duration_Post"  asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <div esfa-validation-marker-for="Duration" class="govuk-form-group">
                 <label asp-for="Duration" class="govuk-label govuk-label--s">

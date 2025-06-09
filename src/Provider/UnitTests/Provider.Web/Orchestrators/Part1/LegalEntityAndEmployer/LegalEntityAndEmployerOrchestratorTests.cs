@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Provider.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
-using FluentAssertions;
-using Moq;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.LegalEntityAndEmployer
 {
@@ -22,8 +22,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
         public void Then_If_There_Are_No_Permissions_Returned_Exception_Thrown(
             VacancyRouteModel vacancyRouteModel,
             [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
+            [Frozen] Mock<IFeature> feature,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(false);
             providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
                 .ReturnsAsync((ProviderEditVacancyInfo)null);
 
@@ -38,8 +40,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             VacancyRouteModel vacancyRouteModel,
             ProviderEditVacancyInfo providerEditVacancyInfo,
             [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
+            [Frozen] Mock<IFeature> feature,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(false);
             providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
                 .ReturnsAsync(providerEditVacancyInfo);
 
@@ -51,14 +55,48 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             actual.Ukprn.Should().Be(vacancyRouteModel.Ukprn);
         }
 
+        [Test, MoqAutoData]
+        public async Task Then_Feature_Enabled_Then_There_Are_Permissions_Then_The_ViewModel_Is_Returned(
+            VacancyRouteModel vacancyRouteModel,
+            GetAllAccountLegalEntitiesApiResponse response,
+            IEnumerable<EmployerInfo> mockEmployerInfos,
+            [Frozen] Mock<IEmployerAccountProvider> employerAccountProvider,
+            [Frozen] Mock<IProviderRelationshipsService> providerRelationshipService,
+            [Frozen] Mock<IFeature> feature,
+            LegalEntityAndEmployerOrchestrator orchestrator)
+        {
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(true);
+
+            employerAccountProvider.Setup(x => x.GetAllLegalEntitiesConnectedToAccountAsync(It.IsAny<List<string>>(),
+                    It.IsAny<string>(),
+                    It.IsAny<int>(),
+                    It.IsAny<int>(),
+                    It.IsAny<string>(),
+                    It.IsAny<bool>()))
+                .ReturnsAsync(response);
+
+            providerRelationshipService
+                .Setup(x => x.GetLegalEntitiesForProviderAsync(vacancyRouteModel.Ukprn, OperationType.Recruitment))
+                .ReturnsAsync(mockEmployerInfos);
+
+            var actual = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel,
+                "", 1);
+
+            actual.Employers.Count().Should().Be(response.LegalEntities.Select(e => new EmployerViewModel { Id = e.AccountLegalEntityPublicHashedId, Name = e.Name }).Count());
+            actual.VacancyId.Should().Be(vacancyRouteModel.VacancyId);
+            actual.Ukprn.Should().Be(vacancyRouteModel.Ukprn);
+        }
+
 
         [Test, MoqAutoData]
         public async Task When_Ordered_By_Employer_Name_in_Descending_Order(
                 VacancyRouteModel vacancyRouteModel,
                 ProviderEditVacancyInfo providerEditVacancyInfo,
                 [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
+                [Frozen] Mock<IFeature> feature,
                 LegalEntityAndEmployerOrchestrator orchestrator)
         {
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(false);
             providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
                 .ReturnsAsync(providerEditVacancyInfo);
 
@@ -74,8 +112,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             VacancyRouteModel vacancyRouteModel,
             ProviderEditVacancyInfo providerEditVacancyInfo,
             [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
+            [Frozen] Mock<IFeature> feature,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(false);
             providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
                 .ReturnsAsync(providerEditVacancyInfo);
 
@@ -91,8 +131,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             VacancyRouteModel vacancyRouteModel,
             ProviderEditVacancyInfo providerEditVacancyInfo,
             [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
+            [Frozen] Mock<IFeature> feature,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(false);
             providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
                 .ReturnsAsync(providerEditVacancyInfo);
 
@@ -110,8 +152,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             VacancyRouteModel vacancyRouteModel,
             ProviderEditVacancyInfo providerEditVacancyInfo,
             [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
+            [Frozen] Mock<IFeature> feature,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(false);
             providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
                 .ReturnsAsync(providerEditVacancyInfo);
 
@@ -131,8 +175,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             ProviderEditVacancyInfo providerEditVacancyInfo,
             List<EmployerInfo> employerInfo,
             [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
+            [Frozen] Mock<IFeature> feature,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(false);
             employerInfo.Add(new EmployerInfo
             {
                 Name = "ESFA  LTD",

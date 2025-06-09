@@ -1,6 +1,4 @@
-@using Esfa.Recruit.Shared.Web.TagHelpers
-@using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration
-@using WebEssentials.AspNetCore.CdnTagHelpers
+@using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle
 @model DisplayVacancyViewModel
 
 @functions {
@@ -21,6 +19,7 @@
 }
 
 <div class="app-preview-wrap">
+    <govuk-tag-foundation asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-!-margin-bottom-6" />
     <h1 id="previewTitle" class="govuk-heading-l faa-vacancy__title">@Model.Title</h1>
     <p class="govuk-body-l faa-vacancy__organisation">@Model.EmployerName</p>
     <p class="govuk-body-l faa-vacancy__location">
@@ -39,10 +38,10 @@
     <p class="govuk-body govuk-!-font-size-16 das-!-color-dark-grey">Posted on @Model.PostedDate</p>
     <div class="faa-vacancy-actions">
         <a href="#print"
-            class="govuk-link govuk-link--no-visited-state faa-vacancy-actions__link faa-vacancy-actions__link--print">
+           class="govuk-link govuk-link--no-visited-state faa-vacancy-actions__link faa-vacancy-actions__link--print">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="faa-vacancy-actions__icon">
                 <path fill="currentColor"
-                    d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zM432 248a24 24 0 1 1 0 48 24 24 0 1 1 0-48z">
+                      d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zM432 248a24 24 0 1 1 0 48 24 24 0 1 1 0-48z">
                 </path>
             </svg>Print
         </a>
@@ -99,6 +98,9 @@
         <div class="govuk-grid-column-two-thirds">
             <section class="faa-vacancy__section faa-vacancy__section--first" id="summary">
                 <h2 class="govuk-heading-m">Summary</h2>
+                <p asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-inset-text das-inset-text-pink">
+                    Foundation apprenticeships help young people get into an industry. You do not need any specific grades or qualifications to apply. Check <a class="govuk-notification-banner__link" href="#" target="_blank" rel="noreferrer">who can do a foundation (opens in a new tab)</a>. 
+                </p>
                 <p>
                     @Model.ShortDescription
                 </p>
@@ -120,7 +122,7 @@
                             {
                                 <p class="govuk-body govuk-!-padding-top-3">
                                     @Html.Raw(Model.WageInfo)
-                                </p>    
+                                </p>
                             }
                             else
                             {
@@ -129,7 +131,7 @@
                                     has been successfully completed.
                                 </p>
                             }
-                            
+
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
@@ -192,7 +194,7 @@
                         case AvailableWhere.OneLocation:
                         {
                             <p class="govuk-body">
-                                <address value="@Model.AvailableLocations.First()" anonymised="@Model.IsAnonymous" flat="true" />
+                                <address value="@Model.AvailableLocations.First()" anonymised="@Model.IsAnonymous" flat="true"/>
                             </p>
 
                             RenderMapSection();
@@ -204,7 +206,7 @@
                                 This apprenticeship is available in these locations:
                             </p>
 
-                            <address-list class="govuk-list govuk-list--bullet" addresses="@Model.AvailableLocations" anonymised="@Model.IsAnonymous" />
+                            <address-list class="govuk-list govuk-list--bullet" addresses="@Model.AvailableLocations" anonymised="@Model.IsAnonymous"/>
                             RenderMapSection();
                             break;
                         }
@@ -295,37 +297,45 @@
             </section>
             <section class="faa-vacancy__section" id="requirements">
                 <h2 class="govuk-heading-m">Requirements</h2>
-                @if (Model.Qualifications is { Count: > 0 })
+                
+                <p asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-body das-!-color-dark-grey">You do not need any specific qualifications to apply for a foundation apprenticeship.</p>
+
+                @if (!Model.ApprenticeshipType.IsFoundation())
                 {
-                    <h3 class="govuk-heading-s">Essential qualifications</h3>
-                    <ul class="govuk-list govuk-list--bullet">
-                        @foreach (var qualification in Model.Qualifications)
-                        {
-                            <li>@qualification</li>
-                        }
-                    </ul>
-                }
-                @if (Model.QualificationsDesired is { Count: > 0 })
-                {
-                    <h3 class="govuk-heading-s">Desired qualifications</h3>
-                    <ul class="govuk-list govuk-list--bullet">
-                        @foreach (var qualification in Model.QualificationsDesired)
-                        {
-                        <li>@qualification</li>
-                        }
-                    </ul>
-                }
-                <p class="govuk-body">
-                    Let the company know about other relevant qualifications and industry experience you have. They can
-                    adjust the apprenticeship to reflect what you already know.
-                </p>
-                <h3 class="govuk-heading-s">Skills</h3>
-                <ul class="govuk-list govuk-list--bullet">
-                    @foreach (var skills in Model.Skills)
+                    if (Model.Qualifications is { Count: > 0 })
                     {
-                        <li>@skills</li>
+                        <h3 class="govuk-heading-s">Essential qualifications</h3>
+                        <ul class="govuk-list govuk-list--bullet">
+                            @foreach (var qualification in Model.Qualifications)
+                            {
+                                <li>@qualification</li>
+                            }
+                        </ul>
                     }
-                </ul>
+
+                    if (Model.QualificationsDesired is { Count: > 0 })
+                    {
+                        <h3 class="govuk-heading-s">Desired qualifications</h3>
+                        <ul class="govuk-list govuk-list--bullet">
+                            @foreach (var qualification in Model.QualificationsDesired)
+                            {
+                                <li>@qualification</li>
+                            }
+                        </ul>
+                    }
+
+                    <p class="govuk-body">
+                        Let the company know about other relevant qualifications and industry experience you have. They can
+                        adjust the apprenticeship to reflect what you already know.
+                    </p>
+                    <h3 class="govuk-heading-s">Skills</h3>
+                    <ul class="govuk-list govuk-list--bullet">
+                        @foreach (var skills in Model.Skills)
+                        {
+                            <li>@skills</li>
+                        }
+                    </ul>
+                }
                 @if (!string.IsNullOrEmpty(Model.ThingsToConsider))
                 {
                     <h3 class="govuk-heading-s">Other requirements</h3>
@@ -341,10 +351,10 @@
                 {
                     <p class="govuk-body">
                         <a href="@Model.EmployerWebsiteUrl" class="govuk-link" rel="noreferrer noopener"
-                            target="_blank">@Model.EmployerWebsiteUrl (opens in new tab)</a>
+                           target="_blank">@Model.EmployerWebsiteUrl (opens in new tab)</a>
                     </p>
                 }
-                
+
                 @if (!string.IsNullOrEmpty(Model.CompanyBenefitsInformation))
                 {
                     <h3 class="govuk-heading-s">Company Benefits</h3>
@@ -357,7 +367,7 @@
                 {
                     <h3 class="govuk-heading-s">Disability Confident</h3>
                     <img src="/img/disability-confident_545x172.png" class="faa-disability-confident--srp"
-                        alt="Disability Confident" width="150px" no-cdn />
+                         alt="Disability Confident" width="150px" no-cdn/>
 
                     <p class="govuk-body">
                         A fair proportion of interviews for this apprenticeship will be offered to applicants with a
@@ -394,12 +404,23 @@
             </section>
             <section class="faa-vacancy__section faa-vacancy__section--last" id="apply">
                 <h2 class="govuk-heading-m">Apply now</h2>
+                <p asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-inset-text das-inset-text-pink">
+                    Foundation apprenticeships help young people get into an industry. Check <a class="govuk-notification-banner__link" href="#" target="_blank" rel="noreferrer">who can do a foundation (opens in a new tab)</a>.
+                </p>
                 <p>Closes on @Model.ClosingDate</p>
                 <p class="govuk-body"> When you apply, you’ll be asked to sign in with a GOV.UK One Login. You can
                     create one at the same time as applying for this apprenticeship.</p>
-                @if (!string.IsNullOrEmpty(Model.ApplicationUrl))
+                @if (!string.IsNullOrWhiteSpace(Model.ApplicationUrl))
                 {
-                    <p class="govuk-body">After signing in, you’ll apply for this apprenticeship on the company's website.
+                    <p class="govuk-body">
+                        After signing in, you’ll apply for this apprenticeship on the company's website.
+                    </p>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.ApplicationInstructions))
+                {
+                    <h3 class="govuk-heading-m">Company’s application instructions</h3>
+                    <p class="govuk-body">
+                        @Model.ApplicationInstructions
                     </p>
                 }
                 <div clas="govuk-button-group">

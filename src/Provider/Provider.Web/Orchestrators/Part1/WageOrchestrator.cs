@@ -120,7 +120,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 PageInfo = vm.PageInfo,
                 Review = vm.Review,
                 Ukprn = vrm.Ukprn,
-                IsSalaryAboveNationalMinimumWage = (vm.WageType == WageType.CompetitiveSalary) ? true : null
+                IsSalaryAboveNationalMinimumWage = (vm.WageType == WageType.CompetitiveSalary) ? true : null,
+                Title = vm.Title,
             };
 
             return competitiveWageViewModel;
