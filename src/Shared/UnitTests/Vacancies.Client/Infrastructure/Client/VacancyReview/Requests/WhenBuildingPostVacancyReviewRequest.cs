@@ -19,9 +19,9 @@ public class WhenBuildingPostVacancyReviewRequest
             .With(c=>c.AutomatedQaOutcome, new RuleSetOutcome())
             .Create();
         
-        var actual = new PostVacancyReviewRequest((VacancyReviewDto)vReview);
+        var actual = new PostVacancyReviewRequest(vReview.Id, (VacancyReviewDto)vReview);
 
-        actual.PostUrl.Should().Be("VacancyReviews");
+        actual.PostUrl.Should().Be($"VacancyReviews/{vReview.Id}");
         ((VacancyReviewDto)actual.Data).Should().BeEquivalentTo((VacancyReviewDto)vReview);
     }
 }

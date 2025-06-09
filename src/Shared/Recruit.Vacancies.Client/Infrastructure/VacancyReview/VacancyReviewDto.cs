@@ -14,7 +14,7 @@ public class VacancyReviewDto
     public required DateTime CreatedDate { get; init; }
     public required DateTime SlaDeadLine { get; init; }
     public DateTime? ReviewedDate { get; init; }
-    public required ReviewStatus Status { get; init; }
+    public required string Status { get; init; }
     public byte SubmissionCount { get; init; }
     public string ReviewedByUserEmail { get; init; }
     public required string SubmittedByUserEmail { get; init; }
@@ -26,6 +26,7 @@ public class VacancyReviewDto
     public string AutomatedQaOutcomeIndicators { get; init; }
     public required List<string> DismissedAutomatedQaOutcomeIndicators { get; init; }
     public required List<string> UpdatedFieldIdentifiers { get; init; }
+    public string OwnerType { get; set; }
     public required string VacancySnapshot { get; set; }
 
     public static explicit operator VacancyReviewDto(Domain.Entities.VacancyReview source)
@@ -38,23 +39,27 @@ public class VacancyReviewDto
             VacancyTitle = source.Title,
             CreatedDate = source.CreatedDate!.Value,
             SlaDeadLine = source.SlaDeadline!.Value,
-            ReviewedDate = source.ReviewedDate!.Value,
-            Status = source.Status,
+            ReviewedDate = source.ReviewedDate,
+            Status = source.Status.ToString(),
             SubmissionCount = (byte)source.SubmissionCount,
-            ReviewedByUserEmail = source.ReviewedByUser.Email,
+            ReviewedByUserEmail = source.ReviewedByUser?.Email,
             SubmittedByUserEmail = source.SubmittedByUser.Email,
             ClosedDate = source.ClosedDate,
-            ManualOutcome = source.ManualOutcome!.Value.ToString(),
+            ManualOutcome = source.ManualOutcome?.ToString(),
             ManualQaComment = source.ManualQaComment,
-            ManualQaFieldIndicators = source.ManualQaFieldIndicators.Where(c=>c.IsChangeRequested)
-                .Select(c=>c.ToString()).ToList(),
-            AutomatedQaOutcome = source.AutomatedQaOutcome.Decision.ToString(),
-            AutomatedQaOutcomeIndicators = source.AutomatedQaOutcomeIndicators.Any() ? source.AutomatedQaOutcomeIndicators.First().IsReferred.ToString() : null,
+            ManualQaFieldIndicators =source.ManualQaFieldIndicators!=null ? source.ManualQaFieldIndicators.Where(c=>c.IsChangeRequested)
+                .Select(c=>c.ToString()).ToList() : [],
+            AutomatedQaOutcome = source.AutomatedQaOutcome?.Decision.ToString(),
+            AutomatedQaOutcomeIndicators = source.AutomatedQaOutcomeIndicators?.FirstOrDefault()?.IsReferred.ToString(),
             DismissedAutomatedQaOutcomeIndicators = source.DismissedAutomatedQaOutcomeIndicators,
             UpdatedFieldIdentifiers = source.UpdatedFieldIdentifiers,
-            VacancySnapshot = JsonConvert.SerializeObject(source.VacancySnapshot)
+            VacancySnapshot = JsonConvert.SerializeObject(source.VacancySnapshot),
+            OwnerType = source.VacancySnapshot.OwnerType.ToString()
         };
     }
+
+    
+
     public static explicit operator Domain.Entities.VacancyReview(VacancyReviewDto source)
     {
         if (source == null)
@@ -69,8 +74,8 @@ public class VacancyReviewDto
             Title = source.VacancyTitle,
             CreatedDate = source.CreatedDate,
             SlaDeadline = source.SlaDeadLine,
-            ReviewedDate = source.ReviewedDate!.Value,
-            Status = source.Status,
+            ReviewedDate = source.ReviewedDate,
+            Status = Enum.Parse<ReviewStatus>(source.Status),
             SubmissionCount = source.SubmissionCount,
             ReviewedByUser = new VacancyUser{Email = source.ReviewedByUserEmail},
             SubmittedByUser = new VacancyUser{Email = source.SubmittedByUserEmail },

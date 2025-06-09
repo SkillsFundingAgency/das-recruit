@@ -88,6 +88,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             var review = new VacancyReview
             {
+                Id = Guid.NewGuid(),
                 VacancyReference = vacancy.VacancyReference.Value,
                 Title = vacancy.Title,
                 Status = ReviewStatus.New,    

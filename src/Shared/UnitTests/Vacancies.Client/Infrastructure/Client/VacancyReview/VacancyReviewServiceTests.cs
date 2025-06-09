@@ -20,7 +20,7 @@ public class VacancyReviewServiceTests
         VacancyReviewService service)
     {
         var model = BuildVacancyReviewEntity();
-        var expectedRequest = new PostVacancyReviewRequest((VacancyReviewDto)model);
+        var expectedRequest = new PostVacancyReviewRequest(model.Id,(VacancyReviewDto)model);
         
         await service.CreateAsync(model);
         
@@ -38,12 +38,12 @@ public class VacancyReviewServiceTests
         VacancyReviewService service)
     {
         var model = BuildVacancyReviewEntity();
-        var expectedRequest = new PostUpdateVacancyReviewRequest((VacancyReviewDto)model);
+        var expectedRequest = new PostVacancyReviewRequest(model.Id, (VacancyReviewDto)model);
         
         await service.UpdateAsync(model);
         
         outerApiClient.Verify(x=>x.Post(
-            It.Is<PostUpdateVacancyReviewRequest>(
+            It.Is<PostVacancyReviewRequest>(
                 c=>c.PostUrl == expectedRequest.PostUrl
                    && ((VacancyReviewDto)c.Data).VacancyTitle == ((VacancyReviewDto)expectedRequest.Data).VacancyTitle
             )
