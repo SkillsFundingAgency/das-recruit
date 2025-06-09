@@ -20,7 +20,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
     public class QaVacancyClient : IQaVacancyClient
     {
         private readonly IQueryStoreReader _queryStoreReader;
-        private readonly IVacancyReviewRepository _vacancyReviewRepository;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
@@ -33,7 +32,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public QaVacancyClient(
                     IQueryStoreReader queryStoreReader,
-                    IVacancyReviewRepository vacancyReviewRepository,
                     IVacancyReviewQuery vacancyReviewQuery,
                     IVacancyRepository vacancyRepository,
                     IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
@@ -44,7 +42,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     IQualificationsProvider qualificationsProvider)
         {
             _queryStoreReader = queryStoreReader;
-            _vacancyReviewRepository = vacancyReviewRepository;
             _vacancyReviewQuery = vacancyReviewQuery;
             _vacancyRepository = vacancyRepository;
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
@@ -81,7 +78,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return dashboard;
         }
 
-        public async Task<VacancyReview> GetSearchResultAsync(string searchTerm)
+        public async Task<Domain.Entities.VacancyReview> GetSearchResultAsync(string searchTerm)
         {
             if (TryGetVacancyReference(searchTerm, out var vacancyReference) == false) return null;
 
@@ -114,7 +111,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return result.Success;
         }
 
-        public Task<List<VacancyReview>> GetVacancyReviewsInProgressAsync()
+        public Task<List<Domain.Entities.VacancyReview>> GetVacancyReviewsInProgressAsync()
         {
             return _vacancyReviewQuery.GetVacancyReviewsInProgressAsync(_nextVacancyReviewService.GetExpiredAssignationDateTime());
         }
@@ -124,9 +121,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _vacancyRepository.GetVacancyAsync(vacancyReference);
         }
 
-        public Task<VacancyReview> GetVacancyReviewAsync(Guid reviewId)
+        public Task<Domain.Entities.VacancyReview> GetVacancyReviewAsync(Guid reviewId)
         {
-            return _vacancyReviewRepository.GetAsync(reviewId);
+            return _vacancyReviewQuery.GetAsync(reviewId);
         }
 
         public Task AssignNextVacancyReviewAsync(VacancyUser user)
@@ -156,12 +153,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _vacancyReviewQuery.GetApprovedFirstTimeCountAsync(submittedByUserId);
         }
 
-        public Task<List<VacancyReview>> GetAssignedVacancyReviewsForUserAsync(string userId)
+        public Task<List<Domain.Entities.VacancyReview>> GetAssignedVacancyReviewsForUserAsync(string userId)
         {
             return _vacancyReviewQuery.GetAssignedForUserAsync(userId, _nextVacancyReviewService.GetExpiredAssignationDateTime());
         }
 
-        public bool VacancyReviewCanBeAssigned(VacancyReview review)
+        public bool VacancyReviewCanBeAssigned(Domain.Entities.VacancyReview review)
         {
             return VacancyReviewCanBeAssigned(review.Status, review.ReviewedDate);
         }
@@ -176,12 +173,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(new UnassignVacancyReviewCommand { ReviewId = reviewId });
         }
 
-        public Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
+        public Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
         {
             return _vacancyReviewQuery.GetCurrentReferredVacancyReviewAsync(vacancyReference);
         }
 
-        public async Task<List<VacancyReview>> GetVacancyReviewHistoryAsync(long vacancyReference)
+        public async Task<List<Domain.Entities.VacancyReview>> GetVacancyReviewHistoryAsync(long vacancyReference)
         {
             var allVacancyReviews = await _vacancyReviewQuery.GetForVacancyAsync(vacancyReference);
 

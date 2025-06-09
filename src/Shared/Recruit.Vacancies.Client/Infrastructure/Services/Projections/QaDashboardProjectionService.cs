@@ -24,7 +24,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
 
         public async Task RebuildQaDashboardAsync()
         {
-            var activeReviews = await _reviewQuery.GetActiveAsync<VacancyReviewSummary>();
+            //TODO FAI-2488 - for outer api client we will get these values directly
+            //await _reviewQuery.GetVacancyReviewSummary
+            var activeReviews = await _reviewQuery.GetActiveAsync();
 
             activeReviews = activeReviews.OrderByDescending(x => x.CreatedDate).ToList();
 

@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -15,14 +16,14 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
     public class VacancyReviewTransferServiceTests
     {
         private readonly Fixture _autoFixture = new Fixture();
-        private readonly Mock<IVacancyReviewRepository> _mockVacancyReviewRepository;
+        private readonly Mock<IVacancyReviewRespositoryRunner> _mockVacancyReviewRepository;
         private readonly Mock<IVacancyReviewQuery> _mockVacancyReviewQuery;
         private readonly Mock<ITimeProvider> _mockTimeProvider;
         private VacancyReviewTransferService _sut;
 
         public VacancyReviewTransferServiceTests()
         {
-            _mockVacancyReviewRepository = new Mock<IVacancyReviewRepository>();
+            _mockVacancyReviewRepository = new Mock<IVacancyReviewRespositoryRunner>();
             _mockVacancyReviewQuery = new Mock<IVacancyReviewQuery>();
             _mockTimeProvider = new Mock<ITimeProvider>();
             _mockTimeProvider.Setup(t => t.Now).Returns(DateTime.Now);

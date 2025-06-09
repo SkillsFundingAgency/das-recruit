@@ -45,6 +45,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProviderSummaryProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -191,7 +192,11 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
             //Repositories
             services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
+            
+            services.AddTransient<IVacancyReviewRepository, VacancyReviewService>();
             services.AddTransient<IVacancyReviewRepository, MongoDbVacancyReviewRepository>();
+            services.AddTransient<IVacancyReviewRespositoryRunner, VacancyReviewRespositoryRunner>();
+            
             services.AddTransient<IUserRepository, MongoDbUserRepository>();
             services.AddTransient<IApplicationReviewRepository, MongoDbApplicationReviewRepository>();
             services.AddTransient<IEmployerProfileRepository, MongoDbEmployerProfileRepository>();
