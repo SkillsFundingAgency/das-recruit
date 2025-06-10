@@ -215,7 +215,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 if (vacancy.EmployerLocation != null)
                 {
                     vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
-                    vm.EmployerAddressElements = vacancy.EmployerAddressForDisplay();
+                    vm.EmployerAddressElements = vacancy.EmployerAddressForDisplay().ToList();
                 }
                 vm.EmployerLocationOption = vacancy.EmployerLocationOption;
                 vm.EmployerLocationInformation = vacancy.EmployerLocationInformation;
