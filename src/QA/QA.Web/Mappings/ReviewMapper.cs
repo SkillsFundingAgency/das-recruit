@@ -215,7 +215,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 if (vacancy.EmployerLocation != null)
                 {
                     vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
-                    vm.EmployerAddressElements = vacancy.EmployerAddressForDisplay();
+                    vm.EmployerAddressElements = vacancy.EmployerAddressForDisplay().ToList();
                 }
                 vm.EmployerLocationOption = vacancy.EmployerLocationOption;
                 vm.EmployerLocationInformation = vacancy.EmployerLocationInformation;
@@ -283,9 +283,18 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 
                 vm.AutomatedQaResults = GetAutomatedQaResultViewModel(review);
                 vm.IsVacancyDeleted = currentVacancyResult.IsDeleted;
-                vm.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
-                vm.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
-                vm.HasAdditionalQuestions = vacancy.HasSubmittedAdditionalQuestions;
+                if (vacancy.ApplicationMethod != ApplicationMethod.ThroughExternalApplicationSite)
+                {
+                    vm.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
+                    vm.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
+                    vm.HasAdditionalQuestions = vacancy.HasSubmittedAdditionalQuestions;
+                }
+                else
+                {
+                    vm.AdditionalQuestion1 = null;
+                    vm.AdditionalQuestion2 = null;
+                    vm.HasAdditionalQuestions = false;
+                }
             }
             catch (NullReferenceException ex)
             {
@@ -373,6 +382,29 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 
             if (review.AutomatedQaOutcomeIndicators == null || review.AutomatedQaOutcome == null)
                 return vm;
+
+            if (review.VacancySnapshot?.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite && review.AutomatedQaOutcome?.RuleOutcomes != null)
+            {
+                var additionalQuestionOutcomeIds = review.AutomatedQaOutcome.RuleOutcomes
+                    .SelectMany(ro => ro.Details
+                        .Where(d =>
+                            d.Target == FieldIdentifiers.AdditionalQuestion1 ||
+                            d.Target == FieldIdentifiers.AdditionalQuestion2)
+                        .Select(d => d.Id))
+                    .ToHashSet();
+
+                review.AutomatedQaOutcomeIndicators = review.AutomatedQaOutcomeIndicators
+                    .Where(i => !additionalQuestionOutcomeIds.Contains(i.RuleOutcomeId))
+                    .ToList();
+
+                review.AutomatedQaOutcome.RuleOutcomes.ForEach(ruleOutcome =>
+                {
+                    ruleOutcome.Details = ruleOutcome.Details
+                        .Where(d => d.Target != FieldIdentifiers.AdditionalQuestion1 &&
+                                    d.Target != FieldIdentifiers.AdditionalQuestion2)
+                        .ToList();
+                });
+            }
 
             var referredOutcomes = review.AutomatedQaOutcomeIndicators
                 .Where(i => i.IsReferred)

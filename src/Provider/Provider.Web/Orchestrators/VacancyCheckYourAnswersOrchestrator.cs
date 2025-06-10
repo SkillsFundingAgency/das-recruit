@@ -63,6 +63,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             vm.Ukprn = routeModel.Ukprn;
             vm.VacancyId = routeModel.VacancyId;
             vm.RequiresEmployerReview = hasProviderReviewPermission;
+            vm.AdditionalQuestionCount = vacancy.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4;
             
             if (vacancy.Status == VacancyStatus.Referred)
             {
