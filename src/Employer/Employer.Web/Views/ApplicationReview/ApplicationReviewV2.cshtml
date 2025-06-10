@@ -29,7 +29,7 @@
     </div>
     
     <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-
+    <govuk-tag-foundation asp-show="@Model.IsFoundation" class="govuk-!-margin-bottom-0"></govuk-tag-foundation>
     <span class="govuk-caption-l govuk-!-margin-bottom-0">@Model.VacancyTitle</span>
     <div asp-hide="@Model.ShowAnonymisedApplicantDetails">
         <h1 class="govuk-heading-l govuk-!-margin-bottom-5">@Model.Name</h1>
