@@ -79,6 +79,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
         public DateTime? DateSharedWithEmployer { get; set; }
         public bool IsFaaV2Application { get; set; }
         public string WhatIsYourInterest { get; set; }
+        public bool IsFoundation { get; set; }
         public List<QualificationTypeDisplay> QualificationTypes
         {
             get

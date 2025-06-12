@@ -51,6 +51,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             viewModel.CandidateFeedback = applicationReview.CandidateFeedback;
             viewModel.EmployerFeedback = applicationReview.EmployerFeedback;
             viewModel.VacancyTitle = vacancy.Title;
+            viewModel.IsFoundation = vacancy.ApprenticeshipType == ApprenticeshipTypes.Foundation;
 
             return viewModel;
         }
