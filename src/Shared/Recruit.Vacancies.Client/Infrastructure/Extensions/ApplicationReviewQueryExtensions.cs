@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
 {
     public static class ApplicationReviewQueryExtensions
     {
-        public static IQueryable<ApplicationReview> Sort(this IQueryable<ApplicationReview> queryable,
+        public static IQueryable<Domain.Entities.ApplicationReview> Sort(this IQueryable<Domain.Entities.ApplicationReview> queryable,
             SortColumn sortColumn, SortOrder sortOrder, bool sharedTable = false)
         {
             var result = sortColumn switch
@@ -49,12 +49,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             return result;
         }
 
-        private static IOrderedQueryable<ApplicationReview> OrderByResponseDescending(this IQueryable<ApplicationReview> applications)
+        private static IOrderedQueryable<Domain.Entities.ApplicationReview> OrderByResponseDescending(this IQueryable<Domain.Entities.ApplicationReview> applications)
         {
-            return (IOrderedQueryable<ApplicationReview>)applications.OrderByResponse().Reverse();
+            return (IOrderedQueryable<Domain.Entities.ApplicationReview>)applications.OrderByResponse().Reverse();
         }
 
-        private static IOrderedQueryable<ApplicationReview> OrderByResponse(this IQueryable<ApplicationReview> applications)
+        private static IOrderedQueryable<Domain.Entities.ApplicationReview> OrderByResponse(this IQueryable<Domain.Entities.ApplicationReview> applications)
         {
             return applications.OrderBy(x => x.Status == ApplicationReviewStatus.New ? 0
               : x.Status == ApplicationReviewStatus.Shared ? 1
@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
               : 8).ThenBy(x => x.ReviewedDate);
         }
 
-        private static IOrderedQueryable<ApplicationReview> OrderByDefault(this IQueryable<ApplicationReview> applications)
+        private static IOrderedQueryable<Domain.Entities.ApplicationReview> OrderByDefault(this IQueryable<Domain.Entities.ApplicationReview> applications)
         {
             return applications.OrderBy(x => x.SubmittedDate).ThenBy(x => x.Status == ApplicationReviewStatus.EmployerInterviewing ? 0
                 : x.Status == ApplicationReviewStatus.EmployerUnsuccessful ? 1
@@ -79,7 +79,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
                 : 8);
         }
 
-        private static IOrderedQueryable<ApplicationReview> OrderByStatus(this IQueryable<ApplicationReview> applications)
+        private static IOrderedQueryable<Domain.Entities.ApplicationReview> OrderByStatus(this IQueryable<Domain.Entities.ApplicationReview> applications)
         {
             return applications.OrderBy(x => x.Status == ApplicationReviewStatus.EmployerInterviewing ? 0
                 : x.Status == ApplicationReviewStatus.EmployerUnsuccessful ? 1
@@ -92,7 +92,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
                 : 8);
         }
 
-        private static IOrderedQueryable<ApplicationReview> OrderByStatusDescending(this IQueryable<ApplicationReview> applications)
+        private static IOrderedQueryable<Domain.Entities.ApplicationReview> OrderByStatusDescending(this IQueryable<Domain.Entities.ApplicationReview> applications)
         {
             return applications.OrderByDescending(x => x.Status == ApplicationReviewStatus.EmployerInterviewing ? 0
                 : x.Status == ApplicationReviewStatus.EmployerUnsuccessful ? 1

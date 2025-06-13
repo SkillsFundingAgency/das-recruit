@@ -77,15 +77,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
             {
                 MaxTime = TimeSpan.FromHours(1)
             });
-            await db.GetCollection<ApplicationReview>(MongoDbCollectionNames.ApplicationReviews).Indexes.CreateManyAsync(new []
+            await db.GetCollection<Domain.Entities.ApplicationReview>(MongoDbCollectionNames.ApplicationReviews).Indexes.CreateManyAsync(new []
             {
-                new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.VacancyReference)),
-                new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.VacancyReference).Ascending(d=>d.IsWithdrawn)),
-                new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.Status)),
-                new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.IsWithdrawn)),
-                new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.IsWithdrawn).Ascending(d=>d.Status)),
-                new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending("migrationDate")),
-                new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending("migrationDate").Ascending("migrationFailed").Ascending("statusUpdatedDate"))
+                new CreateIndexModel<Domain.Entities.ApplicationReview>(Builders<Domain.Entities.ApplicationReview>.IndexKeys.Ascending(d => d.VacancyReference)),
+                new CreateIndexModel<Domain.Entities.ApplicationReview>(Builders<Domain.Entities.ApplicationReview>.IndexKeys.Ascending(d => d.VacancyReference).Ascending(d=>d.IsWithdrawn)),
+                new CreateIndexModel<Domain.Entities.ApplicationReview>(Builders<Domain.Entities.ApplicationReview>.IndexKeys.Ascending(d => d.Status)),
+                new CreateIndexModel<Domain.Entities.ApplicationReview>(Builders<Domain.Entities.ApplicationReview>.IndexKeys.Ascending(d => d.IsWithdrawn)),
+                new CreateIndexModel<Domain.Entities.ApplicationReview>(Builders<Domain.Entities.ApplicationReview>.IndexKeys.Ascending(d => d.IsWithdrawn).Ascending(d=>d.Status)),
+                new CreateIndexModel<Domain.Entities.ApplicationReview>(Builders<Domain.Entities.ApplicationReview>.IndexKeys.Ascending("migrationDate")),
+                new CreateIndexModel<Domain.Entities.ApplicationReview>(Builders<Domain.Entities.ApplicationReview>.IndexKeys.Ascending("migrationDate").Ascending("migrationFailed").Ascending("statusUpdatedDate"))
             }, new CreateManyIndexesOptions
             {
                 MaxTime = TimeSpan.FromHours(1)

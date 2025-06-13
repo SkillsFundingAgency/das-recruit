@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -14,12 +15,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         private readonly ILogger<WithdrawApplicationCommandHandler> _logger;
         private readonly IApplicationReviewRepository _applicationReviewRepository;
+        private readonly IApplicationReviewRepositoryRunner _applicationReviewRepositoryRunner;
         private readonly ITimeProvider _timeProvider;
         private readonly IMessaging _messaging;
 
         public WithdrawApplicationCommandHandler(
             ILogger<WithdrawApplicationCommandHandler> logger, 
-            IApplicationReviewRepository applicationReviewRepository, 
+            IApplicationReviewRepository applicationReviewRepository,
+            IApplicationReviewRepositoryRunner applicationReviewRepositoryRunner,
             ITimeProvider timeProvider,
             IMessaging messaging)
         {
@@ -27,6 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _applicationReviewRepository = applicationReviewRepository;
             _timeProvider = timeProvider;
             _messaging = messaging;
+            _applicationReviewRepositoryRunner = applicationReviewRepositoryRunner;
         }
 
         public async Task<Unit> Handle(WithdrawApplicationCommand message, CancellationToken cancellationToken)
@@ -52,7 +56,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             applicationReview.Application = null;
             applicationReview.CandidateFeedback = null;
 
-            await _applicationReviewRepository.UpdateAsync(applicationReview);
+            await _applicationReviewRepositoryRunner.UpdateAsync(applicationReview);
 
             await _messaging.PublishEvent(new ApplicationReviewWithdrawnEvent
             {
