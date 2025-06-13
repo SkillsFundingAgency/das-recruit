@@ -16,6 +16,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.HttpRequestHandlers;
@@ -198,7 +199,11 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IVacancyReviewRespositoryRunner, VacancyReviewRespositoryRunner>();
             
             services.AddTransient<IUserRepository, MongoDbUserRepository>();
+
+            services.AddTransient<IBaseApplicationReviewRepository, ApplicationReviewService>();
             services.AddTransient<IApplicationReviewRepository, MongoDbApplicationReviewRepository>();
+
+
             services.AddTransient<IEmployerProfileRepository, MongoDbEmployerProfileRepository>();
             services.AddTransient<IReportRepository, MongoDbReportRepository>();
             services.AddTransient<IUserNotificationPreferencesRepository, MongoDbUserNotificationPreferencesRepository>();
