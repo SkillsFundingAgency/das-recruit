@@ -3,9 +3,9 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels
+namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.ApplicationProcess
 {
-    public class ApplicationProcessViewModel : VacancyRouteModel
+    public class ApplicationProcessViewModel : TaskListViewModel
     {
         public string Title { get; internal set; }
         public ApplicationMethod? ApplicationMethod { get; internal set; }

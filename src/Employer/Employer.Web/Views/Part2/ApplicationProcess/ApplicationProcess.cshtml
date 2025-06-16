@@ -1,5 +1,7 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
-@model Esfa.Recruit.Employer.Web.ViewModels.ApplicationProcessViewModel
+
+@model Esfa.Recruit.Employer.Web.ViewModels.Part2.ApplicationProcess.ApplicationProcessViewModel
+
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part2-application-process";
     ViewBag.ZenDeskLabel = "recruit-how-would-you-like-to-receive-applications";
@@ -21,7 +23,7 @@
         </h1>
         <p class="govuk-body">We’ll publish all adverts on <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship (opens in a new tab)</a>, but you can include a link to your own website where applicants can apply directly.</p>
 
-        <form asp-route="@RouteNames.ApplicationProcess_Post" asp-all-route-data="@Model.RouteDictionary" novalidate>
+        <form asp-route="@RouteNames.ApplicationProcess_Post" asp-all-route-data="@Model.RouteDictionary" novalidate asp-route-wizard="@Model.IsTaskList">
 
             <div esfa-validation-marker-for="ApplicationMethod" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">

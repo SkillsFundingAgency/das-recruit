@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using AutoFixture;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Domain.TaskListValidatorTests;
 
-public class WhenValidatingProviderTaskLlist
+public class WhenValidatingProviderTaskList
 {
     [Test, MoqAutoData]
     public async Task Then_The_Task_List_Is_Valid(Vacancy vacancy)

@@ -9,6 +9,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
+using Esfa.Recruit.Employer.Web.ViewModels.Part2.ApplicationProcess;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.FutureProspects;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.ShortDescription;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.VacancyDescription;

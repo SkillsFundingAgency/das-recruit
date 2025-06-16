@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using AutoFixture;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using NUnit.Framework;

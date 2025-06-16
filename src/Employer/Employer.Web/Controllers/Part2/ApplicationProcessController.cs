@@ -1,13 +1,11 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
+﻿using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.ViewModels.Part2.ApplicationProcess;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 {
@@ -22,7 +20,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         }
 
         [HttpGet("application-process", Name = RouteNames.ApplicationProcess_Get)]
-        public async Task<IActionResult> ApplicationProcess(VacancyRouteModel vrm)
+        public async Task<IActionResult> ApplicationProcess(TaskListViewModel vrm)
         {
             var vm = await _orchestrator.GetApplicationProcessViewModelAsync(vrm);
             return View(vm);
@@ -31,15 +29,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         [HttpPost("application-process", Name = RouteNames.ApplicationProcess_Post)]
         public async Task<IActionResult> ApplicationProcess(ApplicationProcessEditModel m)
         {   
-            var vm = await _orchestrator.GetApplicationProcessViewModelAsync(m);
-            
             var response = await _orchestrator.PostApplicationProcessEditModelAsync(m, User.ToVacancyUser());
-
             if (!response.Success)
             {
                 response.AddErrorsToModelState(ModelState);
             }
             
+            var vm = await _orchestrator.GetApplicationProcessViewModelAsync(m);
             if (!ModelState.IsValid)
             {
                 return View(vm);
@@ -51,6 +47,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             }
             
             return RedirectToRoute(RouteNames.EmployerTaskListGet, new {m.VacancyId, m.EmployerAccountId});
-            }
+        }
     }
 }
