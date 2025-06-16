@@ -81,7 +81,7 @@
                 <ul class="das-task-list__items">
                     <partial asp-show="@(Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)" name="_TaskListTextItem" model="@(new TaskListTextItemViewModel("You do not need to review this section because you’re using your own application website."))" />
                     <partial asp-show="@(Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)" name="_TaskListItem" model="@(new DisabledTaskListItemViewModel("Application questions on Find an apprenticeship (not required)"))"/>
-                    <partial asp-hide="@(Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)" name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.AdditionalQuestionsEditable, "Questions for applicants", RouteNames.AdditionalQuestions_Get, Model.RouteDictionary))"/>
+                    <partial asp-hide="@(Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)" name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.AdditionalQuestionsEditable, "Application questions on Find an apprenticeship", RouteNames.AdditionalQuestions_Get, Model.RouteDictionary))"/>
                 </ul>
             </li>
             <li>
