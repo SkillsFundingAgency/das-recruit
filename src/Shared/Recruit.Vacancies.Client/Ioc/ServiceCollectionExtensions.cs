@@ -202,6 +202,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
             services.AddTransient<IBaseApplicationReviewRepository, ApplicationReviewService>();
             services.AddTransient<IApplicationReviewRepository, MongoDbApplicationReviewRepository>();
+            services.AddTransient<IApplicationReviewRepositoryRunner, ApplicationReviewRepositoryRunner>();
 
 
             services.AddTransient<IEmployerProfileRepository, MongoDbEmployerProfileRepository>();
