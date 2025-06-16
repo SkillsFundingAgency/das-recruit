@@ -86,41 +86,48 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             string candidateFeedback = null,
             long? vacancyReference = null)
         {
-            foreach (var applicationReviewId in applicationReviewIds)
-            {
-                await outerApiClient.Post(new PostApplicationReviewApiRequest(applicationReviewId,
+            var tasks = applicationReviewIds.Select(applicationReviewId =>
+                outerApiClient.Post(new PostApplicationReviewApiRequest(applicationReviewId,
                     new PostApplicationReviewApiRequestData
                     {
-                        Status = status.ToString(),
-                        DateSharedWithEmployer = (status == ApplicationReviewStatus.Shared) ? updatedDate : null,
-                        TemporaryReviewStatus = temporaryReviewStatus != null ? temporaryReviewStatus.ToString() : null,
-                    }));
-            }
+                        Status = status?.ToString(),
+                        DateSharedWithEmployer = status == ApplicationReviewStatus.Shared 
+                            ? updatedDate
+                            : null,
+                        TemporaryReviewStatus = temporaryReviewStatus?.ToString(),
+                        // CandidateFeedback and VacancyReference can be added to PostApplicationReviewApiRequestData if supported
+                    }))
+            ).ToList();
+
+            await Task.WhenAll(tasks);
         }
+
 
         public async Task UpdateApplicationReviewsPendingUnsuccessfulFeedback(long vacancyReference,
             VacancyUser user,
             DateTime updatedDate,
             string candidateFeedback)
         {
-            var response = await outerApiClient.Get<GetApplicationReviewsByVacancyReferenceApiResponse>(new GetApplicationReviewsByVacancyReferenceApiRequest(vacancyReference));
+            var response = await outerApiClient.Get<GetApplicationReviewsByVacancyReferenceApiResponse>(
+                new GetApplicationReviewsByVacancyReferenceApiRequest(vacancyReference));
 
             if (response?.ApplicationReviews == null || response.ApplicationReviews.Count == 0)
             {
                 return;
             }
-            
-            foreach (var applicationReview in response.ApplicationReviews
-                         .Where(fil => fil.WithdrawnDate == null && fil.TemporaryReviewStatus ==
-                             ApplicationReviewStatus.PendingToMakeUnsuccessful.ToString()))
-            {
-                await outerApiClient.Post(new PostApplicationReviewApiRequest(applicationReview.Id,
-                    new PostApplicationReviewApiRequestData
-                    {
-                        Status = ApplicationReviewStatus.PendingToMakeUnsuccessful.ToString(),
-                        DateSharedWithEmployer = updatedDate,
-                    }));
-            }
+
+            var tasks = response.ApplicationReviews
+                .Where(fil => fil.WithdrawnDate == null && fil.TemporaryReviewStatus == ApplicationReviewStatus.PendingToMakeUnsuccessful.ToString())
+                .Select(applicationReview =>
+                    outerApiClient.Post(new PostApplicationReviewApiRequest(applicationReview.Id,
+                        new PostApplicationReviewApiRequestData
+                        {
+                            Status = ApplicationReviewStatus.PendingToMakeUnsuccessful.ToString(),
+                            DateSharedWithEmployer = updatedDate,
+                        }))
+                ).ToList();
+
+            await Task.WhenAll(tasks);
         }
     }
 }
