@@ -64,7 +64,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
         }
     }
 
-    public class ApplicationReviewService(IOuterApiClient outerApiClient) : IBaseApplicationReviewRepository
+    public class ApplicationReviewService(IOuterApiClient outerApiClient) : IApplicationReviewRepository
     {
         public async Task UpdateAsync(Domain.Entities.ApplicationReview applicationReview)
         {
@@ -78,7 +78,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                 }));
         }
 
-        public async Task UpdateApplicationReviewsAsync(IEnumerable<Guid> applicationReviewIds,
+        public async Task UpdateApplicationReviewsAsync(
+            IEnumerable<Guid> applicationReviewIds,
             VacancyUser user,
             DateTime updatedDate,
             ApplicationReviewStatus? status,
@@ -103,7 +104,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
         }
 
 
-        public async Task UpdateApplicationReviewsPendingUnsuccessfulFeedback(long vacancyReference,
+        public async Task UpdateApplicationReviewsPendingUnsuccessfulFeedback(
+            long vacancyReference,
             VacancyUser user,
             DateTime updatedDate,
             string candidateFeedback)
@@ -124,10 +126,66 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                         {
                             Status = ApplicationReviewStatus.PendingToMakeUnsuccessful.ToString(),
                             DateSharedWithEmployer = updatedDate,
+                            CandidateFeedback = candidateFeedback
                         }))
                 ).ToList();
 
             await Task.WhenAll(tasks);
+        }
+
+        public Task CreateAsync(Domain.Entities.ApplicationReview review)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Domain.Entities.ApplicationReview> GetAsync(Guid applicationReviewId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Domain.Entities.ApplicationReview> GetAsync(long vacancyReference, Guid candidateId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Domain.Entities.ApplicationReview>> GetByStatusAsync(long vacancyReference, ApplicationReviewStatus status)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task HardDelete(Guid applicationReviewId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<T>> GetForVacancyAsync<T>(long vacancyReference)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Domain.Entities.ApplicationReview>> GetForVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Domain.Entities.ApplicationReview>> GetForSharedVacancyAsync(long vacancyReference)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Domain.Entities.ApplicationReview>> GetForSharedVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<T>> GetAllForSelectedIdsAsync<T>(List<Guid> applicationReviewIds)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Domain.Entities.ApplicationReview>> GetAllForVacancyWithTemporaryStatus(long vacancyReference, ApplicationReviewStatus status)
+        {
+            throw new NotImplementedException();
         }
     }
 }

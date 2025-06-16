@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             
             var review = new ApplicationReview
             {
-                Id = Guid.NewGuid(),
+                Id = message.Application.ApplicationId,// to fit inline with migration and new recruit api
                 VacancyReference = vacancy.VacancyReference.Value,
                 Application = message.Application,
                 CandidateId = message.Application.CandidateId,
