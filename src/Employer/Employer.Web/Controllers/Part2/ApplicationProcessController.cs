@@ -10,32 +10,25 @@ using Microsoft.AspNetCore.Mvc;
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class ApplicationProcessController : Controller
+    public class ApplicationProcessController(ApplicationProcessOrchestrator orchestrator) : Controller
     {
-        private readonly ApplicationProcessOrchestrator _orchestrator;
-
-        public ApplicationProcessController(ApplicationProcessOrchestrator orchestrator)
-        {
-            _orchestrator = orchestrator;
-        }
-
         [HttpGet("application-process", Name = RouteNames.ApplicationProcess_Get)]
         public async Task<IActionResult> ApplicationProcess(TaskListViewModel vrm)
         {
-            var vm = await _orchestrator.GetApplicationProcessViewModelAsync(vrm);
+            var vm = await orchestrator.GetApplicationProcessViewModelAsync(vrm);
             return View(vm);
         }
 
         [HttpPost("application-process", Name = RouteNames.ApplicationProcess_Post)]
         public async Task<IActionResult> ApplicationProcess(ApplicationProcessEditModel m)
         {   
-            var response = await _orchestrator.PostApplicationProcessEditModelAsync(m, User.ToVacancyUser());
+            var response = await orchestrator.PostApplicationProcessEditModelAsync(m, User.ToVacancyUser());
             if (!response.Success)
             {
                 response.AddErrorsToModelState(ModelState);
             }
             
-            var vm = await _orchestrator.GetApplicationProcessViewModelAsync(m);
+            var vm = await orchestrator.GetApplicationProcessViewModelAsync(m);
             if (!ModelState.IsValid)
             {
                 return View(vm);

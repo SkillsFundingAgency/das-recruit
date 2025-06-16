@@ -22,7 +22,7 @@
         </h1>
         <p class="govuk-body">We’ll publish all vacancies on <a href="@Model.FindAnApprenticeshipUrl" class="govuk-link govuk-link--no-visited-state" rel="noopener" target="_blank">Find an apprenticeship (opens in a new tab)</a>, but you can include a link to your own website where applicants can apply directly.</p>
         
-        <form asp-route="@RouteNames.ApplicationProcess_Post" asp-all-route-data="@Model.RouteDictionary" novalidate>
+        <form asp-route="@RouteNames.ApplicationProcess_Post" asp-all-route-data="@Model.RouteDictionary" novalidate asp-route-wizard="@Model.IsTaskList">
             <div esfa-validation-marker-for="ApplicationMethod" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-visually-hidden">Select how you would like to receive applications</legend>

@@ -2,8 +2,13 @@
 
 @{
     var routeValues = Model.RouteValues is null
-        ? new Dictionary<string, string> { { "wizard", "true" } }
-        : new Dictionary<string, string>(Model.RouteValues) { { "wizard", "true" } };
+        ? new Dictionary<string, string>()
+        : new Dictionary<string, string>(Model.RouteValues);
+
+    if (Model.IsTaskList)
+    {
+        routeValues.Add("wizard", "true");
+    }
 }
 
 <li class="das-task-list__item">

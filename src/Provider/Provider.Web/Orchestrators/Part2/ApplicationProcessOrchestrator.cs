@@ -34,9 +34,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             _utility = utility;
         }
 
-        public async Task<ApplicationProcessViewModel> GetApplicationProcessViewModelAsync(VacancyRouteModel vrm)
+        public async Task<ApplicationProcessViewModel> GetApplicationProcessViewModelAsync(TaskListViewModel model)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.ApplicationProcess_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.ApplicationProcess_Get);
 
             var vm = new ApplicationProcessViewModel
             {
@@ -45,8 +45,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                 ApplicationMethod = vacancy.ApplicationMethod,
                 ApplicationInstructions = vacancy.ApplicationInstructions,
                 ApplicationUrl = vacancy.ApplicationUrl,
-                Ukprn = vrm.Ukprn,
-                VacancyId = vrm.VacancyId
+                Ukprn = model.Ukprn,
+                VacancyId = model.VacancyId
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -55,19 +55,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                     ReviewFieldMappingLookups.GetApplicationProcessFieldIndicators());
             }
 
-            vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
-
+            vm.IsTaskList = model.IsTaskList;
+            vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy) && !model.IsTaskList;
             return vm;
         }
 
         public async Task<ApplicationProcessViewModel> GetApplicationProcessViewModelAsync(ApplicationProcessEditModel m)
         {
-            var vm = await GetApplicationProcessViewModelAsync((VacancyRouteModel)m);
-
+            var vm = await GetApplicationProcessViewModelAsync((TaskListViewModel)m);
             vm.ApplicationMethod = m.ApplicationMethod;
             vm.ApplicationInstructions = m.ApplicationInstructions;
             vm.ApplicationUrl = m.ApplicationUrl;
-
             return vm;
         }
 
@@ -80,8 +78,31 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                 FieldIdResolver.ToFieldId(v => v.ApplicationMethod),
                 vacancy,
                 (v) => { return v.ApplicationMethod = m.ApplicationMethod; });
-
+            
             var hasSelectedApplyThroughFaa = m.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
+            
+            if (hasSelectedApplyThroughFaa && vacancy.HasSubmittedAdditionalQuestions)
+            {
+                // Make sure these are cleared if already set as they are not required for external application methods.
+                vacancy.HasSubmittedAdditionalQuestions = false;
+                if (vacancy.AdditionalQuestion1 is not null)
+                {
+                    SetVacancyWithProviderReviewFieldIndicators(
+                        vacancy.AdditionalQuestion1,
+                        FieldIdResolver.ToFieldId(v => v.AdditionalQuestion1),
+                        vacancy, 
+                        v => v.AdditionalQuestion1 = null);
+                }
+
+                if (vacancy.AdditionalQuestion2 is not null)
+                {
+                    SetVacancyWithProviderReviewFieldIndicators(
+                        vacancy.AdditionalQuestion2,
+                        FieldIdResolver.ToFieldId(v => v.AdditionalQuestion2),
+                        vacancy,
+                        v => v.AdditionalQuestion2 = null);
+                }
+            }
 
             SetVacancyWithProviderReviewFieldIndicators(
                 vacancy.ApplicationInstructions,

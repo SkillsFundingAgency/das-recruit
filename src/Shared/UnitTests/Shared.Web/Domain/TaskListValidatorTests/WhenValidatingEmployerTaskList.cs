@@ -231,6 +231,27 @@ public class WhenValidatingEmployerTaskList
     }
     
     [Test]
+    public async Task Section_Five_Does_Not_Require_Fields_When_Application_Method_Is_External_Website()
+    {
+        // arrange
+        var vacancy = new Fixture().Create<Vacancy>();
+        vacancy.HasSubmittedAdditionalQuestions = false;
+        vacancy.AdditionalQuestion1 = null;
+        vacancy.AdditionalQuestion2 = null;
+        vacancy.ApplicationMethod = ApplicationMethod.ThroughExternalApplicationSite;
+        vacancy.ApprenticeshipType = ApprenticeshipTypes.Standard;
+        vacancy.OwnerType = OwnerType.Employer;
+        
+        var sut = new TaskListValidator();
+        
+        // act
+        bool result = await sut.IsCompleteAsync(vacancy, EmployerTaskListSectionFlags.Five);
+        
+        // assert
+        result.Should().BeTrue();
+    }
+    
+    [Test]
     public async Task Section_Three_For_Foundation_Apprenticeship_Does_Not_Require_Skills_Or_Qualifications()
     {
         // arrange

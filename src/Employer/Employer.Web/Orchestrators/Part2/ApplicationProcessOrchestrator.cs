@@ -74,7 +74,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.ApplicationProcess_Post);
 
-            if (vacancy.ApplicationMethod is ApplicationMethod.ThroughExternalApplicationSite && vacancy.HasSubmittedAdditionalQuestions)
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.ApplicationMethod,
+                FieldIdResolver.ToFieldId(v => v.ApplicationMethod),
+                vacancy, 
+                (v) => { return v.ApplicationMethod = m.ApplicationMethod; });
+
+            var hasSelectedApplyThroughFaa = m.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
+            
+            if (hasSelectedApplyThroughFaa && vacancy.HasSubmittedAdditionalQuestions)
             {
                 // Make sure these are cleared if already set as they are not required for external application methods.
                 vacancy.HasSubmittedAdditionalQuestions = false;
@@ -84,7 +92,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                         vacancy.AdditionalQuestion1,
                         FieldIdResolver.ToFieldId(v => v.AdditionalQuestion1),
                         vacancy, 
-                        (v) => { return v.AdditionalQuestion1 = null; });
+                        v => v.AdditionalQuestion1 = null);
                 }
 
                 if (vacancy.AdditionalQuestion2 is not null)
@@ -93,17 +101,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                         vacancy.AdditionalQuestion2,
                         FieldIdResolver.ToFieldId(v => v.AdditionalQuestion2),
                         vacancy,
-                        (v) => { return v.AdditionalQuestion2 = null; });
+                        v => v.AdditionalQuestion2 = null);
                 }
             }
-
-            SetVacancyWithEmployerReviewFieldIndicators(
-                vacancy.ApplicationMethod,
-                FieldIdResolver.ToFieldId(v => v.ApplicationMethod),
-                vacancy, 
-                (v) => { return v.ApplicationMethod = m.ApplicationMethod; });
-
-            var hasSelectedApplyThroughFaa = m.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
 
             SetVacancyWithEmployerReviewFieldIndicators(
                 vacancy.ApplicationInstructions,
