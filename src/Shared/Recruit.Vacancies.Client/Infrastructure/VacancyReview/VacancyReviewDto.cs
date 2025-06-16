@@ -14,7 +14,7 @@ public class VacancyReviewDto
     public required DateTime CreatedDate { get; init; }
     public required DateTime SlaDeadLine { get; init; }
     public DateTime? ReviewedDate { get; init; }
-    public required string Status { get; init; }
+    public required string Status { get; set; }
     public byte SubmissionCount { get; init; }
     public string ReviewedByUserEmail { get; init; }
     public required string SubmittedByUserEmail { get; init; }

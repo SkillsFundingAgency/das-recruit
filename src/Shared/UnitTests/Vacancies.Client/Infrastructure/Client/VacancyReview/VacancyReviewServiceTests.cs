@@ -58,6 +58,7 @@ public class VacancyReviewServiceTests
         [Frozen] Mock<IOuterApiClient> outerApiClient,
         VacancyReviewService service)
     {
+        vacancyDto.Status = ReviewStatus.PendingReview.ToString();
         UpdateToValidVacancyDto(vacancyDto, vacancy);
         var expectedRequest = new GetVacancyReviewRequest(reviewId);
         outerApiClient
@@ -100,6 +101,7 @@ public class VacancyReviewServiceTests
         [Frozen] Mock<IOuterApiClient> outerApiClient,
         VacancyReviewService service)
     {
+        vacancyDto.Status = ReviewStatus.PendingReview.ToString();
         UpdateToValidVacancyDto(vacancyDto, vacancy);
         var expectedRequest = new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference,"latest");
         outerApiClient
@@ -143,6 +145,8 @@ public class VacancyReviewServiceTests
         [Frozen] Mock<IOuterApiClient> outerApiClient,
         VacancyReviewService service)
     {
+        vacancyDto.Status = ReviewStatus.PendingReview.ToString();
+        vacancyDto2.Status = ReviewStatus.PendingReview.ToString();
         UpdateToValidVacancyDto(vacancyDto, vacancy);
         UpdateToValidVacancyDto(vacancyDto2, vacancy);
         var expectedRequest = new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference);
@@ -176,6 +180,8 @@ public class VacancyReviewServiceTests
         [Frozen] Mock<IOuterApiClient> outerApiClient,
         VacancyReviewService service)
     {
+        vacancyDto.Status = ReviewStatus.PendingReview.ToString();
+        vacancyDto2.Status = ReviewStatus.PendingReview.ToString();
         UpdateToValidVacancyDto(vacancyDto, vacancy);
         UpdateToValidVacancyDto(vacancyDto2, vacancy);
         var expectedRequest = new GetVacancyReviewByFilterRequest([reviewStatus]);
@@ -209,6 +215,8 @@ public class VacancyReviewServiceTests
         [Frozen] Mock<IOuterApiClient> outerApiClient,
         VacancyReviewService service)
     {
+        vacancyDto.Status = ReviewStatus.PendingReview.ToString();
+        vacancyDto2.Status = ReviewStatus.PendingReview.ToString();
         UpdateToValidVacancyDto(vacancyDto, vacancy);
         UpdateToValidVacancyDto(vacancyDto2, vacancy);
         var expectedRequest = new GetVacancyReviewByFilterRequest(expiredAssignationDateTime:expiredAssignationDateTime);
@@ -241,6 +249,7 @@ public class VacancyReviewServiceTests
         [Frozen] Mock<IOuterApiClient> outerApiClient,
         VacancyReviewService service)
     {
+        vacancyDto.Status = ReviewStatus.PendingReview.ToString();
         UpdateToValidVacancyDto(vacancyDto, vacancy);
         var expectedRequest = new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference,"latestReferred");
         outerApiClient
@@ -339,6 +348,8 @@ public class VacancyReviewServiceTests
         [Frozen] Mock<IOuterApiClient> outerApiClient,
         VacancyReviewService service)
     {
+        vacancyDto.Status = ReviewStatus.PendingReview.ToString();
+        vacancyDto2.Status = ReviewStatus.PendingReview.ToString();
         UpdateToValidVacancyDto(vacancyDto, vacancy);
         UpdateToValidVacancyDto(vacancyDto2, vacancy);   
         var expectedRequest = new GetVacancyReviewsAssignedToUserRequest(userId, assignationExpiryDateTime);
