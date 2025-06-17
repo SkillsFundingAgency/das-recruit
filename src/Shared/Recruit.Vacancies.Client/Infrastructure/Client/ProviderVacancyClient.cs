@@ -90,20 +90,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 Referred = (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
                 Live = dashboard.Where(c => c.Status == VacancyStatus.Live).Sum(c => c.StatusCount),
                 Submitted = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
+                
                 NumberOfNewApplications = IsMongoMigrationFeatureEnabled 
                     ? dashboardStats.NewApplicationsCount 
                     : dashboardApplications.Where(c => c.Status is VacancyStatus.Live or VacancyStatus.Closed).Sum(x => x.NoOfNewApplications),
+                
                 NumberOfEmployerReviewedApplications = IsMongoMigrationFeatureEnabled
                     ? dashboardStats.EmployerReviewedApplicationsCount
                     : dashboardApplications.Where(c => c.Status is VacancyStatus.Live or VacancyStatus.Closed).Sum(x => x.NumberOfEmployerReviewedApplications),
+                
                 NumberOfSuccessfulApplications = IsMongoMigrationFeatureEnabled
                     ? dashboardStats.SuccessfulApplicationsCount
                     : dashboardApplications.Where(c => c.Status == VacancyStatus.Live && !c.ClosingSoon).Sum(x => x.NoOfSuccessfulApplications)
                       + dashboardApplications.Where(c => c.Status == VacancyStatus.Closed && !c.ClosingSoon).Sum(x => x.NoOfSuccessfulApplications),
+                
                 NumberOfUnsuccessfulApplications = IsMongoMigrationFeatureEnabled
                     ? dashboardStats.UnsuccessfulApplicationsCount
                     : dashboardApplications.Where(c => c.Status == VacancyStatus.Live && !c.ClosingSoon).Sum(x => x.NoOfUnsuccessfulApplications)
                       + dashboardApplications.Where(c => c.Status == VacancyStatus.Closed && !c.ClosingSoon).Sum(x => x.NoOfUnsuccessfulApplications),
+                
                 NumberClosingSoon = dashboard.FirstOrDefault(c => c.Status == VacancyStatus.Live && c.ClosingSoon)?.StatusCount ?? 0,
                 NumberClosingSoonWithNoApplications = dashboardValue.VacanciesClosingSoonWithNoApplications,
                 TransferredVacancies = transferredVacancies
