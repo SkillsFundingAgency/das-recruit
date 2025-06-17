@@ -74,7 +74,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                     Status = applicationReview.Status.ToString(),
                     DateSharedWithEmployer = applicationReview.DateSharedWithEmployer,
                     HasEverBeenEmployerInterviewing = applicationReview.HasEverBeenEmployerInterviewing ?? false,
-                    TemporaryReviewStatus = applicationReview.TemporaryReviewStatus.ToString()
+                    TemporaryReviewStatus = applicationReview.TemporaryReviewStatus.ToString(),
+                    CandidateFeedback = applicationReview.CandidateFeedback,
+                    EmployerFeedback = applicationReview.EmployerFeedback
                 }));
         }
 
@@ -96,6 +98,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                             ? updatedDate
                             : null,
                         TemporaryReviewStatus = temporaryReviewStatus?.ToString(),
+                        CandidateFeedback = candidateFeedback
                         // CandidateFeedback and VacancyReference can be added to PostApplicationReviewApiRequestData if supported
                     }))
             ).ToList();
