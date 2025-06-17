@@ -77,7 +77,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                     TemporaryReviewStatus = applicationReview.TemporaryReviewStatus.ToString(),
                     CandidateFeedback = applicationReview.CandidateFeedback,
                     EmployerFeedback = applicationReview.EmployerFeedback
-                }));
+                }), false);
         }
 
         public async Task UpdateApplicationReviewsAsync(
@@ -100,7 +100,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                         TemporaryReviewStatus = temporaryReviewStatus?.ToString(),
                         CandidateFeedback = candidateFeedback
                         // CandidateFeedback and VacancyReference can be added to PostApplicationReviewApiRequestData if supported
-                    }))
+                    }), false)
             ).ToList();
 
             await Task.WhenAll(tasks);
@@ -130,7 +130,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                             Status = ApplicationReviewStatus.PendingToMakeUnsuccessful.ToString(),
                             DateSharedWithEmployer = updatedDate,
                             CandidateFeedback = candidateFeedback
-                        }))
+                        }), false)
                 ).ToList();
 
             await Task.WhenAll(tasks);

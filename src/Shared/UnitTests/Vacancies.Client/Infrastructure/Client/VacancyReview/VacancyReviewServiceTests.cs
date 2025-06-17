@@ -28,7 +28,7 @@ public class VacancyReviewServiceTests
             It.Is<PostVacancyReviewRequest>(
                 c=>c.PostUrl == expectedRequest.PostUrl
                 && ((VacancyReviewDto)c.Data).VacancyTitle == ((VacancyReviewDto)expectedRequest.Data).VacancyTitle
-                )
+                ), false
             ), Times.Once);
     }
     
@@ -46,7 +46,7 @@ public class VacancyReviewServiceTests
             It.Is<PostVacancyReviewRequest>(
                 c=>c.PostUrl == expectedRequest.PostUrl
                    && ((VacancyReviewDto)c.Data).VacancyTitle == ((VacancyReviewDto)expectedRequest.Data).VacancyTitle
-            )
+            ), false
         ), Times.Once);
     }
     
