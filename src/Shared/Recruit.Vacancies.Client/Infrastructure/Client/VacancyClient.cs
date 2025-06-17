@@ -184,15 +184,29 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 Referred = (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
                 Live = dashboard.Where(c=>c.Status == VacancyStatus.Live).Sum(c=>c.StatusCount),
                 Submitted = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
+                
                 NumberOfNewApplications = IsMongoMigrationFeatureEnabled 
                     ? dashboardStats.NewApplicationsCount 
                     : dashboardApplications.Where(c=>c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfNewApplications),
-                NumberOfSuccessfulApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live).Sum(x=>x.NoOfSuccessfulApplications) 
-                                                 + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfSuccessfulApplications),
-                NumberOfUnsuccessfulApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live).Sum(x=>x.NoOfUnsuccessfulApplications) 
-                                                   + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfUnsuccessfulApplications),
-                NumberOfSharedApplications = dashboardSharedApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfSharedApplications),
-                NumberOfAllSharedApplications = dashboardSharedApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfAllSharedApplications),
+                
+                NumberOfSuccessfulApplications = IsMongoMigrationFeatureEnabled
+                    ? dashboardStats.SuccessfulApplicationsCount
+                    : dashboardApplications.Where(c=>c.Status == VacancyStatus.Live).Sum(x=>x.NoOfSuccessfulApplications) 
+                      + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfSuccessfulApplications),
+                
+                NumberOfUnsuccessfulApplications = IsMongoMigrationFeatureEnabled
+                    ? dashboardStats.UnsuccessfulApplicationsCount
+                    : dashboardApplications.Where(c=>c.Status == VacancyStatus.Live).Sum(x=>x.NoOfUnsuccessfulApplications) 
+                      + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfUnsuccessfulApplications),
+                
+                NumberOfSharedApplications = IsMongoMigrationFeatureEnabled
+                    ? dashboardStats.SharedApplicationsCount
+                    : dashboardSharedApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfSharedApplications),
+                
+                NumberOfAllSharedApplications = IsMongoMigrationFeatureEnabled
+                    ? dashboardStats.AllSharedApplicationsCount
+                    : dashboardSharedApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfAllSharedApplications),
+                
                 NumberClosingSoon =dashboard.FirstOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon)?.StatusCount ?? 0,
                 NumberClosingSoonWithNoApplications = dashboardValue.VacanciesClosingSoonWithNoApplications
             };
