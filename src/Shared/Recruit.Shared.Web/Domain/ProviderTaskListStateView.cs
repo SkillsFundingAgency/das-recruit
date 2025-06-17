@@ -43,7 +43,9 @@ public sealed class ProviderTaskListStateView : TaskListStateViewBase
             _ => GetSectionState(ProviderTaskListSectionFlags.Three, TaskListItemFlags.Skills | TaskListItemFlags.FutureProspects),
         };
         SectionFourState = GetSectionState(ProviderTaskListSectionFlags.Four, TaskListItemFlags.NameOfEmployerOnAdvert);
-        SectionFiveState = GetSectionState(ProviderTaskListSectionFlags.Five, TaskListItemFlags.AdditionalQuestions);
+        SectionFiveState = vacancy.ApplicationMethod is ApplicationMethod.ThroughExternalApplicationSite
+            ? VacancyTaskListSectionState.NotRequired
+            : GetSectionState(ProviderTaskListSectionFlags.Five, TaskListItemFlags.AdditionalQuestions);
         SectionSixState = vacancy.Status == VacancyStatus.Submitted
             ? VacancyTaskListSectionState.Completed
             : AllFlagsCompleted((TaskListItemFlags)ProviderTaskListSectionFlags.All)

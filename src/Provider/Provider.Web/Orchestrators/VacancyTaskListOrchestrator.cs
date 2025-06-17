@@ -35,6 +35,7 @@ public class VacancyTaskListOrchestrator(
         {
             AccountCount = editVacancyInfoTask.Result.Employers.Count(),
             AccountLegalEntityCount = employerInfoTask.Result.LegalEntities.Count,
+            ApplicationMethod = vacancy.ApplicationMethod,
             ApprenticeshipType = vacancy.ApprenticeshipType.GetValueOrDefault(),
             Ukprn = routeModel.Ukprn,
             Status = vacancy.Status,

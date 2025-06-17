@@ -588,8 +588,8 @@
             </div>
         }
     </dl>
-    <h2 class="govuk-heading-m">Application</h2>
-    <dl class="app-summary-list govuk-!-margin-bottom-9">
+    <h2 asp-show="@Model.ApplicationMethod is ApplicationMethod.ThroughFindAnApprenticeship" class="govuk-heading-m">Application</h2>
+    <dl asp-show="@Model.ApplicationMethod is ApplicationMethod.ThroughFindAnApprenticeship" class="app-summary-list govuk-!-margin-bottom-9">
         <div class="app-summary-list__row app-summary-list__row--no-border">
             <dt class="app-summary-list__key">Question 1</dt>
             <dd class="app-summary-list__value">@(Model.ApprenticeshipType.IsFoundation() ? "What interests you about this apprenticeship?" : "What are your skills and strengths?")</dd>
@@ -625,7 +625,6 @@
             </dd>
         </div>
     </dl>
-    
 
     <h2 class="govuk-heading-m">Now submit your vacancy</h2>
         <p class="govuk-body">By submitting this vacancy you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
