@@ -83,7 +83,8 @@ public class ApplicationsController : ApiControllerBase
             Support = candidateApplication.Support,
             DisabilityStatus = disabilityConfidentStatus,
             IsFaaV2Application = true,
-            BirthDate = candidateApplication.DateOfBirth
+            BirthDate = candidateApplication.DateOfBirth,
+            MigrationDate = candidateApplication.MigrationDate
         };
         await _messaging.PublishEvent(new ApplicationSubmittedEvent
         {
