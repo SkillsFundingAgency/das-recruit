@@ -17,10 +17,13 @@ public class VacancyReviewServiceTests
     [Test, MoqAutoData]
     public async Task When_Calling_CreateAsync_The_Data_Is_Mapped_And_Request_Made(
         [Frozen] Mock<IOuterApiClient> outerApiClient,
+        [Frozen] Mock<IEncodingService> encodingService,
         VacancyReviewService service)
     {
+        encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.AccountId)).Returns(1001);
+        encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.PublicAccountLegalEntityId)).Returns(1002);
         var model = BuildVacancyReviewEntity();
-        var expectedRequest = new PostVacancyReviewRequest(model.Id,(VacancyReviewDto)model);
+        var expectedRequest = new PostVacancyReviewRequest(model.Id,VacancyReviewDto.MapVacancyReviewDto(model, encodingService.Object));
         
         await service.CreateAsync(model);
         
@@ -35,10 +38,13 @@ public class VacancyReviewServiceTests
     [Test, MoqAutoData]
     public async Task When_Calling_UpdateAsync_The_Data_Is_Mapped_And_Request_Made(
         [Frozen] Mock<IOuterApiClient> outerApiClient,
+        [Frozen] Mock<IEncodingService> encodingService,
         VacancyReviewService service)
     {
         var model = BuildVacancyReviewEntity();
-        var expectedRequest = new PostVacancyReviewRequest(model.Id, (VacancyReviewDto)model);
+        encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.AccountId)).Returns(1001);
+        encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.PublicAccountLegalEntityId)).Returns(1002);
+        var expectedRequest = new PostVacancyReviewRequest(model.Id, VacancyReviewDto.MapVacancyReviewDto(model, encodingService.Object));
         
         await service.UpdateAsync(model);
         

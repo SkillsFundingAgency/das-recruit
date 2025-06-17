@@ -48,7 +48,7 @@ public class VacancyReviewService(IOuterApiClient outerApiClient, IEncodingServi
     public string Key { get; } = "OuterApiVacancyReview";
     public async Task CreateAsync(Domain.Entities.VacancyReview vacancy)
     {
-        await outerApiClient.Post(new PostVacancyReviewRequest(vacancy.Id,(VacancyReviewDto)vacancy), false);
+        await outerApiClient.Post(new PostVacancyReviewRequest(vacancy.Id, VacancyReviewDto.MapVacancyReviewDto(vacancy, encodingService)), false);
     }
 
     public async Task<Domain.Entities.VacancyReview> GetAsync(Guid reviewId)
@@ -65,7 +65,7 @@ public class VacancyReviewService(IOuterApiClient outerApiClient, IEncodingServi
 
     public async Task UpdateAsync(Domain.Entities.VacancyReview review)
     {
-        await outerApiClient.Post(new PostVacancyReviewRequest(review.Id,(VacancyReviewDto)review), false);
+        await outerApiClient.Post(new PostVacancyReviewRequest(review.Id,VacancyReviewDto.MapVacancyReviewDto(review, encodingService)), false);
     }
 
     public Task<List<VacancyReviewSummary>> GetActiveAsync()

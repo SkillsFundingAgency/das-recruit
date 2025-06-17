@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Newtonsoft.Json;
+using SFA.DAS.Encoding;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 
@@ -28,8 +29,11 @@ public class VacancyReviewDto
     public required List<string> UpdatedFieldIdentifiers { get; init; }
     public string OwnerType { get; set; }
     public required string VacancySnapshot { get; set; }
+    public long Ukprn { get; set; }
+    public long AccountId { get; set; }
+    public long AccountLegalEntityID { get; set; }
 
-    public static explicit operator VacancyReviewDto(Domain.Entities.VacancyReview source)
+    public static VacancyReviewDto MapVacancyReviewDto(Domain.Entities.VacancyReview source, IEncodingService encodingService)
     {
         return new VacancyReviewDto
         {
@@ -54,7 +58,10 @@ public class VacancyReviewDto
             DismissedAutomatedQaOutcomeIndicators = source.DismissedAutomatedQaOutcomeIndicators,
             UpdatedFieldIdentifiers = source.UpdatedFieldIdentifiers,
             VacancySnapshot = JsonConvert.SerializeObject(source.VacancySnapshot),
-            OwnerType = source.VacancySnapshot.OwnerType.ToString()
+            OwnerType = source.VacancySnapshot.OwnerType.ToString(),
+            AccountId = encodingService.Decode(source.VacancySnapshot.EmployerAccountId, EncodingType.AccountId),
+            Ukprn = source.VacancySnapshot.TrainingProvider.Ukprn!.Value,
+            AccountLegalEntityID = encodingService.Decode(source.VacancySnapshot.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId)
         };
     }
 
