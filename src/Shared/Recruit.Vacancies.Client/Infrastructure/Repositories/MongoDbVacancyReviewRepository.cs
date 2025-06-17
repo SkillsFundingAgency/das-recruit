@@ -57,7 +57,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public Task CreateAsync(Domain.Entities.VacancyReview vacancy)
         {
             var collection = GetCollection<Domain.Entities.VacancyReview>();
-
+            vacancy.MigrationDate = DateTime.UtcNow;
+            
             return RetryPolicy.ExecuteAsync(_ =>
                 collection.InsertOneAsync(vacancy),
                 new Context(nameof(CreateAsync)));
