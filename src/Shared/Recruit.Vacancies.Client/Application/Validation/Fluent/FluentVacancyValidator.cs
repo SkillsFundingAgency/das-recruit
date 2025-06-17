@@ -656,21 +656,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithState(_ => VacancyRuleSet.AdditionalQuestion2)
                     .RunCondition(VacancyRuleSet.AdditionalQuestion2);
             });
-
-            When(x => x.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite, () =>
-            {
-                RuleFor(x => x.AdditionalQuestion1)
-                    .Empty()
-                        .WithMessage("Additional questions must be empty when applications are managed through another website.")
-                        .WithErrorCode("116")
-                        .WithState(_ => VacancyRuleSet.AdditionalQuestion1);
-
-                RuleFor(x => x.AdditionalQuestion2)
-                    .Empty()
-                        .WithMessage("Additional questions must be empty when applications are managed through another website.")
-                        .WithErrorCode("117")
-                        .WithState(_ => VacancyRuleSet.AdditionalQuestion2);
-            });
         }
         
         private void ValidateHowTheApprenticeWillTrain()
