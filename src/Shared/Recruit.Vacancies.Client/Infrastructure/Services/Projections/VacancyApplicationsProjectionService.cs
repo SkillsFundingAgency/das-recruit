@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
             _logger.LogInformation("Updating vacancyApplications projection for vacancyReference: {vacancyReference}", vacancyReference);
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyReference);
-            var vacancyApplicationReviews = await _applicationReviewQuery.GetForVacancyAsync<ApplicationReview>(vacancy.VacancyReference.Value);
+            var vacancyApplicationReviews = await _applicationReviewQuery.GetForVacancyAsync<Domain.Entities.ApplicationReview>(vacancy.VacancyReference.Value);
 
             var vacancyApplications = new VacancyApplications
             {
@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
             await _writer.UpdateVacancyApplicationsAsync(vacancyApplications);
         }
 
-        private VacancyApplication MapToVacancyApplication(ApplicationReview review)
+        private VacancyApplication MapToVacancyApplication(Domain.Entities.ApplicationReview review)
         {
             var projection = new VacancyApplication
             {
