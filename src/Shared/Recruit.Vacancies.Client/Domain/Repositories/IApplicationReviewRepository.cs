@@ -7,6 +7,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
 {
     public interface IApplicationReviewRepository
     {
+        string Source { get; }
         Task UpdateAsync(ApplicationReview applicationReview);
         Task UpdateApplicationReviewsAsync(IEnumerable<Guid> applicationReviewIds, VacancyUser user, DateTime updatedDate, ApplicationReviewStatus? status, ApplicationReviewStatus? temporaryReviewStatus, string candidateFeedback = null, long? vacancyReference = null);
         Task UpdateApplicationReviewsPendingUnsuccessfulFeedback(long vacancyReference, VacancyUser user, DateTime updatedDate, string candidateFeedback);

@@ -3,13 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Enums;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Responses;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
 {
+    public interface IApplicationReviewRepositoryFactory
+    {
+        IApplicationReviewRepository GetRepository(RepositoryType type);
+    }
+
+    public class ApplicationReviewRepositoryFactory(IServiceProvider provider) : IApplicationReviewRepositoryFactory
+    {
+        public IApplicationReviewRepository GetRepository(RepositoryType type)
+        {
+            return type switch
+            {
+                RepositoryType.Sql => provider.GetRequiredService<ApplicationReviewService>(),
+                RepositoryType.MongoDb => provider.GetRequiredService<MongoDbApplicationReviewRepository>(),
+                _ => throw new ArgumentOutOfRangeException(nameof(type))
+            };
+        }
+    }
+
+
     public interface IApplicationReviewRepositoryRunner
     {
         Task UpdateAsync(Domain.Entities.ApplicationReview applicationReview);
@@ -28,7 +54,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             string candidateFeedback);
     }
 
-    public class ApplicationReviewRepositoryRunner(IEnumerable<IApplicationReviewRepository> applicationReviewResolver)
+    public class ApplicationReviewRepositoryRunner(
+        IEnumerable<IApplicationReviewRepository> applicationReviewResolver)
         : IApplicationReviewRepositoryRunner
     {
         public async Task UpdateAsync(Domain.Entities.ApplicationReview applicationReview)
@@ -64,8 +91,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
         }
     }
 
-    public class ApplicationReviewService(IOuterApiClient outerApiClient) : IApplicationReviewRepository
+    public class ApplicationReviewService(
+        IOuterApiClient outerApiClient,
+        ILogger<ApplicationReviewService> logger) : IApplicationReviewRepository
     {
+        public string Source => nameof(RepositoryType.Sql);
+
         public async Task UpdateAsync(Domain.Entities.ApplicationReview applicationReview)
         {
             await outerApiClient.Post(new PostApplicationReviewApiRequest(applicationReview.Id,
@@ -166,9 +197,49 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             throw new NotImplementedException();
         }
 
-        public Task<List<Domain.Entities.ApplicationReview>> GetForVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
+        public async Task<List<Domain.Entities.ApplicationReview>> GetForVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
         {
-            throw new NotImplementedException();
+            var response = await outerApiClient.Get<GetApplicationReviewsByVacancyReferenceApiResponse>(
+                new GetApplicationReviewsByVacancyReferenceApiRequest(vacancyReference));
+
+            if (response?.ApplicationReviews == null || response.ApplicationReviews.Count == 0) return [];
+
+            var applicationReviews = response.ApplicationReviews
+                .Select(ar => new Domain.Entities.ApplicationReview
+                {
+                    Id = ar.Id,
+                    CandidateId = ar.CandidateId,
+                    VacancyReference = ar.VacancyReference,
+                    Status = Enum.Parse<ApplicationReviewStatus>(ar.Status),
+                    TemporaryReviewStatus = ar.TemporaryReviewStatus != null
+                        ? Enum.Parse<ApplicationReviewStatus>(ar.TemporaryReviewStatus)
+                        : null,
+                    CreatedDate = ar.CreatedDate,
+                    DateSharedWithEmployer = ar.DateSharedWithEmployer,
+                    ReviewedDate = ar.ReviewedDate,
+                    SubmittedDate = ar.SubmittedDate,
+                    WithdrawnDate = ar.WithdrawnDate,
+                    CandidateFeedback = ar.CandidateFeedback,
+                    EmployerFeedback = ar.EmployerFeedback,
+                    VacancyTitle = ar.VacancyTitle,
+                    HasEverBeenEmployerInterviewing = ar.HasEverBeenEmployerInterviewing,
+                    IsWithdrawn = ar.WithdrawnDate != null,
+                    AdditionalQuestion1 = ar.AdditionalQuestion1,
+                    AdditionalQuestion2 = ar.AdditionalQuestion2,
+                    Application = ar.Application != null ? new Domain.Entities.Application
+                    {
+                        ApplicationId = ar.Application.Id,
+                        CandidateId = ar.Application.CandidateId,
+                        FirstName = ar.Application.Candidate?.FirstName,
+                        LastName = ar.Application.Candidate?.LastName,
+                        CandidateAppliedLocations = ar.Application.EmploymentLocation != null ? GetCandidateAppliedLocation(ar.Application.EmploymentLocation.Addresses) : null,
+                    } : null
+                }).ToList();
+
+            var sortedResult = applicationReviews.AsQueryable()
+                .Sort(sortColumn, sortOrder);
+
+            return sortedResult.ToList();
         }
 
         public Task<List<Domain.Entities.ApplicationReview>> GetForSharedVacancyAsync(long vacancyReference)
@@ -176,9 +247,50 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             throw new NotImplementedException();
         }
 
-        public Task<List<Domain.Entities.ApplicationReview>> GetForSharedVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
+        public async Task<List<Domain.Entities.ApplicationReview>> GetForSharedVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
         {
-            throw new NotImplementedException();
+            var response = await outerApiClient.Get<GetApplicationReviewsByVacancyReferenceApiResponse>(
+                new GetApplicationReviewsByVacancyReferenceApiRequest(vacancyReference));
+
+            if (response?.ApplicationReviews == null || response.ApplicationReviews.Count == 0) return [];
+
+            var applicationReviews = response.ApplicationReviews
+                .Where(fil => fil.DateSharedWithEmployer != null)
+                .Select(ar => new Domain.Entities.ApplicationReview
+                {
+                    Id = ar.Id,
+                    CandidateId = ar.CandidateId,
+                    VacancyReference = ar.VacancyReference,
+                    Status = Enum.Parse<ApplicationReviewStatus>(ar.Status),
+                    TemporaryReviewStatus = ar.TemporaryReviewStatus != null 
+                        ? Enum.Parse<ApplicationReviewStatus>(ar.TemporaryReviewStatus)
+                        : null,
+                    CreatedDate = ar.CreatedDate,
+                    DateSharedWithEmployer = ar.DateSharedWithEmployer,
+                    ReviewedDate = ar.ReviewedDate,
+                    SubmittedDate = ar.SubmittedDate,
+                    WithdrawnDate = ar.WithdrawnDate,
+                    CandidateFeedback = ar.CandidateFeedback,
+                    EmployerFeedback = ar.EmployerFeedback,
+                    VacancyTitle = ar.VacancyTitle,
+                    HasEverBeenEmployerInterviewing = ar.HasEverBeenEmployerInterviewing,
+                    IsWithdrawn = ar.WithdrawnDate != null,
+                    AdditionalQuestion1 = ar.AdditionalQuestion1,
+                    AdditionalQuestion2 = ar.AdditionalQuestion2,
+                    Application = ar.Application != null ? new Domain.Entities.Application
+                    {
+                        ApplicationId = ar.Application.Id,
+                        CandidateId = ar.Application.CandidateId,
+                        FirstName = ar.Application.Candidate?.FirstName,
+                        LastName = ar.Application.Candidate?.LastName,
+                        CandidateAppliedLocations = ar.Application.EmploymentLocation != null ? GetCandidateAppliedLocation(ar.Application.EmploymentLocation.Addresses) : null,
+                    } : null
+                }).ToList();
+
+            var sortedResult = applicationReviews.AsQueryable()
+                .Sort(sortColumn, sortOrder);
+
+            return sortedResult.ToList();
         }
 
         public Task<List<T>> GetAllForSelectedIdsAsync<T>(List<Guid> applicationReviewIds)
@@ -189,6 +301,33 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
         public Task<List<Domain.Entities.ApplicationReview>> GetAllForVacancyWithTemporaryStatus(long vacancyReference, ApplicationReviewStatus status)
         {
             throw new NotImplementedException();
+        }
+
+        private string GetCandidateAppliedLocation(List<GetApplicationReviewsByVacancyReferenceApiResponse.Address> addresses)
+        {
+            var selectedAddresses = addresses
+                .Where(x => x.IsSelected)
+                .Select(x =>
+                {
+                    Address employmentAddress;
+                    try
+                    {
+                        employmentAddress = !string.IsNullOrWhiteSpace(x.FullAddress)
+                            ? JsonConvert.DeserializeObject<Address>(x.FullAddress)
+                            : null;
+                    }
+                    catch (JsonException)
+                    {
+                        // If deserialization fails, we set employmentAddress to null
+                        logger.LogWarning("Failed to deserialize address:{Address}", x.FullAddress);
+                        employmentAddress = null;
+                    }
+
+                    return employmentAddress;
+                })
+                .ToList();
+
+            return selectedAddresses.GetCities();
         }
     }
 }

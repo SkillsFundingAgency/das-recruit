@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Responses
@@ -14,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Respons
             public DateTime? DateSharedWithEmployer { get; set; }
             public DateTime? ReviewedDate { get; set; }
             public DateTime? StatusUpdatedDate { get; set; }
-            public DateTime? SubmittedDate { get; set; }
+            public DateTime SubmittedDate { get; set; }
             public DateTime? WithdrawnDate { get; set; }
             public Guid CandidateId { get; set; }
             public Guid Id { get; set; }
@@ -31,6 +32,39 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Respons
             public string? CandidateFeedback { get; set; }
             public string? EmployerFeedback { get; set; }
             public string? TemporaryReviewStatus { get; set; }
+            public Application? Application { get; set; } = null;
+        }
+
+        public record Candidate
+        {
+            public Guid Id { get; set; }
+            public DateTime? DateOfBirth { get; set; }
+            public string? Email { get; set; }
+            public string? LastName { get; set; }
+            public string? FirstName { get; set; }
+            public string? MiddleNames { get; set; }
+        }
+
+        public record Application
+        {
+            public Candidate? Candidate { get; set; } = null;
+            public DateTime CreatedDate { get; set; }
+            public DateTime? WithdrawnDate { get; set; }
+            public Guid CandidateId { get; set; }
+            public Guid Id { get; set; }
+            public Location? EmploymentLocation { get; set; }
+            public long VacancyReference { get; set; }
+        }
+
+        public record Location
+        {
+            public List<Address>? Addresses { get; set; } = [];
+        }
+        public record Address
+        {
+            public bool IsSelected { get; init; }
+            public short AddressOrder { get; init; }
+            public string? FullAddress { get; init; }
         }
     }
 }

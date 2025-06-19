@@ -10,11 +10,12 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Polly;
 using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
-    internal sealed class MongoDbApplicationReviewRepository : MongoDbCollectionBase, IApplicationReviewRepository, IApplicationReviewQuery
+    public sealed class MongoDbApplicationReviewRepository : MongoDbCollectionBase, IApplicationReviewRepository, IApplicationReviewQuery
     {
         private class WrappedVacancyReference
         {
@@ -29,6 +30,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.ApplicationReviews, details)
         {
         }
+
+        public string Source => nameof(RepositoryType.MongoDb);
 
         public Task CreateAsync(Domain.Entities.ApplicationReview review)
         {

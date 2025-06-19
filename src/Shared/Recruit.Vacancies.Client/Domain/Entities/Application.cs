@@ -41,5 +41,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string AdditionalQuestion2Text { get; set; }
         public Guid ApplicationId { get; set; }
         public DateTime? MigrationDate { get; set; }
+        public string? CandidateAppliedLocations { get; set; }
     }
 }

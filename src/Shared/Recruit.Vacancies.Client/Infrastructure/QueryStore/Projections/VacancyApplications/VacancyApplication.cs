@@ -53,7 +53,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public bool CanShowCandidateAppliedLocations => !string.IsNullOrEmpty(CandidateAppliedLocations);
 
 
-        public static implicit operator VacancyApplication(ApplicationReview applicationReview)
+        public static implicit operator VacancyApplication(Domain.Entities.ApplicationReview applicationReview)
         {
             var projection = new VacancyApplication
             {

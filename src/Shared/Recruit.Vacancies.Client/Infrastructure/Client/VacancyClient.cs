@@ -10,9 +10,10 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.Reports;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
+using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
@@ -25,8 +26,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProv
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -55,7 +54,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IVacancySummariesProvider vacancySummariesQuery,
         ITimeProvider timeProvider,
         ITrainingProviderService trainingProviderService,
-        IFeature feature)
+        IFeature feature,
+        IApplicationReviewRepositoryFactory applicationReviewRepositoryFactory)
         : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
         private bool IsMongoMigrationFeatureEnabled => feature.IsFeatureEnabled(FeatureNames.MongoMigration);
@@ -273,65 +273,32 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider = false)
         {
+            var appReviewRepository = IsMongoMigrationFeatureEnabled
+                ? applicationReviewRepositoryFactory.GetRepository(RepositoryType.Sql)
+                : applicationReviewRepositoryFactory.GetRepository(RepositoryType.MongoDb);
+
             var applicationReviews = vacancySharedByProvider
-                ? await applicationReviewRepository.GetForSharedVacancySortedAsync(vacancyReference, sortColumn, sortOrder)
-                : await applicationReviewRepository.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder);
+                ? await appReviewRepository.GetForSharedVacancySortedAsync(vacancyReference, sortColumn, sortOrder)
+                : await appReviewRepository.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder);
 
-            var vacancyApplications = applicationReviews.Select(c => (VacancyApplication)c).ToList();
-
-            if (vacancyApplications is {Count: > 0})
-            {
-                var applicationsResponse =
-                    await trainingProviderService.GetAllApplications(applicationReviews
-                        .Select(x => x.Application.ApplicationId).ToList());
-
-                foreach (var vacancyApplication in vacancyApplications)
-                {
-                    var application = applicationsResponse.Applications
-                        .FirstOrDefault(x => x.Id == vacancyApplication.ApplicationId);
-
-                    if (application?.EmploymentLocation?.Addresses == null) continue;
-
-                    var addresses = application.EmploymentLocation?.Addresses
-                        .Where(x => x.IsSelected)
-                        .Select(x =>
-                        {
-                            Address employmentAddress;
-                            try
-                            {
-                                employmentAddress = !string.IsNullOrWhiteSpace(x.FullAddress)
-                                    ? JsonConvert.DeserializeObject<Address>(x.FullAddress)
-                                    : null;
-                            }
-                            catch (JsonException)
-                            {
-                                employmentAddress = null;
-                                logger.LogWarning("Failed to deserialize address for vacancy application {ApplicationId}", vacancyApplication.ApplicationId);
-                                logger.LogWarning("Failed to deserialize address:{Address}", x.FullAddress);
-                            }
-
-                            return employmentAddress;
-                        })
-                        .ToList();
-
-                    vacancyApplication.CandidateAppliedLocations = addresses.GetCities();
-                }
-
-                return vacancyApplications;
-            }
-
-            return [];
+            return applicationReviews == null
+                ? []
+                : applicationReviews.Select(c => (VacancyApplication)c).ToList();
         }
 
         public async Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference, bool vacancySharedByProvider = false)
         {
-            var applicationReviews = vacancySharedByProvider
-                ? await applicationReviewRepository.GetForSharedVacancyAsync(vacancyReference) 
-                : await applicationReviewRepository.GetForVacancyAsync<Domain.Entities.ApplicationReview>(vacancyReference);
+            var appReviewRepository = IsMongoMigrationFeatureEnabled
+                ? applicationReviewRepositoryFactory.GetRepository(RepositoryType.Sql)
+                : applicationReviewRepositoryFactory.GetRepository(RepositoryType.MongoDb);
 
-            return applicationReviews == null 
-                ? new List<VacancyApplication>() 
-                : applicationReviews.Select(c=>(VacancyApplication)c).ToList();
+            var applicationReviews = vacancySharedByProvider
+                ? await appReviewRepository.GetForSharedVacancyAsync(vacancyReference)
+                : await appReviewRepository.GetForVacancyAsync<Domain.Entities.ApplicationReview>(vacancyReference);
+
+            return applicationReviews == null
+                ? []
+                : applicationReviews.Select(c => (VacancyApplication)c).ToList();
         }
 
         public async Task<List<VacancyApplication>> GetVacancyApplicationsForSelectedIdsAsync(List<Guid> applicationReviewIds)
