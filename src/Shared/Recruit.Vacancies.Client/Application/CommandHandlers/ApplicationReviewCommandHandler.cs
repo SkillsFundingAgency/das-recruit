@@ -9,6 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Extensions;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using FluentValidation;
@@ -22,6 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         private readonly ILogger<ApplicationReviewCommandHandler> _logger;        
         private readonly IApplicationReviewRepository _applicationReviewRepository;
+        private readonly IApplicationReviewRepositoryRunner _applicationReviewRepositoryRunner;
         private readonly IVacancyRepository _vacancyRepository;
         private readonly ITimeProvider _timeProvider;
         private readonly IMessaging _messaging;
@@ -35,6 +37,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             ITimeProvider timeProvider,
             IMessaging messaging,
             IOuterApiClient outerApiClient,
+            IApplicationReviewRepositoryRunner applicationReviewRepositoryRunner,
             AbstractValidator<ApplicationReview> applicationReviewValidator)
         {
             _logger = logger;            
@@ -43,6 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _messaging = messaging;
             _outerApiClient = outerApiClient;
             _applicationReviewValidator = applicationReviewValidator;
+            _applicationReviewRepositoryRunner = applicationReviewRepositoryRunner;
             _vacancyRepository = vacancyRepository;
         }
 
@@ -79,7 +83,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             Validate(applicationReview);
             _logger.LogInformation("Setting application review:{applicationReviewId} to {status}", message.ApplicationReviewId, message.Outcome.Value);
 
-            await _applicationReviewRepository.UpdateAsync(applicationReview);
+            await _applicationReviewRepositoryRunner.UpdateAsync(applicationReview);
 
             if (applicationReview.Status is not (ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful))
             {
