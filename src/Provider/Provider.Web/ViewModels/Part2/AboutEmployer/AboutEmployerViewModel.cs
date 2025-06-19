@@ -3,33 +3,32 @@ using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
-namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.AboutEmployer
+namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.AboutEmployer;
+
+public class AboutEmployerViewModel : TaskListViewModel
 {
-    public class AboutEmployerViewModel : VacancyRouteModel
+    public string Title { get; internal set; }
+    public string EmployerDescription { get; internal set; }
+    public string EmployerTitle { get; internal set; }
+    public string EmployerWebsiteUrl { get; internal set; }
+    public bool IsAnonymous { get; internal set; }
+    public bool IsDisabilityConfident { get; set; }
+    public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+    public bool IsTaskListCompleted { get; set; }
+
+    public IList<string> OrderedFieldNames => new List<string>
     {
-        public string Title { get; internal set; }
-        public string EmployerDescription { get; internal set; }
-        public string EmployerTitle { get; internal set; }
-        public string EmployerWebsiteUrl { get; internal set; }
-        public bool IsAnonymous { get; internal set; }
-        public bool IsDisabilityConfident { get; set; }
-        public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
-        public bool IsTaskListCompleted { get; set; }
+        nameof(EmployerDescription),
+        nameof(EmployerWebsiteUrl)
+    };
 
-        public IList<string> OrderedFieldNames => new List<string>
+    public string PageBackLink
+    {
+        get
         {
-            nameof(EmployerDescription),
-            nameof(EmployerWebsiteUrl)
-        };
-
-        public string PageBackLink
-        {
-            get
-            {
-                return IsTaskListCompleted
-                    ? RouteNames.ProviderCheckYourAnswersGet
-                    : RouteNames.EmployerName_Get;
-            }
+            return IsTaskListCompleted
+                ? RouteNames.ProviderCheckYourAnswersGet
+                : RouteNames.EmployerName_Get;
         }
     }
 }

@@ -16,7 +16,7 @@
 
         <partial name="@PartialNames.ReviewSummary" for="Review" />
 
-         <form asp-route="@RouteNames.ProviderContactDetails_Post"  asp-all-route-data="@Model.RouteDictionary" novalidate>
+         <form asp-route="@RouteNames.ProviderContactDetails_Post"  asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.IsTaskList" novalidate>
              <div class="govuk-form-group">
                 <span class="govuk-caption-xl">@Model.Title</span>
                 <fieldset class="govuk-fieldset">

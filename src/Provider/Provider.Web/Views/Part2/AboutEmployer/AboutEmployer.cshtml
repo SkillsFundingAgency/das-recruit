@@ -11,9 +11,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-
         <partial name="@PartialNames.ReviewSummary" for="Review" />
 
         <h1 class="govuk-heading-xl">
@@ -21,7 +19,7 @@
             Information about @Model.EmployerTitle
         </h1>
         <p class="govuk-body">Updating the employer information will also update the employer information on any unapproved vacancies, for example. draft, pending review or rejected vacancies.</p>
-        <form asp-route="@RouteNames.AboutEmployer_Get" asp-all-route-data="@Model.RouteDictionary">
+        <form asp-route="@RouteNames.AboutEmployer_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.IsTaskList">
             <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
                 <div class="govuk-form-group" esfa-validation-marker-for="EmployerDescription">
                     <label asp-for="EmployerDescription" class="govuk-label">Tell us about the organisation</label>
