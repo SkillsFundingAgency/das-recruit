@@ -16,6 +16,12 @@ public interface IApplicationReviewRepositoryFactory
 
 /// <summary>
 /// 
+/// <summary>
+/// Factory class for creating IApplicationReviewRepository instances.
+/// Returns the appropriate repository implementation based on the specified RepositoryType
+/// by resolving dependencies from the provided IServiceProvider.
+/// </summary>
+/// <param name="provider">The service provider used to resolve repository implementations.</param>
 /// </summary>
 /// <param name="provider"></param>
 public class ApplicationReviewRepositoryFactory(IServiceProvider provider) : IApplicationReviewRepositoryFactory
