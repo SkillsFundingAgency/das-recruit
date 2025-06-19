@@ -15,10 +15,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task AssignVacancyNumber(Guid vacancyId);
         Task UserSignedInAsync(VacancyUser user, UserType userType);
         Task<Vacancy> GetVacancyAsync(Guid vacancyId);
-        Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference);
+        Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference);
         Task<List<string>> GetCandidateSkillsAsync();
         Task<IList<string>> GetCandidateQualificationsAsync();
-        Task<ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId);
+        Task<Domain.Entities.ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId);
         EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules);
         Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user);
         Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync();

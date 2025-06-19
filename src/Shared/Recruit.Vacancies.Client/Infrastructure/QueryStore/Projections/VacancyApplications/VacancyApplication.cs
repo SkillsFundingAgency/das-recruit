@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public long? VacancyReference { get; set; }
         public string CandidateFeedback { get; set; }
         public Guid? ApplicationId { get; set; }
-        public static implicit operator VacancyApplication(ApplicationReview applicationReview)
+        public static implicit operator VacancyApplication(Domain.Entities.ApplicationReview applicationReview)
         {
             var projection = new VacancyApplication
             {

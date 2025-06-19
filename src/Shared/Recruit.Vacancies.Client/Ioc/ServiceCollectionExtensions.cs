@@ -16,6 +16,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.HttpRequestHandlers;
@@ -45,6 +46,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProviderSummaryProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -191,9 +193,18 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
             //Repositories
             services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
+            
+            services.AddTransient<IVacancyReviewRepository, VacancyReviewService>();
             services.AddTransient<IVacancyReviewRepository, MongoDbVacancyReviewRepository>();
+            services.AddTransient<IVacancyReviewRespositoryRunner, VacancyReviewRespositoryRunner>();
+            
             services.AddTransient<IUserRepository, MongoDbUserRepository>();
+
+            services.AddTransient<IApplicationReviewRepository, ApplicationReviewService>();
             services.AddTransient<IApplicationReviewRepository, MongoDbApplicationReviewRepository>();
+            services.AddTransient<IApplicationReviewRepositoryRunner, ApplicationReviewRepositoryRunner>();
+
+
             services.AddTransient<IEmployerProfileRepository, MongoDbEmployerProfileRepository>();
             services.AddTransient<IReportRepository, MongoDbReportRepository>();
             services.AddTransient<IUserNotificationPreferencesRepository, MongoDbUserNotificationPreferencesRepository>();
