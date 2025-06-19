@@ -2,7 +2,7 @@
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
-using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Employer.Web.ViewModels.Part2.EmployerContactDetails;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
