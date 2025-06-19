@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private readonly ILogger<ProviderApplicationsReportStrategy> _logger;
 
         private const string QueryFormat = @"[
-            { $match: {'trainingProvider.ukprn' : _ukprn_, 'ownerType' : 'Provider', 'isDeleted' : false, 'status' : {$in : ['Live','Closed']}},
+            { $match: {'trainingProvider.ukprn' : _ukprn_, 'ownerType' : 'Provider', 'isDeleted' : false, 'status' : {$in : ['Live','Closed']}}},
             { $lookup: { from: 'applicationReviews', localField: 'vacancyReference', foreignField: 'vacancyReference', as: 'ar'}},
             { $unwind: '$ar'},
             { $match: {'ar.submittedDate' : { $gte: ISODate('_fromDate_'), $lte: ISODate('_toDate_')}, 'ar.isWithdrawn' : false}},
