@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Polly;
-using System.Linq;
-using Esfa.Recruit.Vacancies.Client.Domain.Enums;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
