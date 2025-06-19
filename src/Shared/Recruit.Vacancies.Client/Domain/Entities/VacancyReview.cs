@@ -68,5 +68,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
             new List<ManualQaFieldEditIndicator>();
         
         public List<string> DismissedAutomatedQaOutcomeIndicators { get; set; }
+        
+        public DateTime? MigrationDate { get; set; }
     }
 }
