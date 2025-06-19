@@ -15,7 +15,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
-    public sealed class MongoDbApplicationReviewRepository : MongoDbCollectionBase, IApplicationReviewRepository, IApplicationReviewQuery
+    public class MongoDbApplicationReviewRepository : MongoDbCollectionBase, IApplicationReviewRepository, IApplicationReviewQuery
     {
         private class WrappedVacancyReference
         {
@@ -30,8 +30,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.ApplicationReviews, details)
         {
         }
-
-        public string Source => nameof(RepositoryType.MongoDb);
 
         public Task CreateAsync(Domain.Entities.ApplicationReview review)
         {

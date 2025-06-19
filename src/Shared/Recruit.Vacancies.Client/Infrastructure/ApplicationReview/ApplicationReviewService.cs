@@ -3,39 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
 {
-    public interface IApplicationReviewRepositoryFactory
-    {
-        IApplicationReviewRepository GetRepository(RepositoryType type);
-    }
-
-    public class ApplicationReviewRepositoryFactory(IServiceProvider provider) : IApplicationReviewRepositoryFactory
-    {
-        public IApplicationReviewRepository GetRepository(RepositoryType type)
-        {
-            return type switch
-            {
-                RepositoryType.Sql => provider.GetRequiredService<ApplicationReviewService>(),
-                RepositoryType.MongoDb => provider.GetRequiredService<MongoDbApplicationReviewRepository>(),
-                _ => throw new ArgumentOutOfRangeException(nameof(type))
-            };
-        }
-    }
-
-
     public interface IApplicationReviewRepositoryRunner
     {
         Task UpdateAsync(Domain.Entities.ApplicationReview applicationReview);
@@ -95,8 +73,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
         IOuterApiClient outerApiClient,
         ILogger<ApplicationReviewService> logger) : IApplicationReviewRepository
     {
-        public string Source => nameof(RepositoryType.Sql);
-
         public async Task UpdateAsync(Domain.Entities.ApplicationReview applicationReview)
         {
             await outerApiClient.Post(new PostApplicationReviewApiRequest(applicationReview.Id,
