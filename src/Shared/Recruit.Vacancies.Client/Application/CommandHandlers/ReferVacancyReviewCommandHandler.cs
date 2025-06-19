@@ -8,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -17,20 +18,23 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     public class ReferVacancyReviewCommandHandler : IRequestHandler<ReferVacancyReviewCommand, Unit>
     {
         private readonly ILogger<ReferVacancyReviewCommandHandler> _logger;
-        private readonly IVacancyReviewRepository _reviewRepository;
+        private readonly IVacancyReviewRespositoryRunner _vacancyReviewRespositoryRunner;
+        private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly IMessaging _messaging;
         private readonly AbstractValidator<VacancyReview> _vacancyReviewValidator;
         private readonly ITimeProvider _timeProvider;
 
         public ReferVacancyReviewCommandHandler(
             ILogger<ReferVacancyReviewCommandHandler> logger,
-            IVacancyReviewRepository reviewRepository,
+            IVacancyReviewRespositoryRunner vacancyReviewRespositoryRunner,
+            IVacancyReviewQuery vacancyReviewQuery,
             IMessaging messaging,
             AbstractValidator<VacancyReview> vacancyReviewValidator,
             ITimeProvider timeProvider)
         {
             _logger = logger;
-            _reviewRepository = reviewRepository;
+            _vacancyReviewRespositoryRunner = vacancyReviewRespositoryRunner;
+            _vacancyReviewQuery = vacancyReviewQuery;
             _messaging = messaging;
             _timeProvider = timeProvider;
             _vacancyReviewValidator = vacancyReviewValidator;
@@ -40,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             _logger.LogInformation("Referring vacancy review {reviewId}.", message.ReviewId);
 
-            var review = await _reviewRepository.GetAsync(message.ReviewId);
+            var review = await _vacancyReviewQuery.GetAsync(message.ReviewId);
 
             if (!review.CanRefer)
             {
@@ -77,7 +81,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             Validate(review);
 
-            await _reviewRepository.UpdateAsync(review);
+            await _vacancyReviewRespositoryRunner.UpdateAsync(review);
 
             await _messaging.PublishEvent(new VacancyReviewReferredEvent
             {
