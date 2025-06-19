@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
@@ -21,14 +20,4 @@ public class ProviderContactDetailsViewModel : TaskListViewModel
     };
     public bool? AddContactDetails { get; set; }
     public bool IsTaskListCompleted { get; set; }
-
-    public string PageBackLink
-    {
-        get
-        {
-            return IsTaskListCompleted
-                ? RouteNames.ProviderCheckYourAnswersGet
-                : RouteNames.AboutEmployer_Get;
-        }
-    }
 }

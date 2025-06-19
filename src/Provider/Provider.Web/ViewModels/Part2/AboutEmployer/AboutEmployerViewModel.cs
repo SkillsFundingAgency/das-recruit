@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
@@ -21,14 +20,4 @@ public class AboutEmployerViewModel : TaskListViewModel
         nameof(EmployerDescription),
         nameof(EmployerWebsiteUrl)
     };
-
-    public string PageBackLink
-    {
-        get
-        {
-            return IsTaskListCompleted
-                ? RouteNames.ProviderCheckYourAnswersGet
-                : RouteNames.EmployerName_Get;
-        }
-    }
 }
