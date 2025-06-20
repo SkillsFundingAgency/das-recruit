@@ -1,52 +1,41 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels.Part2.AboutEmployer;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 
-namespace Esfa.Recruit.Employer.Web.Controllers.Part2
+namespace Esfa.Recruit.Employer.Web.Controllers.Part2;
+
+[Route(RoutePaths.AccountVacancyRoutePath)]
+public class AboutEmployerController(AboutEmployerOrchestrator orchestrator) : Controller
 {
-    [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class AboutEmployerController : Controller
+    [HttpGet("about-employer", Name = RouteNames.AboutEmployer_Get)]
+    public async Task<IActionResult> AboutEmployer(TaskListViewModel model)
     {
-        private readonly AboutEmployerOrchestrator _orchestrator;
+        var vm = await orchestrator.GetAboutEmployerViewModelAsync(model);
+        return View(vm);
+    }
 
-        public AboutEmployerController(AboutEmployerOrchestrator orchestrator)
+    [HttpPost("about-employer", Name =  RouteNames.AboutEmployer_Post)]
+    public async Task<IActionResult> AboutEmployer(AboutEmployerEditModel m)
+    {
+        var response = await orchestrator.PostAboutEmployerEditModelAsync(m, User.ToVacancyUser());
+
+        if (!response.Success)
         {
-            _orchestrator = orchestrator;
+            response.AddErrorsToModelState(ModelState);
         }
-
-        [HttpGet("about-employer", Name = RouteNames.AboutEmployer_Get)]
-        public async Task<IActionResult> AboutEmployer(VacancyRouteModel vrm)
+        var vm = await orchestrator.GetAboutEmployerViewModelAsync(m);
+        if (!ModelState.IsValid)
         {
-            var vm = await _orchestrator.GetAboutEmployerViewModelAsync(vrm);
             return View(vm);
         }
 
-        [HttpPost("about-employer", Name =  RouteNames.AboutEmployer_Post)]
-        public async Task<IActionResult> AboutEmployer(AboutEmployerEditModel m)
-        {
-            var response = await _orchestrator.PostAboutEmployerEditModelAsync(m, User.ToVacancyUser());
-
-            if (!response.Success)
-            {
-                response.AddErrorsToModelState(ModelState);
-            }
-            var vm = await _orchestrator.GetAboutEmployerViewModelAsync(m);
-            if (!ModelState.IsValid)
-            {
-                return View(vm);
-            }
-            
-            if (!vm.IsTaskListCompleted)
-            {
-                return RedirectToRoute(RouteNames.EmployerContactDetails_Get, new {m.VacancyId, m.EmployerAccountId});
-            }
-            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId});
-        }
+        return vm.IsTaskListCompleted
+            ? RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { m.VacancyId, m.EmployerAccountId })
+            : RedirectToRoute(RouteNames.EmployerContactDetails_Get, new { m.VacancyId, m.EmployerAccountId, wizard = m.IsTaskList });
     }
 }

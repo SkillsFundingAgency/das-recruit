@@ -63,4 +63,29 @@ public class WhenGettingSectionFiveState
         // assert
         actual.Should().BeFalse();
     }
+    
+    [Test]
+    public void Section_Five_Should_Be_NotRequired_When_ApplicationMethod_Is_External()
+    {
+        // arrange
+        var vacancy = new Fixture().Create<Vacancy>();
+        vacancy.HasSubmittedAdditionalQuestions = false;
+        vacancy.AdditionalQuestion1 = null;
+        vacancy.AdditionalQuestion2 = null;
+        vacancy.ApplicationMethod = ApplicationMethod.ThroughExternalApplicationSite;
+        vacancy.ApprenticeshipType = ApprenticeshipTypes.Standard;
+        vacancy.OwnerType = OwnerType.Employer;
+        var states = Enum.GetValues<TaskListItemFlags>().ToDictionary(f => f, _ => false);
+        const TaskListItemFlags flags = (TaskListItemFlags)ProviderTaskListSectionFlags.Four;
+        foreach (var kvp in states.Where(kvp => flags.HasFlag(kvp.Key)))
+        {
+            states[kvp.Key] = true;
+        }
+        
+        // act
+        var sut = new ProviderTaskListStateView(states, vacancy);
+        
+        // assert
+        sut.SectionFiveState.Should().Be(VacancyTaskListSectionState.NotRequired);
+    }
 }

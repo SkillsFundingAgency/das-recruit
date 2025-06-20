@@ -37,13 +37,15 @@ public sealed class EmployerTaskListStateView: TaskListStateViewBase
 
         SectionOneState = GetSectionState(EmployerTaskListSectionFlags.One, TaskListItemFlags.AdvertTitle);
         SectionTwoState = GetSectionState(EmployerTaskListSectionFlags.Two, TaskListItemFlags.ClosingAndStartDates);
-        SectionThreeState = vacancy.ApprenticeshipType.GetValueOrDefault() switch
+        SectionThreeState = apprenticeshipType switch
         {
             ApprenticeshipTypes.Foundation => GetSectionState(EmployerTaskListSectionFlags.Three, TaskListItemFlags.FutureProspects),
             _ => GetSectionState(EmployerTaskListSectionFlags.Three, TaskListItemFlags.Skills | TaskListItemFlags.FutureProspects),
         };
         SectionFourState = GetSectionState(EmployerTaskListSectionFlags.Four, TaskListItemFlags.NameOfEmployerOnAdvert);
-        SectionFiveState = GetSectionState(EmployerTaskListSectionFlags.Five, TaskListItemFlags.AdditionalQuestions);
+        SectionFiveState = vacancy.ApplicationMethod is ApplicationMethod.ThroughExternalApplicationSite
+            ? VacancyTaskListSectionState.NotRequired
+            : GetSectionState(EmployerTaskListSectionFlags.Five, TaskListItemFlags.AdditionalQuestions);
         SectionSixState = vacancy.Status == VacancyStatus.Submitted
             ? VacancyTaskListSectionState.Completed
             : AllFlagsCompleted((TaskListItemFlags)EmployerTaskListSectionFlags.All)
@@ -87,7 +89,7 @@ public sealed class EmployerTaskListStateView: TaskListStateViewBase
         WebsiteForApplicationsEditable = CompleteStates[TaskListItemFlags.EmployerInformation];
         
         // Section Five
-        AdditionalQuestionsEditable = SectionFourState == VacancyTaskListSectionState.Completed;
+        AdditionalQuestionsEditable = vacancy.ApplicationMethod is not ApplicationMethod.ThroughExternalApplicationSite && SectionFourState == VacancyTaskListSectionState.Completed;
         
         // Section Six
         CheckYourAnswersEditable = SectionSixState != VacancyTaskListSectionState.NotStarted;
