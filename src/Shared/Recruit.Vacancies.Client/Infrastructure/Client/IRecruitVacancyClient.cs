@@ -34,8 +34,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, string accountLegalEntityPublicHashedId);
         Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user);
         Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference);
-        Task<User> GetUsersDetailsAsync(string userId);
-        Task UpsertUserDetails(User user);
+        Task<Domain.Entities.User> GetUsersDetailsAsync(string userId);
+        Task UpsertUserDetails(Domain.Entities.User user);
         Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string vacancyUserId, string dfeUserId = null);
 
         Task<UserNotificationPreferences> GetUserNotificationPreferencesByDfEUserIdAsync(string idamsUserId, string dfeUserId = null);
@@ -47,6 +47,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task SetApplicationReviewsStatus(long vacancyReference, IEnumerable<Guid> applicationReviewIds, VacancyUser user, ApplicationReviewStatus? status, Guid vacancyId, ApplicationReviewStatus? applicationReviewTemporaryStatus);
         Task SetApplicationReviewsPendingUnsuccessfulFeedback(VacancyUser user, ApplicationReviewStatus status, Guid vacancyId, string feedback);
         Task SetApplicationReviewsToUnsuccessful(IEnumerable<Guid> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user, Guid vacancyId);
-        Task <User> GetUsersDetailsByDfEUserId(string dfeUserId);
+        Task <Domain.Entities.User> GetUsersDetailsByDfEUserId(string dfeUserId);
     }
 }
