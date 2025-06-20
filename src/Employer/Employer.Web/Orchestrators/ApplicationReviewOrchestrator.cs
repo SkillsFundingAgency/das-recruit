@@ -49,6 +49,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             viewModel.VacancyId = rm.VacancyId;
             viewModel.VacancyTitle = vacancy.Title;
             viewModel.ApplicationReviewId = rm.ApplicationReviewId;
+            viewModel.IsFoundation = vacancy.ApprenticeshipType == ApprenticeshipTypes.Foundation;
             return viewModel;
         }
 
