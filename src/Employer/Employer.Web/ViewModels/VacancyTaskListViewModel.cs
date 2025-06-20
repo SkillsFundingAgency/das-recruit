@@ -11,4 +11,5 @@ public class VacancyTaskListViewModel: VacancyRouteModel
     public ApplicationMethod? ApplicationMethod { get; set; }
     public VacancyStatus Status { get; set; }
     public EmployerTaskListStateView TaskListStates { get; set; }
+    public int AdditionalQuestionCount { get; set; }
 }

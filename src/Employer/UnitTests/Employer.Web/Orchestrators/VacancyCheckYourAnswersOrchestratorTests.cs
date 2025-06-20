@@ -80,6 +80,7 @@ public class VacancyCheckYourAnswersOrchestratorTests
             .Excluding(c=>c.CanShowReference)
             .Excluding(c=>c.CanShowDraftHeader)
             .Excluding(c=>c.AccountLegalEntityCount)
+            .Excluding(c=>c.AdditionalQuestionCount)
         );
         viewModel.ApprenticeshipLevel.Should().Be(standard.ApprenticeshipLevel);
         viewModel.AccountLegalEntityCount.Should().Be(legalEntities.Count);
