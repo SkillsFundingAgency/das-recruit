@@ -1,4 +1,4 @@
-﻿@model Esfa.Recruit.Employer.Web.ViewModels.AboutEmployer.AboutEmployerViewModel
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part2.AboutEmployer.AboutEmployerViewModel
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part2-about-employer";
     ViewBag.ZenDeskLabel = "recruit-about-employer";
@@ -6,8 +6,7 @@
 }
 
 @section BackLink {
-    <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.EmployerName_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <partial name="_TaskListBackLink" model="@(new BackLinkViewModel(Model.RouteDictionary, RouteNames.EmployerName_Get, Model.IsTaskListCompleted, Model.IsTaskList))" />
 }
 
 <div class="govuk-grid-row">
@@ -21,7 +20,7 @@
             Information about @Model.EmployerTitle
         </h1>
         <p class="govuk-body">Updating the employer information will also update the employer information on any unapproved adverts eg. draft, pending review or rejected adverts.</p>
-        <form asp-route="@RouteNames.AboutEmployer_Get" asp-all-route-data="@Model.RouteDictionary">
+        <form asp-route="@RouteNames.AboutEmployer_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.IsTaskList">
             <div class="govuk-form-group" esfa-validation-marker-for="EmployerDescription">
                 <label asp-for="EmployerDescription" class="govuk-label">Tell us about your organisation</label>
                 <span esfa-validation-message-for="EmployerDescription" class="govuk-error-message"></span>

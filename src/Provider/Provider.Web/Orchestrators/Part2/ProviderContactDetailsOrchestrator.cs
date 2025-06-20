@@ -11,107 +11,99 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
+namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2;
+
+public class ProviderContactDetailsOrchestrator(
+    IRecruitVacancyClient vacancyClient,
+    ILogger<ProviderContactDetailsOrchestrator> logger,
+    IReviewSummaryService reviewSummaryService,
+    IUtility utility)
+    : VacancyValidatingOrchestrator<ProviderContactDetailsEditModel>(logger)
 {
-    public class ProviderContactDetailsOrchestrator : VacancyValidatingOrchestrator<ProviderContactDetailsEditModel>
+    private const VacancyRuleSet ValidationRules = VacancyRuleSet.ProviderContactDetails;
+
+    public async Task<ProviderContactDetailsViewModel> GetProviderContactDetailsViewModelAsync(TaskListViewModel vrm)
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ProviderContactDetails;
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IUtility _utility;
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.ProviderContactDetails_Get);
 
-        public ProviderContactDetailsOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<ProviderContactDetailsOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
+        var vm = new ProviderContactDetailsViewModel
         {
-            _vacancyClient = vacancyClient;
-            _reviewSummaryService = reviewSummaryService;
-            _utility = utility;
+            AddContactDetails = !string.IsNullOrEmpty(vacancy.ProviderContact?.Name) || 
+                                !string.IsNullOrEmpty(vacancy.ProviderContact?.Email) ||
+                                !string.IsNullOrEmpty(vacancy.ProviderContact?.Phone) ? true : (bool?) null,
+            IsTaskList = vrm.IsTaskList,
+            IsTaskListCompleted = utility.IsTaskListCompleted(vacancy) && !vrm.IsTaskList,
+            ProviderContactEmail = vacancy.ProviderContact?.Email,
+            ProviderContactName = vacancy.ProviderContact?.Name,
+            ProviderContactPhone = vacancy.ProviderContact?.Phone,
+            ProviderName = vacancy.TrainingProvider?.Name,
+            Title = vacancy.Title,
+            Ukprn = vrm.Ukprn,
+            VacancyId = vrm.VacancyId,
+        };
+
+        if (vacancy.Status == VacancyStatus.Referred)
+        {
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+                ReviewFieldMappingLookups.GetProviderContactDetailsFieldIndicators());
         }
 
-        public async Task<ProviderContactDetailsViewModel> GetProviderContactDetailsViewModelAsync(VacancyRouteModel vrm)
+        return vm;
+    }
+
+    public async Task<ProviderContactDetailsViewModel> GetProviderContactDetailsViewModelAsync(ProviderContactDetailsEditModel m)
+    {
+        var vm = await GetProviderContactDetailsViewModelAsync((TaskListViewModel)m);
+        vm.ProviderContactName = m.ProviderContactName;
+        vm.ProviderContactEmail = m.ProviderContactEmail;
+        vm.ProviderContactPhone = m.ProviderContactPhone;
+
+        return vm;
+    }
+
+    public async Task<OrchestratorResponse> PostProviderContactDetailsEditModelAsync(ProviderContactDetailsEditModel m, VacancyUser user)
+    {
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.ProviderContactDetails_Post);
+        vacancy.HasChosenProviderContactDetails = true;
+        if (vacancy.ProviderContact == null)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.ProviderContactDetails_Get);
-
-            var vm = new ProviderContactDetailsViewModel
-            {
-                Title = vacancy.Title,
-                ProviderContactName = vacancy.ProviderContact?.Name,
-                ProviderContactEmail = vacancy.ProviderContact?.Email,
-                ProviderContactPhone = vacancy.ProviderContact?.Phone,
-                ProviderName = vacancy.TrainingProvider?.Name,
-                VacancyId = vrm.VacancyId,
-                Ukprn = vrm.Ukprn,
-                AddContactDetails = !string.IsNullOrEmpty(vacancy.ProviderContact?.Name) || 
-                                    !string.IsNullOrEmpty(vacancy.ProviderContact?.Email) ||
-                                    !string.IsNullOrEmpty(vacancy.ProviderContact?.Phone) ? true : (bool?) null
-            };
-
-            if (vacancy.Status == VacancyStatus.Referred)
-            {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
-                   ReviewFieldMappingLookups.GetProviderContactDetailsFieldIndicators());
-            }
-
-            vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
-
-            return vm;
+            vacancy.ProviderContact = new ContactDetail();
         }
-
-        public async Task<ProviderContactDetailsViewModel> GetProviderContactDetailsViewModelAsync(ProviderContactDetailsEditModel m)
-        {
-            var vm = await GetProviderContactDetailsViewModelAsync((VacancyRouteModel)m);
-
-            vm.ProviderContactName = m.ProviderContactName;
-            vm.ProviderContactEmail = m.ProviderContactEmail;
-            vm.ProviderContactPhone = m.ProviderContactPhone;
-
-            return vm;
-        }
-
-        public async Task<OrchestratorResponse> PostProviderContactDetailsEditModelAsync(ProviderContactDetailsEditModel m, VacancyUser user)
-        {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.ProviderContactDetails_Post);
-            vacancy.HasChosenProviderContactDetails = true;
-            
-            if (vacancy.ProviderContact == null)
-            {
-                vacancy.ProviderContact = new ContactDetail();
-            }
                 
 
-            SetVacancyWithProviderReviewFieldIndicators(
-                vacancy.ProviderContact.Name,
-                FieldIdResolver.ToFieldId(v => v.ProviderContact.Name),
-                vacancy,
-                (v) => { return v.ProviderContact.Name = m.ProviderContactName; });
+        SetVacancyWithProviderReviewFieldIndicators(
+            vacancy.ProviderContact.Name,
+            FieldIdResolver.ToFieldId(v => v.ProviderContact.Name),
+            vacancy,
+            (v) => { return v.ProviderContact.Name = m.ProviderContactName; });
 
-            SetVacancyWithProviderReviewFieldIndicators(
-                vacancy.ProviderContact.Email,
-                FieldIdResolver.ToFieldId(v => v.ProviderContact.Email),
-                vacancy,
-                (v) => { return v.ProviderContact.Email = m.ProviderContactEmail; });
+        SetVacancyWithProviderReviewFieldIndicators(
+            vacancy.ProviderContact.Email,
+            FieldIdResolver.ToFieldId(v => v.ProviderContact.Email),
+            vacancy,
+            (v) => { return v.ProviderContact.Email = m.ProviderContactEmail; });
 
-            SetVacancyWithProviderReviewFieldIndicators(
-                vacancy.ProviderContact.Phone,
-                FieldIdResolver.ToFieldId(v => v.ProviderContact.Phone),
-                vacancy,
-                (v) => { return v.ProviderContact.Phone = m.ProviderContactPhone; });
+        SetVacancyWithProviderReviewFieldIndicators(
+            vacancy.ProviderContact.Phone,
+            FieldIdResolver.ToFieldId(v => v.ProviderContact.Phone),
+            vacancy,
+            (v) => { return v.ProviderContact.Phone = m.ProviderContactPhone; });
 
-            return await ValidateAndExecute(
-                vacancy,
-                v => _vacancyClient.Validate(v, ValidationRules),
-                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
-            );
-        }
+        return await ValidateAndExecute(
+            vacancy,
+            v => vacancyClient.Validate(v, ValidationRules),
+            v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+        );
+    }
 
-        protected override EntityToViewModelPropertyMappings<Vacancy, ProviderContactDetailsEditModel> DefineMappings()
-        {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, ProviderContactDetailsEditModel>();
+    protected override EntityToViewModelPropertyMappings<Vacancy, ProviderContactDetailsEditModel> DefineMappings()
+    {
+        var mappings = new EntityToViewModelPropertyMappings<Vacancy, ProviderContactDetailsEditModel>();
 
-            mappings.Add(e => e.ProviderContact.Name, vm => vm.ProviderContactName);
-            mappings.Add(e => e.ProviderContact.Email, vm => vm.ProviderContactEmail);
-            mappings.Add(e => e.ProviderContact.Phone, vm => vm.ProviderContactPhone);
+        mappings.Add(e => e.ProviderContact.Name, vm => vm.ProviderContactName);
+        mappings.Add(e => e.ProviderContact.Email, vm => vm.ProviderContactEmail);
+        mappings.Add(e => e.ProviderContact.Phone, vm => vm.ProviderContactPhone);
 
-            return mappings;
-        }
+        return mappings;
     }
 }

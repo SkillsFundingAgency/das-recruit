@@ -1,0 +1,5 @@
+﻿@model BackLinkViewModel
+
+<a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+<a asp-show="@(Model is { IsTaskListCompleted: false, IsTaskList: false })" asp-route="@Model.PreviousStepRoute" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+<a asp-show="@(Model is { IsTaskListCompleted: false, IsTaskList: true })" asp-route="@Model.PreviousStepRoute" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="true" esfa-automation="link-back" class="govuk-back-link">Back</a>
