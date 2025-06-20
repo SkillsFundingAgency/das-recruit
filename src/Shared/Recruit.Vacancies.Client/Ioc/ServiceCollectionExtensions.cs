@@ -191,9 +191,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             MongoDbConventions.RegisterMongoConventions();
 
             services.AddTransient<MongoDbCollectionChecker>();
-            services.AddTransient<ApplicationReviewService>();
-            services.AddTransient<MongoDbApplicationReviewRepository>();
-
             //Repositories
             services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
             
@@ -203,8 +200,14 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             
             services.AddTransient<IUserRepository, MongoDbUserRepository>();
 
+            // IApplicationReviewRepository registration with key
+            services.AddKeyedScoped<IApplicationReviewRepository, ApplicationReviewService>(RepositoryType.Sql);
+            services.AddKeyedScoped<IApplicationReviewRepository, MongoDbApplicationReviewRepository>(RepositoryType.MongoDb);
+
+            // Also registered un-keyed for bulk execution
             services.AddTransient<IApplicationReviewRepository, ApplicationReviewService>();
             services.AddTransient<IApplicationReviewRepository, MongoDbApplicationReviewRepository>();
+
             services.AddTransient<IApplicationReviewRepositoryRunner, ApplicationReviewRepositoryRunner>();
             services.AddTransient<IApplicationReviewRepositoryFactory, ApplicationReviewRepositoryFactory>();
 
