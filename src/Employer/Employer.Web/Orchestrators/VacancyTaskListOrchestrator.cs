@@ -27,6 +27,7 @@ public class VacancyTaskListOrchestrator(
         return new VacancyTaskListViewModel
         {
             AccountLegalEntityCount = employerData.LegalEntities.Count(),
+            ApplicationMethod = vacancy.ApplicationMethod,
             ApprenticeshipType = vacancy.ApprenticeshipType.GetValueOrDefault(),
             EmployerAccountId = vrm.EmployerAccountId,
             Status = vacancy.Status,

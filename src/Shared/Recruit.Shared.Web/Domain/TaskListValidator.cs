@@ -215,7 +215,10 @@ public class TaskListValidator : AbstractValidator<Vacancy>, ITaskListValidator
         // ========================
         // Section Five
         // ========================
-        RuleFor(x => x.HasSubmittedAdditionalQuestions).Must(x => x).RunCondition(TaskListItemFlags.AdditionalQuestions);
+        When(x => x.ApplicationMethod is not ApplicationMethod.ThroughExternalApplicationSite, () =>
+        {
+            RuleFor(x => x.HasSubmittedAdditionalQuestions).Must(x => x).RunCondition(TaskListItemFlags.AdditionalQuestions);
+        });
     }
     
     public Task<bool> IsCompleteAsync(Vacancy vacancy, EmployerTaskListSectionFlags flags)
