@@ -590,8 +590,8 @@
         }
     </dl>
 
-    <h2 class="govuk-heading-m">Application</h2>
-    <dl class="app-summary-list govuk-!-margin-bottom-9">
+    <h2 asp-show="@Model.ApplicationMethod is ApplicationMethod.ThroughFindAnApprenticeship" class="govuk-heading-m">Application</h2>
+    <dl asp-show="@Model.ApplicationMethod is ApplicationMethod.ThroughFindAnApprenticeship" class="app-summary-list govuk-!-margin-bottom-9">
         <field-review-message field-name="@FieldIdentifiers.AdditionalQuestion1" model="@Model"></field-review-message>
         <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="AdditionalQuestion1">
             <dt class="app-summary-list__key" id="@FieldIdentifiers.AdditionalQuestion1">Question 1</dt>
@@ -614,7 +614,6 @@
             </dd>
         </div>
     </dl>
-    
 
     <h2 class="govuk-heading-m">Now submit your vacancy</h2>
         <p class="govuk-body">By submitting this vacancy you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
