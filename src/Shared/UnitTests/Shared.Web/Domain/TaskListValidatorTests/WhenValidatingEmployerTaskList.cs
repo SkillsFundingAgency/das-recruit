@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using AutoFixture;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using NUnit.Framework;
@@ -229,6 +228,27 @@ public class WhenValidatingEmployerTaskList
         
         // assert
         result.Should().BeFalse();
+    }
+    
+    [Test]
+    public async Task Section_Five_Does_Not_Require_Fields_When_Application_Method_Is_External_Website()
+    {
+        // arrange
+        var vacancy = new Fixture().Create<Vacancy>();
+        vacancy.HasSubmittedAdditionalQuestions = false;
+        vacancy.AdditionalQuestion1 = null;
+        vacancy.AdditionalQuestion2 = null;
+        vacancy.ApplicationMethod = ApplicationMethod.ThroughExternalApplicationSite;
+        vacancy.ApprenticeshipType = ApprenticeshipTypes.Standard;
+        vacancy.OwnerType = OwnerType.Employer;
+        
+        var sut = new TaskListValidator();
+        
+        // act
+        bool result = await sut.IsCompleteAsync(vacancy, EmployerTaskListSectionFlags.Five);
+        
+        // assert
+        result.Should().BeTrue();
     }
     
     [Test]

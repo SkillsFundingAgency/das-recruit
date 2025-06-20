@@ -2,6 +2,7 @@
 
 public enum VacancyTaskListSectionState
 {
+    NotRequired,
     NotStarted,
     InProgress,
     Completed

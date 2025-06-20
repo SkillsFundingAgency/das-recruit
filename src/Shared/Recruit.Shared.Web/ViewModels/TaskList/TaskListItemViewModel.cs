@@ -7,6 +7,7 @@ public record TaskListItemViewModel(
     string Text,
     string Route,
     Dictionary<string, string> RouteValues,
-    bool Disabled = false);
+    bool Disabled = false,
+    bool IsTaskList = true);
     
 public record DisabledTaskListItemViewModel(string Text) : TaskListItemViewModel(false, Text, null, null, true);
