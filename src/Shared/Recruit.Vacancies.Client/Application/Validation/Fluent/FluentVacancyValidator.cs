@@ -602,43 +602,60 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateAdditionalQuestions()
         {
-            When(x => !string.IsNullOrEmpty(x.AdditionalQuestion1), () =>
+            When(x => !string.IsNullOrEmpty(x.AdditionalQuestion1) &&
+                x.ApplicationMethod != ApplicationMethod.ThroughExternalApplicationSite, () =>
             {
                 RuleFor(x => x.AdditionalQuestion1)
                     .MaximumLength(250)
-                    .WithMessage("Question 1 must not exceed 250 characters")
-                    .WithErrorCode("321")
-                    .WithState(_ => VacancyRuleSet.AdditionalQuestion1)
+                        .WithMessage(x =>
+                        {
+                            var questionCount = x.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4;
+                            return $"Question {questionCount - 1} must not exceed 250 characters.";
+                        })
+                        .WithErrorCode("321")
+                        .WithState(_ => VacancyRuleSet.AdditionalQuestion1)
                     .ProfanityCheck(_profanityListProvider)
-                    .WithMessage("Questions must not contain a restricted word")
-                    .WithErrorCode("322")
-                    .WithState(_ => VacancyRuleSet.AdditionalQuestion1)
+                        .WithMessage("Questions must not contain a restricted word")
+                        .WithErrorCode("322")
+                        .WithState(_ => VacancyRuleSet.AdditionalQuestion1)
                     .Must(s => !string.IsNullOrEmpty(s) && s.Contains('?'))
-                    .WithMessage("Question 1 must include a question mark ('?')")
-                    .WithErrorCode("340")
-                    .WithState(_ => VacancyRuleSet.AdditionalQuestion1)
-                    .RunCondition(VacancyRuleSet.AdditionalQuestion1);
+                        .WithMessage(x =>
+                        {
+                            var questionCount = x.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4;
+                            return $"Question {questionCount - 1} must include a question mark (‘?’).";
+                        })
+                        .WithErrorCode("340")
+                        .WithState(_ => VacancyRuleSet.AdditionalQuestion1)
+                        .RunCondition(VacancyRuleSet.AdditionalQuestion1);
             });
 
 
-            When(x => !string.IsNullOrEmpty(x.AdditionalQuestion2), () =>
+            When(x => !string.IsNullOrEmpty(x.AdditionalQuestion2) &&
+                x.ApplicationMethod != ApplicationMethod.ThroughExternalApplicationSite, () =>
             {
-                RuleFor(x => x.AdditionalQuestion2)
-                    .MaximumLength(250)
-                    .WithMessage("Question 2 must not exceed 250 characters")
+            RuleFor(x => x.AdditionalQuestion2)
+                .MaximumLength(250)
+                    .WithMessage(x =>
+                    {
+                        var questionCount = x.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4;
+                        return $"Question {questionCount} must not exceed 250 characters.";
+                    })
                     .WithErrorCode("331")
                     .WithState(_ => VacancyRuleSet.AdditionalQuestion2)
-                    .ProfanityCheck(_profanityListProvider)
+                .ProfanityCheck(_profanityListProvider)
                     .WithMessage("Questions must not contain a restricted word")
                     .WithErrorCode("332")
                     .WithState(_ => VacancyRuleSet.AdditionalQuestion2)
-                    .Must(s => !string.IsNullOrEmpty(s) && s.Contains('?'))
-                    .WithMessage("Question 2 must include a question mark ('?')")
+                .Must(s => !string.IsNullOrEmpty(s) && s.Contains('?'))
+                        .WithMessage(x =>
+                        {
+                            var questionCount = x.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4;
+                            return $"Question {questionCount} must include a question mark (‘?’).";
+                        })
                     .WithErrorCode("340")
                     .WithState(_ => VacancyRuleSet.AdditionalQuestion2)
                     .RunCondition(VacancyRuleSet.AdditionalQuestion2);
             });
-
         }
         
         private void ValidateHowTheApprenticeWillTrain()

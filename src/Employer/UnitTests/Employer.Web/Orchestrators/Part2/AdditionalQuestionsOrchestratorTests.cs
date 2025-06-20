@@ -91,6 +91,8 @@ public class AdditionalQuestionsOrchestratorTests
         {
             vacancy.Status = VacancyStatus.Draft;
             validationResult.Errors = new List<EntityValidationError>();
+            editModel.AdditionalQuestion1 = "How did you find the vacancy?";
+            editModel.AdditionalQuestion2 = "Do you have a valid UK driving licence?";
             mockUtility
                 .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.AdditionalQuestions_Post))
                 .ReturnsAsync(vacancy);
@@ -102,7 +104,13 @@ public class AdditionalQuestionsOrchestratorTests
 
             response.Success.Should().BeTrue();
             mockRecruitVacancyClient.Verify(client => client.Validate(vacancy, VacancyRuleSet.AdditionalQuestion1 | VacancyRuleSet.AdditionalQuestion2), Times.Once);
-            mockRecruitVacancyClient.Verify(client => client.UpdateDraftVacancyAsync(vacancy, vacancyUser), Times.Once);
+            response.Errors.Errors
+                .Should()
+                .NotContain(e => e.PropertyName == "AdditionalQuestion1");
+            response.Errors.Errors
+                .Should()
+                .NotContain(e => e.PropertyName == "AdditionalQuestion2");
+        mockRecruitVacancyClient.Verify(client => client.UpdateDraftVacancyAsync(vacancy, vacancyUser), Times.Once);
         }
         
         [Test, MoqAutoData]

@@ -96,6 +96,7 @@ public class VacancyCheckYourAnswersOrchestratorTests
             .Excluding(c=>c.QualificationsDesired)
             .Excluding(c=>c.HasOptedToAddQualifications)
             .Excluding(c=>c.OrganisationName)
+            .Excluding(c=>c.AdditionalQuestionCount)
         );
         viewModel.ApprenticeshipLevel.Should().Be(standard.ApprenticeshipLevel);
         viewModel.Ukprn.Should().Be(routeModel.Ukprn);
