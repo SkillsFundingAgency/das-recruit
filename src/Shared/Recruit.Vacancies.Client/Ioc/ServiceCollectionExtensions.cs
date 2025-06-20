@@ -191,6 +191,8 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             MongoDbConventions.RegisterMongoConventions();
 
             services.AddTransient<MongoDbCollectionChecker>();
+            services.AddTransient<ApplicationReviewService>();
+            services.AddTransient<MongoDbApplicationReviewRepository>();
 
             //Repositories
             services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
