@@ -10,8 +10,10 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.Reports;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
@@ -36,7 +38,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IEntityValidator<Vacancy, VacancyRuleSet> validator,
         IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
         IEmployerAccountProvider employerAccountProvider,
-        IApplicationReviewRepository applicationReviewRepository,
         IVacancyReviewQuery vacancyReviewQuery,
         ICandidateSkillsProvider candidateSkillsProvider,
         IVacancyService vacancyService,
@@ -52,10 +53,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IVacancySummariesProvider vacancySummariesQuery,
         ITimeProvider timeProvider,
         ITrainingProviderService trainingProviderService,
-        IFeature feature)
+        IFeature feature,
+        IApplicationReviewRepositoryFactory applicationReviewRepositoryFactory)
         : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
         private bool IsMongoMigrationFeatureEnabled => feature.IsFeatureEnabled(FeatureNames.MongoMigration);
+        private IApplicationReviewRepository ApplicationReviewRepository =>
+            IsMongoMigrationFeatureEnabled
+                ? applicationReviewRepositoryFactory.GetRepository(RepositoryType.Sql)
+                : applicationReviewRepositoryFactory.GetRepository(RepositoryType.MongoDb);
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
         {
@@ -265,50 +271,49 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task<Domain.Entities.ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId)
         {
-            return applicationReviewRepository.GetAsync(applicationReviewId);
+            return ApplicationReviewRepository.GetAsync(applicationReviewId);
         }
 
         public async Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider = false)
         {
             var applicationReviews = vacancySharedByProvider
-                ? await applicationReviewRepository.GetForSharedVacancySortedAsync(vacancyReference, sortColumn, sortOrder)
-                : await applicationReviewRepository.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder);
+                ? await ApplicationReviewRepository.GetForSharedVacancySortedAsync(vacancyReference, sortColumn, sortOrder)
+                : await ApplicationReviewRepository.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder);
 
             return applicationReviews == null
-                ? new List<VacancyApplication>()
+                ? []
                 : applicationReviews.Select(c => (VacancyApplication)c).ToList();
         }
 
         public async Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference, bool vacancySharedByProvider = false)
         {
             var applicationReviews = vacancySharedByProvider
-                ? await applicationReviewRepository.GetForSharedVacancyAsync(vacancyReference) 
-                : await applicationReviewRepository.GetForVacancyAsync<Domain.Entities.ApplicationReview>(vacancyReference);
+                ? await ApplicationReviewRepository.GetForSharedVacancyAsync(vacancyReference)
+                : await ApplicationReviewRepository.GetForVacancyAsync<Domain.Entities.ApplicationReview>(vacancyReference);
 
-            return applicationReviews == null 
-                ? new List<VacancyApplication>() 
-                : applicationReviews.Select(c=>(VacancyApplication)c).ToList();
+            return applicationReviews == null
+                ? []
+                : applicationReviews.Select(c => (VacancyApplication)c).ToList();
         }
 
         public async Task<List<VacancyApplication>> GetVacancyApplicationsForSelectedIdsAsync(List<Guid> applicationReviewIds)
         {
             var applicationReviews =
-                await applicationReviewRepository.GetAllForSelectedIdsAsync<Domain.Entities.ApplicationReview>(applicationReviewIds);
+                await ApplicationReviewRepository.GetAllForSelectedIdsAsync<Domain.Entities.ApplicationReview>(applicationReviewIds);
 
             return applicationReviews == null
-                ? new List<VacancyApplication>()
+                ? []
                 : applicationReviews.Select(c => (VacancyApplication)c).ToList();
         }
 
         public async Task<List<VacancyApplication>> GetVacancyApplicationsForReferenceAndStatus(Guid vacancyId, ApplicationReviewStatus status)
         {
             var vacancy = await repository.GetVacancyAsync(vacancyId);
-            
             var applicationReviews =
-                await applicationReviewRepository.GetAllForVacancyWithTemporaryStatus(vacancy.VacancyReference!.Value!, status);
+                await ApplicationReviewRepository.GetAllForVacancyWithTemporaryStatus(vacancy.VacancyReference!.Value!, status);
 
             return applicationReviews == null
-                ? new List<VacancyApplication>()
+                ? []
                 : applicationReviews.Select(c => (VacancyApplication)c).ToList();
         }
 
