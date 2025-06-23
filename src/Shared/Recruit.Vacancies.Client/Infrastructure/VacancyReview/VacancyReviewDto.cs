@@ -32,6 +32,7 @@ public class VacancyReviewDto
     public long Ukprn { get; set; }
     public long AccountId { get; set; }
     public long AccountLegalEntityID { get; set; }
+    public DateTime? VacancyClosingDate { get; set; }
 
     public static VacancyReviewDto MapVacancyReviewDto(Domain.Entities.VacancyReview source, IEncodingService encodingService)
     {
@@ -61,11 +62,10 @@ public class VacancyReviewDto
             OwnerType = source.VacancySnapshot.OwnerType.ToString(),
             AccountId = encodingService.Decode(source.VacancySnapshot.EmployerAccountId, EncodingType.AccountId),
             Ukprn = source.VacancySnapshot.TrainingProvider.Ukprn!.Value,
-            AccountLegalEntityID = encodingService.Decode(source.VacancySnapshot.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId)
+            AccountLegalEntityID = encodingService.Decode(source.VacancySnapshot.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId),
+            VacancyClosingDate = source.VacancySnapshot.ClosingDate
         };
     }
-
-    
 
     public static explicit operator Domain.Entities.VacancyReview(VacancyReviewDto source)
     {
