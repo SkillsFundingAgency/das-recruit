@@ -837,7 +837,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 pipeline.Insert(index, employerReviewMatch);
                 
             }
-            if (secondaryMatch != null)
+            if (secondaryMatch != null && !mongoMigrationEnabled)
             {
                 pipeline.Insert(index, secondaryMatch);
             }

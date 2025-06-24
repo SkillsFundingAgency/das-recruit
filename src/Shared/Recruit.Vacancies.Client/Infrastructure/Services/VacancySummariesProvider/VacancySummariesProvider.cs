@@ -600,6 +600,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 document.Add("employerAccountId", employerAccountId);
             }
 
+            var vacancyStatuses = new BsonArray
+            {
+                VacancyStatus.Live.ToString(),
+                VacancyStatus.Closed.ToString()
+            };
+            
             if (status.HasValue)
             {
                 switch (status)
@@ -633,13 +639,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         break;
                     case FilteringOptions.NewSharedApplications:
                     case FilteringOptions.AllSharedApplications:
-                        var vacancyStatuses = new BsonArray
-                        {
-                            VacancyStatus.Live.ToString(),
-                            VacancyStatus.Closed.ToString()
-                        };
                         document.Add("status", new BsonDocument{{"$in", vacancyStatuses }});
                         document.Add("ownerType", "Provider");
+                        break;
+                    case FilteringOptions.NewApplications:    
+                    case FilteringOptions.AllApplications:
+                        document.Add("status", new BsonDocument{{"$in", vacancyStatuses }});
                         break;
                     case FilteringOptions.Dashboard:
                         document.Add("status", new BsonDocument{{"$in", new BsonArray
