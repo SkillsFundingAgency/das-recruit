@@ -205,7 +205,7 @@
                     </div>
                     <div class="@Model.TrainingDescriptionClass">
 
-                        <h3 class="govuk-heading-s">The apprentice's training plan (optional)</h3>
+                        <h3 class="govuk-heading-s">The apprentice's training schedule (optional)</h3>
                         <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
                             
                         <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
@@ -331,7 +331,7 @@
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
                 <div class="@Model.DisabilityConfidentClass" id="@FieldIdentifiers.DisabilityConfident">
-                    <h3 class="govuk-heading-s">Disability Confident (optional)</h3>
+                    <h3 class="govuk-heading-s">Disability Confident</h3>
                     <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
                     <p class="govuk-body" asp-show="@Model.IsNotDisabilityConfident">This employer is not a Disability Confident employer</p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
