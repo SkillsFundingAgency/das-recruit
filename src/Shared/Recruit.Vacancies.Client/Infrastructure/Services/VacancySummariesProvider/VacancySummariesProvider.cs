@@ -65,11 +65,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     "$match",
                     BuildBsonDocumentFilterValues(ukprn, null, FilteringOptions.Dashboard, bsonArray)
                 }
-            }; 
+            };
+            var closingSoonMatch = new BsonDocument
+            {
+                {
+                    "$match",
+                    BuildBsonDocumentFilterValues(ukprn, null, FilteringOptions.ClosingSoonWithNoApplications, bsonArray)
+                }
+            };
             var builder = new VacancySummaryAggQueryBuilder();
             var aggPipelines = builder.GetAggregateQueryPipelineDashboard(match);
             var applicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(applicationsMatch);
-            var closingSoonAggPipeline = builder.GetAggregateQueryPipelineVacanciesClosingSoonDashboard(applicationsMatch, ignoreGetApplicationReview);
+            var closingSoonAggPipeline = builder.GetAggregateQueryPipelineVacanciesClosingSoonDashboard(closingSoonMatch, ignoreGetApplicationReview);
             var dashboardValuesTask =  RunDashboardAggPipelineQuery(aggPipelines);
             var applicationDashboardValuesTask =  ignoreGetApplicationReview ? Task.FromResult(new List<VacancyApplicationsDashboard>()) : RunApplicationsDashboardAggPipelineQuery(applicationAggPipeline);
             var closingSoonDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(closingSoonAggPipeline);
