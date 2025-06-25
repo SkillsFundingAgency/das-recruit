@@ -163,111 +163,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         private readonly string _dashboardPipelineNoApplicationReview = @"[
             {
                 '$project': {
-                    'status': 1,
-                    'vacancyType': 1,
-                    'vacancyReference': 1,
-                    'dateSharedWithEmployer': 1,
-                    'closingSoon' : {
-                        '$cond': {
-                            'if': {'$lte':[
-                                '$closingDate',ISODate('" +
-                                                                        DateTime.UtcNow.AddDays(5).ToString("o",
-                                                                            CultureInfo.InvariantCulture) + @"')
-                            ]},
-                                
-                            'then': {
-                                '$cond':{
-                                    'if': {'$eq': [ '$status', 'Live']},
-                                        'then': true,
-                                        'else': false
-                                }
-                            },
-                            'else': false
-                        }
-                    },
-                    'isTraineeship': {
-                        '$cond': {
-                            'if': {'$eq': [ '$vacancyType', 'Traineeship']},
-                            'then': true,
-                            'else': false
-                        }
-                    },
-                    'isNew': {
-                        '$cond': {
-                            'if': {'$eq': [ '$appStatus', 'New']},
-                            'then': 1,
-                            'else': 0
-                        }
-                    },
-                    'isSuccessful': {
-                        '$cond': {
-                            'if': {'$eq': [ '$appStatus', 'Successful']},
-                            'then': 1,
-                            'else': 0
-                        }
-                    },
-                    'isEmployerReviewed': {
-                        '$cond': {
-                            'if': {
-                                '$or': [
-                                    { '$eq': ['$appStatus', 'EmployerInterviewing'] },
-                                    { '$eq': ['$appStatus', 'EmployerUnsuccessful'] }
-                                ]
-                            },
-                            'then': 1,
-                            'else': 0
-                        }
-                    },
-                    'isUnsuccessful': {
-                        '$cond': {
-                            'if': {'$eq': [ '$appStatus', 'Unsuccessful']},
-                            'then': 1,
-                            'else': 0
-                        }
-                    },
-                    'isShared': {
-                        '$cond': {
-                            'if': {'$eq': [ '$appStatus', 'Shared']},
-                            'then': 1,
-                            'else': 0
-                        }
-                    },
-                    'isSharedWithEmployer': {
-                        '$cond': {
-                            'if': {'$gte': [ '$dateSharedWithEmployer', '1900-01-01T01:00:00.389Z'] },
-                            'then': 1,
-                            'else': 0
-                        }
-                    }
+                    'vacancyReference': 1
                 }
             },
             {
                 '$group': {
                     '_id': {
-                        'vacancyReference': '$vacancyReference',
-                        'status':'$status',
-                        'isTraineeship' : '$isTraineeship',
-                        'closingSoon' : '$closingSoon'    
-                    },
-                    'noOfNewApplications': {
-                        '$sum': '$isNew'
-                    },
-                    'noOfSuccessfulApplications': {
-                        '$sum': '$isSuccessful'
-                    },
-                    'noOfEmployerReviewedApplications': {
-                        '$sum': '$isEmployerReviewed'
-                    },
-                    'noOfUnsuccessfulApplications': {
-                        '$sum': '$isUnsuccessful'
-                    },
-                    'noOfSharedApplications': {
-                        '$sum': '$isShared'
-                    },
-                    'noOfAllSharedApplications': {
-                        '$sum': '$isSharedWithEmployer'
-                    },
-                    'statusCount' : { '$sum' : 1 }                    
+                        'vacancyReference': '$vacancyReference'    
+                    }                    
                 }
             }
         ]";
