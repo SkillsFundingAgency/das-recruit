@@ -58,7 +58,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<long> GetVacancyCount(long ukprn, FilteringOptions? filteringOptions, string searchTerm)
         {
-            return await vacancySummariesQuery.VacancyCount(ukprn, string.Empty, filteringOptions, searchTerm, OwnerType.Provider);
+            if (!IsMongoMigrationFeatureEnabled)
+                return await vacancySummariesQuery.VacancyCount(ukprn, string.Empty, filteringOptions, searchTerm,
+                    OwnerType.Provider);
+            
+            var dashboardStatsTask = await trainingProviderService.GetProviderDashboardStats(ukprn);
+
+            switch (filteringOptions)
+            {
+                case FilteringOptions.NewApplications:
+                    return dashboardStatsTask.NewApplicationsCount;
+                case FilteringOptions.AllSharedApplications:
+                    return dashboardStatsTask.AllSharedApplicationsCount;
+                default:
+                    return await vacancySummariesQuery.VacancyCount(ukprn, string.Empty, filteringOptions, searchTerm, OwnerType.Provider);
+            }
         }
 
         public async Task<ProviderDashboardSummary> GetDashboardSummary(long ukprn)
