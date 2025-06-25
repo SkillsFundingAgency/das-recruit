@@ -70,6 +70,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     return dashboardStatsTask.NewApplicationsCount;
                 case FilteringOptions.AllSharedApplications:
                     return dashboardStatsTask.AllSharedApplicationsCount;
+                case FilteringOptions.EmployerReviewedApplications:
+                    return dashboardStatsTask.EmployerReviewedApplicationsCount;
                 default:
                     return await vacancySummariesQuery.VacancyCount(ukprn, string.Empty, filteringOptions, searchTerm, OwnerType.Provider);
             }

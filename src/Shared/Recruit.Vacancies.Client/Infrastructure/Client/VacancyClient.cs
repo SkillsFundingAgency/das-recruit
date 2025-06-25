@@ -587,7 +587,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public async Task<long> GetVacancyCount(string employerAccountId, FilteringOptions? filteringOptions, string searchTerm)
         {
             var ownerType = (filteringOptions == FilteringOptions.NewSharedApplications || filteringOptions == FilteringOptions.AllSharedApplications) ? OwnerType.Provider : OwnerType.Employer;
-            return await vacancySummariesQuery.VacancyCount(null, employerAccountId, filteringOptions, searchTerm, ownerType);
+
+            if (!IsMongoMigrationFeatureEnabled)
+            {
+                return await vacancySummariesQuery.VacancyCount(null, employerAccountId, filteringOptions, searchTerm, ownerType);
+            }
+
+            var dashboardStats = await employerAccountProvider.GetEmployerDashboardStats(employerAccountId);
+
+            switch (filteringOptions)
+            {
+                case FilteringOptions.NewApplications:
+                    return dashboardStats.NewApplicationsCount;
+                case FilteringOptions.AllSharedApplications:
+                    return dashboardStats.AllSharedApplicationsCount;
+                case FilteringOptions.EmployerReviewedApplications:
+                    return dashboardStats.EmployerReviewedApplicationsCount;
+                default:
+                    return await vacancySummariesQuery.VacancyCount(null, employerAccountId, filteringOptions, searchTerm, ownerType);
+            }
         }
     }
 }
