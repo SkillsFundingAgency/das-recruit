@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             string candidateFeedback);
     }
 
-    public class ApplicationReviewRepositoryRunner(IEnumerable<IApplicationReviewRepository> applicationReviewResolver)
+    public class ApplicationReviewRepositoryRunner(IEnumerable<IApplicationWriteRepository> applicationReviewResolver)
         : IApplicationReviewRepositoryRunner
     {
         public async Task UpdateAsync(Domain.Entities.ApplicationReview applicationReview)
@@ -64,7 +64,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
         }
     }
 
-    public class ApplicationReviewService(IOuterApiClient outerApiClient) : IApplicationReviewRepository
+    public class ApplicationReviewService(IOuterApiClient outerApiClient) : IApplicationWriteRepository
     {
         public async Task UpdateAsync(Domain.Entities.ApplicationReview applicationReview)
         {
