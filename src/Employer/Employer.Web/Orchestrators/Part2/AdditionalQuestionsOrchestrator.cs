@@ -5,6 +5,7 @@ using Esfa.Recruit.Employer.Web.Interfaces;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.AdditionalQuestions;
+using Esfa.Recruit.Employer.Web.ViewModels.Validations;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
@@ -47,6 +48,8 @@ public class AdditionalQuestionsOrchestrator : VacancyValidatingOrchestrator<Add
             AdditionalQuestion2 = vacancy.AdditionalQuestion2,
             FindAnApprenticeshipUrl = _options.Value.FindAnApprenticeshipUrl,
             VacancyTitle = vacancy.Title,
+            ApprenticeshipType = vacancy.ApprenticeshipType.GetValueOrDefault(),
+            QuestionCount = vacancy.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4
         };
             
         if (vacancy.Status == VacancyStatus.Referred)
@@ -65,7 +68,9 @@ public class AdditionalQuestionsOrchestrator : VacancyValidatingOrchestrator<Add
         var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.AdditionalQuestions_Post);
         
         vacancy.HasSubmittedAdditionalQuestions = true;
-            
+
+        editModel.QuestionCount = vacancy.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4;
+
         SetVacancyWithEmployerReviewFieldIndicators(
             vacancy.AdditionalQuestion1,
             FieldIdResolver.ToFieldId(v => v.AdditionalQuestion1),

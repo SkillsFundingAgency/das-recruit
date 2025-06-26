@@ -1,56 +1,44 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
+﻿using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.ViewModels.Part2.ApplicationProcess;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Esfa.Recruit.Employer.Web.Controllers.Part2
+namespace Esfa.Recruit.Employer.Web.Controllers.Part2;
+
+[Route(RoutePaths.AccountVacancyRoutePath)]
+public class ApplicationProcessController(ApplicationProcessOrchestrator orchestrator) : Controller
 {
-    [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class ApplicationProcessController : Controller
+    [HttpGet("application-process", Name = RouteNames.ApplicationProcess_Get)]
+    public async Task<IActionResult> ApplicationProcess(TaskListViewModel vrm)
     {
-        private readonly ApplicationProcessOrchestrator _orchestrator;
+        var vm = await orchestrator.GetApplicationProcessViewModelAsync(vrm);
+        return View(vm);
+    }
 
-        public ApplicationProcessController(ApplicationProcessOrchestrator orchestrator)
+    [HttpPost("application-process", Name = RouteNames.ApplicationProcess_Post)]
+    public async Task<IActionResult> ApplicationProcess(ApplicationProcessEditModel m)
+    {   
+        var response = await orchestrator.PostApplicationProcessEditModelAsync(m, User.ToVacancyUser());
+        if (!response.Success)
         {
-            _orchestrator = orchestrator;
+            response.AddErrorsToModelState(ModelState);
         }
-
-        [HttpGet("application-process", Name = RouteNames.ApplicationProcess_Get)]
-        public async Task<IActionResult> ApplicationProcess(VacancyRouteModel vrm)
+            
+        var vm = await orchestrator.GetApplicationProcessViewModelAsync(m);
+        if (!ModelState.IsValid)
         {
-            var vm = await _orchestrator.GetApplicationProcessViewModelAsync(vrm);
             return View(vm);
         }
-
-        [HttpPost("application-process", Name = RouteNames.ApplicationProcess_Post)]
-        public async Task<IActionResult> ApplicationProcess(ApplicationProcessEditModel m)
-        {   
-            var vm = await _orchestrator.GetApplicationProcessViewModelAsync(m);
             
-            var response = await _orchestrator.PostApplicationProcessEditModelAsync(m, User.ToVacancyUser());
-
-            if (!response.Success)
-            {
-                response.AddErrorsToModelState(ModelState);
-            }
+        if (vm.IsTaskListCompleted)
+        {
+            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId});
+        }
             
-            if (!ModelState.IsValid)
-            {
-                return View(vm);
-            }
-            
-            if (vm.IsTaskListCompleted)
-            {
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId});
-            }
-            
-            return RedirectToRoute(RouteNames.EmployerTaskListGet, new {m.VacancyId, m.EmployerAccountId});
-            }
+        return RedirectToRoute(RouteNames.EmployerTaskListGet, new {m.VacancyId, m.EmployerAccountId});
     }
 }

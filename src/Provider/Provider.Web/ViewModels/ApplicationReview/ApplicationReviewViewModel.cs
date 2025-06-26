@@ -73,7 +73,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview
         public List<WorkExperienceViewModel> Jobs { get; set; }
         public bool IsFaaV2Application { get; set; }
         public bool HasNoJobs => Jobs.Any() == false;
-        
+        public bool IsFoundation { get; set; }
+
         public List<QualificationTypeDisplay> QualificationTypes
         {
             get
