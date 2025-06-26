@@ -165,21 +165,29 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     BuildBsonDocumentFilterValues(null, employerAccountId, FilteringOptions.Dashboard, bsonArray)
                 }
             }; 
+            var closingSoonMatch = new BsonDocument
+            {
+                {
+                    "$match",
+                    BuildBsonDocumentFilterValues(null, employerAccountId, FilteringOptions.ClosingSoonWithNoApplications, bsonArray)
+                }
+            };
             var builder = new VacancySummaryAggQueryBuilder();
             var aggPipelines = builder.GetAggregateQueryPipelineDashboard(match,employerReviewMatch);
             var applicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(applicationsMatch, employerReviewMatch);
             var sharedApplicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(match, liveVacanciesMatch);
-            var closingSoonAggPipeline = builder.GetAggregateQueryPipelineVacanciesClosingSoonDashboard(applicationsMatch, ignoreGetApplicationReview, employerReviewMatch);
+            var closingSoonAggPipeline =builder.GetAggregateQueryPipelineVacanciesClosingSoonDashboard(closingSoonMatch, ignoreGetApplicationReview, employerReviewMatch);
             
             var dashboardValuesTask = RunDashboardAggPipelineQuery(aggPipelines);
             var applicationDashboardValuesTask = ignoreGetApplicationReview ? Task.FromResult(new List<VacancyApplicationsDashboard>()) : RunApplicationsDashboardAggPipelineQuery(applicationAggPipeline);
             var sharedApplicationDashboardValuesTask = ignoreGetApplicationReview ? Task.FromResult(new List<VacancySharedApplicationsDashboard>()) : RunSharedApplicationsDashboardAggPipelineQuery(sharedApplicationAggPipeline);
-            var closingSoonDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(closingSoonAggPipeline);
+            var closingSoonDashboardValuesTask =ignoreGetApplicationReview ? Task.FromResult(new List<VacancyApplicationsDashboard>()) :  RunApplicationsDashboardAggPipelineQuery(closingSoonAggPipeline);
+            var closingSoonReferencesTask = RunClosingSoonVacancies(closingSoonAggPipeline);
             
-            await Task.WhenAll(dashboardValuesTask, applicationDashboardValuesTask, sharedApplicationDashboardValuesTask, closingSoonDashboardValuesTask);
+            await Task.WhenAll(dashboardValuesTask, applicationDashboardValuesTask, sharedApplicationDashboardValuesTask, closingSoonDashboardValuesTask,closingSoonReferencesTask);
 
             // If the Mongo migration feature is enabled, retrieve the application review stats
-            var closingSoonDashboardValues = closingSoonDashboardValuesTask.Result;
+            var closingSoonDashboardValues = closingSoonReferencesTask.Result;
             if (closingSoonDashboardValues == null || closingSoonDashboardValues.Count == 0)
             {
                 return new VacancyDashboard
@@ -192,7 +200,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             }
 
             var vacancyReferences = closingSoonDashboardValues
-                .Select(x => x.VacancyReference)
                 .Distinct()
                 .ToList();
 
@@ -203,8 +210,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 .GroupBy(x => x.VacancyReference)
                 .ToDictionary(g => g.Key, g => g.First());
 
-            int closingSoonCount = closingSoonDashboardValuesTask.Result.Count(vacancySummary =>
-                applicationReviewStatsLookup.TryGetValue(vacancySummary.VacancyReference, out var applicationReview) &&
+            int closingSoonCount = closingSoonReferencesTask.Result.Count(vacancySummary =>
+                applicationReviewStatsLookup.TryGetValue(vacancySummary, out var applicationReview) &&
                 applicationReview.HasNoApplications);
 
             return new VacancyDashboard
