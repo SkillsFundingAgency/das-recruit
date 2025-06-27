@@ -59,7 +59,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private Vacancy CreateClone(CloneVacancyCommand message, Vacancy vacancy)
         {
             var now = _timeProvider.Now;
-
             var clone = JsonConvert.DeserializeObject<Vacancy>(JsonConvert.SerializeObject(vacancy));
 
             // Properties to replace
@@ -75,6 +74,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             clone.IsDeleted = false;
             clone.ClosingDate = message.ClosingDate;
             clone.StartDate = message.StartDate;
+            clone.HasOptedToAddQualifications = vacancy.HasOptedToAddQualifications ?? vacancy.Qualifications is { Count: > 0 };
 
             // Properties to remove
             clone.VacancyReference = null;
