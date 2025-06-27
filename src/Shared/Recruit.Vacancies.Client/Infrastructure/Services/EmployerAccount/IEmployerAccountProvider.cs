@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 
@@ -20,5 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             int pageSize,
             string sortColumn,
             bool isAscending);
+
+        Task<GetVacanciesDashboardResponse> GetEmployerVacancyDashboardStats(string hashedAccountId, int pageNumber, List<ApplicationReviewStatus> statuses);
     }
 }
