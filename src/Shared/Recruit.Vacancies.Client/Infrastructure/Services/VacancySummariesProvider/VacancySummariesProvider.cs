@@ -204,7 +204,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 .Distinct()
                 .ToList();
 
-            var dashboardStats = await _employerAccountProvider.GetEmployerDashboardApplicationReviewStats(employerAccountId, vacancyReferences);
+            var dashboardStats = await _employerAccountProvider.GetEmployerDashboardApplicationReviewStats(employerAccountId, vacancyReferences, "");
 
             var applicationReviewStatsLookup = dashboardStats
                 .ApplicationReviewStatsList
@@ -414,7 +414,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 .Select(x => x.VacancyReference.Value)
                 .ToList();
 
-            var dashboardStats = await _employerAccountProvider.GetEmployerDashboardApplicationReviewStats(employerAccountId, vacancyReferences);
+            var applicationSharedFilteringStatus = "";
+            if (status is FilteringOptions.NewSharedApplications)
+            {
+                applicationSharedFilteringStatus = ApplicationReviewStatus.Shared.ToString();
+            }
+
+            if (status is FilteringOptions.AllSharedApplications)
+            {
+                applicationSharedFilteringStatus = ApplicationReviewStatus.AllShared.ToString();
+            }
+            
+            
+            var dashboardStats = await _employerAccountProvider.GetEmployerDashboardApplicationReviewStats(employerAccountId, vacancyReferences, applicationSharedFilteringStatus);
 
             var applicationReviewStatsLookup = dashboardStats.ApplicationReviewStatsList
                 .ToDictionary(x => x.VacancyReference);

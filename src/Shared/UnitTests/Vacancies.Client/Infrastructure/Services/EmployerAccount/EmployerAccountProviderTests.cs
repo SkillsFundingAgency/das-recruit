@@ -17,6 +17,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public async Task GetEmployerDashboardApplicationReviewStats_Should_Return_As_Expected(
             string hashedAccountId,
             long accountId,
+            string applicationSharedFilteringStatus,
             List<long> vacancyReferences,
             GetApplicationReviewStatsResponse response,
             [Frozen] Mock<IEncodingService> encodingService,
@@ -26,12 +27,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             encodingService.Setup(x => x.Decode(hashedAccountId, EncodingType.AccountId))
                 .Returns(accountId);
 
-            var expectedGetUrl = new GetEmployerApplicationReviewsCountApiRequest(accountId, vacancyReferences);
+            var expectedGetUrl = new GetEmployerApplicationReviewsCountApiRequest(accountId, vacancyReferences, applicationSharedFilteringStatus);
             outerApiClient.Setup(x => x.Post<GetApplicationReviewStatsResponse>(
                     It.Is<GetEmployerApplicationReviewsCountApiRequest>(r => r.PostUrl == expectedGetUrl.PostUrl)))
                 .ReturnsAsync(response);
 
-            var result = await employerAccountProvider.GetEmployerDashboardApplicationReviewStats(hashedAccountId, vacancyReferences);
+            var result = await employerAccountProvider.GetEmployerDashboardApplicationReviewStats(hashedAccountId, vacancyReferences, applicationSharedFilteringStatus);
 
 
             result.Should().BeEquivalentTo(response);

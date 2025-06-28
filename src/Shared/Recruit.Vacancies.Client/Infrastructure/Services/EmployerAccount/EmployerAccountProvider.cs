@@ -117,7 +117,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
         }
 
-        public async Task<GetApplicationReviewStatsResponse> GetEmployerDashboardApplicationReviewStats(string hashedAccountId, List<long> vacancyReferences)
+        public async Task<GetApplicationReviewStatsResponse> GetEmployerDashboardApplicationReviewStats(string hashedAccountId, List<long> vacancyReferences, string applicationSharedFilteringStatus)
         {
             try
             {
@@ -128,7 +128,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
 
                 return await retryPolicy.Execute(_ => outerApiClient.Post<GetApplicationReviewStatsResponse>(
                         new GetEmployerApplicationReviewsCountApiRequest(accountId,
-                            vacancyReferences)),
+                            vacancyReferences,applicationSharedFilteringStatus)),
                     new Dictionary<string, object>
                     {
                         {
