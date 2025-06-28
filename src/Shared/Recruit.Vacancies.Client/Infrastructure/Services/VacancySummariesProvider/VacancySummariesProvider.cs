@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
@@ -225,7 +226,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             };
         }
         
-        public async Task<IList<VacancySummary>> GetProviderOwnedVacancySummariesByUkprnAsync(long ukprn, int page, FilteringOptions? status, string searchTerm)
+        public async Task<(IList<VacancySummary>, int? totalCount)> GetProviderOwnedVacancySummariesByUkprnAsync(long ukprn, int page, FilteringOptions? status, string searchTerm)
         {
             var bsonArray = new BsonArray
             {
@@ -240,20 +241,59 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     BuildBsonDocumentFilterValues(ukprn,string.Empty, status, bsonArray)
                 }
             };
+            
+            
+            GetVacanciesDashboardResponse results = null;
+            BsonDocument vacancyReferenceMatch = null; 
+            int? totalCount = null;
+            if (status is FilteringOptions.EmployerReviewedApplications or FilteringOptions.AllApplications or FilteringOptions.NewApplications)
+            {
+                BsonDocument refs = new BsonDocument();
+                var applicationReviewStatusList = new List<ApplicationReviewStatus>();
+
+                if (status == FilteringOptions.EmployerReviewedApplications)
+                {
+                    applicationReviewStatusList.Add(ApplicationReviewStatus.EmployerInterviewing);
+                    applicationReviewStatusList.Add(ApplicationReviewStatus.EmployerUnsuccessful);
+                }
+
+                if (status == FilteringOptions.AllApplications)
+                {
+                    applicationReviewStatusList.Add(ApplicationReviewStatus.New);
+                    applicationReviewStatusList.Add(ApplicationReviewStatus.Unsuccessful);
+                    applicationReviewStatusList.Add(ApplicationReviewStatus.Successful);
+                }
+                if (status == FilteringOptions.NewApplications)
+                {
+                    applicationReviewStatusList.Add(ApplicationReviewStatus.New);
+                }
+                
+                results = await _trainingProviderService.GetProviderDashboardVacanciesByApplicationReviewStatuses(ukprn,
+                applicationReviewStatusList, page);
+                
+                refs.Add("vacancyReference", new BsonDocument { { "$in", new BsonArray(results.Items.Select(result => result.VacancyReference).ToArray()) } });
+                vacancyReferenceMatch = new BsonDocument{
+                {
+                    "$match",
+                    refs
+                }};
+                totalCount = results.Items.Count;
+            }
+            
             var secondaryMath = new BsonDocument
             {
                 {
                     "$match",
                     BuildSecondaryBsonDocumentFilter(status, searchTerm)
                 }
-            };
-            
-            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath, _isMongoMigrationFeatureEnabled);
+            };   
+                
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath, _isMongoMigrationFeatureEnabled,null,vacancyReferenceMatch);
 
             var pipelineResult = await RunAggPipelineQuery(aggPipeline);
 
             if (!_isMongoMigrationFeatureEnabled)
-                return pipelineResult;
+                return (pipelineResult,totalCount);
 
             // If the Mongo migration feature is enabled, retrieve the application review stats
             var vacancyReferences = pipelineResult
@@ -280,10 +320,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 vacancySummary.NoOfEmployerReviewedApplications = applicationReview.EmployerReviewedApplications;
             }
 
-            return pipelineResult;
+            return (pipelineResult,totalCount);
         }
 
-        public async Task<IList<VacancySummary>> GetEmployerOwnedVacancySummariesByEmployerAccountId(string employerAccountId, int page,
+        public async Task<(IList<VacancySummary>, int? totalCount)> GetEmployerOwnedVacancySummariesByEmployerAccountId(string employerAccountId, int page,
             FilteringOptions? status, string searchTerm)
         {
             var bsonArray = new BsonArray
@@ -320,13 +360,53 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     BuildSecondaryBsonDocumentFilter(status, searchTerm)
                 }
             };
+            GetVacanciesDashboardResponse results = null;
+            BsonDocument vacancyReferenceMatch = null; 
+            int? totalCount = null;
+            if (status is FilteringOptions.NewSharedApplications or FilteringOptions.AllSharedApplications or FilteringOptions.AllApplications or FilteringOptions.NewApplications)
+            {
+                BsonDocument refs = new BsonDocument();
+                var applicationReviewStatusList = new List<ApplicationReviewStatus>();
+
+                if (status is FilteringOptions.NewSharedApplications)
+                {
+                    applicationReviewStatusList.Add(ApplicationReviewStatus.Shared);
+                }
+
+                if (status is FilteringOptions.AllSharedApplications)
+                {
+                    applicationReviewStatusList.Add(ApplicationReviewStatus.AllShared);
+                }
+
+                if (status == FilteringOptions.AllApplications)
+                {
+                    applicationReviewStatusList.Add(ApplicationReviewStatus.New);
+                    applicationReviewStatusList.Add(ApplicationReviewStatus.Unsuccessful);
+                    applicationReviewStatusList.Add(ApplicationReviewStatus.Successful);
+                }
+                if (status == FilteringOptions.NewApplications)
+                {
+                    applicationReviewStatusList.Add(ApplicationReviewStatus.New);
+                }
+                
+                results = await _employerAccountProvider.GetEmployerVacancyDashboardStats(employerAccountId,page,
+                    applicationReviewStatusList);
+                
+                refs.Add("vacancyReference", new BsonDocument { { "$in", new BsonArray(results.Items.Select(result => result.VacancyReference).ToArray()) } });
+                vacancyReferenceMatch = new BsonDocument{
+                {
+                    "$match",
+                    refs
+                }};
+                totalCount = results.Items.Count;
+            }
             
-            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath,_isMongoMigrationFeatureEnabled, employerReviewMatch);
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath,_isMongoMigrationFeatureEnabled, employerReviewMatch,vacancyReferenceMatch);
 
             var pipelineResult = await RunAggPipelineQuery(aggPipeline);
 
             if (!_isMongoMigrationFeatureEnabled)
-                return pipelineResult;
+                return (pipelineResult,null);
 
             // If the Mongo migration feature is enabled, retrieve the application review stats
             var vacancyReferences = pipelineResult
@@ -352,7 +432,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 vacancySummary.NoOfEmployerReviewedApplications = applicationReview.EmployerReviewedApplications;
             }
 
-            return pipelineResult;
+            return (pipelineResult,totalCount);
         }
 
         public async Task<IList<TransferInfo>> GetTransferredFromProviderAsync(long ukprn)

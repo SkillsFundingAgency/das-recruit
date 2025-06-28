@@ -220,8 +220,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return new EmployerDashboard
             {
                 Id = QueryViewType.EmployerDashboard.GetIdValue(employerAccountId),
-                Vacancies = vacancySummaries,
-                LastUpdated = timeProvider.Now
+                Vacancies = vacancySummaries.Item1,
+                LastUpdated = timeProvider.Now,
+                TotalVacancies = vacancySummaries.totalCount
             };
         }
 

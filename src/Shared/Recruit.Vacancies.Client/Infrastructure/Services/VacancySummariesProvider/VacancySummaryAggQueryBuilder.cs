@@ -730,7 +730,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         ]";
 
 
-        public static BsonDocument[] GetAggregateQueryPipeline(BsonDocument vacanciesMatchClause, int pageNumber, BsonDocument secondaryMatch, bool mongoMigrationEnabled, BsonDocument employerReviewMatch = null)
+        public static BsonDocument[] GetAggregateQueryPipeline(BsonDocument vacanciesMatchClause, int pageNumber, BsonDocument secondaryMatch, bool mongoMigrationEnabled, BsonDocument employerReviewMatch = null, BsonDocument vacancyRefMatch = null)
         {
             var pipeline = mongoMigrationEnabled ? BsonSerializer.Deserialize<BsonArray>(PipelineNoApplicationReview) : BsonSerializer.Deserialize<BsonArray>(Pipeline);
 
@@ -743,6 +743,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             if (secondaryMatch != null && !mongoMigrationEnabled)
             {
                 pipeline.Insert(index, secondaryMatch);
+            }
+
+            if (vacancyRefMatch != null)
+            {
+                pipeline.Insert(index, vacancyRefMatch);
             }
             
             pipeline.Insert(pipeline.Count, new BsonDocument { { "$skip", (pageNumber - 1) * 25 } });

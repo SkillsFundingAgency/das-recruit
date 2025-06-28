@@ -138,7 +138,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             await Task.WhenAll(vacancySummariesTasks, transferredVacanciesTasks);
 
-            var vacancySummaries = vacancySummariesTasks.Result
+            var vacancySummaries = vacancySummariesTasks.Result.Item1
                 .Where(c=> !c.IsTraineeship).ToList();
             var transferredVacancies = transferredVacanciesTasks.Result.Select(t =>
                 new ProviderDashboardTransferredVacancy
@@ -158,7 +158,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 Id = QueryViewType.ProviderDashboard.GetIdValue(ukprn),
                 Vacancies = vacancySummaries,
                 TransferredVacancies = transferredVacancies,
-                LastUpdated = timeProvider.Now
+                LastUpdated = timeProvider.Now,
+                TotalVacancies = vacancySummariesTasks.Result.totalCount
             };
         }
 
