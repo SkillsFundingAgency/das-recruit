@@ -16,6 +16,6 @@ public class WhenBuildingGetEmployerVacanciesDashboardApiRequest
     {
         var actual = new GetEmployerDashboardVacanciesApiRequest(accountId, pageNumber, status);
 
-        actual.GetUrl.Should().Be($"employers/dashboard/{accountId}/vacancies?pageNumber={pageNumber}&status={string.Join("&status=", status)}");
+        actual.GetUrl.Should().Be($"employerAccounts/{accountId}/dashboard/vacancies?pageNumber={pageNumber}&status={string.Join("&status=", status)}");
     }
 }
