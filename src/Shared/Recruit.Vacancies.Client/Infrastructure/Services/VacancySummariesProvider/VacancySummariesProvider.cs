@@ -440,6 +440,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 vacancySummary.NoOfSuccessfulApplications = applicationReview.SuccessfulApplications;
                 vacancySummary.NoOfUnsuccessfulApplications = applicationReview.UnsuccessfulApplications;
                 vacancySummary.NoOfNewApplications = applicationReview.NewApplications;
+                vacancySummary.NoOfAllSharedApplications = status == FilteringOptions.AllSharedApplications ? applicationReview.Applications : applicationReview.SharedApplications;
                 vacancySummary.NoOfSharedApplications = applicationReview.SharedApplications;
                 vacancySummary.NoOfEmployerReviewedApplications = applicationReview.EmployerReviewedApplications;
             }
