@@ -729,8 +729,29 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             }
         ]";
 
+        private const string PipelineForCountMigration = @"[
+            {
+                '$project': {
+                    'vacancyGuid': '$_id',
+                    'vacancyReference': 1
+                }
+            },
+            {
+                '$project': {
+                    'vacancyGuid': 1,
+                    'vacancyReference': 1
+                }
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'vacancyGuid': '$vacancyGuid',
+                        'vacancyReference': '$vacancyReference'
+                }}
+            }
+        ]";
 
-        public static BsonDocument[] GetAggregateQueryPipeline(BsonDocument vacanciesMatchClause, int pageNumber, BsonDocument secondaryMatch, bool mongoMigrationEnabled, BsonDocument employerReviewMatch = null, BsonDocument vacancyRefMatch = null)
+        public static BsonDocument[] GetAggregateQueryPipeline(BsonDocument vacanciesMatchClause, int pageNumber, BsonDocument secondaryMatch, bool mongoMigrationEnabled, BsonDocument employerReviewMatch = null, BsonDocument vacancyRefMatch = null, BsonDocument searchMatch = null)
         {
             var pipeline = mongoMigrationEnabled ? BsonSerializer.Deserialize<BsonArray>(PipelineNoApplicationReview) : BsonSerializer.Deserialize<BsonArray>(Pipeline);
 
@@ -743,6 +764,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             if (secondaryMatch != null && !mongoMigrationEnabled)
             {
                 pipeline.Insert(index, secondaryMatch);
+            }
+
+            if (searchMatch != null)
+            {
+                pipeline.Insert(index, searchMatch);
             }
 
             if (vacancyRefMatch != null)
@@ -760,13 +786,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return pipelineDefinition;
         }
 
-        public static BsonDocument[] GetAggregateQueryPipelineDocumentCount(BsonDocument vacanciesMatchClause, BsonDocument secondaryMatch,BsonDocument employerReviewMatch = null)
+        public static BsonDocument[] GetAggregateQueryPipelineDocumentCount(BsonDocument vacanciesMatchClause, BsonDocument secondaryMatch,BsonDocument employerReviewMatch, BsonDocument searchMatch,bool mongoMigrationEnabled)
         {
-            var pipeline = BsonSerializer.Deserialize<BsonArray>(PipelineForCount);
-            pipeline.Insert(2, secondaryMatch);
+            var pipeline = BsonSerializer.Deserialize<BsonArray>(mongoMigrationEnabled ? PipelineForCountMigration : PipelineForCount);
+            if (!mongoMigrationEnabled)
+            {
+                pipeline.Insert(2, secondaryMatch);    
+            }
+            
+            
             if (employerReviewMatch != null)
             {
-                pipeline.Insert(2, employerReviewMatch);    
+                pipeline.Insert(0, employerReviewMatch);    
+            }
+            if (searchMatch != null)
+            {
+                pipeline.Insert(0, searchMatch);    
             }
             pipeline.Insert(pipeline.Count, new BsonDocument { { "$count", "total" } });
             
