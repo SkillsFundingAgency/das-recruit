@@ -40,6 +40,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         public async Task<VacanciesViewModel> GetVacanciesViewModelAsync(
             VacancyUser user, string filter, int page, string searchTerm)
         {
+            var appReviews = _recruitVacancyClient.GetVacancyApplicationsSortedAsync(1000000002,
+                SortColumn.DateApplied, SortOrder.Ascending, false);
+
             var filteringOption = SanitizeFilter(filter);
             var getDashboardTask = _providerVacancyClient.GetDashboardAsync(user.Ukprn.Value, page, filteringOption, searchTerm);
             var getUserDetailsTask = _recruitVacancyClient.GetUsersDetailsByDfEUserId(user.DfEUserId) ?? _recruitVacancyClient.GetUsersDetailsAsync(user.UserId);

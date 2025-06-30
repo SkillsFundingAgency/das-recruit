@@ -32,8 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             string candidateFeedback);
     }
 
-    public class ApplicationReviewRepositoryRunner(
-        IEnumerable<IApplicationReviewRepository> applicationReviewResolver)
+    public class ApplicationReviewRepositoryRunner(IEnumerable<IApplicationWriteRepository> applicationReviewResolver)
         : IApplicationReviewRepositoryRunner
     {
         public async Task UpdateAsync(Domain.Entities.ApplicationReview applicationReview)
@@ -69,9 +68,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
         }
     }
 
-    public class ApplicationReviewService(
-        IOuterApiClient outerApiClient,
-        ILogger<ApplicationReviewService> logger) : IApplicationReviewRepository
+    public class ApplicationReviewService(IOuterApiClient outerApiClient, ILogger<ApplicationReviewService> logger) : IApplicationWriteRepository, ISqlDbRepository
     {
         public async Task UpdateAsync(Domain.Entities.ApplicationReview applicationReview)
         {
@@ -168,9 +165,47 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             throw new NotImplementedException();
         }
 
-        public Task<List<T>> GetForVacancyAsync<T>(long vacancyReference)
+        public async Task<List<T>> GetForVacancyAsync<T>(long vacancyReference)
         {
-            throw new NotImplementedException();
+            var response = await outerApiClient.Get<GetApplicationReviewsByVacancyReferenceApiResponse>(
+                new GetApplicationReviewsByVacancyReferenceApiRequest(vacancyReference));
+
+            if (response?.ApplicationReviews == null || response.ApplicationReviews.Count == 0) return [];
+
+            var applicationReviews = response.ApplicationReviews
+                .Where(fil => fil.DateSharedWithEmployer != null)
+                .Select(ar => new Domain.Entities.ApplicationReview
+                {
+                    Id = ar.Id,
+                    CandidateId = ar.CandidateId,
+                    VacancyReference = ar.VacancyReference,
+                    Status = Enum.Parse<ApplicationReviewStatus>(ar.Status),
+                    TemporaryReviewStatus = ar.TemporaryReviewStatus != null
+                        ? Enum.Parse<ApplicationReviewStatus>(ar.TemporaryReviewStatus)
+                        : null,
+                    CreatedDate = ar.CreatedDate,
+                    DateSharedWithEmployer = ar.DateSharedWithEmployer,
+                    ReviewedDate = ar.ReviewedDate,
+                    SubmittedDate = ar.SubmittedDate,
+                    WithdrawnDate = ar.WithdrawnDate,
+                    CandidateFeedback = ar.CandidateFeedback,
+                    EmployerFeedback = ar.EmployerFeedback,
+                    VacancyTitle = ar.VacancyTitle,
+                    HasEverBeenEmployerInterviewing = ar.HasEverBeenEmployerInterviewing,
+                    IsWithdrawn = ar.WithdrawnDate != null,
+                    AdditionalQuestion1 = ar.AdditionalQuestion1,
+                    AdditionalQuestion2 = ar.AdditionalQuestion2,
+                    Application = ar.Application != null ? new Domain.Entities.Application
+                    {
+                        ApplicationId = ar.Application.Id,
+                        CandidateId = ar.Application.CandidateId,
+                        FirstName = ar.Application.Candidate?.FirstName,
+                        LastName = ar.Application.Candidate?.LastName,
+                        CandidateAppliedLocations = ar.Application.EmploymentLocation != null ? GetCandidateAppliedLocation(ar.Application.EmploymentLocation.Addresses) : null,
+                    } : null
+                }).ToList();
+
+            return applicationReviews.Cast<T>().ToList();
         }
 
         public async Task<List<Domain.Entities.ApplicationReview>> GetForVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
@@ -218,9 +253,47 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             return sortedResult.ToList();
         }
 
-        public Task<List<Domain.Entities.ApplicationReview>> GetForSharedVacancyAsync(long vacancyReference)
+        public async Task<List<Domain.Entities.ApplicationReview>> GetForSharedVacancyAsync(long vacancyReference)
         {
-            throw new NotImplementedException();
+            var response = await outerApiClient.Get<GetApplicationReviewsByVacancyReferenceApiResponse>(
+                new GetApplicationReviewsByVacancyReferenceApiRequest(vacancyReference));
+
+            if (response?.ApplicationReviews == null || response.ApplicationReviews.Count == 0) return [];
+
+            var applicationReviews = response.ApplicationReviews
+                .Where(fil => fil.DateSharedWithEmployer != null)
+                .Select(ar => new Domain.Entities.ApplicationReview
+                {
+                    Id = ar.Id,
+                    CandidateId = ar.CandidateId,
+                    VacancyReference = ar.VacancyReference,
+                    Status = Enum.Parse<ApplicationReviewStatus>(ar.Status),
+                    TemporaryReviewStatus = ar.TemporaryReviewStatus != null
+                        ? Enum.Parse<ApplicationReviewStatus>(ar.TemporaryReviewStatus)
+                        : null,
+                    CreatedDate = ar.CreatedDate,
+                    DateSharedWithEmployer = ar.DateSharedWithEmployer,
+                    ReviewedDate = ar.ReviewedDate,
+                    SubmittedDate = ar.SubmittedDate,
+                    WithdrawnDate = ar.WithdrawnDate,
+                    CandidateFeedback = ar.CandidateFeedback,
+                    EmployerFeedback = ar.EmployerFeedback,
+                    VacancyTitle = ar.VacancyTitle,
+                    HasEverBeenEmployerInterviewing = ar.HasEverBeenEmployerInterviewing,
+                    IsWithdrawn = ar.WithdrawnDate != null,
+                    AdditionalQuestion1 = ar.AdditionalQuestion1,
+                    AdditionalQuestion2 = ar.AdditionalQuestion2,
+                    Application = ar.Application != null ? new Domain.Entities.Application
+                    {
+                        ApplicationId = ar.Application.Id,
+                        CandidateId = ar.Application.CandidateId,
+                        FirstName = ar.Application.Candidate?.FirstName,
+                        LastName = ar.Application.Candidate?.LastName,
+                        CandidateAppliedLocations = ar.Application.EmploymentLocation != null ? GetCandidateAppliedLocation(ar.Application.EmploymentLocation.Addresses) : null,
+                    } : null
+                }).ToList();
+
+            return applicationReviews.ToList();
         }
 
         public async Task<List<Domain.Entities.ApplicationReview>> GetForSharedVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)

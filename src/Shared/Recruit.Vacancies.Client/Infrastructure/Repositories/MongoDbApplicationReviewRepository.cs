@@ -14,7 +14,7 @@ using Polly;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
-    public class MongoDbApplicationReviewRepository : MongoDbCollectionBase, IApplicationReviewRepository, IApplicationReviewQuery
+    internal sealed class MongoDbApplicationReviewRepository : MongoDbCollectionBase, IApplicationReviewRepository, IApplicationReviewQuery, IApplicationWriteRepository, IMongoDbRepository
     {
         private class WrappedVacancyReference
         {
