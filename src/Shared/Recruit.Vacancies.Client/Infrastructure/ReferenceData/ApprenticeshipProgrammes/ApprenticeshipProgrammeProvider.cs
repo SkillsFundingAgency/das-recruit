@@ -28,11 +28,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
             _outerApiClient = outerApiClient;
             _feature = feature;
             var env = configuration["ResourceEnvironmentName"];
-            if (env.Equals("TEST", StringComparison.CurrentCultureIgnoreCase) ||
-                env.Equals("TEST2", StringComparison.CurrentCultureIgnoreCase) ||
-                env.Equals("DEMO", StringComparison.CurrentCultureIgnoreCase) ||
-                env.Equals("AT", StringComparison.CurrentCultureIgnoreCase) ||
-                env.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase))
+            if (env != null && (env.Equals("TEST", StringComparison.CurrentCultureIgnoreCase) ||
+                                env.Equals("TEST2", StringComparison.CurrentCultureIgnoreCase) ||
+                                env.Equals("DEMO", StringComparison.CurrentCultureIgnoreCase) ||
+                                env.Equals("AT", StringComparison.CurrentCultureIgnoreCase) ||
+                                env.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase)))
             {
                 _isTestEnvironment = true;
             }
