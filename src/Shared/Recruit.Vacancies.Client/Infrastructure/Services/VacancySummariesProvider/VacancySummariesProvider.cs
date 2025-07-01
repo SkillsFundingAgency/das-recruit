@@ -277,7 +277,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     "$match",
                     refs
                 }};
-                totalCount = results.Items.Count;
+                totalCount = results.TotalCount;
             }
             
             var secondaryMath = new BsonDocument
@@ -295,7 +295,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     BuildSearchMatch(searchTerm)
                 }
             };
-            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath, _isMongoMigrationFeatureEnabled,null,vacancyReferenceMatch, searchMatch);
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, 1,secondaryMath, _isMongoMigrationFeatureEnabled,null,vacancyReferenceMatch, searchMatch);
 
             var pipelineResult = await RunAggPipelineQuery(aggPipeline);
 
@@ -413,7 +413,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     "$match",
                     refs
                 }};
-                totalCount = results.Items.Count;
+                totalCount = results.TotalCount;
             }
             
             var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath,_isMongoMigrationFeatureEnabled, employerReviewMatch,vacancyReferenceMatch, searchMatch);
