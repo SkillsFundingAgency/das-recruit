@@ -11,6 +11,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Em
         }
 
         public IEnumerable<VacancySummary> Vacancies { get; set; }
-
+        public int? TotalVacancies { get; set; }
     }
 }
