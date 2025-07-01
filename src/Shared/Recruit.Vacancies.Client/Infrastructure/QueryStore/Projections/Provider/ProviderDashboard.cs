@@ -11,6 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Pr
         }
 
         public IEnumerable<VacancySummary> Vacancies { get; set; }
+        public int? TotalVacancies { get; set; } = null;
 
         public IEnumerable<ProviderDashboardTransferredVacancy> TransferredVacancies { get; set; }
 

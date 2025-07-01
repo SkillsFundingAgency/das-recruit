@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
@@ -31,5 +32,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
         /// <param name="ukprn"></param>
         /// <returns></returns>
         Task<GetDashboardCountApiResponse> GetProviderDashboardStats(long ukprn);
+        
+        
+        /// <summary>
+        /// Contract to get the vacancies under a application review statuses.
+        /// </summary>
+        /// <returns></returns>
+        Task<GetVacanciesDashboardResponse> GetProviderDashboardVacanciesByApplicationReviewStatuses(long ukprn,
+            List<ApplicationReviewStatus> vacancyReferences, int pageNumber);
     }
 }
