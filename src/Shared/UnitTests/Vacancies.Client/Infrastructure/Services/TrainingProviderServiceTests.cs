@@ -3,6 +3,7 @@ using AutoFixture.NUnit3;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
@@ -11,6 +12,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProvide
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
+using TrainingProvider = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders.TrainingProvider;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.Services
 {
@@ -99,6 +101,25 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 .ReturnsAsync(response);
 
             var result = await trainingProviderService.GetProviderDashboardApplicationReviewStats(ukprn, vacancyReferences);
+
+            result.Should().BeEquivalentTo(response);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task GetProviderDashboardVacanciesByApplicationReviewStatuses_Should_Return_As_Expected(
+            long ukprn,
+            int pageNumber,
+            List<ApplicationReviewStatus> status,
+            GetVacanciesDashboardResponse response,
+            [Frozen] Mock<IOuterApiClient> outerApiClient,
+            [Greedy] TrainingProviderService trainingProviderService)
+        {
+            var expectedGetUrl = new GetProviderDashboardVacanciesApiRequest(ukprn, pageNumber, status);
+            outerApiClient.Setup(x => x.Get<GetVacanciesDashboardResponse>(
+                    It.Is<GetProviderDashboardVacanciesApiRequest>(r => r.GetUrl == expectedGetUrl.GetUrl)))
+                .ReturnsAsync(response);
+
+            var result = await trainingProviderService.GetProviderDashboardVacanciesByApplicationReviewStatuses(ukprn, status, pageNumber);
 
             result.Should().BeEquivalentTo(response);
         }

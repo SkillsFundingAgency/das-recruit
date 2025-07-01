@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
@@ -83,6 +84,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
 
             return await retryPolicy.Execute(_ => outerApiClient.Get<GetDashboardCountApiResponse>(
                     new GetProviderDashboardCountApiRequest(ukprn)),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Providers"
+                    }
+                });
+        }
+
+        public async Task<GetVacanciesDashboardResponse> GetProviderDashboardVacanciesByApplicationReviewStatuses(long ukprn, List<ApplicationReviewStatus> vacancyReferences, int pageNumber)
+        {
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
+
+            return await retryPolicy.Execute(_ => outerApiClient.Get<GetVacanciesDashboardResponse>(
+                    new GetProviderDashboardVacanciesApiRequest(ukprn,pageNumber,vacancyReferences)),
                 new Dictionary<string, object>
                 {
                     {
