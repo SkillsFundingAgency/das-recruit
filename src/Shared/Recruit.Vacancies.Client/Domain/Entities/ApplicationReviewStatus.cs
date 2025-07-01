@@ -11,6 +11,7 @@
         EmployerInterviewing,
         EmployerUnsuccessful,
         PendingShared,
-        PendingToMakeUnsuccessful
+        PendingToMakeUnsuccessful,
+        AllShared //Used for outer api call
     }
 }
