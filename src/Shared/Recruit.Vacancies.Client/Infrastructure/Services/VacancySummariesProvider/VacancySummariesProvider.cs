@@ -530,13 +530,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 
             var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipelineDocumentCount(match,secondaryMath, string.IsNullOrEmpty(employerAccountId) ? null: employerReviewMatch,  searchMatch, _isMongoMigrationFeatureEnabled);
 
-            // if (_isMongoMigrationFeatureEnabled)
-            // {
-            //     var collectionList = aggPipeline.ToList();
-            //     collectionList.RemoveAll(stage => stage.GetElement(0).Name == "$lookup"
-            //                                       && stage["$lookup"]["from"] == "applicationReviews");
-            //     aggPipeline = collectionList.ToArray();
-            // }
 
             return await RunAggPipelineCountQuery(aggPipeline);
         }
