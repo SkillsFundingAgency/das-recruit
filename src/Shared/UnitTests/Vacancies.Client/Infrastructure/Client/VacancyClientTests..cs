@@ -208,4 +208,40 @@ public class VacancyClientTests
 
         result.Should().BeEmpty();
     }
+
+    [Test, MoqAutoData]
+    public async Task GetApplicationReviewAsync_UsesSqlDbRepository_WhenMongoMigrationEnabled(
+        Guid applicationReviewId,
+        Recruit.Vacancies.Client.Domain.Entities.ApplicationReview applicationReview,
+        [Frozen] Mock<IFeature> feature,
+        [Frozen] Mock<ISqlDbRepository> sqlDbRepositoryMock,
+        [Greedy] VacancyClient vacancyClient)
+    {
+        applicationReview.Application.ApplicationId = applicationReviewId;
+        sqlDbRepositoryMock.Setup(r => r.GetAsync(applicationReviewId))
+            .ReturnsAsync(applicationReview);
+        feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(true);
+        var result = await vacancyClient.GetApplicationReviewAsync(applicationReviewId);
+
+        result.Application.ApplicationId.Should().Be(applicationReviewId);
+        sqlDbRepositoryMock.Verify(r => r.GetAsync(applicationReviewId), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task GetApplicationReviewAsync_UsesMongoDbRepository_WhenMongoMigrationDisabled(
+        Guid applicationReviewId,
+        Recruit.Vacancies.Client.Domain.Entities.ApplicationReview applicationReview,
+        [Frozen] Mock<IFeature> feature,
+        [Frozen] Mock<IMongoDbRepository> mongoDbRepositoryMock,
+        [Greedy] VacancyClient vacancyClient)
+    {
+        applicationReview.Application.ApplicationId = applicationReviewId;
+        mongoDbRepositoryMock.Setup(r => r.GetAsync(applicationReviewId))
+            .ReturnsAsync(applicationReview);
+        feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(false);
+        var result = await vacancyClient.GetApplicationReviewAsync(applicationReviewId);
+
+        result.Application.ApplicationId.Should().Be(applicationReviewId);
+        mongoDbRepositoryMock.Verify(r => r.GetAsync(applicationReviewId), Times.Once);
+    }
 }

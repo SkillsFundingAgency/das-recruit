@@ -41,11 +41,11 @@ internal class ApplicationReviewServiceTests
                     HasEverBeenEmployerInterviewing = false,
                     AdditionalQuestion1 = "Q1",
                     AdditionalQuestion2 = "Q2",
-                    Application = new GetApplicationReviewsByVacancyReferenceApiResponse.Application
+                    Application = new Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Responses.Application
                     {
                         Id = Guid.NewGuid(),
                         CandidateId = Guid.NewGuid(),
-                        Candidate = new GetApplicationReviewsByVacancyReferenceApiResponse.Candidate
+                        Candidate = new Candidate
                         {
                             FirstName = "John",
                             LastName = "Doe"
@@ -144,11 +144,11 @@ internal class ApplicationReviewServiceTests
                     HasEverBeenEmployerInterviewing = false,
                     AdditionalQuestion1 = "Q1",
                     AdditionalQuestion2 = "Q2",
-                    Application = new GetApplicationReviewsByVacancyReferenceApiResponse.Application
+                    Application = new Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Responses.Application
                     {
                         Id = Guid.NewGuid(),
                         CandidateId = Guid.NewGuid(),
-                        Candidate = new GetApplicationReviewsByVacancyReferenceApiResponse.Candidate
+                        Candidate = new Candidate
                         {
                             FirstName = "John",
                             LastName = "Doe"
@@ -214,5 +214,93 @@ internal class ApplicationReviewServiceTests
 
         // Assert
         result.Should().BeNullOrEmpty();
+    }
+
+    [Test, MoqAutoData]
+    public async Task GetAsync_ReturnsMappedApplicationReview_WhenApiReturnsResponse(Guid applicationReviewId,
+        [Frozen] Mock<IOuterApiClient> mockApiClient,
+        [Greedy] ApplicationReviewService service)
+    {
+        // Arrange
+        var apiResponse = new GetApplicationReviewByIdApiResponse
+        {
+            ApplicationReview = new Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Responses.ApplicationReview
+            {
+                Id = applicationReviewId,
+                CandidateId = Guid.NewGuid(),
+                VacancyReference = 1234,
+                Status = ApplicationReviewStatus.InReview.ToString(),
+                TemporaryReviewStatus = null,
+                CreatedDate = DateTime.UtcNow,
+                DateSharedWithEmployer = DateTime.UtcNow,
+                ReviewedDate = DateTime.UtcNow,
+                SubmittedDate = DateTime.UtcNow,
+                WithdrawnDate = null,
+                CandidateFeedback = "feedback",
+                EmployerFeedback = "employer feedback",
+                VacancyTitle = "Vacancy",
+                HasEverBeenEmployerInterviewing = false,
+                AdditionalQuestion1 = "Q1",
+                AdditionalQuestion2 = "Q2",
+                Application = new Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Responses.Application
+                {
+                    Id = Guid.NewGuid(),
+                    CandidateId = Guid.NewGuid(),
+                    Candidate = new Candidate
+                    {
+                        FirstName = "John",
+                        LastName = "Doe"
+                    },
+                    EmploymentLocation = new Location
+                    {
+                        Addresses = []
+                    }
+                }
+            }
+        };
+
+        mockApiClient.Setup(x => x.Get<GetApplicationReviewByIdApiResponse>(It.IsAny<IGetApiRequest>()))
+            .ReturnsAsync(apiResponse);
+
+        // Act
+        var result = await service.GetAsync(applicationReviewId);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Id.Should().Be(applicationReviewId);
+        result.CandidateId.Should().Be(apiResponse.ApplicationReview.CandidateId);
+        result.Status.Should().Be(ApplicationReviewStatus.InReview);
+        result.CandidateFeedback.Should().Be(apiResponse.ApplicationReview.CandidateFeedback);
+        result.EmployerFeedback.Should().Be(apiResponse.ApplicationReview.EmployerFeedback);
+        result.VacancyTitle.Should().Be(apiResponse.ApplicationReview.VacancyTitle);
+        result.HasEverBeenEmployerInterviewing.Should().Be(apiResponse.ApplicationReview.HasEverBeenEmployerInterviewing);
+        result.AdditionalQuestion1.Should().Be(apiResponse.ApplicationReview.AdditionalQuestion1);
+        result.AdditionalQuestion2.Should().Be(apiResponse.ApplicationReview.AdditionalQuestion2);
+        result.Application.Should().NotBeNull();
+        result.Application.ApplicationId.Should().Be(apiResponse.ApplicationReview.Application.Id);
+        result.Application.CandidateId.Should().Be(apiResponse.ApplicationReview.Application.CandidateId);
+        result.Application.FirstName.Should().Be(apiResponse.ApplicationReview.Application.Candidate.FirstName);
+        result.Application.LastName.Should().Be(apiResponse.ApplicationReview.Application.Candidate.LastName);
+    }
+
+    [Test, MoqAutoData]
+    public async Task GetAsync_ReturnsNull_WhenApiReturnsNull(Guid applicationReviewId,
+        [Frozen] Mock<IOuterApiClient> mockApiClient,
+        [Greedy] ApplicationReviewService service)
+    {
+        // Arrange
+        var apiResponse = new GetApplicationReviewByIdApiResponse
+        {
+            ApplicationReview = null
+        };
+
+        mockApiClient.Setup(x => x.Get<GetApplicationReviewByIdApiResponse>(It.IsAny<IGetApiRequest>()))
+            .ReturnsAsync(apiResponse);
+
+        // Act
+        var result = await service.GetAsync(applicationReviewId);
+
+        // Assert
+        result.Should().BeNull();
     }
 }

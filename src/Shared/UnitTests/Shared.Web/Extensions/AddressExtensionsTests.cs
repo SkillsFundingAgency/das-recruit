@@ -232,4 +232,53 @@ public class AddressExtensionsTests
         // assert
         result.Should().Be(expectedCity);
     }
+
+    [Test]
+    public void SplitCitiesToList_ShouldReturnEmptyList_WhenInputIsNull()
+    {
+        string input = null;
+        var result = input.SplitCitiesToList();
+        result.Should().BeEmpty();
+    }
+
+    [Test]
+    public void SplitCitiesToList_ShouldReturnEmptyList_WhenInputIsEmpty()
+    {
+        string input = "";
+        var result = input.SplitCitiesToList();
+        result.Should().BeEmpty();
+    }
+
+    [Test, MoqAutoData]
+    public void SplitCitiesToList_ShouldReturnSingleCity_WhenInputHasOneCity(string cityName)
+    {
+        var result = cityName.SplitCitiesToList();
+        result.Should().BeEquivalentTo(new List<string> { cityName });
+    }
+
+    [Test, MoqAutoData]
+    public void SplitCitiesToList_ShouldReturnMultipleCities_WhenInputHasMultipleCities(string cityName1,
+        string cityName2,
+        string cityName3)
+    {
+        string input = $"{cityName1}, {cityName2}, {cityName3}";
+        var result = input.SplitCitiesToList();
+        result.Should().BeEquivalentTo(new List<string> { cityName1, cityName2, cityName3 });
+    }
+
+    [Test]
+    public void SplitCitiesToList_ShouldTrimWhitespace_AroundCityNames()
+    {
+        string input = " London ,  Manchester ,Leeds ";
+        var result = input.SplitCitiesToList();
+        result.Should().BeEquivalentTo(new List<string> { "London", "Manchester", "Leeds" });
+    }
+
+    [Test]
+    public void SplitCitiesToList_ShouldIgnoreEmptyEntries()
+    {
+        string input = "London, , Manchester,,Leeds, ";
+        var result = input.SplitCitiesToList();
+        result.Should().BeEquivalentTo(new List<string> { "London", "Manchester", "Leeds" });
+    }
 }
