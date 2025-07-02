@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
         private IDictionary<string, string> ManualQaMessagesForApprenticeship => new Dictionary<string, string> 
         {
             { FieldIdentifiers.Title, "Title requires edit" },
-            { FieldIdentifiers.ShortDescription, "Brief overview requires edit" },
+            { FieldIdentifiers.ShortDescription, "Summary requires edit" },
             { FieldIdentifiers.ClosingDate, "Closing date requires edit" },
             { FieldIdentifiers.Wage, "Annual wage requires edit" },
             { FieldIdentifiers.CompanyBenefitsInformation, "Company benefits requires edit" },

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
@@ -116,7 +117,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
         }
 
-        public async Task<GetApplicationReviewStatsResponse> GetEmployerDashboardApplicationReviewStats(string hashedAccountId, List<long> vacancyReferences)
+        public async Task<GetApplicationReviewStatsResponse> GetEmployerDashboardApplicationReviewStats(string hashedAccountId, List<long> vacancyReferences, string applicationSharedFilteringStatus)
         {
             try
             {
@@ -127,7 +128,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
 
                 return await retryPolicy.Execute(_ => outerApiClient.Post<GetApplicationReviewStatsResponse>(
                         new GetEmployerApplicationReviewsCountApiRequest(accountId,
-                            vacancyReferences)),
+                            vacancyReferences,applicationSharedFilteringStatus)),
                     new Dictionary<string, object>
                     {
                         {
@@ -154,7 +155,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
                 new Dictionary<string, object>
                 {
                     {
-                        "apiCall", "Providers"
+                        "apiCall", "Employers"
+                    }
+                });
+        }
+        public async Task<GetVacanciesDashboardResponse> GetEmployerVacancyDashboardStats(string hashedAccountId, int pageNumber, List<ApplicationReviewStatus> statuses)
+        {
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
+            long accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
+
+            return await retryPolicy.Execute(_ => outerApiClient.Get<GetVacanciesDashboardResponse>(
+                    new GetEmployerDashboardVacanciesApiRequest(accountId,pageNumber,statuses)),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Employers"
                     }
                 });
         }
