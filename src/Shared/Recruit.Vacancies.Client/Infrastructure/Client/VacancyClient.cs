@@ -618,7 +618,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var ownerType = (filteringOptions == FilteringOptions.NewSharedApplications || filteringOptions == FilteringOptions.AllSharedApplications) ? OwnerType.Provider : OwnerType.Employer;
 
-            if (!IsMongoMigrationFeatureEnabled && !string.IsNullOrEmpty(searchTerm))
+            if (!IsMongoMigrationFeatureEnabled || !string.IsNullOrEmpty(searchTerm))
             {
                 return await vacancySummariesQuery.VacancyCount(null, employerAccountId, filteringOptions, searchTerm, ownerType);
             }

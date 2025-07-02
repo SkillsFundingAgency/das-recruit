@@ -277,7 +277,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     "$match",
                     refs
                 }};
-                totalCount = results.Items.Count;
+                totalCount = results.TotalCount;
+                page = 1;//override 
             }
             
             var secondaryMath = new BsonDocument
@@ -413,7 +414,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     "$match",
                     refs
                 }};
-                totalCount = results.Items.Count;
+                totalCount = results.TotalCount;
+                page = 1;//override 
             }
             
             var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath,_isMongoMigrationFeatureEnabled, employerReviewMatch,vacancyReferenceMatch, searchMatch);
@@ -528,13 +530,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 
             var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipelineDocumentCount(match,secondaryMath, string.IsNullOrEmpty(employerAccountId) ? null: employerReviewMatch,  searchMatch, _isMongoMigrationFeatureEnabled);
 
-            // if (_isMongoMigrationFeatureEnabled)
-            // {
-            //     var collectionList = aggPipeline.ToList();
-            //     collectionList.RemoveAll(stage => stage.GetElement(0).Name == "$lookup"
-            //                                       && stage["$lookup"]["from"] == "applicationReviews");
-            //     aggPipeline = collectionList.ToArray();
-            // }
 
             return await RunAggPipelineCountQuery(aggPipeline);
         }

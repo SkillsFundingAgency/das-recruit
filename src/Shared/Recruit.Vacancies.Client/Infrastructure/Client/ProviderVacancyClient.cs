@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<long> GetVacancyCount(long ukprn, FilteringOptions? filteringOptions, string searchTerm)
         {
-            if (!IsMongoMigrationFeatureEnabled && !string.IsNullOrEmpty(searchTerm))
+            if (!IsMongoMigrationFeatureEnabled || !string.IsNullOrEmpty(searchTerm))
                 return await vacancySummariesQuery.VacancyCount(ukprn, string.Empty, filteringOptions, searchTerm,
                     OwnerType.Provider);
             
