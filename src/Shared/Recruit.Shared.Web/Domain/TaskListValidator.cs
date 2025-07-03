@@ -191,12 +191,22 @@ public class TaskListValidator : AbstractValidator<Vacancy>, ITaskListValidator
         
         // ========================
         // Section Three
+        // Notes:
+        //  - Qualifications are a little complicated here because the HasOptedToAddQualifications field hasn't always
+        //    existed, so we try our best to balance needing it for the task list vs not having it when old data is
+        //    cloned. The result is if a cloned record which is missing HasOptedToAddQualifications:
+        //      - has quals => quals section is complete
+        //      - has no quals => quals section is not complete
         // ========================
         When(x => x.ApprenticeshipType is not ApprenticeshipTypes.Foundation, () =>
         {
             RuleFor(x => x.Skills).Must(x => x is { Count: >0 }).RunCondition(TaskListItemFlags.Skills);
-            RuleFor(x => x.HasOptedToAddQualifications).NotNull().RunCondition(TaskListItemFlags.Qualifications);
+            When(x => x.HasOptedToAddQualifications is null, () =>
+            {
+                RuleFor(x => x.Qualifications).Must(x => x is { Count: >0 }).RunCondition(TaskListItemFlags.Qualifications);    
+            });
         });
+        
         When(x => x.HasOptedToAddQualifications ?? false, () =>
         {
             RuleFor(x => x.Qualifications).Must(x => x is { Count: >0 }).RunCondition(TaskListItemFlags.Qualifications);
