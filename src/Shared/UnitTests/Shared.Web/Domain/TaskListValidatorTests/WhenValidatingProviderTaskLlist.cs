@@ -130,7 +130,12 @@ public class WhenValidatingProviderTaskList
         {
             new object[] { (Vacancy v) => { v.Skills = null; } },
             new object[] { (Vacancy v) => { v.Skills = []; } },
-            new object[] { (Vacancy v) => { v.HasOptedToAddQualifications = null; } },
+            new object[] {
+                (Vacancy v) =>
+                {
+                    v.HasOptedToAddQualifications = null;
+                    v.Qualifications = [];
+                } },
             new object[] {
                 (Vacancy v) =>
                 {
