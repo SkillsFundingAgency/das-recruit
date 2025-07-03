@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -70,6 +71,18 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
             });
 
             return string.Join(", ", displayValues);
+        }
+
+        public static List<string> SplitCitiesToList(this string cities)
+        {
+            if (string.IsNullOrWhiteSpace(cities))
+                return [];
+
+            return cities
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => s.Trim())
+                .Where(s => !string.IsNullOrEmpty(s))
+                .ToList();
         }
     }
 }
