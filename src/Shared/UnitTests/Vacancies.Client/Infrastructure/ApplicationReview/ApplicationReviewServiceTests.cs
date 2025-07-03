@@ -303,4 +303,28 @@ internal class ApplicationReviewServiceTests
         // Assert
         result.Should().BeNull();
     }
+
+    [Test, MoqAutoData]
+    public async Task GetAsync_WithdrawnDate_Not_Null_ReturnsNull(Guid applicationReviewId,
+        [Frozen] Mock<IOuterApiClient> mockApiClient,
+        [Greedy] ApplicationReviewService service)
+    {
+        // Arrange
+        var apiResponse = new GetApplicationReviewByIdApiResponse
+        {
+            ApplicationReview = new Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Responses.ApplicationReview()
+            {
+                WithdrawnDate = DateTime.Now
+            }
+        };
+
+        mockApiClient.Setup(x => x.Get<GetApplicationReviewByIdApiResponse>(It.IsAny<IGetApiRequest>()))
+            .ReturnsAsync(apiResponse);
+
+        // Act
+        var result = await service.GetAsync(applicationReviewId);
+
+        // Assert
+        result.Should().BeNull();
+    }
 }

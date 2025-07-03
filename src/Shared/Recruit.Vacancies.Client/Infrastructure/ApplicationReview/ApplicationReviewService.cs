@@ -151,7 +151,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             var response = await outerApiClient.Get<GetApplicationReviewByIdApiResponse>(
                 new GetApplicationReviewByIdApiRequest(applicationReviewId));
 
-            return response?.ApplicationReview == null
+            return response?.ApplicationReview is not {WithdrawnDate: null } // Ensure the review is not withdrawn
                 ? null
                 : MapToDomainApplicationReview(response.ApplicationReview);
         }
