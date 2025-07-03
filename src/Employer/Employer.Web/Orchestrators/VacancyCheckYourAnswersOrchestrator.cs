@@ -59,6 +59,7 @@ public class VacancyCheckYourAnswersOrchestrator(
         vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
         vm.VacancyId = vrm.VacancyId;
         vm.EmployerAccountId = vrm.EmployerAccountId;
+        vm.AdditionalQuestionCount = vacancy.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4;
             
         if (vacancy.Status == VacancyStatus.Referred)
         {

@@ -15,7 +15,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
     {
         private const string OwnerTypeFieldName = "owner.ownerType";
         private const string OwnerUkprnFieldName = "owner.ukprn";
-        private const string ParametersVacancyTypeFieldName = "parameters.VacancyType";
 
         public MongoDbReportRepository(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details) 
             : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Reports, details)
@@ -43,7 +42,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var builder = Builders<T>.Filter;
             var filter = builder.Eq(OwnerTypeFieldName, ReportOwnerType.Provider.ToString()) &
-                         builder.Eq(ParametersVacancyTypeFieldName, "Apprenticeship") &
                          builder.Eq(OwnerUkprnFieldName, ukprn);
 
             var collection = GetCollection<T>();

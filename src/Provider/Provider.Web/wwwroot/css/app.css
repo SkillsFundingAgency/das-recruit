@@ -284,6 +284,10 @@
   display: table-cell;
 }
 
+.das-task-list__text_item:first-of-type {
+  border-top-style: none !important;
+}
+
 /* User generated content */
 
 .app-ugc-wrap > ul {

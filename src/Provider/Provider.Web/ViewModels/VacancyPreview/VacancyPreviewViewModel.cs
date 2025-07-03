@@ -29,6 +29,7 @@ public class VacancyPreviewViewModel : DisplayVacancyViewModel
             : "Submit vacancy";
 
     public bool HasUserConfirmation { get; set; }
+    public int AdditionalQuestionCount { get; set; }
 
     public IList<string> OrderedFieldNames => new List<string>
     {

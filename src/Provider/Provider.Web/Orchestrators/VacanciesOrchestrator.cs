@@ -44,14 +44,16 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var getDashboardTask = _providerVacancyClient.GetDashboardAsync(user.Ukprn.Value, page, filteringOption, searchTerm);
             var getUserDetailsTask = _recruitVacancyClient.GetUsersDetailsByDfEUserId(user.DfEUserId) ?? _recruitVacancyClient.GetUsersDetailsAsync(user.UserId);
             var providerTask = _providerRelationshipsService.CheckProviderHasPermissions(user.Ukprn.Value, OperationType.RecruitmentRequiresReview);
-            var providerVacancyCountTask = _providerVacancyClient.GetVacancyCount(user.Ukprn.Value, filteringOption, searchTerm);
+            
 
-            await Task.WhenAll(getDashboardTask, getUserDetailsTask, providerTask, providerVacancyCountTask);
+            await Task.WhenAll(getDashboardTask, getUserDetailsTask, providerTask);
+            
+            long providerVacancyCountTask = getDashboardTask.Result?.TotalVacancies ?? await _providerVacancyClient.GetVacancyCount(user.Ukprn.Value, filteringOption, searchTerm);//TODO FAI-2541 - ignore this for ones for applications
 
             var dashboard = getDashboardTask.Result;
             var userDetails = getUserDetailsTask.Result;
             var providerPermissions = providerTask.Result;
-            var vacancyCount = providerVacancyCountTask.Result;
+            var vacancyCount = providerVacancyCountTask;
             var totalItems = Convert.ToInt32(vacancyCount);
 
             var alerts = _providerAlertsViewModelFactory.Create(dashboard, userDetails);
