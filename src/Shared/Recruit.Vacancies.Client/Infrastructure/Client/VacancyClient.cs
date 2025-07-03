@@ -286,9 +286,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return qualificationsProvider.GetQualificationsAsync();
         }
 
-        public Task<Domain.Entities.ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId)
+        public async Task<Domain.Entities.ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId)
         {
-            return applicationReviewRepository.GetAsync(applicationReviewId);
+            return IsMongoMigrationFeatureEnabled
+                ? await sqlDbRepository.GetAsync(applicationReviewId)
+                : await mongoDbRepository.GetAsync(applicationReviewId);
         }
 
         public async Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider = false)

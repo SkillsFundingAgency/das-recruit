@@ -11,6 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
 {
@@ -145,9 +146,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             throw new NotImplementedException();
         }
 
-        public Task<Domain.Entities.ApplicationReview> GetAsync(Guid applicationReviewId)
+        public async Task<Domain.Entities.ApplicationReview> GetAsync(Guid applicationReviewId)
         {
-            throw new NotImplementedException();
+            var response = await outerApiClient.Get<GetApplicationReviewByIdApiResponse>(
+                new GetApplicationReviewByIdApiRequest(applicationReviewId));
+
+            return response?.ApplicationReview == null
+                ? null
+                : MapToDomainApplicationReview(response.ApplicationReview);
         }
 
         public Task<Domain.Entities.ApplicationReview> GetAsync(long vacancyReference, Guid candidateId)
@@ -174,36 +180,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
 
             var applicationReviews = response.ApplicationReviews
                 .Where(fil => fil.DateSharedWithEmployer != null)
-                .Select(ar => new Domain.Entities.ApplicationReview
-                {
-                    Id = ar.Id,
-                    CandidateId = ar.CandidateId,
-                    VacancyReference = ar.VacancyReference,
-                    Status = Enum.Parse<ApplicationReviewStatus>(ar.Status),
-                    TemporaryReviewStatus = ar.TemporaryReviewStatus != null
-                        ? Enum.Parse<ApplicationReviewStatus>(ar.TemporaryReviewStatus)
-                        : null,
-                    CreatedDate = ar.CreatedDate,
-                    DateSharedWithEmployer = ar.DateSharedWithEmployer,
-                    ReviewedDate = ar.ReviewedDate,
-                    SubmittedDate = ar.SubmittedDate,
-                    WithdrawnDate = ar.WithdrawnDate,
-                    CandidateFeedback = ar.CandidateFeedback,
-                    EmployerFeedback = ar.EmployerFeedback,
-                    VacancyTitle = ar.VacancyTitle,
-                    HasEverBeenEmployerInterviewing = ar.HasEverBeenEmployerInterviewing,
-                    IsWithdrawn = ar.WithdrawnDate != null,
-                    AdditionalQuestion1 = ar.AdditionalQuestion1,
-                    AdditionalQuestion2 = ar.AdditionalQuestion2,
-                    Application = ar.Application != null ? new Domain.Entities.Application
-                    {
-                        ApplicationId = ar.Application.Id,
-                        CandidateId = ar.Application.CandidateId,
-                        FirstName = ar.Application.Candidate?.FirstName,
-                        LastName = ar.Application.Candidate?.LastName,
-                        CandidateAppliedLocations = ar.Application.EmploymentLocation != null ? GetCandidateAppliedLocation(ar.Application.EmploymentLocation.Addresses) : null,
-                    } : null
-                }).ToList();
+                .Select(MapToDomainApplicationReview).ToList();
 
             return applicationReviews.Cast<T>().ToList();
         }
@@ -216,36 +193,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             if (response?.ApplicationReviews == null || response.ApplicationReviews.Count == 0) return [];
 
             var applicationReviews = response.ApplicationReviews
-                .Select(ar => new Domain.Entities.ApplicationReview
-                {
-                    Id = ar.Id,
-                    CandidateId = ar.CandidateId,
-                    VacancyReference = ar.VacancyReference,
-                    Status = Enum.Parse<ApplicationReviewStatus>(ar.Status),
-                    TemporaryReviewStatus = ar.TemporaryReviewStatus != null
-                        ? Enum.Parse<ApplicationReviewStatus>(ar.TemporaryReviewStatus)
-                        : null,
-                    CreatedDate = ar.CreatedDate,
-                    DateSharedWithEmployer = ar.DateSharedWithEmployer,
-                    ReviewedDate = ar.ReviewedDate,
-                    SubmittedDate = ar.SubmittedDate,
-                    WithdrawnDate = ar.WithdrawnDate,
-                    CandidateFeedback = ar.CandidateFeedback,
-                    EmployerFeedback = ar.EmployerFeedback,
-                    VacancyTitle = ar.VacancyTitle,
-                    HasEverBeenEmployerInterviewing = ar.HasEverBeenEmployerInterviewing,
-                    IsWithdrawn = ar.WithdrawnDate != null,
-                    AdditionalQuestion1 = ar.AdditionalQuestion1,
-                    AdditionalQuestion2 = ar.AdditionalQuestion2,
-                    Application = ar.Application != null ? new Domain.Entities.Application
-                    {
-                        ApplicationId = ar.Application.Id,
-                        CandidateId = ar.Application.CandidateId,
-                        FirstName = ar.Application.Candidate?.FirstName,
-                        LastName = ar.Application.Candidate?.LastName,
-                        CandidateAppliedLocations = ar.Application.EmploymentLocation != null ? GetCandidateAppliedLocation(ar.Application.EmploymentLocation.Addresses) : null,
-                    } : null
-                }).ToList();
+                .Select(MapToDomainApplicationReview).ToList();
 
             var sortedResult = applicationReviews.AsQueryable()
                 .Sort(sortColumn, sortOrder);
@@ -262,36 +210,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
 
             var applicationReviews = response.ApplicationReviews
                 .Where(fil => fil.DateSharedWithEmployer != null)
-                .Select(ar => new Domain.Entities.ApplicationReview
-                {
-                    Id = ar.Id,
-                    CandidateId = ar.CandidateId,
-                    VacancyReference = ar.VacancyReference,
-                    Status = Enum.Parse<ApplicationReviewStatus>(ar.Status),
-                    TemporaryReviewStatus = ar.TemporaryReviewStatus != null
-                        ? Enum.Parse<ApplicationReviewStatus>(ar.TemporaryReviewStatus)
-                        : null,
-                    CreatedDate = ar.CreatedDate,
-                    DateSharedWithEmployer = ar.DateSharedWithEmployer,
-                    ReviewedDate = ar.ReviewedDate,
-                    SubmittedDate = ar.SubmittedDate,
-                    WithdrawnDate = ar.WithdrawnDate,
-                    CandidateFeedback = ar.CandidateFeedback,
-                    EmployerFeedback = ar.EmployerFeedback,
-                    VacancyTitle = ar.VacancyTitle,
-                    HasEverBeenEmployerInterviewing = ar.HasEverBeenEmployerInterviewing,
-                    IsWithdrawn = ar.WithdrawnDate != null,
-                    AdditionalQuestion1 = ar.AdditionalQuestion1,
-                    AdditionalQuestion2 = ar.AdditionalQuestion2,
-                    Application = ar.Application != null ? new Domain.Entities.Application
-                    {
-                        ApplicationId = ar.Application.Id,
-                        CandidateId = ar.Application.CandidateId,
-                        FirstName = ar.Application.Candidate?.FirstName,
-                        LastName = ar.Application.Candidate?.LastName,
-                        CandidateAppliedLocations = ar.Application.EmploymentLocation != null ? GetCandidateAppliedLocation(ar.Application.EmploymentLocation.Addresses) : null,
-                    } : null
-                }).ToList();
+                .Select(MapToDomainApplicationReview).ToList();
 
             return applicationReviews.ToList();
         }
@@ -305,36 +224,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
 
             var applicationReviews = response.ApplicationReviews
                 .Where(fil => fil.DateSharedWithEmployer != null)
-                .Select(ar => new Domain.Entities.ApplicationReview
-                {
-                    Id = ar.Id,
-                    CandidateId = ar.CandidateId,
-                    VacancyReference = ar.VacancyReference,
-                    Status = Enum.Parse<ApplicationReviewStatus>(ar.Status),
-                    TemporaryReviewStatus = ar.TemporaryReviewStatus != null 
-                        ? Enum.Parse<ApplicationReviewStatus>(ar.TemporaryReviewStatus)
-                        : null,
-                    CreatedDate = ar.CreatedDate,
-                    DateSharedWithEmployer = ar.DateSharedWithEmployer,
-                    ReviewedDate = ar.ReviewedDate,
-                    SubmittedDate = ar.SubmittedDate,
-                    WithdrawnDate = ar.WithdrawnDate,
-                    CandidateFeedback = ar.CandidateFeedback,
-                    EmployerFeedback = ar.EmployerFeedback,
-                    VacancyTitle = ar.VacancyTitle,
-                    HasEverBeenEmployerInterviewing = ar.HasEverBeenEmployerInterviewing,
-                    IsWithdrawn = ar.WithdrawnDate != null,
-                    AdditionalQuestion1 = ar.AdditionalQuestion1,
-                    AdditionalQuestion2 = ar.AdditionalQuestion2,
-                    Application = ar.Application != null ? new Domain.Entities.Application
-                    {
-                        ApplicationId = ar.Application.Id,
-                        CandidateId = ar.Application.CandidateId,
-                        FirstName = ar.Application.Candidate?.FirstName,
-                        LastName = ar.Application.Candidate?.LastName,
-                        CandidateAppliedLocations = ar.Application.EmploymentLocation != null ? GetCandidateAppliedLocation(ar.Application.EmploymentLocation.Addresses) : null,
-                    } : null
-                }).ToList();
+                .Select(MapToDomainApplicationReview).ToList();
 
             var sortedResult = applicationReviews.AsQueryable()
                 .Sort(sortColumn, sortOrder);
@@ -352,8 +242,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             throw new NotImplementedException();
         }
 
-        private string GetCandidateAppliedLocation(List<GetApplicationReviewsByVacancyReferenceApiResponse.Address> addresses)
+        private string GetCandidateAppliedLocation(List<Responses.Address> addresses)
         {
+            if (addresses == null || addresses.Count == 0)
+            {
+                return null;
+            }
+
+            // Filter selected addresses and deserialize them
             var selectedAddresses = addresses
                 .Where(x => x.IsSelected)
                 .Select(x =>
@@ -377,6 +273,40 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                 .ToList();
 
             return selectedAddresses.GetCities();
+        }
+
+        private Domain.Entities.ApplicationReview MapToDomainApplicationReview(Responses.ApplicationReview response)
+        {
+            return new Domain.Entities.ApplicationReview
+            {
+                Id = response.Id,
+                CandidateId = response.CandidateId,
+                VacancyReference = response.VacancyReference,
+                Status = Enum.Parse<ApplicationReviewStatus>(response.Status),
+                TemporaryReviewStatus = response.TemporaryReviewStatus != null
+                    ? Enum.Parse<ApplicationReviewStatus>(response.TemporaryReviewStatus)
+                    : null,
+                CreatedDate = response.CreatedDate,
+                DateSharedWithEmployer = response.DateSharedWithEmployer,
+                ReviewedDate = response.ReviewedDate,
+                SubmittedDate = response.SubmittedDate,
+                WithdrawnDate = response.WithdrawnDate,
+                CandidateFeedback = response.CandidateFeedback,
+                EmployerFeedback = response.EmployerFeedback,
+                VacancyTitle = response.VacancyTitle,
+                HasEverBeenEmployerInterviewing = response.HasEverBeenEmployerInterviewing,
+                IsWithdrawn = response.WithdrawnDate != null,
+                AdditionalQuestion1 = response.AdditionalQuestion1,
+                AdditionalQuestion2 = response.AdditionalQuestion2,
+                Application = response.Application != null ? new Domain.Entities.Application
+                {
+                    ApplicationId = response.Application.Id,
+                    CandidateId = response.Application.CandidateId,
+                    FirstName = response.Application.Candidate?.FirstName,
+                    LastName = response.Application.Candidate?.LastName,
+                    CandidateAppliedLocations = GetCandidateAppliedLocation(response.Application?.EmploymentLocation?.Addresses)
+                } : null
+            };
         }
     }
 }
