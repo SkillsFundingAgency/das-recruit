@@ -1,7 +1,7 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.ConsiderationsViewModel
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part2-considerations";
-    ViewBag.Title = "Other requirements";
+    ViewBag.Title = "What else would you like the applicant to consider? (optional)";
     ViewBag.ZenDeskLabel = "recruit-what-else-would-you-like-the-applicant-to-consider";
 }
 
@@ -28,20 +28,13 @@
         </ul>
 
         <form asp-route="@RouteNames.Considerations_Post" asp-all-route-data="@Model.RouteDictionary">
-            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="350">
-<<<<<<< HEAD
-                <div esfa-validation-marker-for="OtherRequirements" class="govuk-form-group">
-                    <h2 class="govuk-label-wrapper">
-                        <label class="govuk-label govuk-label--m" asp-for="OtherRequirements">
-                            What other requirements are there for this apprenticeship? (optional)
-=======
+            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="4000">
                 <div esfa-validation-marker-for="ThingsToConsider" class="govuk-form-group">
-                    <h1 class="govuk-label-wrapper">
-                        <label class="govuk-label govuk-label--xl" asp-for="ThingsToConsider">
-                            What else would you like the applicant to consider? (optional)
->>>>>>> parent of 6cee92413 (FAI-2624 Content changes to align with FAA)
+                    <h2 class="govuk-label-wrapper">
+                        <label class="govuk-label govuk-label--m" asp-for="ThingsToConsider">
+                            What other requirements are there for this apprenticeship? (optional)
                         </label>
-                    </h1>
+                    </h2>
                     <span esfa-validation-message-for="ThingsToConsider" class="govuk-error-message"></span>
                     <textarea class="govuk-textarea govuk-js-character-count" asp-for="ThingsToConsider" rows="5" aria-describedby="ThingsToConsider-info ThingsToConsider-hint"></textarea>
                 </div>
