@@ -27,43 +27,43 @@ public class ConsiderationsOrchestratorTests
     public async Task WhenUpdated__ShouldCallUpdateDraftVacancy()
     {
         _fixture
-            .WithThingsToConsider("has a value")
+            .WithOtherRequirements("has a value")
             .Setup();
 
-        var thingsToConsiderEditModel = new ConsiderationsEditModel
+        var OtherRequirementsEditModel = new ConsiderationsEditModel
         {
             EmployerAccountId = _fixture.Vacancy.EmployerAccountId,
             VacancyId = _fixture.Vacancy.Id,
-            ThingsToConsider = "has a new value"
+            OtherRequirements = "has a new value"
         };
 
-        await _fixture.PostConsiderationsEditModelAsync(thingsToConsiderEditModel);
+        await _fixture.PostConsiderationsEditModelAsync(OtherRequirementsEditModel);
 
         _fixture.VerifyUpdateDraftVacancyAsyncIsCalled();
     }
 
     [Test]
-    public async Task WhenThingsToConsiderIsUpdated_ShouldFlagThingsToConsiderFieldIndicator()
+    public async Task WhenOtherRequirementsIsUpdated_ShouldFlagOtherRequirementsFieldIndicator()
     {
         _fixture
-            .WithThingsToConsider("has a value")
+            .WithOtherRequirements("has a value")
             .Setup();
 
-        var thingsToConsiderEditModel = new ConsiderationsEditModel
+        var OtherRequirementsEditModel = new ConsiderationsEditModel
         {
             EmployerAccountId = _fixture.Vacancy.EmployerAccountId,
             VacancyId = _fixture.Vacancy.Id,
-            ThingsToConsider = "has a new value"
+            OtherRequirements = "has a new value"
         };
 
-        await _fixture.PostConsiderationsEditModelAsync(thingsToConsiderEditModel);
+        await _fixture.PostConsiderationsEditModelAsync(OtherRequirementsEditModel);
 
-        _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.ThingsToConsider, true);
+        _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.OtherRequirements, true);
     }
 
     public class ConsiderationsOrchestratorTestsFixture
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ThingsToConsider;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.OtherRequirements;
         public VacancyUser User { get; }
         public Vacancy Vacancy { get; }
         public ConsiderationsOrchestrator Sut {get; private set;}
@@ -77,9 +77,9 @@ public class ConsiderationsOrchestratorTests
             Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
         }
 
-        public ConsiderationsOrchestratorTestsFixture WithThingsToConsider(string thingsToConsider)
+        public ConsiderationsOrchestratorTestsFixture WithOtherRequirements(string OtherRequirements)
         {
-            Vacancy.ThingsToConsider = thingsToConsider;
+            Vacancy.OtherRequirements = OtherRequirements;
             return this;
         }
 

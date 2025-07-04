@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public string ShortDescription { get; set; }
         public IEnumerable<string> Skills { get; set; }
         public DateTime StartDate { get; set; }
-        public string ThingsToConsider { get; set; }
+        public string OtherRequirements { get; set; }
         public string Title { get; set; }
         public string TrainingDescription { get; set; }
         public TrainingProvider TrainingProvider { get; set; }

@@ -67,7 +67,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             { FieldIdResolver.ToFieldId(v => v.OutcomeDescription), new []{FieldIdentifiers.OutcomeDescription} },
             { FieldIdResolver.ToFieldId(v => v.Skills), new []{FieldIdentifiers.Skills} },
             { FieldIdResolver.ToFieldId(v => v.Qualifications), new []{FieldIdentifiers.Qualifications} },
-            { FieldIdResolver.ToFieldId(v => v.ThingsToConsider), new []{FieldIdentifiers.ThingsToConsider} },
+            { FieldIdResolver.ToFieldId(v => v.OtherRequirements), new []{FieldIdentifiers.OtherRequirements} },
             { FieldIdResolver.ToFieldId(v => v.EmployerDescription), new [] {FieldIdentifiers.EmployerDescription }},
             { FieldIdResolver.ToFieldId(v => v.AnonymousReason), new [] {FieldIdentifiers.EmployerName }},
             { FieldIdResolver.ToFieldId(v => v.DisabilityConfident), new []{FieldIdentifiers.DisabilityConfident} },
@@ -132,7 +132,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Skills, Text = "Skills" },
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Qualifications, Text = "Qualifications" },
                 new FieldIdentifierViewModel
-                    { FieldIdentifier = FieldIdentifiers.ThingsToConsider, Text = "Things to consider" },
+                    { FieldIdentifier = FieldIdentifiers.OtherRequirements, Text = "Things to consider" },
                 new FieldIdentifierViewModel
                     { FieldIdentifier = FieldIdentifiers.EmployerDescription, Text = "Employer description" },
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.EmployerName, Text = "Employer name" },
@@ -234,7 +234,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.ShortDescription = vacancy.ShortDescription;
                 vm.Skills = vacancy.Skills ?? Enumerable.Empty<string>();
                 vm.OwnerType = vacancy.OwnerType;
-                vm.ThingsToConsider = vacancy.ThingsToConsider;
+                vm.OtherRequirements = vacancy.OtherRequirements;
                 vm.Title = vacancy.Title;
                 vm.TrainingDescription = vacancy.TrainingDescription;
                 vm.AdditionalTrainingDescription = vacancy.AdditionalTrainingDescription;

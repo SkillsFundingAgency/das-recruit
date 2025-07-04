@@ -31,7 +31,7 @@
         public const string Skills = "Skills";
         public const string HasOptedToAddQualifications = "HasOptedToAddQualifications";
         public const string Qualifications = "Qualifications";
-        public const string ThingsToConsider = "ThingsToConsider";
+        public const string OtherRequirements = "OtherRequirements";
         public const string EmployerDescription = "EmployerDescription";
         public const string DisabilityConfident = "DisabilityConfident";
         public const string EmployerWebsiteUrl = "EmployerWebsiteUrl";

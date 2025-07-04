@@ -105,7 +105,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string QualificationsClass => GetFieldIdentifierCssClass(FieldIdentifier.Qualifications);
         public string SkillsClass => GetFieldIdentifierCssClass(FieldIdentifier.Skills);
         public string ShortDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.ShortDescription);
-        public string ThingsToConsiderClass => GetFieldIdentifierCssClass(FieldIdentifier.ThingsToConsider);
+        public string OtherRequirementsClass => GetFieldIdentifierCssClass(FieldIdentifier.OtherRequirements);
         public string TitleClass => GetFieldIdentifierCssClass(FieldIdentifier.Title);
         public string TrainingClass => GetFieldIdentifierCssClass(FieldIdentifier.Training);
         public string TrainingDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.TrainingDescription);

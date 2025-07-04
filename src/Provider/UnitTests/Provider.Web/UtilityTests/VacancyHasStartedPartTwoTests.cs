@@ -13,7 +13,7 @@ public class VacancyHasStartedPartTwoTests
         utility.VacancyHasStartedPartTwo(new Vacancy { EmployerDescription = "some value" }).Should().BeTrue();
         utility.VacancyHasStartedPartTwo(new Vacancy { ShortDescription = "some value" }).Should().BeTrue();
         utility.VacancyHasStartedPartTwo(new Vacancy { ApplicationMethod = ApplicationMethod.ThroughExternalApplicationSite }).Should().BeTrue();
-        utility.VacancyHasStartedPartTwo(new Vacancy { ThingsToConsider = "some value" }).Should().BeTrue();
+        utility.VacancyHasStartedPartTwo(new Vacancy { OtherRequirements = "some value" }).Should().BeTrue();
         utility.VacancyHasStartedPartTwo(new Vacancy { ProviderContact = new ContactDetail { Name = "some value" }}).Should().BeTrue();
         utility.VacancyHasStartedPartTwo(new Vacancy { ProviderContact = new ContactDetail { Email = "some value"} }).Should().BeTrue();
         utility.VacancyHasStartedPartTwo(new Vacancy { ProviderContact = new ContactDetail { Phone = "some value"} }).Should().BeTrue();

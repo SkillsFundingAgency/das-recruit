@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.ProgrammeId)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.ShortDescription)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.StartDate)).AreEqual.Should().Be(expectedAreEqual);
-            result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.ThingsToConsider)).AreEqual.Should().Be(expectedAreEqual);
+            result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.OtherRequirements)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.Title)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.TrainingDescription)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.TrainingProvider.Ukprn)).AreEqual.Should().Be(expectedAreEqual);
@@ -113,7 +113,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
                 ShortDescription = "short description",
                 Skills = new List<string> { "skill 1", "skill 2" },
                 StartDate = new DateTime(),
-                ThingsToConsider = "things to consider",
+                OtherRequirements = "things to consider",
                 Title = "title",
                 TrainingDescription = "training description",
                 TrainingProvider = new TrainingProvider { Ukprn = 1234 },
@@ -181,7 +181,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
                 ShortDescription = "short description CHANGED",
                 Skills = new List<string> { "skill 1", "skill 2 CHANGED" },
                 StartDate = DateTime.MaxValue,
-                ThingsToConsider = "things to consider CHANGED",
+                OtherRequirements = "things to consider CHANGED",
                 Title = "title CHANGED",
                 TrainingDescription = "training description CHANGED",
                 TrainingProvider = new TrainingProvider { Ukprn = 12345 },
@@ -225,7 +225,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
                 Qualifications = null,
                 ShortDescription = null,
                 StartDate = null,
-                ThingsToConsider = null,
+                OtherRequirements = null,
                 Title = null,
                 TrainingDescription = null,
                 TrainingProvider = null,

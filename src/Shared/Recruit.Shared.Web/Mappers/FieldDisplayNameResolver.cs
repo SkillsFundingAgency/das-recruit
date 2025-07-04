@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdResolver.ToFieldId(v => v.ShortDescription), "Brief overview" },
             { FieldIdResolver.ToFieldId(v => v.Skills), "Skills" },
             { FieldIdResolver.ToFieldId(v => v.StartDate), "Start date" },
-            { FieldIdResolver.ToFieldId(v => v.ThingsToConsider), "Things to consider" },
+            { FieldIdResolver.ToFieldId(v => v.OtherRequirements), "Things to consider" },
             { FieldIdResolver.ToFieldId(v => v.Title), "Title" },
             { FieldIdResolver.ToFieldId(v => v.TrainingDescription), "What training will the apprentice take and what qualification will the apprentice get at the end?" },
             { FieldIdResolver.ToFieldId(v => v.TrainingProvider.Ukprn) , "Training provider" },

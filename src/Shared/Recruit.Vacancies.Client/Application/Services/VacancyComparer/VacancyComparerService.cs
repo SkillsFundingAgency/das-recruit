@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services.VacancyComparer
                 CompareValue(a, b, v => v.ShortDescription, FieldIdResolver.ToFieldId(v => v.ShortDescription)),
                 CompareList(a, b, v => v.Skills, FieldIdResolver.ToFieldId(v => v.Skills)),
                 CompareValue(a, b, v => v.StartDate, FieldIdResolver.ToFieldId(v => v.StartDate)),
-                CompareValue(a, b, v => v.ThingsToConsider, FieldIdResolver.ToFieldId(v => v.ThingsToConsider)),
+                CompareValue(a, b, v => v.OtherRequirements, FieldIdResolver.ToFieldId(v => v.OtherRequirements)),
                 CompareValue(a, b, v => v.Title, FieldIdResolver.ToFieldId(v => v.Title)),
                 CompareValue(a, b, v => v.TrainingDescription, FieldIdResolver.ToFieldId(v => v.TrainingDescription)),
                 CompareValue(a, b, v => v.TrainingProvider?.Ukprn, FieldIdResolver.ToFieldId(v => v.TrainingProvider.Ukprn)),

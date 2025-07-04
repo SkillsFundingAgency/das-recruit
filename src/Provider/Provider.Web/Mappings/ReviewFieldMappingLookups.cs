@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.Skills, Anchors.Skills),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.Qualifications, Anchors.Qualifications),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.HasOptedToAddQualifications, Anchors.HasOptedToAddQualifications),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.ThingsToConsider, Anchors.ThingsToConsider),
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.OtherRequirements, Anchors.OtherRequirements),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerDescription, Anchors.EmployerDescription),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.DisabilityConfident, Anchors.DisabilityConfident),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerWebsiteUrl, Anchors.EmployerWebsiteUrl),
@@ -88,7 +88,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 { FieldIdResolver.ToFieldId(v => v.Skills), new []{ FieldIdentifiers.Skills} },
                 { FieldIdResolver.ToFieldId(v => v.Qualifications), new []{ FieldIdentifiers.Qualifications} },
                 { FieldIdResolver.ToFieldId(v => v.HasOptedToAddQualifications), new []{ FieldIdentifiers.HasOptedToAddQualifications } },
-                { FieldIdResolver.ToFieldId(v => v.ThingsToConsider), new []{ FieldIdentifiers.ThingsToConsider} },
+                { FieldIdResolver.ToFieldId(v => v.OtherRequirements), new []{ FieldIdentifiers.OtherRequirements} },
                 { FieldIdResolver.ToFieldId(v => v.EmployerDescription), new [] { FieldIdentifiers.EmployerDescription }},
                 { FieldIdResolver.ToFieldId(v => v.DisabilityConfident), new []{ FieldIdentifiers.DisabilityConfident} },
                 { FieldIdResolver.ToFieldId(v => v.EmployerWebsiteUrl), new []{ FieldIdentifiers.EmployerWebsiteUrl} },
@@ -356,12 +356,12 @@ namespace Esfa.Recruit.Provider.Web.Mappings
         {
             var vms = new List<ReviewFieldIndicatorViewModel>
             {
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.ThingsToConsider, nameof(ConsiderationsEditModel.ThingsToConsider))
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.OtherRequirements, nameof(ConsiderationsEditModel.OtherRequirements))
             };
 
             var mappings =  new Dictionary<string, IEnumerable<string>>
             {
-                { FieldIdResolver.ToFieldId(v => v.ThingsToConsider), new []{ FieldIdentifiers.ThingsToConsider} }
+                { FieldIdResolver.ToFieldId(v => v.OtherRequirements), new []{ FieldIdentifiers.OtherRequirements} }
             };
 
             return new ReviewFieldMappingLookupsForPage(vms, mappings);

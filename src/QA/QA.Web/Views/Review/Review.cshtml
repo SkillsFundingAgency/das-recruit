@@ -254,17 +254,17 @@
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>
-            <div class="govuk-grid-column-one-half" asp-hide="@(Model.ApprenticeshipType is ApprenticeshipTypes.Foundation && string.IsNullOrWhiteSpace(Model.ThingsToConsider))">
-                <div class="@Model.ThingsToConsiderClass" id="@FieldIdentifiers.ThingsToConsider">
+            <div class="govuk-grid-column-one-half" asp-hide="@(Model.ApprenticeshipType is ApprenticeshipTypes.Foundation && string.IsNullOrWhiteSpace(Model.OtherRequirements))">
+                <div class="@Model.OtherRequirementsClass" id="@FieldIdentifiers.OtherRequirements">
                     <h3 class="govuk-heading-s">Other requirements (optional)</h3>
-                    <textarea class="govuk-textarea govuk-js-character-count" asp-for="ThingsToConsider" rows="5" data-val-length-max="250"></textarea>
+                    <textarea class="govuk-textarea govuk-js-character-count" asp-for="OtherRequirements" rows="5" data-val-length-max="250"></textarea>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@FieldIdentifiers.ThingsToConsider"
+                                          asp-value="@FieldIdentifiers.OtherRequirements"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>
-            <div class="govuk-grid-column-two-thirds" asp-show="@(Model.ApprenticeshipType is ApprenticeshipTypes.Foundation && string.IsNullOrWhiteSpace(Model.ThingsToConsider))">
+            <div class="govuk-grid-column-two-thirds" asp-show="@(Model.ApprenticeshipType is ApprenticeshipTypes.Foundation && string.IsNullOrWhiteSpace(Model.OtherRequirements))">
                 <p class="govuk-body">You do not need any specific qualifications to apply for a foundation apprenticeship.</p>
             </div>
         </div>

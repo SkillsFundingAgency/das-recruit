@@ -95,11 +95,11 @@
         <p class="govuk-body">@Model.TrainingTitle</p>
     </div>
 
-    @if (Model.HasThingsToConsider)
+    @if (Model.HasOtherRequirements)
     {
         <div class="govuk-grid-column-one-half">
             <h3 class="govuk-heading-s">Things to consider</h3>
-            <p class="govuk-body">@Model.ThingsToConsider</p>
+            <p class="govuk-body">@Model.OtherRequirements</p>
         </div>
     }
 </div>

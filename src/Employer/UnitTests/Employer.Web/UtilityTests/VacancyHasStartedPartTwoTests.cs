@@ -21,7 +21,7 @@ public class VacancyHasStartedPartTwoTests
         _utility.VacancyHasStartedPartTwo(new Vacancy { ShortDescription = "some value" }).Should().BeTrue();
         _utility.VacancyHasStartedPartTwo(new Vacancy { EmployerDescription = "some value" }).Should().BeTrue();
         _utility.VacancyHasStartedPartTwo(new Vacancy { ApplicationMethod = ApplicationMethod.ThroughExternalApplicationSite }).Should().BeTrue();
-        _utility.VacancyHasStartedPartTwo(new Vacancy { ThingsToConsider = "some value" }).Should().BeTrue();
+        _utility.VacancyHasStartedPartTwo(new Vacancy { OtherRequirements = "some value" }).Should().BeTrue();
         _utility.VacancyHasStartedPartTwo(new Vacancy { EmployerContact = new ContactDetail { Name = "some value" }}).Should().BeTrue();
         _utility.VacancyHasStartedPartTwo(new Vacancy { EmployerContact = new ContactDetail { Email = "some value"} }).Should().BeTrue();
         _utility.VacancyHasStartedPartTwo(new Vacancy { EmployerContact = new ContactDetail { Phone = "some value"} }).Should().BeTrue();

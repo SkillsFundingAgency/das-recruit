@@ -264,15 +264,15 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 });
                 vacancy.EmployerLocationInformation = m.EmployerLocationInformation;
             }
-            if (review.VacancySnapshot.ThingsToConsider != m.ThingsToConsider)
+            if (review.VacancySnapshot.OtherRequirements != m.OtherRequirements)
             {
                 manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
                 {
-                    FieldIdentifier = nameof(m.ThingsToConsider),
-                    BeforeEdit = review.VacancySnapshot.ThingsToConsider,
-                    AfterEdit = m.ThingsToConsider
+                    FieldIdentifier = nameof(m.OtherRequirements),
+                    BeforeEdit = review.VacancySnapshot.OtherRequirements,
+                    AfterEdit = m.OtherRequirements
                 });
-                vacancy.ThingsToConsider = m.ThingsToConsider;
+                vacancy.OtherRequirements = m.OtherRequirements;
             }
 
             if (review.VacancySnapshot.ApplicationInstructions != m.ApplicationInstructions)

@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
     public class ConsiderationsOrchestrator : VacancyValidatingOrchestrator<ConsiderationsEditModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ThingsToConsider;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.OtherRequirements;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IUtility _utility;
@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 VacancyId = vacancy.Id,
                 EmployerAccountId = vacancy.EmployerAccountId,
                 Title = vacancy.Title,
-                ThingsToConsider = vacancy.ThingsToConsider,
+                OtherRequirements = vacancy.OtherRequirements,
                 IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
             };
 
@@ -53,7 +53,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var vm = await GetConsiderationsViewModelAsync((VacancyRouteModel)m);
 
-            vm.ThingsToConsider = m.ThingsToConsider;
+            vm.OtherRequirements = m.OtherRequirements;
 
             return vm;
         }
@@ -63,10 +63,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Considerations_Post);
 
             SetVacancyWithEmployerReviewFieldIndicators(
-                vacancy.ThingsToConsider,
-                FieldIdResolver.ToFieldId(v => v.ThingsToConsider),
+                vacancy.OtherRequirements,
+                FieldIdResolver.ToFieldId(v => v.OtherRequirements),
                 vacancy,
-                (v) => { return v.ThingsToConsider = m.ThingsToConsider; });
+                (v) => { return v.OtherRequirements = m.OtherRequirements; });
 
             return await ValidateAndExecute(
                 vacancy,
@@ -79,7 +79,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, ConsiderationsEditModel>();
 
-            mappings.Add(e => e.ThingsToConsider, vm => vm.ThingsToConsider);
+            mappings.Add(e => e.OtherRequirements, vm => vm.OtherRequirements);
 
             return mappings;
         }

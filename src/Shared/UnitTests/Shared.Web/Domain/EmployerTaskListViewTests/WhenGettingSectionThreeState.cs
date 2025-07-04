@@ -45,9 +45,9 @@ public class WhenGettingSectionThreeState
             new object[] { ApprenticeshipTypes.Standard, (EmployerTaskListStateView v) => v.SkillsEditable, (TaskListItemFlags)ProviderTaskListSectionFlags.Two },
             new object[] { ApprenticeshipTypes.Standard, (EmployerTaskListStateView v) => v.QualificationsEditable, TaskListItemFlags.Skills },
             new object[] { ApprenticeshipTypes.Standard, (EmployerTaskListStateView v) => v.FutureProspectsEditable, TaskListItemFlags.Qualifications | TaskListItemFlags.FutureProspects },
-            new object[] { ApprenticeshipTypes.Standard, (EmployerTaskListStateView v) => v.OtherThingsToConsiderEditable, TaskListItemFlags.FutureProspects },
+            new object[] { ApprenticeshipTypes.Standard, (EmployerTaskListStateView v) => v.OtherOtherRequirementsEditable, TaskListItemFlags.FutureProspects },
             new object[] { ApprenticeshipTypes.Foundation, (EmployerTaskListStateView v) => v.FutureProspectsEditable, (TaskListItemFlags)ProviderTaskListSectionFlags.Two },
-            new object[] { ApprenticeshipTypes.Foundation, (EmployerTaskListStateView v) => v.OtherThingsToConsiderEditable, TaskListItemFlags.FutureProspects },
+            new object[] { ApprenticeshipTypes.Foundation, (EmployerTaskListStateView v) => v.OtherOtherRequirementsEditable, TaskListItemFlags.FutureProspects },
         };
     
     [TestCaseSource(nameof(SectionThreeFieldsTestCases))]
