@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdentifiers.OutcomeDescription, "What is the expected career progression after this apprenticeship requires edit" },
             { FieldIdentifiers.Skills, "Skills requires edit" },
             { FieldIdentifiers.Qualifications, "Qualifications requires edit" },
-            { FieldIdentifiers.OtherRequirements, "Things to consider requires edit" },
+            { FieldIdentifiers.ThingsToConsider, "Things to consider requires edit" },
             { FieldIdentifiers.EmployerDescription, "Employer description requires edit" },
             { FieldIdentifiers.EmployerName, "Employer name requires edit" },
             { FieldIdentifiers.DisabilityConfident, "Disability confident requires edit" },

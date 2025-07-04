@@ -172,7 +172,7 @@ public class VacancyCheckYourAnswersOrchestrator(
         mappings.Add(e => e.OutcomeDescription, vm => vm.OutcomeDescription);
         mappings.Add(e => e.Skills, vm => vm.Skills);
         mappings.Add(e => e.Qualifications, vm => vm.Qualifications);
-        mappings.Add(e => e.OtherRequirements, vm => vm.OtherRequirements);
+        mappings.Add(e => e.ThingsToConsider, vm => vm.ThingsToConsider);
         mappings.Add(e => e.EmployerName, vm => vm.EmployerName);
         mappings.Add(e => e.EmployerDescription, vm => vm.EmployerDescription);
         mappings.Add(e => e.EmployerWebsiteUrl, vm => vm.EmployerWebsiteUrl);

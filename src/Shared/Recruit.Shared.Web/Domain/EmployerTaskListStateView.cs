@@ -80,7 +80,7 @@ public sealed class EmployerTaskListStateView: TaskListStateViewBase
             QualificationsEditable = CompleteStates[TaskListItemFlags.Skills];
             FutureProspectsEditable = CompleteStates[TaskListItemFlags.FutureProspects] || CompleteStates[TaskListItemFlags.Qualifications];
         }
-        OtherOtherRequirementsEditable = CompleteStates[TaskListItemFlags.FutureProspects];
+        OtherThingsToConsiderEditable = CompleteStates[TaskListItemFlags.FutureProspects];
         
         // Section Four
         NameOfEmployerOnAdvertEditable = CompleteStates[TaskListItemFlags.NameOfEmployerOnAdvert] || SectionThreeState == VacancyTaskListSectionState.Completed;
@@ -133,7 +133,7 @@ public sealed class EmployerTaskListStateView: TaskListStateViewBase
     public bool SkillsEditable { get; }
     public bool QualificationsEditable { get; }
     public bool FutureProspectsEditable { get; }
-    public bool OtherOtherRequirementsEditable { get; }
+    public bool OtherThingsToConsiderEditable { get; }
 
     // Section Four
     public bool NameOfEmployerOnAdvertEditable { get; }

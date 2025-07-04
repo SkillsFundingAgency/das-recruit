@@ -37,7 +37,7 @@ public enum TaskListItemFlags: ulong
     Skills = 1UL << 20,
     Qualifications = Skills << 1,
     FutureProspects = Qualifications << 1,
-    OtherOtherRequirements = FutureProspects << 1,
+    OtherThingsToConsider = FutureProspects << 1,
     
     // Section Four
     NameOfEmployerOnAdvert = 1UL << 30,
@@ -73,7 +73,7 @@ public enum EmployerTaskListSectionFlags: ulong
     Three = TaskListItemFlags.Skills
             | TaskListItemFlags.Qualifications
             | TaskListItemFlags.FutureProspects
-            | TaskListItemFlags.OtherOtherRequirements,
+            | TaskListItemFlags.OtherThingsToConsider,
     Four = TaskListItemFlags.NameOfEmployerOnAdvert
            | TaskListItemFlags.EmployerInformation
            | TaskListItemFlags.ContactDetails

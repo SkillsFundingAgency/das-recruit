@@ -43,7 +43,7 @@ public class ShortDescriptionOrchestratorTests
     }
 
     [Test]
-    public async Task WhenShortDescriptionIsUpdated_ShouldFlagOtherRequirementsFieldIndicator()
+    public async Task WhenShortDescriptionIsUpdated_ShouldFlagThingsToConsiderFieldIndicator()
     {
         _fixture
             .WithShortDescription("has a value")

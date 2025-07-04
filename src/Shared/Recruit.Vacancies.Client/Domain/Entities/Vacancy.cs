@@ -82,7 +82,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 
         public List<string> Skills { get; set; }
         public DateTime? StartDate { get; set; }
-        public string OtherRequirements { get; set; }
+        public string ThingsToConsider { get; set; }
         public string Title { get; set; }
         public string TrainingDescription { get; set; }
         public string AdditionalTrainingDescription { get; set; }

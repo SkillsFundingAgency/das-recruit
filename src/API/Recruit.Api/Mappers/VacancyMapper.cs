@@ -57,7 +57,7 @@ namespace SFA.DAS.Recruit.Api.Mappers
                 ShortDescription = request.ShortDescription,
                 Skills = request.Skills,
                 StartDate = request.StartDate,
-                OtherRequirements = request.OtherRequirements,
+                ThingsToConsider = request.ThingsToConsider,
                 Title = request.Title,
                 TrainingDescription = request.TrainingDescription,
                 Wage = new Wage

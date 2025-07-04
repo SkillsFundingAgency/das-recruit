@@ -28,7 +28,7 @@
         public const string Qualifications = "Qualifications";
         public const string ShortDescription = "ShortDescription";
         public const string Skills = "Skills";
-        public const string OtherRequirements = "OtherRequirements";
+        public const string ThingsToConsider = "ThingsToConsider";
         public const string Title = "Title";
         public const string Training = "Training";
         public const string TrainingDescription = "TrainingDescription";

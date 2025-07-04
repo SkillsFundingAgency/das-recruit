@@ -452,23 +452,23 @@
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-futureprospects">Change<span class="govuk-visually-hidden"> future prospects</span></a>
                 </dd>
             </div>
-            <field-review-message field-name="@FieldIdentifiers.OtherRequirements" model="@Model"></field-review-message>
-            <div class="app-summary-list__row" field-review-marker="OtherRequirements">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.OtherRequirements">What other requirements are there for this apprenticeship?</dt>
+            <field-review-message field-name="@FieldIdentifiers.ThingsToConsider" model="@Model"></field-review-message>
+            <div class="app-summary-list__row" field-review-marker="ThingsToConsider">
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.ThingsToConsider">What other requirements are there for this apprenticeship?</dt>
                 <dd class="app-summary-list__value">
-                    @if (string.IsNullOrEmpty(Model.OtherRequirements))
+                    @if (string.IsNullOrEmpty(Model.ThingsToConsider))
                     {
                         @:None
                     }
                     else
                     {
-                        @Model.OtherRequirements
+                        @Model.ThingsToConsider
                     }
-                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.OtherRequirements" tag-name="strong" model="@Model"/>
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ThingsToConsider" tag-name="strong" model="@Model"/>
 
                 </dd>
                 <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Considerations_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-OtherRequirements">Change<span class="govuk-visually-hidden"> considerations</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Considerations_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-thingstoconsider">Change<span class="govuk-visually-hidden"> considerations</span></a>
                 </dd>
             </div>
         </dl>

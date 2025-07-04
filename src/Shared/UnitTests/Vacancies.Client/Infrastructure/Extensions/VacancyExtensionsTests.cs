@@ -155,7 +155,7 @@ public class VacancyExtensionsTests
         p.EducationLevelNumber.Should().Be(_programme.EducationLevelNumber);
         p.ShortDescription.Should().Be(v.ShortDescription);
         p.StartDate.Should().Be(v.StartDate.Value);
-        p.OtherRequirements.Should().Be(v.OtherRequirements);
+        p.ThingsToConsider.Should().Be(v.ThingsToConsider);
         p.Title.Should().Be(v.Title);
         p.TrainingDescription.Should().Be(v.TrainingDescription);
         p.VacancyReference.Should().Be(v.VacancyReference.Value);

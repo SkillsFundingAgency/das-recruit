@@ -96,7 +96,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.HasOptedToAddQualifications = hasOptedToAddQualifications;
             vm.ShortDescription = vacancy.ShortDescription;
             vm.Skills = vacancy.Skills ?? Enumerable.Empty<string>();
-            vm.OtherRequirements = vacancy.OtherRequirements;
+            vm.ThingsToConsider = vacancy.ThingsToConsider;
             vm.Title = vacancy.Title;
             vm.TrainingDescription = vacancy.TrainingDescription;
             vm.AdditionalTrainingDescription = vacancy.AdditionalTrainingDescription;

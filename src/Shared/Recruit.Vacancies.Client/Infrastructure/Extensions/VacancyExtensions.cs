@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.ShortDescription = vacancy.ShortDescription;
             projectedVacancy.Skills = vacancy.Skills;
             projectedVacancy.StartDate = vacancy.StartDate.GetValueOrDefault();
-            projectedVacancy.OtherRequirements = vacancy.OtherRequirements;
+            projectedVacancy.ThingsToConsider = vacancy.ThingsToConsider;
             projectedVacancy.Title = vacancy.Title;
             projectedVacancy.TrainingDescription = vacancy.TrainingDescription;
             projectedVacancy.TrainingProvider = vacancy.TrainingProvider.ToProjection();

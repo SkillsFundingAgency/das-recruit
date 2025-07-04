@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
             outcomes.AddRange(BannedPhraseCheck(() => subject.Description));
             outcomes.AddRange(BannedPhraseCheck(() => subject.TrainingDescription));
             outcomes.AddRange(BannedPhraseCheck(() => subject.OutcomeDescription));
-            outcomes.AddRange(BannedPhraseCheck(() => subject.OtherRequirements));
+            outcomes.AddRange(BannedPhraseCheck(() => subject.ThingsToConsider));
             outcomes.AddRange(BannedPhraseCheck(() => subject.AdditionalQuestion1));
             outcomes.AddRange(BannedPhraseCheck(() => subject.AdditionalQuestion2));
             if (subject.Skills != null)

@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 {
     public class ConsiderationsOrchestrator : VacancyValidatingOrchestrator<ConsiderationsEditModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.OtherRequirements;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ThingsToConsider;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IUtility _utility;
@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             var vm = new ConsiderationsViewModel
             {
                 Title = vacancy.Title,
-                OtherRequirements = vacancy.OtherRequirements,
+                ThingsToConsider = vacancy.ThingsToConsider,
                 Ukprn = vrm.Ukprn,
                 VacancyId = vrm.VacancyId
             };
@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
         {
             var vm = await GetConsiderationsViewModelAsync((VacancyRouteModel)m);
 
-            vm.OtherRequirements = m.OtherRequirements;
+            vm.ThingsToConsider = m.ThingsToConsider;
 
             return vm;
         }
@@ -64,10 +64,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Considerations_Post);
 
             SetVacancyWithProviderReviewFieldIndicators(
-                vacancy.OtherRequirements,
-                FieldIdResolver.ToFieldId(v => v.OtherRequirements),
+                vacancy.ThingsToConsider,
+                FieldIdResolver.ToFieldId(v => v.ThingsToConsider),
                 vacancy,
-                (v) => { return v.OtherRequirements = m.OtherRequirements; });
+                (v) => { return v.ThingsToConsider = m.ThingsToConsider; });
 
             return await ValidateAndExecute(
                 vacancy,
@@ -80,7 +80,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, ConsiderationsEditModel>();
 
-            mappings.Add(e => e.OtherRequirements, vm => vm.OtherRequirements);
+            mappings.Add(e => e.ThingsToConsider, vm => vm.ThingsToConsider);
 
             return mappings;
         }

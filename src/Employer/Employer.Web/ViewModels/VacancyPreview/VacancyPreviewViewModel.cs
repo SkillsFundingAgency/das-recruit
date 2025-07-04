@@ -40,7 +40,7 @@ public class VacancyPreviewViewModel : DisplayVacancyViewModel
         nameof(OutcomeDescription),
         nameof(Skills),
         nameof(Qualifications),
-        nameof(OtherRequirements),
+        nameof(ThingsToConsider),
         nameof(EmployerDescription),
         nameof(EmployerName),
         nameof(EmployerWebsiteUrl),

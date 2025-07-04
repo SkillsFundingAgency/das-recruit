@@ -84,7 +84,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateApplicationMethod();
             ValidateEmployerContactDetails();
             ValidateProviderContactDetails();
-            ValidateOtherRequirements();
+            ValidateThingsToConsider();
             ValidateEmployerInformation();
             ValidateTrainingProvider();
         }
@@ -813,22 +813,22 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             });
         }
 
-        private void ValidateOtherRequirements()
+        private void ValidateThingsToConsider()
         {
-            RuleFor(x => x.OtherRequirements)
+            RuleFor(x => x.ThingsToConsider)
                 .MaximumLength(4000)
                     .WithMessage("Other requirements must not exceed {MaxLength} characters")
                     .WithErrorCode("75")
-                .WithState(_ => VacancyRuleSet.OtherRequirements)
+                .WithState(_ => VacancyRuleSet.ThingsToConsider)
                 .ValidFreeTextCharacters()
                     .WithMessage("Other requirements contains some invalid characters")
                     .WithErrorCode("76")
-                .WithState(_ => VacancyRuleSet.OtherRequirements)
+                .WithState(_ => VacancyRuleSet.ThingsToConsider)
                 .ProfanityCheck(_profanityListProvider)
                 .WithMessage("Other requirements must not contain a banned word or phrase.")
                 .WithErrorCode("613")
-                .WithState(_ => VacancyRuleSet.OtherRequirements)
-                .RunCondition(VacancyRuleSet.OtherRequirements);
+                .WithState(_ => VacancyRuleSet.ThingsToConsider)
+                .RunCondition(VacancyRuleSet.ThingsToConsider);
         }
 
         private void ValidateEmployerInformation()

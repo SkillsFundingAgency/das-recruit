@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public List<string>? QualificationsDesired { get; set; }
         public string ShortDescription { get; internal set; }
         public IEnumerable<string> Skills { get; internal set; }
-        public string OtherRequirements { get; internal set; }
+        public string ThingsToConsider { get; internal set; }
         public string Title { get; internal set; }
         public string TrainingDescription { get; internal set; }
         public string AdditionalTrainingDescription { get; internal set; }
@@ -119,7 +119,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
 
         public bool HasQualifications => Qualifications != null && Qualifications.Any();
 
-        public bool HasOtherRequirements => !string.IsNullOrWhiteSpace(OtherRequirements);
+        public bool HasThingsToConsider => !string.IsNullOrWhiteSpace(ThingsToConsider);
 
         public bool HasEmployerName => !string.IsNullOrWhiteSpace(EmployerName);
 

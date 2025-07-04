@@ -4,6 +4,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
 {
     public class ConsiderationsEditModel : VacancyRouteModel
     {
-        public string OtherRequirements { get; set; }
+        public string ThingsToConsider { get; set; }
     }
 }

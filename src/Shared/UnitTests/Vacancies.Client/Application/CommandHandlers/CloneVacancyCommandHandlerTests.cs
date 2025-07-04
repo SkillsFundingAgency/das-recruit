@@ -168,7 +168,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                 {nameof(Vacancy.ShortDescription), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.Skills), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.StartDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Ignore)},
-                {nameof(Vacancy.OtherRequirements), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.ThingsToConsider), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.Title), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.TrainingDescription), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.AdditionalTrainingDescription), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},

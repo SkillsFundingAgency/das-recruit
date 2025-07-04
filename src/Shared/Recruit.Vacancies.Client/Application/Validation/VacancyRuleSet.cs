@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
         ApplicationMethod = 1L << 20,
         EmployerContactDetails = 1L << 21,
         ProviderContactDetails = 1L << 22,
-        OtherRequirements = 1L << 23,
+        ThingsToConsider = 1L << 23,
         EmployerDescription = 1L << 24,
         EmployerWebsiteUrl = 1L << 25,
         TrainingProvider = 1L << 26,

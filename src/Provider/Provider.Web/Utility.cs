@@ -69,7 +69,7 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
     {
         return !string.IsNullOrWhiteSpace(vacancy.EmployerDescription) ||
                vacancy.ApplicationMethod != null ||
-               !string.IsNullOrWhiteSpace(vacancy.OtherRequirements) ||
+               !string.IsNullOrWhiteSpace(vacancy.ThingsToConsider) ||
                vacancy.ProviderContact != null ||
                vacancy.Qualifications != null ||
                vacancy.Skills != null ||
