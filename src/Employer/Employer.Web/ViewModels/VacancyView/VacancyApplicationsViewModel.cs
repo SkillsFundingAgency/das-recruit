@@ -9,6 +9,13 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
     public class VacancyApplicationsViewModel : VacancyRouteModel
     {
         public IEnumerable<VacancyApplication> Applications { get; internal set; }
+        public List<VacancyApplication> FilteredApplications { get; internal set; }
+        public List<string> EmploymentLocations { get; set; } = [];
+        public string? SelectedLocation { get; set; }
+        public string FilteredApplicationLabelText => FilteredApplications.Count == 1
+            ? "1 Application"
+            : $"{FilteredApplications.Count} Applications";
+
         public UserType UserType { get; internal set; }
         public bool ShowDisability { get; internal set; }
         public bool VacancySharedByProvier { get; internal set; }

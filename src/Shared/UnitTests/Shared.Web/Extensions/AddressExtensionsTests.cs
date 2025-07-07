@@ -281,4 +281,103 @@ public class AddressExtensionsTests
         var result = input.SplitCitiesToList();
         result.Should().BeEquivalentTo(new List<string> { "London", "Manchester", "Leeds" });
     }
+
+    [Test]
+    public void GetCityDisplayList_ShouldReturnEmptyList_WhenNoAddresses()
+    {
+        // Arrange
+        var addresses = new List<Address>();
+
+        // Act
+        var result = addresses.GetCityDisplayList();
+
+        // Assert
+        result.Should().BeEmpty();
+    }
+
+    [Test]
+    public void GetCityDisplayList_ShouldReturnSingleCity_WhenOneAddress()
+    {
+        // Arrange
+        var addresses = new List<Address>
+            {
+                new Address { AddressLine2 = "Line2", AddressLine3 = "CityA" }
+            };
+
+        // Act
+        var result = addresses.GetCityDisplayList();
+
+        // Assert
+        result.Should().ContainSingle()
+            .Which.Should().Be("CityA");
+    }
+
+    [Test]
+    public void GetCityDisplayList_ShouldReturnDistinctCities_WhenMultipleAddressesWithDifferentCities()
+    {
+        // Arrange
+        var addresses = new List<Address>
+            {
+                new Address { AddressLine3 = "CityA" },
+                new Address { AddressLine3 = "CityB" }
+            };
+
+        // Act
+        var result = addresses.GetCityDisplayList();
+
+        // Assert
+        result.Should().BeEquivalentTo(new[] { "CityA", "CityB" });
+    }
+
+    [Test]
+    public void GetCityDisplayList_ShouldReturnCityWithAddressLine1_WhenDuplicateCities()
+    {
+        // Arrange
+        var addresses = new List<Address>
+            {
+                new Address { AddressLine1 = "Addr1", AddressLine3 = "CityA" },
+                new Address { AddressLine1 = "Addr2", AddressLine3 = "CityA" }
+            };
+
+        // Act
+        var result = addresses.GetCityDisplayList();
+
+        // Assert
+        result.Should().BeEquivalentTo(new[] { "CityA (Addr1)", "CityA (Addr2)" });
+    }
+
+    [Test]
+    public void GetCityDisplayList_ShouldIgnoreAddressesWithNoCity()
+    {
+        // Arrange
+        var addresses = new List<Address>
+            {
+                new Address { AddressLine1 = "Addr1", AddressLine3 = "" },
+                new Address { AddressLine1 = "Addr2", AddressLine3 = "CityA" }
+            };
+
+        // Act
+        var result = addresses.GetCityDisplayList();
+
+        // Assert
+        result.Should().ContainSingle()
+            .Which.Should().Be("CityA");
+    }
+
+    [Test]
+    public void GetCityDisplayList_ShouldTrimCityNamesAndAddressLine1()
+    {
+        // Arrange
+        var addresses = new List<Address>
+            {
+                new Address { AddressLine1 = " Addr1 ", AddressLine3 = " CityA " },
+                new Address { AddressLine1 = "Addr2", AddressLine3 = "CityA" }
+            };
+
+        // Act
+        var result = addresses.GetCityDisplayList();
+
+        // Assert
+        result.Should().BeEquivalentTo("CityA (Addr1)", "CityA (Addr2)");
+    }
 }
