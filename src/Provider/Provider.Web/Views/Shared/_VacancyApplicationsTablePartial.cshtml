@@ -34,7 +34,7 @@
         </div>
     </div>
 </div>
-@if (Model.FilteredApplications.Count > 0)
+@if (Model.Applications.Count > 0)
 {
     <table class="govuk-table das-table--responsive">
         <thead class="govuk-table__head">
@@ -43,7 +43,7 @@
             </tr>
         </thead>
         <tbody class="govuk-table__body">
-            @foreach (var application in Model.FilteredApplications)
+            @foreach (var application in Model.Applications)
             {
                 <tr class="govuk-table__row" asp-show="@application.IsNotWithdrawn">
                     <td class="govuk-table__cell" data-label="Application ID"><a id="@($"application-id-{application.GetFriendlyId()}")" asp-route="@RouteNames.ApplicationReview_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-applicationReviewId="@application.ApplicationReviewId" class="govuk-link">@application.GetFriendlyId()</a></td>

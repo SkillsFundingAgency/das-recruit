@@ -17,9 +17,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool IsWithdrawn => string.IsNullOrEmpty(WithdrawnDate) == false;
         public bool IsClosedBlockedByQa { get; set; }
         public VacancyApplicationsViewModel Applications { get; internal set; }
-        public bool HasApplications => Applications.Applications.Any();
-        public int ApplicationCount => Applications?.Applications.Count() ?? 0;
-        public bool HasNoApplications => Applications.Applications == null || Applications.Applications?.Any() == false;
+        public bool HasApplications => ApplicationCount > 0;
+        public bool HasNoApplications => ApplicationCount == 0;
+        public int ApplicationCount => Applications?.ApplicationsCount ?? 0;
         public bool ShowEmployerApplications => !Applications.VacancySharedByProvier;
         public bool ShowSharedApplications => HasApplications && Applications.VacancySharedByProvier;
         public bool CanShowMultipleApplicationsUnsuccessfulLink => (IsVacancyLive || IsVacancyClosed) && Applications.CanShowMultipleApplicationsUnsuccessfulLink && ShowEmployerApplications;

@@ -74,10 +74,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             viewModel.Applications = new VacancyApplicationsViewModel
             {
-                Applications = applications,
-                FilteredApplications = string.IsNullOrEmpty(locationFilter)
+                Applications = string.IsNullOrEmpty(locationFilter)
                     ? applications
                     : applications.Where(fil => fil.CandidateAppliedLocations.Contains(locationFilter)).ToList(),
+                ApplicationsCount = applications.Count,
                 EmploymentLocations = vacancy.EmployerLocations.GetCityDisplayList(),
                 SelectedLocation = locationFilter,
                 ShowDisability = vacancy.IsDisabilityConfident,
