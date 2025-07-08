@@ -129,7 +129,15 @@ public class AddressExtensionsTests
         result.Last().Should().HaveCount(3);
     }
 
-    [Test, MoqAutoData]
+    [Test]
+    public void GetCities_ReturnsEmptyString_When_Given_Null()
+    {
+        string result = ((IEnumerable<Address>)null).GetCities();
+
+        result.Should().BeEmpty();
+    }
+
+    [Test]
     public void GetCities_ReturnsEmptyString_WhenNoAddresses()
     {
         string result = new List<Address>().GetCities();
@@ -280,6 +288,19 @@ public class AddressExtensionsTests
         string input = "London, , Manchester,,Leeds, ";
         var result = input.SplitCitiesToList();
         result.Should().BeEquivalentTo(new List<string> { "London", "Manchester", "Leeds" });
+    }
+
+    [Test]
+    public void GetCityDisplayList_When_Given_Null_ShouldReturnEmptyList_WhenNoAddresses()
+    {
+        // Arrange
+        List<Address> addresses = null;
+
+        // Act
+        var result = addresses.GetCityDisplayList();
+
+        // Assert
+        result.Should().BeEmpty();
     }
 
     [Test]

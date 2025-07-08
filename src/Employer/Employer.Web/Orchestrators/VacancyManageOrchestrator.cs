@@ -77,13 +77,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 Applications = string.IsNullOrEmpty(locationFilter)
                     ? applications
                     : applications.Where(fil => fil.CandidateAppliedLocations.Contains(locationFilter)).ToList(),
-                ApplicationsCount = applications.Count,
+                TotalUnfilteredApplicationsCount = applications.Count,
                 EmploymentLocations = vacancy.EmployerLocations.GetCityDisplayList(),
                 SelectedLocation = locationFilter,
                 ShowDisability = vacancy.IsDisabilityConfident,
                 VacancyId = vacancy.Id,
                 EmployerAccountId = vacancy.EmployerAccountId,
-                VacancySharedByProvier = vacancySharedByProvider
+                VacancySharedByProvider = vacancySharedByProvider
             };
 
             return viewModel;

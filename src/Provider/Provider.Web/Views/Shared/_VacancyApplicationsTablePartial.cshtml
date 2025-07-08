@@ -29,13 +29,12 @@
     <div class="govuk-grid-column-two-thirds">
         <div>
             <h2 class="govuk-heading-s">
-                @Model.FilteredApplicationLabelText
+                @Model.FilteredApplicationsLabelText
             </h2>
         </div>
     </div>
 </div>
-@if (Model.Applications.Count > 0)
-{
+<div asp-show="@Model.HasApplications">
     <table class="govuk-table das-table--responsive">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
@@ -62,12 +61,9 @@
             }
         </tbody>
     </table>
-}
-else
-{
-    <div>
-        <p class="govuk-body">
-            No applications for @Model.SelectedLocation have been received.
-        </p>
-    </div>
-}
+</div>
+<div asp-show="@Model.HasNoApplications">
+    <p class="govuk-body">
+        No applications for @Model.SelectedLocation have been received.
+    </p>
+</div>
