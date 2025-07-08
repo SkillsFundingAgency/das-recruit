@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         private readonly ILogger<CreateVacancyReviewCommandHandler> _logger;
         private readonly IVacancyRepository _vacancyRepository;
-        private readonly IVacancyReviewRespositoryRunner _vacancyReviewRespositoryRunner;
+        private readonly IVacancyReviewRepositoryRunner _vacancyReviewRepositoryRunner;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _time;
@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         public CreateVacancyReviewCommandHandler(
             ILogger<CreateVacancyReviewCommandHandler> logger,
             IVacancyRepository vacancyRepository,
-            IVacancyReviewRespositoryRunner vacancyReviewRespositoryRunner,
+            IVacancyReviewRepositoryRunner vacancyReviewRepositoryRunner,
             IVacancyReviewQuery vacancyReviewQuery, 
             IMessaging messaging, 
             ITimeProvider time,
@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             _logger = logger;
             _vacancyRepository = vacancyRepository;
-            _vacancyReviewRespositoryRunner = vacancyReviewRespositoryRunner;
+            _vacancyReviewRepositoryRunner = vacancyReviewRepositoryRunner;
             _vacancyReviewQuery = vacancyReviewQuery;
             _messaging = messaging;
             _time = time;
@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             var review = BuildNewReview(vacancy, previousReviews.Count, slaDeadline, updatedFields, previousReviews.OrderByDescending(c=>c.SubmissionCount).FirstOrDefault());
 
-            await _vacancyReviewRespositoryRunner.CreateAsync(review);
+            await _vacancyReviewRepositoryRunner.CreateAsync(review);
 
             await _messaging.PublishEvent(new VacancyReviewCreatedEvent
             {
