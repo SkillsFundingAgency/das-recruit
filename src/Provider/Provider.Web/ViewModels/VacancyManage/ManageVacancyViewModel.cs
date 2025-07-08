@@ -17,9 +17,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public bool IsApplyThroughFaaVacancy { get; internal set; }
 
         public VacancyApplicationsViewModel Applications { get; internal set; }
-        public bool HasApplications => ApplicationCount > 0;
-        public bool HasNoApplications => ApplicationCount == 0;
-        public int ApplicationCount => Applications?.ApplicationsCount ?? 0;
+        public bool HasApplications => TotalUnfilteredApplicationsCount > 0;
+        public bool HasNoApplications => TotalUnfilteredApplicationsCount == 0;
+        public int TotalUnfilteredApplicationsCount => Applications?.TotalUnfilteredApplicationsCount ?? 0;
         public bool CanShowEditVacancyLink { get; internal set; }
         public bool CanShowCloseVacancyLink { get; internal set; }
         public bool CanShowCloneVacancyLink { get; internal set; }

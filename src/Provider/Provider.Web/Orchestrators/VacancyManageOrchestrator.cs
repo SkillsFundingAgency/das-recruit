@@ -77,7 +77,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Applications = string.IsNullOrEmpty(locationFilter)
                         ? applications
                         : applications.Where(fil => fil.CandidateAppliedLocations.Contains(locationFilter)).ToList(),
-                ApplicationsCount = applications.Count,
+                TotalUnfilteredApplicationsCount = applications.Count,
                 EmploymentLocations = vacancy.EmployerLocations.GetCityDisplayList(),
                 SelectedLocation = locationFilter,
                 ShowDisability = vacancy.IsDisabilityConfident,

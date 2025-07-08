@@ -12,11 +12,14 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyView
 
         public List<string> EmploymentLocations { get; set; } = [];
         public string? SelectedLocation { get; set; }
-        public int ApplicationsCount { get; set; } = 0;
+        public int TotalUnfilteredApplicationsCount { get; set; } = 0;
 
-        public string FilteredApplicationLabelText => Applications.Count == 1
+        public string FilteredApplicationsLabelText => Applications.Count == 1
             ? "1 Application"
             : $"{Applications.Count} Applications";
+
+        public bool HasApplications => Applications is not null && Applications.Any();
+        public bool HasNoApplications => !HasApplications;
 
         public bool ShowDisability { get; internal set; }
 
