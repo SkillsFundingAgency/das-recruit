@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services.NextVacancyReview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
@@ -14,20 +15,23 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     public class AssignVacanyReviewCommandHandler: IRequestHandler<AssignVacancyReviewCommand, Unit>
     {
         private readonly ILogger<AssignVacancyReviewCommand> _logger;
-        private readonly IVacancyReviewRepository _vacancyReviewRepository;
+        private readonly IVacancyReviewRespositoryRunner _vacancyReviewRespositoryRunner;
+        private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly ITimeProvider _time;
         private readonly INextVacancyReviewService _nextVacancyReviewService;
 
         public AssignVacanyReviewCommandHandler(
             ILogger<AssignVacancyReviewCommand> logger,
-            IVacancyReviewRepository vacancyReviewRepository, 
+            IVacancyReviewRespositoryRunner vacancyReviewRespositoryRunner, 
             ITimeProvider timeProvider,
-            INextVacancyReviewService nextVacancyReviewService)
+            INextVacancyReviewService nextVacancyReviewService,
+            IVacancyReviewQuery vacancyReviewQuery)
         {
             _logger = logger;
-            _vacancyReviewRepository = vacancyReviewRepository;
+            _vacancyReviewRespositoryRunner = vacancyReviewRespositoryRunner;
             _time = timeProvider;
             _nextVacancyReviewService = nextVacancyReviewService;
+            _vacancyReviewQuery = vacancyReviewQuery;
         }
 
         public async Task<Unit> Handle(AssignVacancyReviewCommand message, CancellationToken cancellationToken)
@@ -52,13 +56,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             review.ReviewedByUser = message.User;
             review.ReviewedDate = _time.Now;
 
-            await _vacancyReviewRepository.UpdateAsync(review);
+            await _vacancyReviewRespositoryRunner.UpdateAsync(review);
             return Unit.Value;
         }
 
         private async Task<VacancyReview> GetVacancyReviewAsync(Guid reviewId)
         {
-            var review = await _vacancyReviewRepository.GetAsync(reviewId);
+            var review = await _vacancyReviewQuery.GetAsync(reviewId);
 
             if (_nextVacancyReviewService.VacancyReviewCanBeAssigned(review.Status, review.ReviewedDate))
                 return review;

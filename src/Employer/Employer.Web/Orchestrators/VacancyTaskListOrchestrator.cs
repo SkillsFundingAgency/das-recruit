@@ -4,6 +4,7 @@ using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Domain;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators;
@@ -27,11 +28,13 @@ public class VacancyTaskListOrchestrator(
         return new VacancyTaskListViewModel
         {
             AccountLegalEntityCount = employerData.LegalEntities.Count(),
+            ApplicationMethod = vacancy.ApplicationMethod,
             ApprenticeshipType = vacancy.ApprenticeshipType.GetValueOrDefault(),
             EmployerAccountId = vrm.EmployerAccountId,
             Status = vacancy.Status,
             TaskListStates = taskListStateView,
-            VacancyId = vacancy.Id
+            VacancyId = vacancy.Id,
+            AdditionalQuestionCount = vacancy.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4,
         };
     }
 

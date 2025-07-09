@@ -214,9 +214,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             actual.Referred.Should().Be(referredCount + rejectedCount);
             actual.Live.Should().Be(liveCount + closingSoon);
             actual.NumberOfNewApplications.Should().Be(numberOfNewApplications);
-            actual.NumberOfUnsuccessfulApplications.Should().Be(numberOfUnsuccessfulApplications * 2 + closedUnsuccessfulApplications * 2);
-            actual.NumberOfSuccessfulApplications.Should().Be(numberOfSuccessfulApplications * 2 + closedSuccessfulApplications * 2);
-            actual.NumberOfSharedApplications.Should().Be(numberOfSharedApplications * 2);
+            actual.NumberOfUnsuccessfulApplications.Should().Be(getDashboardCountApiResponse.UnsuccessfulApplicationsCount);
+            actual.NumberOfSuccessfulApplications.Should().Be(getDashboardCountApiResponse.SuccessfulApplicationsCount);
+            actual.NumberOfSharedApplications.Should().Be(getDashboardCountApiResponse.SharedApplicationsCount);
             actual.NumberClosingSoon.Should().Be(closingSoon);
             actual.NumberClosingSoonWithNoApplications.Should().Be(closingSoonNoApplications);
             actual.HasVacancies.Should().BeTrue();

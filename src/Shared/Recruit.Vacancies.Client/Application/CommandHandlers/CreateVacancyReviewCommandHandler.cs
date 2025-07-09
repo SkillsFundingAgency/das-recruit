@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.VacancyComparer;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
@@ -20,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         private readonly ILogger<CreateVacancyReviewCommandHandler> _logger;
         private readonly IVacancyRepository _vacancyRepository;
-        private readonly IVacancyReviewRepository _vacancyReviewRepository;
+        private readonly IVacancyReviewRespositoryRunner _vacancyReviewRespositoryRunner;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _time;
@@ -30,7 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         public CreateVacancyReviewCommandHandler(
             ILogger<CreateVacancyReviewCommandHandler> logger,
             IVacancyRepository vacancyRepository,
-            IVacancyReviewRepository vacancyReviewRepository,
+            IVacancyReviewRespositoryRunner vacancyReviewRespositoryRunner,
             IVacancyReviewQuery vacancyReviewQuery, 
             IMessaging messaging, 
             ITimeProvider time,
@@ -39,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             _logger = logger;
             _vacancyRepository = vacancyRepository;
-            _vacancyReviewRepository = vacancyReviewRepository;
+            _vacancyReviewRespositoryRunner = vacancyReviewRespositoryRunner;
             _vacancyReviewQuery = vacancyReviewQuery;
             _messaging = messaging;
             _time = time;
@@ -73,7 +74,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             var review = BuildNewReview(vacancy, previousReviews.Count, slaDeadline, updatedFields, previousReviews.OrderByDescending(c=>c.SubmissionCount).FirstOrDefault());
 
-            await _vacancyReviewRepository.CreateAsync(review);
+            await _vacancyReviewRespositoryRunner.CreateAsync(review);
 
             await _messaging.PublishEvent(new VacancyReviewCreatedEvent
             {
@@ -87,6 +88,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             var review = new VacancyReview
             {
+                Id = Guid.NewGuid(),
                 VacancyReference = vacancy.VacancyReference.Value,
                 Title = vacancy.Title,
                 Status = ReviewStatus.New,    

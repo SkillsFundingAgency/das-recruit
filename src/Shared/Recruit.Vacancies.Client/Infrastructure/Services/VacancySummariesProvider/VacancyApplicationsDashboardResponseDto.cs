@@ -25,4 +25,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public VacancyStatus Status { get; set; }
         public bool ClosingSoon { get; set; }
     }
+
+    internal class VacancyClosingSoonDashboardDto
+    {
+        public VacancyClosingSoonDashboardDtoId Id { get; set; }
+    }
+
+    internal class VacancyClosingSoonDashboardDtoId
+    {
+        public long VacancyReference { get; set; }
+    }
 }

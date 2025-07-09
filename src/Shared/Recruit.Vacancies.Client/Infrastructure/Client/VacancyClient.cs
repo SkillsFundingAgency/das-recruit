@@ -176,24 +176,38 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             return new EmployerDashboardSummary
             {
-                Closed = dashboard.FirstOrDefault(c=>c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
-                Draft = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Draft)?.StatusCount ?? 0,
-                Review = IsMongoMigrationFeatureEnabled 
-                    ? dashboardStats.EmployerReviewedApplicationsCount 
-                    : dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Review)?.StatusCount ?? 0,
-                Referred = (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
-                Live = dashboard.Where(c=>c.Status == VacancyStatus.Live).Sum(c=>c.StatusCount),
-                Submitted = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
-                NumberOfNewApplications = IsMongoMigrationFeatureEnabled 
-                    ? dashboardStats.NewApplicationsCount 
-                    : dashboardApplications.Where(c=>c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfNewApplications),
-                NumberOfSuccessfulApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live).Sum(x=>x.NoOfSuccessfulApplications) 
-                                                 + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfSuccessfulApplications),
-                NumberOfUnsuccessfulApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live).Sum(x=>x.NoOfUnsuccessfulApplications) 
-                                                   + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfUnsuccessfulApplications),
-                NumberOfSharedApplications = dashboardSharedApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfSharedApplications),
-                NumberOfAllSharedApplications = dashboardSharedApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfAllSharedApplications),
-                NumberClosingSoon =dashboard.FirstOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon)?.StatusCount ?? 0,
+                Closed = dashboard.FirstOrDefault(c => c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
+                Draft = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Draft)?.StatusCount ?? 0,
+                Review = IsMongoMigrationFeatureEnabled
+                    ? dashboardStats.EmployerReviewedApplicationsCount
+                    : dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Review)?.StatusCount ?? 0,
+                Referred = (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
+                Live = dashboard.Where(c => c.Status == VacancyStatus.Live).Sum(c => c.StatusCount),
+                Submitted = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
+
+                NumberOfNewApplications = IsMongoMigrationFeatureEnabled
+                    ? dashboardStats.NewApplicationsCount
+                    : dashboardApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfNewApplications),
+
+                NumberOfSuccessfulApplications = IsMongoMigrationFeatureEnabled
+                    ? dashboardStats.SuccessfulApplicationsCount
+                    : dashboardApplications.Where(c => c.Status == VacancyStatus.Live).Sum(x => x.NoOfSuccessfulApplications)
+                      + dashboardApplications.Where(c => c.Status == VacancyStatus.Closed).Sum(x => x.NoOfSuccessfulApplications),
+
+                NumberOfUnsuccessfulApplications = IsMongoMigrationFeatureEnabled
+                    ? dashboardStats.UnsuccessfulApplicationsCount
+                    : dashboardApplications.Where(c => c.Status == VacancyStatus.Live).Sum(x => x.NoOfUnsuccessfulApplications)
+                      + dashboardApplications.Where(c => c.Status == VacancyStatus.Closed).Sum(x => x.NoOfUnsuccessfulApplications),
+
+                NumberOfSharedApplications = IsMongoMigrationFeatureEnabled
+                    ? dashboardStats.SharedApplicationsCount
+                    : dashboardSharedApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfSharedApplications),
+
+                NumberOfAllSharedApplications = IsMongoMigrationFeatureEnabled
+                    ? dashboardStats.AllSharedApplicationsCount
+                    : dashboardSharedApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfAllSharedApplications),
+
+                NumberClosingSoon = dashboard.FirstOrDefault(c => c.Status == VacancyStatus.Live && c.ClosingSoon)?.StatusCount ?? 0,
                 NumberClosingSoonWithNoApplications = dashboardValue.VacanciesClosingSoonWithNoApplications
             };
         }
@@ -206,8 +220,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return new EmployerDashboard
             {
                 Id = QueryViewType.EmployerDashboard.GetIdValue(employerAccountId),
-                Vacancies = vacancySummaries,
-                LastUpdated = timeProvider.Now
+                Vacancies = vacancySummaries.Item1,
+                LastUpdated = timeProvider.Now,
+                TotalVacancies = vacancySummaries.totalCount
             };
         }
 
@@ -263,7 +278,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return qualificationsProvider.GetQualificationsAsync();
         }
 
-        public Task<ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId)
+        public Task<Domain.Entities.ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId)
         {
             return applicationReviewRepository.GetAsync(applicationReviewId);
         }
@@ -283,7 +298,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var applicationReviews = vacancySharedByProvider
                 ? await applicationReviewRepository.GetForSharedVacancyAsync(vacancyReference) 
-                : await applicationReviewRepository.GetForVacancyAsync<ApplicationReview>(vacancyReference);
+                : await applicationReviewRepository.GetForVacancyAsync<Domain.Entities.ApplicationReview>(vacancyReference);
 
             return applicationReviews == null 
                 ? new List<VacancyApplication>() 
@@ -293,7 +308,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public async Task<List<VacancyApplication>> GetVacancyApplicationsForSelectedIdsAsync(List<Guid> applicationReviewIds)
         {
             var applicationReviews =
-                await applicationReviewRepository.GetAllForSelectedIdsAsync<ApplicationReview>(applicationReviewIds);
+                await applicationReviewRepository.GetAllForSelectedIdsAsync<Domain.Entities.ApplicationReview>(applicationReviewIds);
 
             return applicationReviews == null
                 ? new List<VacancyApplication>()
@@ -484,7 +499,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return vacancyService.PerformRulesCheckAsync(reviewId);
         }
 
-        public Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
+        public Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
         {
             return vacancyReviewQuery.GetCurrentReferredVacancyReviewAsync(vacancyReference);
         }
@@ -573,7 +588,26 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public async Task<long> GetVacancyCount(string employerAccountId, FilteringOptions? filteringOptions, string searchTerm)
         {
             var ownerType = (filteringOptions == FilteringOptions.NewSharedApplications || filteringOptions == FilteringOptions.AllSharedApplications) ? OwnerType.Provider : OwnerType.Employer;
-            return await vacancySummariesQuery.VacancyCount(null, employerAccountId, filteringOptions, searchTerm, ownerType);
+
+            if (!IsMongoMigrationFeatureEnabled || !string.IsNullOrEmpty(searchTerm))
+            {
+                return await vacancySummariesQuery.VacancyCount(null, employerAccountId, filteringOptions, searchTerm, ownerType);
+            }
+
+            
+            var dashboardStats = await employerAccountProvider.GetEmployerDashboardStats(employerAccountId);
+
+            switch (filteringOptions)
+            {
+                case FilteringOptions.NewApplications:
+                    return dashboardStats.NewApplicationsCount;
+                case FilteringOptions.AllSharedApplications:
+                    return dashboardStats.AllSharedApplicationsCount;
+                case FilteringOptions.EmployerReviewedApplications:
+                    return dashboardStats.EmployerReviewedApplicationsCount;
+                default:
+                    return await vacancySummariesQuery.VacancyCount(null, employerAccountId, filteringOptions, searchTerm, ownerType);
+            }
         }
     }
 }

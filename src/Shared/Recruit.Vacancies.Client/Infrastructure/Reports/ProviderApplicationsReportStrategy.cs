@@ -20,8 +20,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private const string QueryUkprn = "_ukprn_";
         private const string QueryFromDate = "_fromDate_";
         private const string QueryToDate = "_toDate_";
-        private const string VacancyType = "_vacancytype_";
-        private const string ApplicationMethod = "_applicationMethod_";
 
         private const string ColumnProgramme = "Programme";
         private const string ColumnApplicationLastUpdatedDate = "Application_LastUpdatedDate";
@@ -40,7 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private readonly ILogger<ProviderApplicationsReportStrategy> _logger;
 
         private const string QueryFormat = @"[
-            { $match: {'trainingProvider.ukprn' : _ukprn_, 'ownerType' : 'Provider', 'isDeleted' : false, 'applicationMethod' : '_applicationMethod_', 'status' : {$in : ['Live','Closed']}, 'vacancyType' : {'$in' : ['Apprenticeship', null] }}},
+            { $match: {'trainingProvider.ukprn' : _ukprn_, 'ownerType' : 'Provider', 'isDeleted' : false, 'status' : {$in : ['Live','Closed']}}},
             { $lookup: { from: 'applicationReviews', localField: 'vacancyReference', foreignField: 'vacancyReference', as: 'ar'}},
             { $unwind: '$ar'},
             { $match: {'ar.submittedDate' : { $gte: ISODate('_fromDate_'), $lte: ISODate('_toDate_')}, 'ar.isWithdrawn' : false}},
@@ -118,8 +116,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             var queryJson = QueryFormat
                 .Replace(QueryUkprn, ukprn.ToString())
                 .Replace(QueryFromDate, fromDate.ToString("o"))
-                .Replace(QueryToDate , toDate.ToString("o"))
-                .Replace(ApplicationMethod, "ThroughFindAnApprenticeship");
+                .Replace(QueryToDate , toDate.ToString("o"));
 
             var bson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument[]>(queryJson);
 
