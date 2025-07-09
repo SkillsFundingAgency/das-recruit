@@ -39,6 +39,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
         public string AdditionalAnswer1 { get; set; }
         public string AdditionalQuestion2 { get; set; }
         public string AdditionalAnswer2 { get; set; }
+        public ApprenticeshipTypes ApprenticeshipType { get; set; }
 
         public bool HasNoQualifications => Qualifications.Any() == false;
         public bool HasNoTrainingCourses => TrainingCourses.Any() == false;
@@ -51,7 +52,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
         public bool HasAdditionalSecondQuestion => !string.IsNullOrEmpty(AdditionalQuestion2);
         public bool HasNoSupportRequirements => string.IsNullOrWhiteSpace(Support);
         public bool IsOutcomeSuccessul => Status == ApplicationReviewStatus.Successful;
-    public bool CanNotChangeOutcome => (IsApplicationSharedByProvider) ? 
+        public bool CanNotChangeOutcome => (IsApplicationSharedByProvider) ? 
         (Status == ApplicationReviewStatus.Successful || Status == ApplicationReviewStatus.Unsuccessful || Status == ApplicationReviewStatus.EmployerInterviewing || Status == ApplicationReviewStatus.EmployerUnsuccessful || Status == ApplicationReviewStatus.Interviewing)
         : (Status == ApplicationReviewStatus.Successful || Status == ApplicationReviewStatus.Unsuccessful);
         public bool CanChangeOutcome => !CanNotChangeOutcome;
