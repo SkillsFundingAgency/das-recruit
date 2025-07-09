@@ -53,16 +53,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
         public async Task<IEnumerable<IApprenticeshipProgramme>> GetApprenticeshipProgrammesAsync(bool includeExpired = false)
         {
             var queryItem = await GetApprenticeshipProgrammes();
-            return includeExpired ? 
-                queryItem.Data : 
-                queryItem.Data.Where(x => x.IsActive 
+            return includeExpired ?
+                queryItem.Data :
+                queryItem.Data.Where(x => x.IsActive
                                           || (_isTestEnvironment && x.ApprenticeshipType == TrainingType.Foundation));
         }
 
         private Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammes()
         {
-            var includeFoundationApprenticeships =_feature.IsFeatureEnabled("FoundationApprenticeships");
-            
+            var includeFoundationApprenticeships = _feature.IsFeatureEnabled(FeatureNames.FoundationApprenticeships);
+
             return _cache.CacheAsideAsync(CacheKeys.ApprenticeshipProgrammes,
                 _timeProvider.NextDay6am,
                 async () =>
@@ -71,7 +71,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                     return new ApprenticeshipProgrammes
                     {
                         Data = result.TrainingProgrammes.Select(c => (ApprenticeshipProgramme)c).ToList(),
-                        
+
                     };
                 });
         }

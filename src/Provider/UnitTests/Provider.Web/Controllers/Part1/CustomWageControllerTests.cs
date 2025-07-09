@@ -1,20 +1,15 @@
 ﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
-using NUnit.Framework;
-using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Controllers.Part1;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Moq;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Shared.Web.Orchestrators;
-using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using SFA.DAS.Testing.AutoFixture;
-using AutoFixture;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.CustomWage;
+using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
 {
@@ -37,7 +32,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
                 new Claim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier,_ukprn.ToString())
             }));
 
-            _controller = new CustomWageController(_orchestrator.Object, null);
+            _controller = new CustomWageController(_orchestrator.Object);
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext { User = user }
