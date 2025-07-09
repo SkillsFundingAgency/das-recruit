@@ -27,13 +27,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         }
 
         [Fact]
-        public void ExternalApplicationInstructionsMustBe4000CharactersOrLess()
+        public void ExternalApplicationInstructionsMustBe500CharactersOrLess()
         {
             var vacancy = new Vacancy
             {
                 ApplicationMethod = ApplicationMethod.ThroughExternalApplicationSite,
                 ApplicationUrl = "http://www.apply.com",
-                ApplicationInstructions = "instructions".PadRight(4001, 'w')
+                ApplicationInstructions = "instructions".PadRight(501, 'w')
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.ApplicationMethod);
