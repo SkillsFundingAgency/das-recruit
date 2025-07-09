@@ -222,8 +222,11 @@
         <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--xl" />
 
         <h2 class="govuk-heading-m">Application questions</h2>
-        <h3 class="govuk-heading-s govuk-!-margin-bottom-2">What are your skills and strengths?</h3>
-        <p class="faa-user-content">@Model.Strengths</p>
+        @if (!Model.ApprenticeshipType.IsFoundation())
+        {
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">What are your skills and strengths?</h3>
+            <p class="faa-user-content">@Model.Strengths</p>
+        }
         <h3 class="govuk-heading-s govuk-!-margin-bottom-2">What interests you about this apprenticeship?</h3>
         <p class="faa-user-content">@Model.WhatIsYourInterest</p>
         @if (!string.IsNullOrEmpty(Model.AdditionalQuestion1))
