@@ -186,9 +186,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             {
                 Closed = dashboard.FirstOrDefault(c => c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
                 Draft = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Draft)?.StatusCount ?? 0,
-                Review = IsMongoMigrationFeatureEnabled
-                    ? dashboardStats.EmployerReviewedApplicationsCount
-                    : dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Review)?.StatusCount ?? 0,
+                Review = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Review)?.StatusCount ?? 0,
                 Referred = (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
                 Live = dashboard.Where(c => c.Status == VacancyStatus.Live).Sum(c => c.StatusCount),
                 Submitted = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
