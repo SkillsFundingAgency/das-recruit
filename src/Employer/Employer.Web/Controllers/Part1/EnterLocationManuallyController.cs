@@ -18,7 +18,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1;
 [Route(RoutePaths.AccountVacancyRoutePath)]
 public class EnterLocationManuallyController(IUtility utility) : Controller
 {
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpGet("enter-location", Name = RouteNames.EnterAddressManually_Get)]
     public async Task<IActionResult> EnterLocationManually(AddLocationJourneyModel model)
     {
@@ -29,7 +28,6 @@ public class EnterLocationManuallyController(IUtility utility) : Controller
         return View(viewModel);
     }
 
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("enter-location", Name = RouteNames.EnterAddressManually_Post)]
     public async Task<IActionResult> EnterLocationManually(
         [FromServices] ILocationsService locationsService,

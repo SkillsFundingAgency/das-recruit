@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using System;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -9,7 +9,6 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Orchestrators;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Mvc;
@@ -18,22 +17,14 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class TrainingProviderController : Controller
+    public class TrainingProviderController(TrainingProviderOrchestrator orchestrator) : Controller
     {
-        private readonly TrainingProviderOrchestrator _orchestrator;
-        private readonly IFeature _feature;
         private const string InvalidSearchTerm = "Enter the name or UKPRN of a training provider who is registered to deliver apprenticeship training";
-
-        public TrainingProviderController(TrainingProviderOrchestrator orchestrator, IFeature feature)
-        {
-            _orchestrator = orchestrator;
-            _feature = feature;
-        }
 
         [HttpGet("select-training-provider", Name = RouteNames.TrainingProvider_Select_Get)]
         public async Task<IActionResult> SelectTrainingProvider(VacancyRouteModel vrm, [FromQuery] string wizard = "true", [FromQuery] string clear = "", [FromQuery] long? ukprn = null)
         {
-           var vm = await _orchestrator.GetSelectTrainingProviderViewModelAsync(vrm, ukprn);
+           var vm = await orchestrator.GetSelectTrainingProviderViewModelAsync(vrm, ukprn);
            vm.PageInfo.SetWizard(wizard);
 
            if (string.IsNullOrWhiteSpace(clear) == false)
@@ -61,7 +52,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             if (ModelState.IsValid)
             {
-                var response = await _orchestrator.PostSelectTrainingProviderAsync(m, User.ToVacancyUser());
+                var response = await orchestrator.PostSelectTrainingProviderAsync(m, User.ToVacancyUser());
 
                 if (response.Success)
                 {
@@ -73,7 +64,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 AddTrainingProviderErrorsToModelState(m.SelectionType, m.Ukprn, response, ModelState);
             }
 
-            var vm = await _orchestrator.GetSelectTrainingProviderViewModelAsync(m);
+            var vm = await orchestrator.GetSelectTrainingProviderViewModelAsync(m);
             vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
@@ -81,12 +72,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpGet("confirm-training-provider", Name = RouteNames.TrainingProvider_Confirm_Get)]
         public async Task<IActionResult> ConfirmTrainingProvider(VacancyRouteModel vrm, [FromQuery] string ukprn, [FromQuery] string wizard)
         {
-            var provider = await _orchestrator.GetProviderAsync(ukprn);
+            var provider = await orchestrator.GetProviderAsync(ukprn);
             
             if(provider == null)
                 return RedirectToRoute(RouteNames.TrainingProvider_Select_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
             
-            var vm = await _orchestrator.GetConfirmViewModelAsync(vrm, provider.Ukprn);
+            var vm = await orchestrator.GetConfirmViewModelAsync(vrm, provider.Ukprn);
             vm.PageInfo.SetWizard(wizard);
 
             return View(vm);
@@ -101,7 +92,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             if (ModelState.IsValid)
             {
-                var response = await _orchestrator.PostConfirmEditModelAsync(m, User.ToVacancyUser());
+                var response = await orchestrator.PostConfirmEditModelAsync(m, User.ToVacancyUser());
                 if (response.Success)
                 {
                     var vacancy = await vacancyClient.GetVacancyAsync(m.VacancyId);
@@ -112,7 +103,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 AddTrainingProviderErrorsToModelState(TrainingProviderSelectionType.Ukprn, m.Ukprn, response, ModelState);
             }
 
-            var vm = await _orchestrator.GetSelectTrainingProviderViewModelAsync(m);
+            var vm = await orchestrator.GetSelectTrainingProviderViewModelAsync(m);
             vm.PageInfo.SetWizard(wizard);
             return View(ViewNames.SelectTrainingProvider, vm);
         }
