@@ -755,21 +755,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             }
         ]";
 
-        public static BsonDocument[] GetAggregateQueryPipeline(BsonDocument vacanciesMatchClause, int pageNumber, BsonDocument secondaryMatch, bool mongoMigrationEnabled, BsonDocument employerReviewMatch = null, BsonDocument vacancyRefMatch = null, BsonDocument searchMatch = null)
+        public static BsonDocument[] GetAggregateQueryPipeline(BsonDocument vacanciesMatchClause,
+            int pageNumber,
+            BsonDocument employerReviewMatch = null,
+            BsonDocument vacancyRefMatch = null,
+            BsonDocument searchMatch = null)
         {
-            var pipeline = mongoMigrationEnabled ? BsonSerializer.Deserialize<BsonArray>(PipelineNoApplicationReview) : BsonSerializer.Deserialize<BsonArray>(Pipeline);
+            var pipeline = BsonSerializer.Deserialize<BsonArray>(PipelineNoApplicationReview);
 
-            int index = mongoMigrationEnabled ? 1: 3;
+            const int index = 1;
             if (employerReviewMatch != null)
             {
                 pipeline.Insert(index, employerReviewMatch);
                 
             }
-            if (secondaryMatch != null && !mongoMigrationEnabled)
-            {
-                pipeline.Insert(index, secondaryMatch);
-            }
-
             if (searchMatch != null)
             {
                 pipeline.Insert(index, searchMatch);
@@ -790,14 +789,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return pipelineDefinition;
         }
 
-        public static BsonDocument[] GetAggregateQueryPipelineDocumentCount(BsonDocument vacanciesMatchClause, BsonDocument secondaryMatch,BsonDocument employerReviewMatch, BsonDocument searchMatch,bool mongoMigrationEnabled)
+        public static BsonDocument[] GetAggregateQueryPipelineDocumentCount(BsonDocument vacanciesMatchClause,
+            BsonDocument employerReviewMatch,
+            BsonDocument searchMatch)
         {
-            var pipeline = BsonSerializer.Deserialize<BsonArray>(mongoMigrationEnabled ? PipelineForCountMigration : PipelineForCount);
-            if (!mongoMigrationEnabled)
-            {
-                pipeline.Insert(2, secondaryMatch);    
-            }
-            
+            var pipeline = BsonSerializer.Deserialize<BsonArray>(PipelineForCountMigration);
             
             if (employerReviewMatch != null)
             {
@@ -843,33 +839,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         }
 
         public BsonDocument[] GetAggregateQueryPipelineVacanciesClosingSoonDashboard(BsonDocument vacanciesMatchClause,
-            bool mongoMigrationEnabled,
             BsonDocument employerReviewMatch = null)
         {
-            var pipeline = mongoMigrationEnabled 
-                ? BsonSerializer.Deserialize<BsonArray>(_dashboardPipelineNoApplicationReview) 
-                : BsonSerializer.Deserialize<BsonArray>(DashboardApplicationsPipeline);
+            var pipeline = BsonSerializer.Deserialize<BsonArray>(_dashboardPipelineNoApplicationReview);
 
-            int insertLine = 3;
             if (employerReviewMatch != null)
             {
                 pipeline.Insert(0, employerReviewMatch);
-                insertLine++;
             }
 
             pipeline.Insert(0, vacanciesMatchClause);
-
-            if (!mongoMigrationEnabled)
-            {
-                var matchPipeline = BsonSerializer.Deserialize<BsonDocument>(DashboardNoApplicationCountMatchClause);
-
-                pipeline.Insert(insertLine, matchPipeline);
-            }
 
             var pipelineDefinition = pipeline.Values.Select(p => p.ToBsonDocument()).ToArray();
 
             return pipelineDefinition;
         }
-
     }
 }
