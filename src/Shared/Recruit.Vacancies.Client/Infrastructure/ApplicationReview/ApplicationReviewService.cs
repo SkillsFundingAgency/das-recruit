@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Responses;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
 {
@@ -64,7 +69,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
         }
     }
 
-    public class ApplicationReviewService(IOuterApiClient outerApiClient) : IApplicationWriteRepository
+    public class ApplicationReviewService(IOuterApiClient outerApiClient, ILogger<ApplicationReviewService> logger) : IApplicationWriteRepository, ISqlDbRepository
     {
         public async Task UpdateAsync(Domain.Entities.ApplicationReview applicationReview)
         {
@@ -141,9 +146,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             throw new NotImplementedException();
         }
 
-        public Task<Domain.Entities.ApplicationReview> GetAsync(Guid applicationReviewId)
+        public async Task<Domain.Entities.ApplicationReview> GetAsync(Guid applicationReviewId)
         {
-            throw new NotImplementedException();
+            var response = await outerApiClient.Get<GetApplicationReviewByIdApiResponse>(
+                new GetApplicationReviewByIdApiRequest(applicationReviewId));
+
+            return response?.ApplicationReview is not {WithdrawnDate: null } // Ensure the review is not withdrawn
+                ? null
+                : MapToDomainApplicationReview(response.ApplicationReview);
         }
 
         public Task<Domain.Entities.ApplicationReview> GetAsync(long vacancyReference, Guid candidateId)
@@ -161,24 +171,65 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             throw new NotImplementedException();
         }
 
-        public Task<List<T>> GetForVacancyAsync<T>(long vacancyReference)
+        public async Task<List<T>> GetForVacancyAsync<T>(long vacancyReference)
         {
-            throw new NotImplementedException();
+            var response = await outerApiClient.Get<GetApplicationReviewsByVacancyReferenceApiResponse>(
+                new GetApplicationReviewsByVacancyReferenceApiRequest(vacancyReference));
+
+            if (response?.ApplicationReviews == null || response.ApplicationReviews.Count == 0) return [];
+
+            var applicationReviews = response.ApplicationReviews
+                .Where(fil => fil.DateSharedWithEmployer != null)
+                .Select(MapToDomainApplicationReview).ToList();
+
+            return applicationReviews.Cast<T>().ToList();
         }
 
-        public Task<List<Domain.Entities.ApplicationReview>> GetForVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
+        public async Task<List<Domain.Entities.ApplicationReview>> GetForVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
         {
-            throw new NotImplementedException();
+            var response = await outerApiClient.Get<GetApplicationReviewsByVacancyReferenceApiResponse>(
+                new GetApplicationReviewsByVacancyReferenceApiRequest(vacancyReference));
+
+            if (response?.ApplicationReviews == null || response.ApplicationReviews.Count == 0) return [];
+
+            var applicationReviews = response.ApplicationReviews
+                .Select(MapToDomainApplicationReview).ToList();
+
+            var sortedResult = applicationReviews.AsQueryable()
+                .Sort(sortColumn, sortOrder);
+
+            return sortedResult.ToList();
         }
 
-        public Task<List<Domain.Entities.ApplicationReview>> GetForSharedVacancyAsync(long vacancyReference)
+        public async Task<List<Domain.Entities.ApplicationReview>> GetForSharedVacancyAsync(long vacancyReference)
         {
-            throw new NotImplementedException();
+            var response = await outerApiClient.Get<GetApplicationReviewsByVacancyReferenceApiResponse>(
+                new GetApplicationReviewsByVacancyReferenceApiRequest(vacancyReference));
+
+            if (response?.ApplicationReviews == null || response.ApplicationReviews.Count == 0) return [];
+
+            var applicationReviews = response.ApplicationReviews
+                .Where(fil => fil.DateSharedWithEmployer != null)
+                .Select(MapToDomainApplicationReview).ToList();
+
+            return applicationReviews.ToList();
         }
 
-        public Task<List<Domain.Entities.ApplicationReview>> GetForSharedVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
+        public async Task<List<Domain.Entities.ApplicationReview>> GetForSharedVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
         {
-            throw new NotImplementedException();
+            var response = await outerApiClient.Get<GetApplicationReviewsByVacancyReferenceApiResponse>(
+                new GetApplicationReviewsByVacancyReferenceApiRequest(vacancyReference));
+
+            if (response?.ApplicationReviews == null || response.ApplicationReviews.Count == 0) return [];
+
+            var applicationReviews = response.ApplicationReviews
+                .Where(fil => fil.DateSharedWithEmployer != null)
+                .Select(MapToDomainApplicationReview).ToList();
+
+            var sortedResult = applicationReviews.AsQueryable()
+                .Sort(sortColumn, sortOrder);
+
+            return sortedResult.ToList();
         }
 
         public Task<List<T>> GetAllForSelectedIdsAsync<T>(List<Guid> applicationReviewIds)
@@ -189,6 +240,73 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
         public Task<List<Domain.Entities.ApplicationReview>> GetAllForVacancyWithTemporaryStatus(long vacancyReference, ApplicationReviewStatus status)
         {
             throw new NotImplementedException();
+        }
+
+        private string GetCandidateAppliedLocation(List<Responses.Address> addresses)
+        {
+            if (addresses == null || addresses.Count == 0)
+            {
+                return null;
+            }
+
+            // Filter selected addresses and deserialize them
+            var selectedAddresses = addresses
+                .Where(x => x.IsSelected)
+                .Select(x =>
+                {
+                    Address employmentAddress;
+                    try
+                    {
+                        employmentAddress = !string.IsNullOrWhiteSpace(x.FullAddress)
+                            ? JsonConvert.DeserializeObject<Address>(x.FullAddress)
+                            : null;
+                    }
+                    catch (JsonException)
+                    {
+                        // If deserialization fails, we set employmentAddress to null
+                        logger.LogWarning("Failed to deserialize address:{Address}", x.FullAddress);
+                        employmentAddress = null;
+                    }
+
+                    return employmentAddress;
+                })
+                .ToList();
+
+            return selectedAddresses.GetCities();
+        }
+
+        private Domain.Entities.ApplicationReview MapToDomainApplicationReview(Responses.ApplicationReview response)
+        {
+            return new Domain.Entities.ApplicationReview
+            {
+                Id = response.Id,
+                CandidateId = response.CandidateId,
+                VacancyReference = response.VacancyReference,
+                Status = Enum.Parse<ApplicationReviewStatus>(response.Status),
+                TemporaryReviewStatus = response.TemporaryReviewStatus != null
+                    ? Enum.Parse<ApplicationReviewStatus>(response.TemporaryReviewStatus)
+                    : null,
+                CreatedDate = response.CreatedDate,
+                DateSharedWithEmployer = response.DateSharedWithEmployer,
+                ReviewedDate = response.ReviewedDate,
+                SubmittedDate = response.SubmittedDate,
+                WithdrawnDate = response.WithdrawnDate,
+                CandidateFeedback = response.CandidateFeedback,
+                EmployerFeedback = response.EmployerFeedback,
+                VacancyTitle = response.VacancyTitle,
+                HasEverBeenEmployerInterviewing = response.HasEverBeenEmployerInterviewing,
+                IsWithdrawn = response.WithdrawnDate != null,
+                AdditionalQuestion1 = response.AdditionalQuestion1,
+                AdditionalQuestion2 = response.AdditionalQuestion2,
+                Application = response.Application != null ? new Domain.Entities.Application
+                {
+                    ApplicationId = response.Application.Id,
+                    CandidateId = response.Application.CandidateId,
+                    FirstName = response.Application.Candidate?.FirstName,
+                    LastName = response.Application.Candidate?.LastName,
+                    CandidateAppliedLocations = GetCandidateAppliedLocation(response.Application?.EmploymentLocation?.Addresses)
+                } : null
+            };
         }
     }
 }

@@ -49,6 +49,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public long? VacancyReference { get; set; }
         public string CandidateFeedback { get; set; }
         public Guid? ApplicationId { get; set; }
+        public string CandidateAppliedLocations { get; set; }
+        public bool CanShowCandidateAppliedLocations => !string.IsNullOrEmpty(CandidateAppliedLocations);
+
+
         public static implicit operator VacancyApplication(Domain.Entities.ApplicationReview applicationReview)
         {
             var projection = new VacancyApplication
@@ -63,7 +67,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
                 DateSharedWithEmployer = applicationReview.DateSharedWithEmployer,
                 ReviewedDate = applicationReview.ReviewedDate,
                 HasEverBeenEmployerInterviewing = applicationReview.HasEverBeenEmployerInterviewing,
-                CandidateFeedback = applicationReview.CandidateFeedback
+                CandidateFeedback = applicationReview.CandidateFeedback,
+                CandidateAppliedLocations = applicationReview.Application.CandidateAppliedLocations
             };
 
             if (applicationReview.IsWithdrawn == false)
@@ -74,10 +79,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
                 projection.LastName = applicationReview.Application?.LastName;
                 projection.DateOfBirth = applicationReview.Application?.BirthDate;
                 projection.DisabilityStatus = applicationReview.Application?.DisabilityStatus ?? ApplicationReviewDisabilityStatus.Unknown;
+                projection.CandidateAppliedLocations = applicationReview.Application?.CandidateAppliedLocations;
             }
             return projection;
         }
-
-        
     }
 }
