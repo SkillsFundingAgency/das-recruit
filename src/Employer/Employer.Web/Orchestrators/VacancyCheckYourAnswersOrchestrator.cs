@@ -132,6 +132,7 @@ public class VacancyCheckYourAnswersOrchestrator(
 
     private async Task<SubmitVacancyResponse> SubmitActionAsync(Vacancy vacancy, VacancyUser user)
     {
+        return null;
         var response = new SubmitVacancyResponse
         {
             HasLegalEntityAgreement = await legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId),
