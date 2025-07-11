@@ -1210,6 +1210,10 @@
                                 {
                                     "name": "ConfigNames",
                                     "value": "[variables('apiConfigNames')]"
+                                },
+                                {
+                                    "name": "ResourceEnvironmentName",
+                                    "value": "[toUpper(parameters('resourceEnvironmentName'))]"
                                 }
                             ]
                         }
