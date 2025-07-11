@@ -277,6 +277,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
 
         private Domain.Entities.ApplicationReview MapToDomainApplicationReview(Responses.ApplicationReview response)
         {
+            var app = response.Application;
+            var candidate = app?.Candidate;
+            var address = candidate?.Address;
+
             return new Domain.Entities.ApplicationReview
             {
                 Id = response.Id,
@@ -298,13 +302,75 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                 IsWithdrawn = response.WithdrawnDate != null,
                 AdditionalQuestion1 = response.AdditionalQuestion1,
                 AdditionalQuestion2 = response.AdditionalQuestion2,
-                Application = response.Application != null ? new Domain.Entities.Application
+                Application = app != null ? new Domain.Entities.Application
                 {
-                    ApplicationId = response.Application.Id,
-                    CandidateId = response.Application.CandidateId,
-                    FirstName = response.Application.Candidate?.FirstName,
-                    LastName = response.Application.Candidate?.LastName,
-                    CandidateAppliedLocations = GetCandidateAppliedLocation(response.Application?.EmploymentLocation?.Addresses)
+                    ApplicationId = app.Id,
+                    CandidateId = app.CandidateId,
+                    FirstName = candidate?.FirstName,
+                    LastName = candidate?.LastName,
+                    CandidateAppliedLocations = GetCandidateAppliedLocation(app.EmploymentLocation?.Addresses),
+                    AddressLine1 = address?.AddressLine1,
+                    AddressLine2 = address?.AddressLine2,
+                    AddressLine3 = address?.Town,
+                    AddressLine4 = address?.County,
+                    Postcode = address?.Postcode,
+                    Email = candidate?.Email,
+                    BirthDate = candidate?.DateOfBirth ?? DateTime.MinValue,
+                    Phone = candidate?.PhoneNumber,
+                    AdditionalQuestion1Text = app.AdditionalQuestions?.FirstOrDefault(x => x.QuestionText == response.AdditionalQuestion1)?.QuestionText,
+                    AdditionalQuestion2Text = app.AdditionalQuestions?.FirstOrDefault(x => x.QuestionText == response.AdditionalQuestion2)?.QuestionText,
+                    AdditionalQuestion1 = app.AdditionalQuestions?.FirstOrDefault(x => x.QuestionText == response.AdditionalQuestion1)?.Answer,
+                    AdditionalQuestion2 = app.AdditionalQuestions?.FirstOrDefault(x => x.QuestionText == response.AdditionalQuestion2)?.Answer,
+                    WhatIsYourInterest = app.WhatIsYourInterest,
+                    IsFaaV2Application = app.MigrationDate is null, // MigrationDate is null for all FAA v2 applications
+                    Jobs = app.WorkHistory?.Where(fil => fil.WorkHistoryType == WorkHistoryType.Job)
+                        .Select(j => new ApplicationJob
+                        {
+                            JobTitle = j.JobTitle,
+                            Employer = j.Employer,
+                            FromDate = j.StartDate,
+                            ToDate = j.EndDate ?? DateTime.MinValue,
+                            Description = j.Description,
+                        }).ToList() ?? [],
+                    WorkExperiences = app.WorkHistory?.Where(fil => fil.WorkHistoryType == WorkHistoryType.WorkExperience)
+                        .Select(j => new ApplicationWorkExperience
+                        {
+                            JobTitle = j.JobTitle,
+                            Employer = j.Employer,
+                            FromDate = j.StartDate,
+                            ToDate = j.EndDate ?? DateTime.MinValue,
+                            Description = j.Description,
+                        }).ToList() ?? [],
+                    Qualifications = app.Qualifications?.Select(q =>
+                        new ApplicationQualification
+                        {
+                            Grade = q.Grade,
+                            IsPredicted = q.IsPredicted ?? false,
+                            QualificationType = q.QualificationReference.Name,
+                            Subject = q.Subject,
+                            AdditionalInformation = q.AdditionalInformation,
+                            QualificationOrder = q.QualificationOrder,
+                            //Year = property of ApplicationReview v1, and it is not required for mapping
+                        }).OrderBy(ord => ord.QualificationOrder).ToList() ?? [],
+                    TrainingCourses = app.TrainingCourses?.Select(tc => new ApplicationTrainingCourse
+                    {
+                        Title = tc.CourseName,
+                        ToDate = new DateTime(tc.YearAchieved, 1, 1), // assuming YearAchieved is a year only
+                    }).ToList() ?? [],
+                    Strengths = app.Strengths,
+                    Support = app.Support,
+                    DisabilityStatus = app.ApplyUnderDisabilityConfidentScheme == true
+                        ? ApplicationReviewDisabilityStatus.Yes
+                        : ApplicationReviewDisabilityStatus.No,
+                    VacancyReference = response.VacancyReference,
+                    //Skills = property of ApplicationReview v1, and it is not required for mapping
+                    //Improvements = property of ApplicationReview v1, and it is not required for mapping
+                    //HobbiesAndInterests = property of ApplicationReview v1, and it is not required for mapping
+                    //ApplicationDate = internal property and not required for mapping
+                    //EducationFromYear = property of ApplicationReview v1, and it is not required for mapping
+                    //EducationInstitution = property of ApplicationReview v1, and it is not required for mapping
+                    //MigrationDate = internal property and not required for mapping
+                    //EducationToYear = property of ApplicationReview v1, and it is not required for mapping
                 } : null
             };
         }
