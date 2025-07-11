@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         
         public async Task<User> GetByDfEUserId(string dfEUserId)
         {
-            var filter = Builders<User>.Filter.Eq(v => v.DfEUserId, 
+            var filter = Builders<User>.Filter.Regex(v => v.DfEUserId, 
                 new BsonRegularExpression(Regex.Escape(dfEUserId.ToLower()),"i" ));
 
             var collection = GetCollection<User>();
