@@ -281,6 +281,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             var candidate = app?.Candidate;
             var address = candidate?.Address;
 
+            var mostRecentQualification = app?.Qualifications?
+                .OrderByDescending(q => q.ToYear)
+                .FirstOrDefault();
+
             return new Domain.Entities.ApplicationReview
             {
                 Id = response.Id,
@@ -322,7 +326,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                     AdditionalQuestion1 = app.AdditionalQuestions?.FirstOrDefault(x => x.QuestionText == response.AdditionalQuestion1)?.Answer,
                     AdditionalQuestion2 = app.AdditionalQuestions?.FirstOrDefault(x => x.QuestionText == response.AdditionalQuestion2)?.Answer,
                     WhatIsYourInterest = app.WhatIsYourInterest,
-                    IsFaaV2Application = app.MigrationDate is null, // MigrationDate is null for all FAA v2 applications
+                    IsFaaV2Application = false, //app.MigrationDate is null, // MigrationDate is null for all FAA v2 applications
                     Jobs = app.WorkHistory?.Where(fil => fil.WorkHistoryType == WorkHistoryType.Job)
                         .Select(j => new ApplicationJob
                         {
@@ -350,12 +354,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                             Subject = q.Subject,
                             AdditionalInformation = q.AdditionalInformation,
                             QualificationOrder = q.QualificationOrder,
-                            //Year = property of ApplicationReview v1, and it is not required for mapping
+                            Year = q.ToYear ?? 0,
                         }).OrderBy(ord => ord.QualificationOrder).ToList() ?? [],
                     TrainingCourses = app.TrainingCourses?.Select(tc => new ApplicationTrainingCourse
                     {
                         Title = tc.CourseName,
                         ToDate = new DateTime(tc.YearAchieved, 1, 1), // assuming YearAchieved is a year only
+                        FromDate = new DateTime(tc.YearAchieved, 1, 1)
                     }).ToList() ?? [],
                     Strengths = app.Strengths,
                     Support = app.Support,
@@ -363,14 +368,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                         ? ApplicationReviewDisabilityStatus.Yes
                         : ApplicationReviewDisabilityStatus.No,
                     VacancyReference = response.VacancyReference,
-                    //Skills = property of ApplicationReview v1, and it is not required for mapping
-                    //Improvements = property of ApplicationReview v1, and it is not required for mapping
-                    //HobbiesAndInterests = property of ApplicationReview v1, and it is not required for mapping
-                    //ApplicationDate = internal property and not required for mapping
-                    //EducationFromYear = property of ApplicationReview v1, and it is not required for mapping
-                    //EducationInstitution = property of ApplicationReview v1, and it is not required for mapping
-                    //MigrationDate = internal property and not required for mapping
-                    //EducationToYear = property of ApplicationReview v1, and it is not required for mapping
+                    Skills = [app.Strengths],
+                    MigrationDate = app.MigrationDate,
+                    ApplicationDate = app.SubmittedDate ?? app.CreatedDate,
+                    EducationInstitution = mostRecentQualification.QualificationReference.Name,
+
+                    //ApplicationReview V1 properties
+                    EducationToYear = mostRecentQualification.ToYear ?? 0,
+                    EducationFromYear = 0,
+                    HobbiesAndInterests = string.Empty,
+                    Improvements = string.Empty,
                 } : null
             };
         }
