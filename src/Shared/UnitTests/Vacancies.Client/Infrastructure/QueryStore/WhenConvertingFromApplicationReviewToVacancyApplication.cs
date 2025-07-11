@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
     public class WhenConvertingFromApplicationReviewToVacancyApplication
     {
         [Test, AutoData]
-        public void Then_The_Fields_Are_Mapped(ApplicationReview source)
+        public void Then_The_Fields_Are_Mapped(Recruit.Vacancies.Client.Domain.Entities.ApplicationReview source)
         {
             //Arrange
             source.IsWithdrawn = false;
@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         }
 
         [Test, AutoData]
-        public void Then_If_Withdrawn_Then_Name_And_Dob_Not_Populated(ApplicationReview source)
+        public void Then_If_Withdrawn_Then_Name_And_Dob_Not_Populated(Recruit.Vacancies.Client.Domain.Entities.ApplicationReview source)
         {
             //Arrange
             source.IsWithdrawn = true;

@@ -14,5 +14,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool VacancySharedByProvier { get; internal set; }
         public bool CanShowMultipleApplicationsUnsuccessfulLink =>
             Applications?.Any(app => app.Status != ApplicationReviewStatus.Successful && app.Status != ApplicationReviewStatus.Unsuccessful) ?? false;
+
+        public bool CanShowCandidateAppliedLocations => Applications?.Any(app => app.CanShowCandidateAppliedLocations) ?? false;
     }
 }
