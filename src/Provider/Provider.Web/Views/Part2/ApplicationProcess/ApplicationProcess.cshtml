@@ -42,13 +42,16 @@
                         </div>
                         <div id="application-method-external-panel" class="govuk-radios__conditional govuk-radios__conditional--hidden">
                             <div esfa-validation-marker-for="ApplicationUrl" class="govuk-form-group">
-                                <label asp-for="ApplicationUrl" class="govuk-label">Enter a link about the vacancy. The page should give applicants a way to apply</label>
+                                <label asp-for="ApplicationUrl" class="govuk-label">Application website link</label>
                                 <span esfa-validation-message-for="ApplicationUrl" class="govuk-error-message"></span>
                                 <input asp-for="ApplicationUrl" class="govuk-input govuk-!-width-two-thirds" maxlength="2000" />
                             </div>
                             <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
                                 <div class="govuk-form-group" esfa-validation-marker-for="ApplicationInstructions">
-                                    <label asp-for="ApplicationInstructions" class="govuk-label">Explain the application process (optional)</label>
+                                    <label asp-for="ApplicationInstructions" class="govuk-label">How to apply (optional)</label>
+                                    <div id="ApplicationInstructions-hint" class="govuk-hint">
+                                        What applicants will need to do on your application website
+                                    </div>
                                     <span esfa-validation-message-for="ApplicationInstructions" class="govuk-error-message"></span>
                                     <textarea class="govuk-textarea govuk-js-character-count" asp-for="ApplicationInstructions" rows="5" aria-describedby="ApplicationInstructions-info"></textarea>
                                 </div>

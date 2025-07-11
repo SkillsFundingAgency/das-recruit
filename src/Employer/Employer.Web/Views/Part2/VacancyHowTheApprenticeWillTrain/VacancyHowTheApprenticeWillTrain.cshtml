@@ -25,14 +25,14 @@
          <form asp-route="@RouteNames.VacancyHowTheApprenticeWillTrain_Index_Post" asp-all-route-data="@Model.RouteDictionary">
         
              <div esfa-validation-marker-for="TrainingDescription" class="govuk-form-group">
-                 <label asp-for="TrainingDescription" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">The apprentice’s training schedule (optional)</label>
+                 <label asp-for="TrainingDescription" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">The apprentice’s training plan (optional)</label>
                  <p class="govuk-body">If you’ve agreed the apprentice’s training, include:</p>
                  <ul class="govuk-list govuk-list--bullet">
                      <li>where training will take place (at work or at a college - if it involves travelling somewhere else, include the address if you can)</li>
                      <li>how often training will be</li>
                  </ul>
                  <div class="govuk-inset-text govuk-body">
-                     If you don’t enter anything, we’ll display a message saying that the training schedule hasn't been agreed yet.
+                     If you do not enter anything, we’ll display a message saying that the training schedule has not been agreed yet.
                  </div>
                  <span esfa-validation-message-for="TrainingDescription" class="govuk-error-message"></span>
                  <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5" maxlength="4000" ></textarea>
@@ -45,7 +45,7 @@
                      <li>further information about the training provider</li>
                      <li>how the training course will be structured</li>
                  </ul>
-                 <p class="govuk-body">Don’t include what the training course will teach. We’ll automatically display the skills an apprentice will learn during this course.</p>
+                 <p class="govuk-body">Do not include what the training course will teach. We’ll automatically display the skills an apprentice will learn during this course.</p>
                  <span esfa-validation-message-for="AdditionalTrainingDescription" class="govuk-error-message"></span>
                  <textarea asp-for="AdditionalTrainingDescription" class="govuk-textarea html-editor" rows="5" maxlength="4000" ></textarea>
              </div>
