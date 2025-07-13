@@ -24,6 +24,7 @@ namespace SFA.DAS.Recruit.Api.Mappers
                 ApplicationInstructions = request.ApplicationInstructions,
                 ApplicationMethod = (ApplicationMethod?)request.ApplicationMethod,
                 ApplicationUrl = request.ApplicationUrl,
+                ApprenticeshipType = request.ApprenticeshipType ?? ApprenticeshipTypes.Standard,
                 ClosingDate = request.ClosingDate,
                 CreatedByUser = request.User,
                 Description = request.Description,
