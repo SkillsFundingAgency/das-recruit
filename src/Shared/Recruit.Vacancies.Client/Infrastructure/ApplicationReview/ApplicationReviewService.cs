@@ -291,7 +291,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                 CandidateId = response.CandidateId,
                 VacancyReference = response.VacancyReference,
                 Status = Enum.Parse<ApplicationReviewStatus>(response.Status),
-                TemporaryReviewStatus = response.TemporaryReviewStatus != null
+                TemporaryReviewStatus = response.TemporaryReviewStatus is not null
                     ? Enum.Parse<ApplicationReviewStatus>(response.TemporaryReviewStatus)
                     : null,
                 CreatedDate = response.CreatedDate,
@@ -303,10 +303,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                 EmployerFeedback = response.EmployerFeedback,
                 VacancyTitle = response.VacancyTitle,
                 HasEverBeenEmployerInterviewing = response.HasEverBeenEmployerInterviewing,
-                IsWithdrawn = response.WithdrawnDate != null,
+                IsWithdrawn = response.WithdrawnDate is not null,
                 AdditionalQuestion1 = response.AdditionalQuestion1,
                 AdditionalQuestion2 = response.AdditionalQuestion2,
-                Application = app != null ? new Domain.Entities.Application
+                Application = app is not null ? new Domain.Entities.Application
                 {
                     ApplicationId = app.Id,
                     CandidateId = app.CandidateId,
@@ -326,7 +326,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                     AdditionalQuestion1 = app.AdditionalQuestions?.FirstOrDefault(x => x.QuestionText == response.AdditionalQuestion1)?.Answer,
                     AdditionalQuestion2 = app.AdditionalQuestions?.FirstOrDefault(x => x.QuestionText == response.AdditionalQuestion2)?.Answer,
                     WhatIsYourInterest = app.WhatIsYourInterest,
-                    IsFaaV2Application = false, //app.MigrationDate is null, // MigrationDate is null for all FAA v2 applications
+                    IsFaaV2Application = app.MigrationDate is null,
                     Jobs = app.WorkHistory?.Where(fil => fil.WorkHistoryType == WorkHistoryType.Job)
                         .Select(j => new ApplicationJob
                         {
@@ -359,22 +359,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                     TrainingCourses = app.TrainingCourses?.Select(tc => new ApplicationTrainingCourse
                     {
                         Title = tc.CourseName,
-                        ToDate = new DateTime(tc.YearAchieved, 1, 1), // assuming YearAchieved is a year only
+                        ToDate = new DateTime(tc.YearAchieved, 1, 1),
                         FromDate = new DateTime(tc.YearAchieved, 1, 1)
                     }).ToList() ?? [],
                     Strengths = app.Strengths,
                     Support = app.Support,
-                    DisabilityStatus = app.ApplyUnderDisabilityConfidentScheme == true
+                    DisabilityStatus = app.ApplyUnderDisabilityConfidentScheme is true
                         ? ApplicationReviewDisabilityStatus.Yes
                         : ApplicationReviewDisabilityStatus.No,
                     VacancyReference = response.VacancyReference,
                     Skills = [app.Strengths],
                     MigrationDate = app.MigrationDate,
                     ApplicationDate = app.SubmittedDate ?? app.CreatedDate,
-                    EducationInstitution = mostRecentQualification.QualificationReference.Name,
-
-                    //ApplicationReview V1 properties
-                    EducationToYear = mostRecentQualification.ToYear ?? 0,
+                    EducationInstitution = mostRecentQualification?.QualificationReference.Name,
+                    EducationToYear = mostRecentQualification?.ToYear ?? 0,
                     EducationFromYear = 0,
                     HobbiesAndInterests = string.Empty,
                     Improvements = string.Empty,
