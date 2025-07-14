@@ -68,7 +68,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
                 ReviewedDate = applicationReview.ReviewedDate,
                 HasEverBeenEmployerInterviewing = applicationReview.HasEverBeenEmployerInterviewing,
                 CandidateFeedback = applicationReview.CandidateFeedback,
-                CandidateAppliedLocations = applicationReview.Application.CandidateAppliedLocations
+                CandidateAppliedLocations = applicationReview.Application?.CandidateAppliedLocations
             };
 
             if (applicationReview.IsWithdrawn == false)

@@ -376,7 +376,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                     EducationFromYear = 0,
                     HobbiesAndInterests = string.Empty,
                     Improvements = string.Empty,
-                } : null
+                } : new Domain.Entities.Application()
             };
         }
     }
