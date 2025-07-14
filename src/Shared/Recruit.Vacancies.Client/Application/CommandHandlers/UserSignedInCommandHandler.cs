@@ -44,6 +44,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             _logger.LogInformation("Upserting user {name} of type {userType}.", user.Name, userType.ToString());
 
+            if (userType == UserType.Provider)
+            {
+                _logger.LogInformation("Provider {dfEUserId}", user.DfEUserId);
+            }
+            
             var now = _timeProvider.Now;
 
             var existingUser = userType == UserType.Provider
