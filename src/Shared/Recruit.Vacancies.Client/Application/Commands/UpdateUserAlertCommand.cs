@@ -10,5 +10,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
         public string IdamsUserId { get; set; }
         public AlertType AlertType { get; set; }
         public DateTime DismissedOn { get; set; }
+        public string DfEUserId { get; set; }
     }
 }
