@@ -479,220 +479,224 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 }
             }
         ]";
-        
+
         private const string PipelineNoApplicationReview = @"[
-            { '$sort' : { 'createdDate' : -1} },
-            {
-                '$project': {
-                    'vacancyGuid': '$_id',
-                    'searchField': 1,
-                    'vacancyReference': 1,
-                    'title': 1,
-                    'status': 1,
-                    'appStatus': '',
-                    'legalEntityName': 1,
-                    'employerAccountId': 1,
-                    'employerName': 1,
-                    'employerDescription': 1,
-                    'ukprn': '$trainingProvider.ukprn',
-                    'createdDate': 1,
-                    'closingDate': 1,
-                    'startDate': 1,
-                    'closedDate': 1,
-                    'closureReason': 1,
-                    'applicationMethod': 1,
-                    'programmeId': 1,
-                    'duration': '$wage.duration',
-                    'durationUnit': '$wage.durationUnit',
-                    'transferInfoUkprn': '$transferInfo.ukprn',
-                    'transferInfoProviderName': '$transferInfo.providerName',
-                    'transferInfoTransferredDate': '$transferInfo.transferredDate',
-                    'transferInfoReason': '$transferInfo.reason',
-                    'trainingProviderName': '$trainingProvider.name',
-                    'vacancyType': 1,
-                    'isApplicationWithdrawn': '',
-                    'dateSharedWithEmployer': '',
-                    'hasChosenProviderContactDetails' : 1,
-                    'hasSubmittedAdditionalQuestions' : 1,
-                    'isTraineeship' :1
+    { '$sort' : { 'createdDate' : -1} },
+    {
+        '$project': {
+            'vacancyGuid': '$_id',
+            'searchField': 1,
+            'vacancyReference': 1,
+            'title': 1,
+            'status': 1,
+            'appStatus': '',
+            'legalEntityName': 1,
+            'employerAccountId': 1,
+            'employerName': 1,
+            'employerDescription': 1,
+            'ukprn': '$trainingProvider.ukprn',
+            'createdDate': 1,
+            'closingDate': 1,
+            'startDate': 1,
+            'closedDate': 1,
+            'closureReason': 1,
+            'applicationMethod': 1,
+            'programmeId': 1,
+            'duration': '$wage.duration',
+            'durationUnit': '$wage.durationUnit',
+            'transferInfoUkprn': '$transferInfo.ukprn',
+            'transferInfoProviderName': '$transferInfo.providerName',
+            'transferInfoTransferredDate': '$transferInfo.transferredDate',
+            'transferInfoReason': '$transferInfo.reason',
+            'trainingProviderName': '$trainingProvider.name',
+            'vacancyType': 1,
+            'isApplicationWithdrawn': '',
+            'dateSharedWithEmployer': '',
+            'hasChosenProviderContactDetails' : 1,
+            'hasSubmittedAdditionalQuestions' : 1,
+            'isTraineeship' :1,
+            'apprenticeshipType': 1
+        }
+    },
+    {
+        '$project': {
+            'vacancyGuid': 1,
+            'searchField': 1,
+            'vacancyReference': 1,
+            'title': 1,
+            'status': 1,
+            'appStatus': '',
+            'legalEntityName': 1,
+            'employerAccountId': 1,
+            'employerName': 1,
+            'employerDescription': 1,
+            'ukprn': 1,
+            'createdDate': 1,
+            'closingDate': 1,
+            'startDate': 1,
+            'closedDate': 1,
+            'closureReason': 1,
+            'applicationMethod': 1,
+            'programmeId': 1,
+            'duration': 1,
+            'durationUnit': 1,
+            'transferInfoUkprn': 1,
+            'transferInfoProviderName': 1,
+            'transferInfoTransferredDate': 1,
+            'transferInfoReason': 1,
+            'trainingProviderName': 1,
+            'vacancyType': 1,
+            'dateSharedWithEmployer': 1,
+            'hasChosenProviderContactDetails' : 1,
+            'hasSubmittedAdditionalQuestions' : 1,
+            'isTraineeship': {
+                '$cond': {
+                    'if': {'$eq': [ '$vacancyType', 'Traineeship']},
+                    'then': true,
+                    'else': false
                 }
             },
-            {
-                '$project': {
-                    'vacancyGuid': 1,
-                    'searchField': 1,
-                    'vacancyReference': 1,
-                    'title': 1,
-                    'status': 1,
-                    'appStatus': '',
-                    'legalEntityName': 1,
-                    'employerAccountId': 1,
-                    'employerName': 1,
-                    'employerDescription': 1,
-                    'ukprn': 1,
-                    'createdDate': 1,
-                    'closingDate': 1,
-                    'startDate': 1,
-                    'closedDate': 1,
-                    'closureReason': 1,
-                    'applicationMethod': 1,
-                    'programmeId': 1,
-                    'duration': 1,
-                    'durationUnit': 1,
-                    'transferInfoUkprn': 1,
-                    'transferInfoProviderName': 1,
-                    'transferInfoTransferredDate': 1,
-                    'transferInfoReason': 1,
-                    'trainingProviderName': 1,
-                    'vacancyType': 1,
-                    'dateSharedWithEmployer': 1,
-                    'hasChosenProviderContactDetails' : 1,
-                    'hasSubmittedAdditionalQuestions' : 1,
-                    'isTraineeship': {
-                        '$cond': {
-                            'if': {'$eq': [ '$vacancyType', 'Traineeship']},
-                            'then': true,
-                            'else': false
-                        }
-                    }
+            'apprenticeshipType': 1
+        }
+    },
+    {
+        '$project': {
+            'vacancyGuid': 1,
+            'searchField': 1,
+            'vacancyReference': 1,
+            'title': 1,
+            'status': 1,
+            'legalEntityName': 1,
+            'employerAccountId': 1,
+            'employerName': 1,
+            'employerDescription': 1,
+            'ukprn': 1,
+            'createdDate': 1,
+            'closingDate': 1,
+            'startDate': 1,
+            'closedDate': 1,
+            'closureReason': 1,
+            'applicationMethod': 1,
+            'programmeId': 1,
+            'duration': 1,
+            'durationUnit': 1,
+            'transferInfoUkprn': 1,
+            'transferInfoProviderName': 1,
+            'transferInfoTransferredDate': 1,
+            'transferInfoReason': 1,
+            'trainingProviderName': 1,
+            'vacancyType': 1,
+            'apprenticeshipType': 1,
+            'isTraineeship': {
+                '$cond': {
+                    'if': {'$eq': [ '$vacancyType', 'Traineeship']},
+                    'then': true,
+                    'else': false
                 }
             },
-            {
-                '$project': {
-                    'vacancyGuid': 1,
-                    'searchField': 1,
-                    'vacancyReference': 1,
-                    'title': 1,
-                    'status': 1,
-                    'legalEntityName': 1,
-                    'employerAccountId': 1,
-                    'employerName': 1,
-                    'employerDescription': 1,
-                    'ukprn': 1,
-                    'createdDate': 1,
-                    'closingDate': 1,
-                    'startDate': 1,
-                    'closedDate': 1,
-                    'closureReason': 1,
-                    'applicationMethod': 1,
-                    'programmeId': 1,
-                    'duration': 1,
-                    'durationUnit': 1,
-                    'transferInfoUkprn': 1,
-                    'transferInfoProviderName': 1,
-                    'transferInfoTransferredDate': 1,
-                    'transferInfoReason': 1,
-                    'trainingProviderName': 1,
-                    'vacancyType': 1,
-                    'isTraineeship': {
-                        '$cond': {
-                            'if': {'$eq': [ '$vacancyType', 'Traineeship']},
-                            'then': true,
-                            'else': false
-                        }
-                    },
-                    'hasChosenProviderContactDetails' : 1,
-                    'hasSubmittedAdditionalQuestions' : 1,
-                    'isNew': 1,
-                    'isSuccessful': {
-                        '$cond': {
-                            'if': {'$eq': [ '$appStatus', 'Successful']},
-                            'then': 1,
-                            'else': 0
-                        }
-                    },
-                    'isEmployerReviewed': {
-                        '$cond': {
-                            'if': {
-                                '$or': [
-                                    { '$eq': ['$appStatus', 'EmployerInterviewing'] },
-                                    { '$eq': ['$appStatus', 'EmployerUnsuccessful'] }
-                                ]
-                            },
-                            'then': 1,
-                            'else': 0
-                        }
-                    },
-                    'isUnsuccessful': {
-                        '$cond': {
-                            'if': {'$eq': [ '$appStatus', 'Unsuccessful']},
-                            'then': 1,
-                            'else': 0
-                        }
-                    },
-                    'isShared': {
-                        '$cond': {
-                            'if': {'$eq': [ '$appStatus', 'Shared']},
-                            'then': 1,
-                            'else': 0
-                        }
-                    },
-                    'isSharedWithEmployer': {
-                        '$cond': {
-                            'if': {'$gte': [ '$dateSharedWithEmployer', '1900-01-01T01:00:00.389Z'] },
-                            'then': 1,
-                            'else': 0
-                        }
-                    }
+            'hasChosenProviderContactDetails' : 1,
+            'hasSubmittedAdditionalQuestions' : 1,
+            'isNew': 1,
+            'isSuccessful': {
+                '$cond': {
+                    'if': {'$eq': [ '$appStatus', 'Successful']},
+                    'then': 1,
+                    'else': 0
                 }
             },
-            {
-                '$group': {
-                    '_id': {
-                        'searchField':{$toLower: { $concat: [ '$title', '|', {$ifNull:['$legalEntityName','']},'|','VAC',{$toString: {$ifNull:['$vacancyReference','']}} ] }},
-                        'vacancyGuid': '$vacancyGuid',
-                        'vacancyReference': '$vacancyReference',
-                        'title': '$title',
-                        'status': '$status',
-                        'legalEntityName': '$legalEntityName',
-                        'employerAccountId': '$employerAccountId',
-                        'employerName': '$employerName',
-                        'employerDescription': '$employerDescription',
-                        'ukprn': '$ukprn',
-                        'createdDate': '$createdDate',
-                        'closingDate': '$closingDate',
-                        'startDate': '$startDate',
-                        'closedDate': '$closedDate',
-                        'closureReason': '$closureReason',
-                        'applicationMethod': '$applicationMethod',
-                        'programmeId': '$programmeId',
-                        'duration': '$duration',
-                        'durationUnit': '$durationUnit',
-                        'transferInfoUkprn': '$transferInfoUkprn',
-                        'transferInfoProviderName': '$transferInfoProviderName',
-                        'transferInfoTransferredDate': '$transferInfoTransferredDate',
-                        'transferInfoReason': '$transferInfoReason',
-                        'trainingProviderName': '$trainingProviderName',
-                        'vacancyType': '$vacancyType',
-                        'isTraineeship': '$isTraineeship',
-                        'hasChosenProviderContactDetails' : '$hasChosenProviderContactDetails',
-                        'hasSubmittedAdditionalQuestions' : '$hasSubmittedAdditionalQuestions'
+            'isEmployerReviewed': {
+                '$cond': {
+                    'if': {
+                        '$or': [
+                            { '$eq': ['$appStatus', 'EmployerInterviewing'] },
+                            { '$eq': ['$appStatus', 'EmployerUnsuccessful'] }
+                        ]
                     },
-                    'noOfNewApplications': {
-                        '$sum': '$isNew'
-                    },
-                    'noOfSuccessfulApplications': {
-                        '$sum': '$isSuccessful'
-                    },
-                    'noOfEmployerReviewedApplications': {
-                        '$sum': '$isEmployerReviewed'
-                    },
-                    'noOfUnsuccessfulApplications': {
-                        '$sum': '$isUnsuccessful'
-                    },
-                    'noOfSharedApplications': {
-                        '$sum': '$isShared'
-                    },
-                    'noOfAllSharedApplications': {
-                        '$sum': '$isSharedWithEmployer'
-                    },
-                    'noOfApplications': {
-                         '$sum' :{'$add': ['$isNew','$isUnsuccessful','$isSuccessful'] }
-                    }
+                    'then': 1,
+                    'else': 0
+                }
+            },
+            'isUnsuccessful': {
+                '$cond': {
+                    'if': {'$eq': [ '$appStatus', 'Unsuccessful']},
+                    'then': 1,
+                    'else': 0
+                }
+            },
+            'isShared': {
+                '$cond': {
+                    'if': {'$eq': [ '$appStatus', 'Shared']},
+                    'then': 1,
+                    'else': 0
+                }
+            },
+            'isSharedWithEmployer': {
+                '$cond': {
+                    'if': {'$gte': [ '$dateSharedWithEmployer', '1900-01-01T01:00:00.389Z'] },
+                    'then': 1,
+                    'else': 0
                 }
             }
-        ]";
-        
+        }
+    },
+    {
+        '$group': {
+            '_id': {
+                'searchField':{$toLower: { $concat: [ '$title', '|', {$ifNull:['$legalEntityName','']},'|','VAC',{$toString: {$ifNull:['$vacancyReference','']}} ] }},
+                'vacancyGuid': '$vacancyGuid',
+                'vacancyReference': '$vacancyReference',
+                'title': '$title',
+                'status': '$status',
+                'legalEntityName': '$legalEntityName',
+                'employerAccountId': '$employerAccountId',
+                'employerName': '$employerName',
+                'employerDescription': '$employerDescription',
+                'ukprn': '$ukprn',
+                'createdDate': '$createdDate',
+                'closingDate': '$closingDate',
+                'startDate': '$startDate',
+                'closedDate': '$closedDate',
+                'closureReason': '$closureReason',
+                'applicationMethod': '$applicationMethod',
+                'programmeId': '$programmeId',
+                'duration': '$duration',
+                'durationUnit': '$durationUnit',
+                'transferInfoUkprn': '$transferInfoUkprn',
+                'transferInfoProviderName': '$transferInfoProviderName',
+                'transferInfoTransferredDate': '$transferInfoTransferredDate',
+                'transferInfoReason': '$transferInfoReason',
+                'trainingProviderName': '$trainingProviderName',
+                'vacancyType': '$vacancyType',
+                'isTraineeship': '$isTraineeship',
+                'hasChosenProviderContactDetails' : '$hasChosenProviderContactDetails',
+                'hasSubmittedAdditionalQuestions' : '$hasSubmittedAdditionalQuestions',
+                'apprenticeshipType': '$apprenticeshipType'
+            },
+            'noOfNewApplications': {
+                '$sum': '$isNew'
+            },
+            'noOfSuccessfulApplications': {
+                '$sum': '$isSuccessful'
+            },
+            'noOfEmployerReviewedApplications': {
+                '$sum': '$isEmployerReviewed'
+            },
+            'noOfUnsuccessfulApplications': {
+                '$sum': '$isUnsuccessful'
+            },
+            'noOfSharedApplications': {
+                '$sum': '$isShared'
+            },
+            'noOfAllSharedApplications': {
+                '$sum': '$isSharedWithEmployer'
+            },
+            'noOfApplications': {
+                 '$sum' :{'$add': ['$isNew','$isUnsuccessful','$isSuccessful'] }
+            }
+        }
+    }
+]";
+
         private const string PipelineForCount = @"[
             {
                 '$lookup': {

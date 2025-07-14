@@ -277,13 +277,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
 
         private Domain.Entities.ApplicationReview MapToDomainApplicationReview(Responses.ApplicationReview response)
         {
+            var app = response.Application;
+            var candidate = app?.Candidate;
+            var address = candidate?.Address;
+
+            var mostRecentQualification = app?.Qualifications?
+                .OrderByDescending(q => q.ToYear)
+                .FirstOrDefault();
+
             return new Domain.Entities.ApplicationReview
             {
                 Id = response.Id,
                 CandidateId = response.CandidateId,
                 VacancyReference = response.VacancyReference,
                 Status = Enum.Parse<ApplicationReviewStatus>(response.Status),
-                TemporaryReviewStatus = response.TemporaryReviewStatus != null
+                TemporaryReviewStatus = response.TemporaryReviewStatus is not null
                     ? Enum.Parse<ApplicationReviewStatus>(response.TemporaryReviewStatus)
                     : null,
                 CreatedDate = response.CreatedDate,
@@ -295,17 +303,80 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                 EmployerFeedback = response.EmployerFeedback,
                 VacancyTitle = response.VacancyTitle,
                 HasEverBeenEmployerInterviewing = response.HasEverBeenEmployerInterviewing,
-                IsWithdrawn = response.WithdrawnDate != null,
+                IsWithdrawn = response.WithdrawnDate is not null,
                 AdditionalQuestion1 = response.AdditionalQuestion1,
                 AdditionalQuestion2 = response.AdditionalQuestion2,
-                Application = response.Application != null ? new Domain.Entities.Application
+                Application = app is not null ? new Domain.Entities.Application
                 {
-                    ApplicationId = response.Application.Id,
-                    CandidateId = response.Application.CandidateId,
-                    FirstName = response.Application.Candidate?.FirstName,
-                    LastName = response.Application.Candidate?.LastName,
-                    CandidateAppliedLocations = GetCandidateAppliedLocation(response.Application?.EmploymentLocation?.Addresses)
-                } : null
+                    ApplicationId = app.Id,
+                    CandidateId = app.CandidateId,
+                    FirstName = candidate?.FirstName,
+                    LastName = candidate?.LastName,
+                    CandidateAppliedLocations = GetCandidateAppliedLocation(app.EmploymentLocation?.Addresses),
+                    AddressLine1 = address?.AddressLine1,
+                    AddressLine2 = address?.AddressLine2,
+                    AddressLine3 = address?.Town,
+                    AddressLine4 = address?.County,
+                    Postcode = address?.Postcode,
+                    Email = candidate?.Email,
+                    BirthDate = candidate?.DateOfBirth ?? DateTime.MinValue,
+                    Phone = candidate?.PhoneNumber,
+                    AdditionalQuestion1Text = app.AdditionalQuestions?.FirstOrDefault(x => x.QuestionText == response.AdditionalQuestion1)?.QuestionText,
+                    AdditionalQuestion2Text = app.AdditionalQuestions?.FirstOrDefault(x => x.QuestionText == response.AdditionalQuestion2)?.QuestionText,
+                    AdditionalQuestion1 = app.AdditionalQuestions?.FirstOrDefault(x => x.QuestionText == response.AdditionalQuestion1)?.Answer,
+                    AdditionalQuestion2 = app.AdditionalQuestions?.FirstOrDefault(x => x.QuestionText == response.AdditionalQuestion2)?.Answer,
+                    WhatIsYourInterest = app.WhatIsYourInterest,
+                    IsFaaV2Application = app.MigrationDate is null,
+                    Jobs = app.WorkHistory?.Where(fil => fil.WorkHistoryType == WorkHistoryType.Job)
+                        .Select(j => new ApplicationJob
+                        {
+                            JobTitle = j.JobTitle,
+                            Employer = j.Employer,
+                            FromDate = j.StartDate,
+                            ToDate = j.EndDate ?? DateTime.MinValue,
+                            Description = j.Description,
+                        }).ToList() ?? [],
+                    WorkExperiences = app.WorkHistory?.Where(fil => fil.WorkHistoryType == WorkHistoryType.WorkExperience)
+                        .Select(j => new ApplicationWorkExperience
+                        {
+                            JobTitle = j.JobTitle,
+                            Employer = j.Employer,
+                            FromDate = j.StartDate,
+                            ToDate = j.EndDate ?? DateTime.MinValue,
+                            Description = j.Description,
+                        }).ToList() ?? [],
+                    Qualifications = app.Qualifications?.Select(q =>
+                        new ApplicationQualification
+                        {
+                            Grade = q.Grade,
+                            IsPredicted = q.IsPredicted ?? false,
+                            QualificationType = q.QualificationReference.Name,
+                            Subject = q.Subject,
+                            AdditionalInformation = q.AdditionalInformation,
+                            QualificationOrder = q.QualificationOrder,
+                            Year = q.ToYear ?? 0,
+                        }).OrderBy(ord => ord.QualificationOrder).ToList() ?? [],
+                    TrainingCourses = app.TrainingCourses?.Select(tc => new ApplicationTrainingCourse
+                    {
+                        Title = tc.CourseName,
+                        ToDate = new DateTime(tc.YearAchieved, 1, 1),
+                        FromDate = new DateTime(tc.YearAchieved, 1, 1)
+                    }).ToList() ?? [],
+                    Strengths = app.Strengths,
+                    Support = app.Support,
+                    DisabilityStatus = app.ApplyUnderDisabilityConfidentScheme is true
+                        ? ApplicationReviewDisabilityStatus.Yes
+                        : ApplicationReviewDisabilityStatus.No,
+                    VacancyReference = response.VacancyReference,
+                    Skills = [app.Strengths],
+                    MigrationDate = app.MigrationDate,
+                    ApplicationDate = app.SubmittedDate ?? app.CreatedDate,
+                    EducationInstitution = mostRecentQualification?.QualificationReference.Name,
+                    EducationToYear = mostRecentQualification?.ToYear ?? 0,
+                    EducationFromYear = 0,
+                    HobbiesAndInterests = string.Empty,
+                    Improvements = string.Empty,
+                } : new Domain.Entities.Application()
             };
         }
     }

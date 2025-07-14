@@ -14,9 +14,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
         {
             var policyBuilderJittered = 
                 Policy
-                    .Handle<MongoCommandException>()
-                        .Or<MongoWriteException>()
-                        .Or<MongoBulkWriteException>()
+                    .Handle<MongoCommandException>(c=>c.Code == 429)
+                        .Or<MongoWriteException>(c=>c.WriteError.Code == 429)
+                        .Or<MongoBulkWriteException>(c=>c.WriteConcernError.Code == 429)
                     .WaitAndRetryAsync(
                 Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromMilliseconds(200), 10), 
                         (_, timeSpan, retryCount, context) =>
