@@ -147,7 +147,8 @@ public class VacancyDto
             AvailableWhere.OneLocation => vacancy.EmployerLocations,
             AvailableWhere.MultipleLocations => vacancy.EmployerLocations,
             AvailableWhere.AcrossEngland => null,
-            null => [vacancy.EmployerLocation],
+            null when vacancy.EmployerLocation is not null => [vacancy.EmployerLocation],
+            null => null,
             _ => throw new ArgumentOutOfRangeException()
         };
     }
