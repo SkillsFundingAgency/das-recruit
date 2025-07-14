@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             {
                 return null;
             }
-            var filter = Builders<UserNotificationPreferences>.Filter.Eq(v => v.DfeUserId, 
+            var filter = Builders<UserNotificationPreferences>.Filter.Regex(v => v.DfeUserId, 
                 new BsonRegularExpression(Regex.Escape(dfeUserId.ToLower()),"i" ));
 
             var collection = GetCollection<UserNotificationPreferences>();
