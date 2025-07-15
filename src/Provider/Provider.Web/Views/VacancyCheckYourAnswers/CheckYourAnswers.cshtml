@@ -302,7 +302,7 @@
             
             <field-review-message field-name="@FieldIdentifiers.Wage" model="@Model"></field-review-message>
             <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="WageText">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.Wage">Pay rate</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.Wage">Wage</dt>
                 <dd id="YearlyWage" class="app-summary-list__value">
                     @Model.WageText
                     <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.Wage" tag-name="strong" model="@Model"/>
@@ -441,7 +441,7 @@
 
             <field-review-message field-name="OutcomeDescription" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="OutcomeDescription">
-                <dt class="app-summary-list__key" id="OutcomeDescription">Future prospects</dt>
+                <dt class="app-summary-list__key" id="OutcomeDescription">What is the expected career progression after this apprenticeship?</dt>
                 <dd class="app-summary-list__value">
                     <div class="app-ugc-wrap">
                         @Html.Raw(Model.OutcomeDescription)
@@ -454,7 +454,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.ThingsToConsider" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="ThingsToConsider">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.ThingsToConsider">Other things to consider</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.ThingsToConsider">What other requirements are there for this apprenticeship?</dt>
                 <dd class="app-summary-list__value">
                     @if (string.IsNullOrEmpty(Model.ThingsToConsider))
                     {
@@ -512,7 +512,7 @@
         </div>
         <field-review-message field-name="@FieldIdentifiers.DisabilityConfident" model="@Model"></field-review-message>
         <div class="app-summary-list__row" field-review-marker="IsDisabilityConfident">
-            <dt class="app-summary-list__key" id="@FieldIdentifiers.DisabilityConfident">Disability Confident Employer?</dt>
+            <dt class="app-summary-list__key" id="@FieldIdentifiers.DisabilityConfident">Disability Confident employer</dt>
             <dd class="app-summary-list__value">
                 @(Model.IsDisabilityConfident ? "Yes" : "No")
                 <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.DisabilityConfident" tag-name="strong" model="@Model"/>
@@ -557,7 +557,7 @@
         <field-review-message field-name="@FieldIdentifiers.ApplicationMethod" model="@Model"></field-review-message>
         <field-review-message field-name="@FieldIdentifiers.ApplicationUrl" model="@Model"></field-review-message>
         <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="ApplicationMethod">
-            <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationMethod">Application website</dt>
+            <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationMethod">Application website link</dt>
             <dd class="app-summary-list__value" id="@FieldIdentifiers.ApplicationUrl">
                 @if (Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)
                 {
@@ -577,7 +577,7 @@
         @if (Model.HasApplicationInstructions)
         {
             <div class="app-summary-list__row" field-review-marker="ApplicationInstructions">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationInstructions">Explain the application process (optional)</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationInstructions">How to apply (optional)</dt>
                 <dd class="app-summary-list__value">
                     @(Model.HasApplicationInstructions ? Model.ApplicationInstructions : "None")
                     <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ApplicationInstructions" tag-name="strong" model="@Model"/>
