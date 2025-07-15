@@ -11,5 +11,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
         Task UpsertUserAsync(User user);
         Task<List<User>> GetEmployerUsersAsync(string accountId);
         Task<List<User>> GetProviderUsersAsync(long ukprn);
+        Task<User> GetUserByEmail(string email, UserType userType);
     }
 }
