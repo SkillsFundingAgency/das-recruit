@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Request
         {
             get
             {
-                return $"applicationReviews/{VacancyReference}";
+                return $"applicationReviews/vacancyReference/{VacancyReference}";
             }
         }
     }

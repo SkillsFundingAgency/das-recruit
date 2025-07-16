@@ -81,6 +81,25 @@
                 </div>
             </dl>
         </div>
+        <div asp-show="@Model.CanShowCandidateAppliedLocations">
+            <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--l" />
+            <h2 class="govuk-heading-m">Locations</h2>
+            <dl class="govuk-summary-list govuk-summary-list--no-border">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Where do you want to apply for?
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <ul class="list list-bullet">
+                            @foreach (var location in Model.AppliedLocations)
+                            {
+                                <li>@location</li>
+                            }
+                        </ul>
+                    </dd>
+                </div>
+            </dl>
+        </div>
 
         <div asp-hide="@Model.HasNoQualifications">
             <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--l" />

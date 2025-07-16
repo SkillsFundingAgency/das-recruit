@@ -8,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
@@ -39,15 +40,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vacancy;
         }
 
-        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider)
+        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider, string locationFilter = "")
         {
-            var viewModel = new ManageVacancyViewModel();
+            var viewModel = new ManageVacancyViewModel
+            {
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
+                Title = vacancy.Title,
+                Status = vacancy.Status,
+                VacancyReference = vacancy.VacancyReference.Value.ToString()
+            };
 
-            viewModel.VacancyId = vacancy.Id;
-            viewModel.EmployerAccountId = vacancy.EmployerAccountId;
-            viewModel.Title = vacancy.Title;
-            viewModel.Status = vacancy.Status;
-            viewModel.VacancyReference = vacancy.VacancyReference.Value.ToString();
             viewModel.ClosingDate = viewModel.Status == VacancyStatus.Closed ? vacancy.ClosedDate?.AsGdsDate() : vacancy.ClosingDate?.AsGdsDate();
             viewModel.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
             viewModel.IsDisabilityConfident = vacancy.IsDisabilityConfident;
@@ -71,11 +74,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             viewModel.Applications = new VacancyApplicationsViewModel
             {
-                Applications = applications,
+                Applications = string.IsNullOrEmpty(locationFilter)
+                    ? applications
+                    : applications.Where(fil => fil.CandidateAppliedLocations.Contains(locationFilter)).ToList(),
+                TotalUnfilteredApplicationsCount = applications.Count,
+                EmploymentLocations = vacancy.EmployerLocations.GetCityDisplayList(),
+                SelectedLocation = locationFilter,
                 ShowDisability = vacancy.IsDisabilityConfident,
                 VacancyId = vacancy.Id,
                 EmployerAccountId = vacancy.EmployerAccountId,
-                VacancySharedByProvier = vacancySharedByProvider
+                VacancySharedByProvider = vacancySharedByProvider
             };
 
             return viewModel;
