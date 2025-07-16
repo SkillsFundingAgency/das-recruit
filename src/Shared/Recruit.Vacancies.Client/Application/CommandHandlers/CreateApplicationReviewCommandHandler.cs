@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             var vacancy = await _vacancyRepository.GetVacancyAsync(message.Application.VacancyReference);
 
             var existingReview = await _applicationReviewRepository.GetAsync(vacancy.VacancyReference.Value, message.Application.CandidateId);
-            if (existingReview is { IsWithdrawn: false })
+            if (existingReview != null)
             {
                 _logger.LogWarning("Application review already exists for vacancyReference:{vacancyReference} and candidateId:{candidateId}. Found applicationReviewId:{applicationReviewId}",
                     vacancy.VacancyReference.Value, message.Application.CandidateId, existingReview.Id);
