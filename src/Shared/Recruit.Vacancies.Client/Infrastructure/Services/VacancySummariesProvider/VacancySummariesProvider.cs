@@ -20,8 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 {
     internal sealed class VacancySummariesProvider(
         ILoggerFactory loggerFactory,
-        IOptions<MongoDbConnectionDetails> details,
-        IFeature feature)
+        IOptions<MongoDbConnectionDetails> details)
         : MongoDbCollectionBase(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details),
             IVacancySummariesProvider
     {
@@ -38,7 +37,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             IFeature feature,
             ITrainingProviderService trainingProviderService,
             IEmployerAccountProvider employerAccountProvider)
-            : this(loggerFactory, details, feature)
+            : this(loggerFactory, details)
         {
             _trainingProviderService = trainingProviderService;
             _employerAccountProvider = employerAccountProvider;

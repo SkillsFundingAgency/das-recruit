@@ -18,7 +18,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1;
 [Route(RoutePaths.AccountVacancyRoutePath)]
 public class SelectLocationController(IUtility utility) : Controller
 {
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpGet("select-location", Name = RouteNames.SelectAnAddress_Get)]
     public async Task<IActionResult> SelectLocation([FromServices] IGetAddressesClient getAddressesClient, AddLocationJourneyModel model)
     {
@@ -33,7 +32,6 @@ public class SelectLocationController(IUtility utility) : Controller
         return View(viewModel);
     }
     
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("select-location", Name = RouteNames.SelectAnAddress_Post)]
     public async Task<IActionResult> SelectLocation(
         [FromServices] IVacancyLocationService vacancyLocationService,

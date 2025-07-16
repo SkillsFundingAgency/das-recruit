@@ -38,12 +38,7 @@
                     <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.DurationAndWorkingHoursEditable, "Duration and working hours", RouteNames.Duration_Get, Model.RouteDictionary))"/>
                     <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.PayRateAndBenefitsEditable, "Wage and company benefits", RouteNames.Wage_Get, Model.RouteDictionary))"/>
                     <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.NumberOfPositionsEditable, "Number of positions", RouteNames.NumberOfPositions_Get, Model.RouteDictionary))"/>
-                    <esfaFeatureEnabled name="@FeatureNames.MultipleLocations">
-                        <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.LocationsEditable, "Locations", RouteNames.MultipleLocations_Get, Model.RouteDictionary))"/>
-                    </esfaFeatureEnabled>
-                    <esfaFeatureDisabled name="@FeatureNames.MultipleLocations">
-                        <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.LocationsEditable, "Address", RouteNames.MultipleLocations_Get, Model.RouteDictionary))"/>
-                    </esfaFeatureDisabled>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.LocationsEditable, "Locations", RouteNames.MultipleLocations_Get, Model.RouteDictionary))"/>
                 </ul>
             </li>
             <li>

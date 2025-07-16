@@ -30,7 +30,6 @@ public class MultipleLocationsController : Controller
         { VacancyValidationErrorCodes.AddressCountryNotInEngland, Tuple.Create("SelectedLocations", "All locations must be in England. Your apprenticeship must be in England to advertise it on this service") },
     };
     
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpGet("location-availability", Name = RouteNames.MultipleLocations_Get)]
     public async Task<IActionResult> LocationAvailability(
         [FromServices] IUtility utility,
@@ -43,7 +42,6 @@ public class MultipleLocationsController : Controller
         return View(viewModel);
     }
 
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("location-availability", Name = RouteNames.MultipleLocations_Post)]
     public async Task<IActionResult> LocationAvailability(
         [FromServices] IUtility utility,
@@ -86,7 +84,6 @@ public class MultipleLocationsController : Controller
         return viewModel;
     }
     
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpGet("add-many-locations", Name = RouteNames.AddMoreThanOneLocation_Get)]
     public async Task<IActionResult> AddMoreThanOneLocation(
         [FromServices] IVacancyLocationService vacancyLocationService,
@@ -132,7 +129,6 @@ public class MultipleLocationsController : Controller
         return View(viewModel);
     }
     
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("add-many-locations", Name = RouteNames.AddMoreThanOneLocation_Post)]
     public async Task<IActionResult> AddMoreThanOneLocation(
         [FromServices] IVacancyLocationService vacancyLocationService,
@@ -178,7 +174,6 @@ public class MultipleLocationsController : Controller
         return View(viewModel);
     }
     
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("add-many-locations/add-new-location", Name = RouteNames.AddNewLocationJourney_Post)]
     public IActionResult AddALocation(AddMoreThanOneLocationEditModel editModel, [FromQuery] bool wizard)
     {
@@ -187,7 +182,6 @@ public class MultipleLocationsController : Controller
         return RedirectToRoute(RouteNames.AddLocation_Get, new { editModel.VacancyId, editModel.EmployerAccountId, wizard, origin = MultipleLocationsJourneyOrigin.Many } );
     }
 
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpGet("confirm-locations", Name = RouteNames.MultipleLocationsConfirm_Get)]
     public async Task<IActionResult> ConfirmLocations(
         [FromServices] IUtility utility,
@@ -209,7 +203,6 @@ public class MultipleLocationsController : Controller
         return View(viewModel);
     }
 
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("confirm-locations", Name = RouteNames.MultipleLocationsConfirm_Post)]
     public IActionResult ConfirmLocations(VacancyRouteModel vacancyRouteModel, [FromQuery] bool wizard)
     {

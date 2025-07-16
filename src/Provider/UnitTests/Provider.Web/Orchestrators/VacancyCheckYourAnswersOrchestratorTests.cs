@@ -8,7 +8,6 @@ using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
@@ -71,8 +70,7 @@ public class VacancyCheckYourAnswersOrchestratorTests
             externalLinksConfiguration.Object,
             recruitVacancyClient.Object,
             providerVacancyClient.Object,
-            apprenticeshipProgrammeProvider.Object,
-            Mock.Of<IFeature>());
+            apprenticeshipProgrammeProvider.Object);
 
         var viewModel = await orchestrator.GetVacancyTaskListModel(routeModel);
 
