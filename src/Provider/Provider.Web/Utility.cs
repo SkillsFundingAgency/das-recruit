@@ -94,6 +94,13 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
         applicationReview.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
         applicationReview.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
         applicationReview.VacancyTitle = vacancy.Title;
+
+        // Set Disability Status based on DisabilityConfident setting
+        if (applicationReview.Application != null)
+            applicationReview.Application.DisabilityStatus = vacancy.DisabilityConfident == DisabilityConfident.Yes
+                ? applicationReview.Application.DisabilityStatus
+                : ApplicationReviewDisabilityStatus.Unknown;
+
         try
         {
             CheckAuthorisedAccess(vacancy, rm.Ukprn);
