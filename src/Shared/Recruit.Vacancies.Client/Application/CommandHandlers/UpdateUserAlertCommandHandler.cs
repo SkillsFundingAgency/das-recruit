@@ -21,7 +21,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task<Unit> Handle(UpdateUserAlertCommand message, CancellationToken cancellationToken)
         {
-            var user = await _client.GetUsersDetailsAsync(message.IdamsUserId);
+            var user = string.IsNullOrEmpty(message.DfEUserId) 
+                ? await _client.GetUsersDetailsAsync(message.IdamsUserId) 
+                : await _client.GetUsersDetailsByDfEUserId(message.DfEUserId);
 
             switch (message.AlertType)
             {
