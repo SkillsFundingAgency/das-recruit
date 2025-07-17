@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
                     .Handle<MongoCommandException>(c=>c.Code == 16500)
                         .Or<MongoWriteException>(c=> c.WriteError is { Code: 16500 })
                         .Or<MongoBulkWriteException>(c=>c.WriteErrors.Any(e => e.Code == 16500) 
-                                                        16|| c.WriteConcernError is {Code : 16500})
+                                                        || c.WriteConcernError is {Code : 16500})
                     .WaitAndRetryAsync(
                 Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromMilliseconds(200), 10), 
                         (_, timeSpan, retryCount, context) =>
