@@ -4,6 +4,7 @@ using Polly;
 using Polly.Retry;
 using Polly.Contrib.WaitAndRetry;
 using System;
+using System.Linq;
 using Polly.Wrap;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
@@ -14,9 +15,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
         {
             var policyBuilderJittered = 
                 Policy
-                    .Handle<MongoCommandException>(c=>c.Code == 429)
-                        .Or<MongoWriteException>(c=>c.WriteError.Code == 429)
-                        .Or<MongoBulkWriteException>(c=>c.WriteConcernError.Code == 429)
+                    .Handle<MongoCommandException>(c=>c.Code == 16500)
+                        .Or<MongoWriteException>(c=> c.WriteError is { Code: 16500 })
+                        .Or<MongoBulkWriteException>(c=>c.WriteErrors.Any(e => e.Code == 16500) 
+                                                        || c.WriteConcernError is {Code : 16500})
                     .WaitAndRetryAsync(
                 Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromMilliseconds(200), 10), 
                         (_, timeSpan, retryCount, context) =>
