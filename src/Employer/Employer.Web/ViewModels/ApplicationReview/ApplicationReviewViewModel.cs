@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
         public string AdditionalAnswer1 { get; set; }
         public string AdditionalQuestion2 { get; set; }
         public string AdditionalAnswer2 { get; set; }
-        public ApprenticeshipTypes ApprenticeshipType { get; set; }
+        public ApprenticeshipTypes? ApprenticeshipType { get; set; } = ApprenticeshipTypes.Standard;
 
         public bool HasNoQualifications => Qualifications.Any() == false;
         public bool HasNoTrainingCourses => TrainingCourses.Any() == false;
