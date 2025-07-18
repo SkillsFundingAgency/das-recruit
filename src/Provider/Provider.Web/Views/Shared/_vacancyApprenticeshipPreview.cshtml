@@ -305,7 +305,9 @@
             <section class="faa-vacancy__section" id="requirements">
                 <h2 class="govuk-heading-m">Requirements</h2>
                 
-                <p asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-body das-!-color-dark-grey">You do not need any specific qualifications to apply for a foundation apprenticeship.</p>
+                <p asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-body das-!-color-dark-grey">
+                    You do not need to have any specific qualifications or experience to apply for a foundation apprenticeship.
+                </p>
 
                 @if (!Model.ApprenticeshipType.IsFoundation())
                 {
