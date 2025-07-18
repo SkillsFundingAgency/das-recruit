@@ -40,11 +40,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var collection = GetCollection<User>();
             var result = await RetryPolicy.ExecuteAsync(_ => 
                     collection.Find(filter)
-                        .SingleOrDefaultAsync(),
+                        .FirstOrDefaultAsync(),
                 new Context(nameof(GetAsync)));
             return result;
         }
-        
+
         public Task UpsertUserAsync(User user)
         {
             var filter = Builders<User>.Filter.Eq(v => v.Id, user.Id);
@@ -70,6 +70,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return RetryPolicy.ExecuteAsync(_ => 
                 collection.Find(filter).ToListAsync(),
                 new Context(nameof(GetProviderUsersAsync)));
+        }
+        
+        public async Task<User> GetUserByEmail(string email, UserType userType)
+        {
+            var builder = Builders<User>.Filter;
+            var filter = builder.Regex(v => v.Email, new BsonRegularExpression(Regex.Escape(email.ToLower()),"i" )) &
+                         builder.Eq(cm => cm.UserType, userType);
+            
+            var collection = GetCollection<User>();
+            var result = await RetryPolicy.ExecuteAsync(_ => 
+                    collection.Find(filter)
+                        .FirstOrDefaultAsync(),
+                new Context(nameof(MongoDbUserRepository.GetAsync)));
+            return result;
         }
     }
 }

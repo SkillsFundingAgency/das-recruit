@@ -38,7 +38,7 @@
                 <ul class="das-task-list__items">
                     <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.ClosingAndStartDatesEditable, "Closing and start dates", RouteNames.Dates_Get, Model.RouteDictionary))"/>
                     <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.DurationAndWorkingHoursEditable, "Duration and working hours", RouteNames.Duration_Get, Model.RouteDictionary))"/>
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.PayRateAndBenefitsEditable, "Pay rate and benefits", RouteNames.Wage_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.PayRateAndBenefitsEditable, "Wage and company benefits", RouteNames.Wage_Get, Model.RouteDictionary))"/>
                     <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.NumberOfPositionsEditable, "Number of positions", RouteNames.NumberOfPositions_Get, Model.RouteDictionary))"/>
                     <esfaFeatureEnabled name="@FeatureNames.MultipleLocations">
                         <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.LocationsEditable, "Locations", RouteNames.MultipleLocations_Get, Model.RouteDictionary))"/>
@@ -63,8 +63,8 @@
                     <partial asp-show="@(Model.ApprenticeshipType is not ApprenticeshipTypes.Foundation)" name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.QualificationsEditable, "Qualifications", RouteNames.Qualifications_Get, Model.RouteDictionary))"/>
                     @* ----------------------- *@
                     
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.FutureProspectsEditable, "Future prospects", RouteNames.FutureProspects_Get, Model.RouteDictionary))"/>
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.OtherThingsToConsiderEditable, "Other things to consider", RouteNames.Considerations_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.FutureProspectsEditable, "After this apprenticeship", RouteNames.FutureProspects_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.OtherThingsToConsiderEditable, "Other requirements", RouteNames.Considerations_Get, Model.RouteDictionary))"/>
                 </ul>
             </li>
             <li>
