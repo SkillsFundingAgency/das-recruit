@@ -80,6 +80,7 @@ public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, 
         vm.EducationLevelName =
             EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel);
         vm.WageType = vacancy.Wage?.WageType;
+        vm.ApprenticeshipType = (ApprenticeshipTypes)vacancy.ApprenticeshipType;
 
         if (programme != null) vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
 
@@ -293,6 +294,7 @@ public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, 
         mappings.Add(e => e.ApplicationUrl, vm => vm.ApplicationUrl);
         mappings.Add(e => e.TrainingProvider, vm => vm.ProviderName);
         mappings.Add(e => e.TrainingProvider.Ukprn, vm => vm.ProviderName);
+        mappings.Add(e => e.ApprenticeshipType, vm => vm.ApprenticeshipType);
 
         return mappings;
     }
