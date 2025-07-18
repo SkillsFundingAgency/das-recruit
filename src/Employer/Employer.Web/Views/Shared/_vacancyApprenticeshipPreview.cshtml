@@ -98,9 +98,17 @@
         <div class="govuk-grid-column-two-thirds">
             <section class="faa-vacancy__section faa-vacancy__section--first" id="summary">
                 <h2 class="govuk-heading-m">Summary</h2>
-                <p asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-inset-text das-inset-text-pink">
-                    Foundation apprenticeships help young people get into an industry. You do not need any specific grades or qualifications to apply. Check <a class="govuk-notification-banner__link" href="#" target="_blank" rel="noreferrer">who can do a foundation (opens in a new tab)</a>. 
-                </p>
+                
+                <div asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-inset-text das-inset-text-pink">
+                    <p>Foundation apprenticeships are introductory courses that help young people get started in an industry. You do not need to have any specific qualifications or experience to apply.</p>
+                    <p>Anyone between 16 and 21 can start a foundation apprenticeship.</p>
+                    <p>If you're between 22 and 24, you can start if you:</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>have an EHC plan</li>
+                        <li>are in care or have been in care</li>
+                        <li>are in prison or have been in prison</li>
+                    </ul>
+                </div>
                 <p>
                     @Model.ShortDescription
                 </p>
@@ -299,7 +307,9 @@
             <section class="faa-vacancy__section" id="requirements">
                 <h2 class="govuk-heading-m">Requirements</h2>
                 
-                <p asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-body das-!-color-dark-grey">You do not need any specific qualifications to apply for a foundation apprenticeship.</p>
+                <p asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-body das-!-color-dark-grey">
+                    You do not need to have any specific qualifications or experience to apply for a foundation apprenticeship.
+                </p>
                 
                 @if (!Model.ApprenticeshipType.IsFoundation())
                 {
@@ -406,9 +416,15 @@
             </section>
             <section class="faa-vacancy__section faa-vacancy__section--last" id="apply">
                 <h2 class="govuk-heading-m">Apply now</h2>
-                <p asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-inset-text das-inset-text-pink">
-                    Foundation apprenticeships help young people get into an industry. Check <a class="govuk-notification-banner__link" href="#" target="_blank" rel="noreferrer">who can do a foundation (opens in a new tab)</a>.
-                </p>
+                <div asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-inset-text das-inset-text-pink">
+                    <p>Anyone between 16 and 21 can start a foundation apprenticeship.</p>
+                    <p>If you're between 22 and 24, you can start if you:</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>have an EHC plan</li>
+                        <li>are in care or have been in care</li>
+                        <li>are in prison or have been in prison</li>
+                    </ul>
+                </div>
                 <p>Closes on @Model.ClosingDate</p>
                 <p class="govuk-body">To apply, you’ll need a GOV.UK One Login. You can create a GOV.UK One Login at the same time as applying for this apprenticeship.</p>
                 @if (!string.IsNullOrWhiteSpace(Model.ApplicationUrl))
