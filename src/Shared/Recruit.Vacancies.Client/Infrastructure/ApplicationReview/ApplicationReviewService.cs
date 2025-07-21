@@ -188,7 +188,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
         public async Task<List<Domain.Entities.ApplicationReview>> GetForVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
         {
             var response = await outerApiClient.Get<GetApplicationReviewsByVacancyReferenceApiResponse>(
-                new GetApplicationReviewsByVacancyReferenceApiRequest(vacancyReference));
+                new GetApplicationReviewsByVacancyReferenceApiRequest(1000001525));
 
             if (response?.ApplicationReviews == null || response.ApplicationReviews.Count == 0) return [];
 
@@ -249,30 +249,44 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                 return null;
             }
 
-            // Filter selected addresses and deserialize them
-            var selectedAddresses = addresses
-                .Where(x => x.IsSelected)
+            var parsedAddresses = addresses
                 .Select(x =>
                 {
-                    Address employmentAddress;
+                    Address employmentAddress = null;
                     try
                     {
-                        employmentAddress = !string.IsNullOrWhiteSpace(x.FullAddress)
-                            ? JsonConvert.DeserializeObject<Address>(x.FullAddress)
-                            : null;
+                        if (!string.IsNullOrWhiteSpace(x.FullAddress))
+                        {
+                            employmentAddress = JsonConvert.DeserializeObject<Address>(x.FullAddress);
+                        }
                     }
                     catch (JsonException)
                     {
-                        // If deserialization fails, we set employmentAddress to null
                         logger.LogWarning("Failed to deserialize address:{Address}", x.FullAddress);
-                        employmentAddress = null;
                     }
 
-                    return employmentAddress;
+                    return new
+                    {
+                        Original = x,
+                        Parsed = employmentAddress,
+                        City = employmentAddress?.GetCity()
+                    };
                 })
                 .ToList();
 
-            return selectedAddresses.GetCities();
+            var cities = parsedAddresses
+                .Where(x => !string.IsNullOrWhiteSpace(x.City))
+                .Select(x => x.City)
+                .ToList();
+
+            bool hasDuplicateCities = cities.GroupBy(c => c).Any(g => g.Count() > 1);
+
+            var selectedParsed = parsedAddresses
+                .Where(x => x.Original.IsSelected && x.Parsed != null)
+                .Select(x => x.Parsed)
+                .ToList();
+
+            return selectedParsed.GetCities(hasDuplicateCities);
         }
 
         private Domain.Entities.ApplicationReview MapToDomainApplicationReview(Responses.ApplicationReview response)
