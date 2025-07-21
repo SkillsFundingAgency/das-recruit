@@ -32,9 +32,9 @@
         <div asp-hide="@Model.ShowAnonymisedApplicantDetails">
             <h1 class="govuk-heading-l govuk-!-margin-bottom-5">@Model.Name</h1>
         </div>
-        <h1 class="govuk-heading-l govuk-!-margin-bottom-5">Application ID: @Model.FriendlyId</h1>
+        <p class="govuk-!-margin-bottom-5">Application ID: @Model.FriendlyId</p>
 
-        <div asp-hide="@Model.IsApplicationShared">
+        <div asp-show="@Model.IsApplicationSharedByProvider">
             <h2 class="govuk-heading-l govuk-!-margin-bottom-5">Contact Details</h2>
             <p class="govuk-body">
                 You'll be able to see this applicant's name and contact details if you decide to interview them.
