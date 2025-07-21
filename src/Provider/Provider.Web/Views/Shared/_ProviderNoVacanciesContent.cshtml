@@ -4,39 +4,24 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">Create a vacancy</h1>
+        <h1 class="govuk-heading-xl">Create a vacancy for Find an apprenticeship</h1>
 
         <p class="govuk-body">
-            Advertise an apprenticeship on
+            Advertise an apprenticeship in England on
             <a href="@ExternalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link govuk-link--no-visited-state" target="_blank">Find an apprenticeship (opens in a new tab)</a>.
-        </p>
-        <p class="govuk-body">
-            You can accept applications through our service or add a link to a different website.
-        </p>
-
-        <p class="govuk-inset-text">
-            You can only use this service to advertise apprenticeships in England. There are different services for
-            <a href="https://www.apprenticeships.scot/for-employers/" class="govuk-link" target="_blank">Scotland</a>,
-            <a href="https://www.gov.wales/recruit-apprentice-guidance-employers/how" class="govuk-link" target="_blank">Wales</a> and
-            <a href="https://www.nibusinessinfo.co.uk/content/advertise-apprenticeship-opportunities-jobapplyni" class="govuk-link" target="_blank">Northern Ireland</a>.
+            You can accept applications using Find an apprenticeship or add a link to your own application website.
         </p>
 
         <h2 class="govuk-heading-m">Before you start</h2>
 
-        <p class="govuk-body">Before creating a vacancy, you’ll need to know:</p>
+        <p class="govuk-body">Make sure you have:</p>
         <ul class="govuk-list govuk-list--bullet">
-            <li>the employer</li>
-            <li>the training course</li>
-            <li>the pay</li>
-            <li>how long the apprenticeship will be</li>
-            <li>the work and training hours</li>
+            <li>
+                <a asp-external-subdomain="securefunding" asp-external-action="manage" asp-external-controller="reservations" asp-external-id="@Model.Ukprn" class="govuk-link">reserved funding</a>
+                if the employer you're working with does not pay the apprenticeship levy
+            </li>
+            <li>got details such as the apprenticeship's wage and working hours</li>
         </ul>
-        
-        <p class="govuk-body">
-            If you’re working with an employer who does not pay the apprenticeship levy, you should
-            <a asp-external-subdomain="securefunding" asp-external-action="manage" asp-external-controller="reservations" asp-external-id="@Model.Ukprn" class="govuk-link">reserve funding for the apprenticeship</a>
-            before creating a vacancy.
-        </p>
 
         <a asp-route="@RouteNames.LegalEntityEmployer_Get" asp-all-route-data="@Model.RouteDictionary" role="button" class="govuk-button govuk-button--start govuk-!-margin-bottom-8 govuk-!-margin-top-2" esfa-automation="create-vacancy">
             Start now
@@ -44,13 +29,12 @@
                 <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"></path>
             </svg>
         </a>
+        
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Create adverts on your own system using our APIs</h2>
 
-        <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Submit vacancy using our recruitment APIs</h3>
         <p class="govuk-body">
-            If you have technical knowledge, you can use your own system to submit vacancies to Find on apprenticeship.
-        </p>
-        <p class="govuk-body">
-            <a asp-route="@RouteNames.Dashboard_ProviderRecruitmentApi" asp-route-ukprn="@Model.Ukprn" class="govuk-link">Get started with the recruitment APIs</a>
+            If you're working with a software developer, you can connect your system to Find an apprenticeship by 
+            <a asp-route="@RouteNames.Dashboard_ProviderRecruitmentApi" asp-route-ukprn="@Model.Ukprn" class="govuk-link">using our APIs</a>.
         </p>
     </div>
 </div>
