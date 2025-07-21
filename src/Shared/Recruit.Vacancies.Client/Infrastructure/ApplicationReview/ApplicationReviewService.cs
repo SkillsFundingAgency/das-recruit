@@ -188,7 +188,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
         public async Task<List<Domain.Entities.ApplicationReview>> GetForVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
         {
             var response = await outerApiClient.Get<GetApplicationReviewsByVacancyReferenceApiResponse>(
-                new GetApplicationReviewsByVacancyReferenceApiRequest(1000001525));
+                new GetApplicationReviewsByVacancyReferenceApiRequest(vacancyReference));
 
             if (response?.ApplicationReviews == null || response.ApplicationReviews.Count == 0) return [];
 
@@ -245,48 +245,84 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
         private string GetCandidateAppliedLocation(List<Responses.Address> addresses)
         {
             if (addresses == null || addresses.Count == 0)
-            {
                 return null;
-            }
 
-            var parsedAddresses = addresses
+            // Parse all addresses (originalParsed)
+            var originalParsed = addresses
+                .Where(x => !string.IsNullOrWhiteSpace(x.FullAddress))
                 .Select(x =>
                 {
-                    Address employmentAddress = null;
                     try
                     {
-                        if (!string.IsNullOrWhiteSpace(x.FullAddress))
+                        var parsed = JsonConvert.DeserializeObject<Address>(x.FullAddress);
+                        if (parsed == null) return null;
+
+                        return new
                         {
-                            employmentAddress = JsonConvert.DeserializeObject<Address>(x.FullAddress);
-                        }
+                            City = parsed.GetCity()?.Trim(),
+                            AddressLine1 = parsed.AddressLine1?.Trim()
+                        };
                     }
                     catch (JsonException)
                     {
-                        logger.LogWarning("Failed to deserialize address:{Address}", x.FullAddress);
+                        logger.LogWarning("Failed to deserialize address: {Address}", x.FullAddress);
+                        return null;
                     }
-
-                    return new
-                    {
-                        Original = x,
-                        Parsed = employmentAddress,
-                        City = employmentAddress?.GetCity()
-                    };
                 })
+                .Where(x => !string.IsNullOrWhiteSpace(x?.City))
                 .ToList();
 
-            var cities = parsedAddresses
-                .Where(x => !string.IsNullOrWhiteSpace(x.City))
-                .Select(x => x.City)
+            // Count city occurrences in originalParsed
+            var cityCounts = originalParsed
+                .GroupBy(x => x.City, StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(g => g.Key, g => g.Count(), StringComparer.OrdinalIgnoreCase);
+
+            // Parse selected addresses only
+            var selectedParsed = addresses
+                .Where(x => x.IsSelected && !string.IsNullOrWhiteSpace(x.FullAddress))
+                .Select(x =>
+                {
+                    try
+                    {
+                        var parsed = JsonConvert.DeserializeObject<Address>(x.FullAddress);
+                        if (parsed == null) return null;
+
+                        return new
+                        {
+                            City = parsed.GetCity()?.Trim(),
+                            AddressLine1 = parsed.AddressLine1?.Trim()
+                        };
+                    }
+                    catch (JsonException)
+                    {
+                        logger.LogWarning("Failed to deserialize address: {Address}", x.FullAddress);
+                        return null;
+                    }
+                })
+                .Where(x => !string.IsNullOrWhiteSpace(x?.City))
                 .ToList();
 
-            bool hasDuplicateCities = cities.GroupBy(c => c).Any(g => g.Count() > 1);
+            if (!selectedParsed.Any())
+                return null;
 
-            var selectedParsed = parsedAddresses
-                .Where(x => x.Original.IsSelected && x.Parsed != null)
-                .Select(x => x.Parsed)
-                .ToList();
+            var results = new List<string>();
 
-            return selectedParsed.GetCities(hasDuplicateCities);
+            // For each selected address:
+            foreach (var addr in selectedParsed)
+            {
+                bool hasMultiple = cityCounts.TryGetValue(addr.City, out int count) && count > 1;
+                if (hasMultiple && !string.IsNullOrWhiteSpace(addr.AddressLine1))
+                {
+                    results.Add($"{addr.City} ({addr.AddressLine1})");
+                }
+                else if (!results.Contains(addr.City, StringComparer.OrdinalIgnoreCase))
+                {
+                    // Add city once if not multiple and not already added
+                    results.Add(addr.City);
+                }
+            }
+
+            return string.Join(", ", results);
         }
 
         private Domain.Entities.ApplicationReview MapToDomainApplicationReview(Responses.ApplicationReview response)
