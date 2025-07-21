@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Communication.Types;
-using Microsoft.WindowsAzure.Storage;
+using Azure.Storage.Queues;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
 {
@@ -28,12 +29,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
             if(string.IsNullOrEmpty(queueName))
                 throw new ArgumentException($"Cannot map type {typeof(T).Name} to a queue name");
 
-            var storageAccount = CloudStorageAccount.Parse(ConnectionString);
-            var client = storageAccount.CreateCloudQueueClient();
+            var queueClient = new QueueClient(ConnectionString, queueName);
 
-            var queue = client.GetQueueReference(queueName);
+            await queueClient.CreateIfNotExistsAsync();
 
-            await AddMessageToQueueAsync(queue, message);
+            string messageText = JsonConvert.SerializeObject(message);
+            await queueClient.SendMessageAsync(messageText);
         }
     }
 }

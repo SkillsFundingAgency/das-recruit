@@ -1,6 +1,6 @@
+using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.WindowsAzure.Storage.Queue;
-using Newtonsoft.Json;
+using Azure.Storage.Queues;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
 {
@@ -8,13 +8,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
     {
         protected abstract string ConnectionString { get; }
 
-        protected async Task AddMessageToQueueAsync<T>(CloudQueue queue, T message)
+        protected async Task AddMessageToQueueAsync<T>(QueueClient queueClient, T message)
         {
-            await queue.CreateIfNotExistsAsync();
+            await queueClient.CreateIfNotExistsAsync();
 
-            var cloudMessage = new CloudQueueMessage(JsonConvert.SerializeObject(message, Formatting.Indented));
+            string jsonMessage = JsonSerializer.Serialize(message, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
 
-            await queue.AddMessageAsync(cloudMessage);
+            await queueClient.SendMessageAsync(jsonMessage);
         }
 
         public abstract Task AddMessageAsync<T>(T message);

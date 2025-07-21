@@ -8,7 +8,6 @@ using Microsoft.Net.Http.Headers;
 using System.Linq;
 using Esfa.Recruit.Employer.Web.Middleware;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using FluentValidation.AspNetCore;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Employer.Web.Filters;
 using Esfa.Recruit.Employer.Web.Interfaces;
@@ -18,6 +17,7 @@ using SFA.DAS.Employer.Shared.UI;
 using SFA.DAS.GovUK.Auth.Authentication;
 using Microsoft.FeatureManagement;
 using Microsoft.Extensions.Configuration;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {

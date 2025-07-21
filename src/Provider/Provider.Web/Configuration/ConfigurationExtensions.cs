@@ -1,7 +1,6 @@
 using System.Linq;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Filters;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -16,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Startup;
 using Microsoft.FeatureManagement;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
