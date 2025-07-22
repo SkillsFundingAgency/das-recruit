@@ -30,29 +30,24 @@
         <govuk-tag-foundation asp-show="@Model.IsFoundation" class="govuk-!-margin-bottom-5"></govuk-tag-foundation>
         <span class="govuk-caption-l">@Model.VacancyTitle</span>
 
-        @if (Model.ShowAnonymisedApplicantDetails)
-        {
+        <div asp-show="@Model.ShowAnonymisedApplicantDetails">
             <h1 class="govuk-heading-xl">Application ID: @Model.FriendlyId</h1>
-        }
-        else
-        {
-            <div asp-hide="@Model.ShowAnonymisedApplicantDetails">
-                <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.Name</h1>
-                <p class="govuk-body-l">Application ID: @Model.FriendlyId</p>
-                <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
-            </div>    
-        }
+        </div>
+
+        <div asp-hide="@Model.ShowAnonymisedApplicantDetails">
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.Name</h1>
+            <p class="govuk-body-l">Application ID: @Model.FriendlyId</p>
+        </div>
         
         <div asp-show="@Model.IsApplicationShared">
-            <h1 class="govuk-heading-xl">Application ID: @Model.FriendlyId</h1>
             <h2 class="govuk-heading-l">Personal Details</h2>
             <p class="govuk-body">
                 You'll be able to see this applicant's name and contact details if you decide to interview them.
             </p>
-            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
         </div>
         
         <div asp-hide="@Model.ShowAnonymisedApplicantDetails">
+            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
             <h2 class="govuk-heading-l">Personal details</h2>
             <dl class="govuk-summary-list govuk-summary-list--no-border">
                 <div class="govuk-summary-list__row">
