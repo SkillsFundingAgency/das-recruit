@@ -203,7 +203,7 @@
 </div>
 
 <div asp-show="@Model.IsApplyThroughFaaVacancy">
-    <partial asp-show="@Model.ShowEmployerApplications" name="@PartialNames.VacancyApplicationsTable"
+    <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable"
         for="Applications" />
     <partial asp-show="@Model.ShowSharedApplications" name="@PartialNames.VacancySharedApplicationsTable"
         for="Applications" />
