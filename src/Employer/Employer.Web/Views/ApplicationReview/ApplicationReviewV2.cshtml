@@ -291,6 +291,29 @@
 
         <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--xl" />
 
+        <h2 class="govuk-heading-l">Disability Confidence scheme</h2>
+        <dl class="govuk-summary-list govuk-summary-list--no-border">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Do you want to apply under the Disability Confident scheme?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <p class="faa-user-content">
+                        @if (Model.DisabilityStatus == ApplicationReviewDisabilityStatus.Yes)
+                        {
+                            <span>Yes</span>
+                        }
+                        else
+                        {
+                            <span>No</span>
+                        }
+                    </p>
+                </dd>
+            </div>
+        </dl>
+
+        <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--xl" />
+
         <div asp-show="@Model.IsOutcomeSuccessul">
             <h3 class="govuk-heading-l govuk-!-margin-top-6">Outcome</h3>
             <p class="govuk-body">@Model.Status.Value.GetDisplayName()</p>
