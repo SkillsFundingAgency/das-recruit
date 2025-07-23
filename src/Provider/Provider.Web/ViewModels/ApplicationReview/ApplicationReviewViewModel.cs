@@ -4,6 +4,7 @@ using System.Linq;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview
 {
@@ -74,6 +75,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview
         public bool IsFaaV2Application { get; set; }
         public bool HasNoJobs => Jobs.Any() == false;
         public bool IsFoundation { get; set; }
+        public string CandidateAppliedLocations { get; set; }
+        public bool CanShowCandidateAppliedLocations => !string.IsNullOrEmpty(CandidateAppliedLocations);
+        public List<string> AppliedLocations => CandidateAppliedLocations.SplitCitiesToList();
 
         public List<QualificationTypeDisplay> QualificationTypes
         {
