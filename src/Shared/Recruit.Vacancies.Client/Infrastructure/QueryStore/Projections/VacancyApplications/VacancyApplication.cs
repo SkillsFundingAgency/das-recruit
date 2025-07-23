@@ -6,8 +6,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
 {
     public class VacancyApplication
     {
-        private string _candidateName;
-
         public DateTime SubmittedDate { get; set; }
         public ApplicationReviewStatus Status { get; set; }
         public Guid CandidateId { get; set; }
@@ -17,16 +15,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         {
             get
             {
-                if (string.IsNullOrEmpty(FirstName))
-                {
-                    return _candidateName;
-                }
-                else
-                {
-                    return $"{FirstName} {LastName}";
-                }
+                return string.IsNullOrEmpty(FirstName) ? " " : $"{FirstName} {LastName}";
             }
-            set { _candidateName = value; }
         }
 
         public DateTime? DateOfBirth { get; set; }
