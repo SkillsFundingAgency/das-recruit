@@ -283,10 +283,30 @@
                 </dt>
                 <dd class="govuk-summary-list__value">
                     <p class="faa-user-content">
-                        @(!string.IsNullOrEmpty(Model.Support) ? Model.Support : "No, I don't need support or I'll discuss it if I get an interview")
+                        @if (!string.IsNullOrEmpty(Model.Support))
+                        {
+                            <span>Yes</span>
+                        }
+                        else
+                        {
+                            <span>No, I don't need support or I'll discuss it if I get an interview</span>
+                        }
                     </p>
                 </dd>
             </div>
+            @if (!string.IsNullOrEmpty(Model.Support))
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Interview support request
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <p class="faa-user-content">
+                            @(!string.IsNullOrEmpty(Model.Support) ? Model.Support : "No, I don't need support or I'll discuss it if I get an interview")
+                        </p>
+                    </dd>
+                </div>
+            }
         </dl>
 
         <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--xl" />
