@@ -17,5 +17,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyView
 
         public bool CanShowMultipleApplicationsUnsuccessfulLink =>
           Applications?.Any(app => app.Status != ApplicationReviewStatus.Successful && app.Status != ApplicationReviewStatus.Unsuccessful) ?? false;
+
+        public bool CanShowCandidateAppliedLocations => Applications?.Any(app => app.CanShowCandidateAppliedLocations) ?? false;
     }
 }

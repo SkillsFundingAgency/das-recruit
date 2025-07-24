@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Polly;
-using System.Linq;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
-    internal sealed class MongoDbApplicationReviewRepository : MongoDbCollectionBase, IApplicationReviewRepository, IApplicationReviewQuery, IApplicationWriteRepository
+    internal sealed class MongoDbApplicationReviewRepository : MongoDbCollectionBase, IApplicationReviewRepository, IApplicationReviewQuery, IApplicationWriteRepository, IMongoDbRepository
     {
         private class WrappedVacancyReference
         {
@@ -102,7 +102,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var builder = Builders<Domain.Entities.ApplicationReview>.Filter;
             var filter = builder.Eq(r => r.VacancyReference, vacancyReference) &
-                         builder.Eq(r => r.CandidateId, candidateId);
+                         builder.Eq(r => r.CandidateId, candidateId) & 
+                         builder.Eq(r => r.IsWithdrawn, false);
 
             var collection = GetCollection<Domain.Entities.ApplicationReview>();
 

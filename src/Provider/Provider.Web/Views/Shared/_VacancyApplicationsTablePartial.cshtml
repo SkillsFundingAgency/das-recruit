@@ -2,7 +2,7 @@
 <table class="govuk-table das-table--responsive">
     <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-            <partial name="@PartialNames.MultipleApplicationsTableHeader" />
+            <partial name="@PartialNames.MultipleApplicationsTableHeader" model="@Model.CanShowCandidateAppliedLocations" />
         </tr>
     </thead>
     <tbody class="govuk-table__body">
@@ -13,12 +13,14 @@
                 <td class="govuk-table__cell" data-label="Name">@application.CandidateName</td>
                 <td class="govuk-table__cell" data-label="Status"><strong class="@application.Status.GetCssClassForApplicationReviewStatus()">@application.Status.GetDisplayName(UserType.Provider)</strong></td>
                 <td class="govuk-table__cell" data-label="Date Applied">@application.SubmittedDate.AsGdsDate()</td>
+                <td class="govuk-table__cell" asp-show="@application.CanShowCandidateAppliedLocations" data-label="Locations">@application.CandidateAppliedLocations</td>
             </tr>
             <tr class="govuk-table__row" asp-show="@application.IsWithdrawn">
                 <td class="govuk-table__cell" data-label="Application ID">@application.GetFriendlyId()</td>
                 <td class="govuk-table__cell" data-label="Name">Application withdrawn by candidate</td>
                 <td class="govuk-table__cell" data-label="Status">Withdrawn</td>
                 <td class="govuk-table__cell" data-label="Date Applied">@application.SubmittedDate.AsGdsDate()</td>
+                <td class="govuk-table__cell" asp-show="@application.CanShowCandidateAppliedLocations" data-label="Locations">@application.CandidateAppliedLocations</td>
             </tr>
         }
     </tbody>
