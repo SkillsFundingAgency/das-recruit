@@ -24,17 +24,16 @@
             </div>
         </div>
 
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <partial name="@PartialNames.ValidationSummary" model="new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }" />
 
         <govuk-tag-foundation asp-show="@Model.IsFoundation" class="govuk-!-margin-bottom-5"></govuk-tag-foundation>
 
-        <span class="govuk-caption-l govuk-!-margin-bottom-5">@Model.VacancyTitle</span>
-        <h1 class="govuk-heading-l govuk-!-margin-bottom-5">@Model.Name</h1>
+        <span class="govuk-caption-l">@Model.VacancyTitle</span>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.Name</h1>
+        <p class="govuk-body-l">Application ID: @Model.FriendlyId</p>
 
-        <p>Application ID: @Model.FriendlyId</p>
-
-        <h2 class="govuk-heading-m">Personal details</h2>
-
+        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+        <h2 class="govuk-heading-l">Personal details</h2>
         <dl class="govuk-summary-list govuk-summary-list--no-border">
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -42,9 +41,9 @@
                 </dt>
                 <dd class="govuk-summary-list__value">
                     @Html.Raw(
-                             string.Join("<br>",
-                             new[]
-                             {
+                                                        string.Join("<br>",
+                                                        new[]
+                                                        {
                     @Model.Name,
                     @Model.AddressLine1,
                     @Model.AddressLine2,
@@ -52,7 +51,7 @@
                     @Model.AddressLine4,
                     @Model.Postcode
                     }.Where(s => !string.IsNullOrWhiteSpace(s))
-                             .Select(WebUtility.HtmlEncode)))
+                                                        .Select(WebUtility.HtmlEncode)))
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -72,9 +71,10 @@
                 </dd>
             </div>
         </dl>
+
         <div asp-show="@Model.CanShowCandidateAppliedLocations">
             <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--l" />
-            <h2 class="govuk-heading-m">Locations</h2>
+            <h2 class="govuk-heading-l">Locations</h2>
             <dl class="govuk-summary-list govuk-summary-list--no-border">
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
@@ -93,7 +93,7 @@
         </div>
         <div asp-hide="@Model.HasNoQualifications">
             <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--l" />
-            <h2 class="govuk-heading-m">School, college and university qualifications</h2>
+            <h2 class="govuk-heading-l">School, college and university qualifications</h2>
             @foreach (var qualificationType in Model.QualificationTypes.OrderBy(c => c.Order))
             {
                 foreach (var qualification in Model.QualificationGroups.Where(c => c.QualificationType.Equals(qualificationType.QualificationType, StringComparison.CurrentCultureIgnoreCase)))
@@ -134,7 +134,7 @@
 
         <div asp-hide="@Model.HasNoTrainingCourses">
             <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--xl" />
-            <h2 class="govuk-heading-m">Training courses</h2>
+            <h2 class="govuk-heading-l">Training courses</h2>
             @foreach (var course in Model.TrainingCourses)
             {
                 <div class="govuk-summary-card">
@@ -163,7 +163,7 @@
 
         <div asp-hide="@Model.HasNoJobs">
             <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--xl" />
-            <h2 class="govuk-heading-m">Jobs</h2>
+            <h2 class="govuk-heading-l">Jobs</h2>
             @foreach (var job in Model.Jobs)
             {
                 <div class="govuk-summary-card">
@@ -201,7 +201,7 @@
 
         <div asp-hide="@Model.HasNoWorkExperience">
             <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--xl" />
-            <h2 class="govuk-heading-m">Volunteering and work experience</h2>
+            <h2 class="govuk-heading-l">Volunteering and work experience</h2>
             @foreach (var workExperience in Model.WorkExperiences)
             {
                 <div class="govuk-summary-card">
@@ -239,7 +239,7 @@
 
         <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--xl" />
 
-        <h2 class="govuk-heading-m">Application questions</h2>
+        <h2 class="govuk-heading-l">Application questions</h2>
         <h3 class="govuk-heading-s govuk-!-margin-bottom-2">What are your skills and strengths?</h3>
         <p class="faa-user-content">@Model.Strengths</p>
         <h3 class="govuk-heading-s govuk-!-margin-bottom-2">What interests you about this apprenticeship?</h3>
@@ -257,7 +257,7 @@
 
         <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--xl" />
 
-        <h2 class="govuk-heading-m">Get support at an interview</h2>
+        <h2 class="govuk-heading-l">Get support at an interview</h2>
         <dl class="govuk-summary-list govuk-summary-list--no-border">
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -266,11 +266,54 @@
                 </dt>
                 <dd class="govuk-summary-list__value">
                     <p class="faa-user-content">
-                        @(!string.IsNullOrEmpty(Model.Support) ? Model.Support : "No, I don't need support or I'll discuss it if I get an interview")
+                        @if(!string.IsNullOrEmpty(Model.Support))
+                        {
+                            <span>Yes</span>
+                        }
+                        else{
+                            <span>No, I don't need support or I'll discuss it if I get an interview</span>
+                        }
+                    </p>
+                </dd>
+            </div>
+            @if(!string.IsNullOrEmpty(Model.Support))
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Interview support request
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <p class="faa-user-content">
+                            @(!string.IsNullOrEmpty(Model.Support) ? Model.Support : "No, I don't need support or I'll discuss it if I get an interview")
+                        </p>
+                    </dd>
+                </div>
+            }
+        </dl>
+
+        <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--xl" />
+
+        <h2 class="govuk-heading-l">Disability Confident scheme</h2>
+        <dl class="govuk-summary-list govuk-summary-list--no-border">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Do you want to apply under the Disability Confident scheme?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <p class="faa-user-content">
+                        @if (Model.DisabilityStatus == ApplicationReviewDisabilityStatus.Yes)
+                        {
+                            <span>Yes</span>
+                        }
+                        else
+                        {
+                            <span>No</span>
+                        }
                     </p>
                 </dd>
             </div>
         </dl>
+
 
         <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--xl" />
 

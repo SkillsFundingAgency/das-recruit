@@ -34,7 +34,7 @@
             <h1 class="govuk-heading-l govuk-!-margin-bottom-5">Application ID: @Model.FriendlyId</h1>
         </div>
 
-        <div asp-show="@Model.IsApplicationShared">
+        <div asp-hide="@Model.IsApplicationShared">
             <h2 class="govuk-heading-l govuk-!-margin-bottom-5">Contact details</h2>
             <p class="govuk-body">
                 You'll be able to see this applicant's name and contact details if you decide to interview them.

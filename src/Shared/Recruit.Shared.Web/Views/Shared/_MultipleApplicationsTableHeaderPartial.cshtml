@@ -1,4 +1,8 @@
 ﻿@model bool
+@{
+    var showLocations = Model;
+}
+
 <th scope="col" class="govuk-table__header das-table-cell-width-25 das-table--double-arrows">
     <sortable-column column-name="ApplicationID" column-label="Application ID" default="false" default-order="Ascending"></sortable-column>
 </th>
@@ -11,6 +15,6 @@
 <th scope="col" class="govuk-table__header das-table-cell-width-18 das-table--double-arrows">
     <sortable-column column-name="DateApplied" column-label="Date applied" default="false" default-order="Ascending"></sortable-column>
 </th>
-<th asp-show="Model" scope="col" class="govuk-table__header das-table-cell-width-18">
+<th asp-show="showLocations" scope="col" class="govuk-table__header das-table-cell-width-18">
     Locations
 </th>

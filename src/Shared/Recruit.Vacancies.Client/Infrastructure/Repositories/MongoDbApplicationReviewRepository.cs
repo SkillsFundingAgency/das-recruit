@@ -102,7 +102,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var builder = Builders<Domain.Entities.ApplicationReview>.Filter;
             var filter = builder.Eq(r => r.VacancyReference, vacancyReference) &
-                         builder.Eq(r => r.CandidateId, candidateId);
+                         builder.Eq(r => r.CandidateId, candidateId) & 
+                         builder.Eq(r => r.IsWithdrawn, false);
 
             var collection = GetCollection<Domain.Entities.ApplicationReview>();
 

@@ -44,10 +44,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             _logger.LogInformation("Upserting user {name} of type {userType}.", user.Name, userType.ToString());
 
+            if (userType == UserType.Provider)
+            {
+                _logger.LogInformation("Provider {dfEUserId}", user.DfEUserId);
+            }
+            
             var now = _timeProvider.Now;
 
             var existingUser = userType == UserType.Provider
-                ? await _userRepository.GetByDfEUserId(user.DfEUserId) ?? await _userRepository.GetAsync(user.UserId)
+                ? await _userRepository.GetByDfEUserId(user.DfEUserId) ?? await _userRepository.GetUserByEmail(user.Email, UserType.Provider)
                 : await _userRepository.GetAsync(user.UserId);
             
             var userEntity = existingUser ?? new User
@@ -80,12 +85,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if (userType == UserType.Provider)
             {
                 userEntity.Ukprn = user.Ukprn;
-                if (string.IsNullOrEmpty(userEntity.DfEUserId))
+                if (string.IsNullOrEmpty(userEntity.DfEUserId) || userEntity.DfEUserId != user.DfEUserId)
                 {
                     userEntity.DfEUserId = user.DfEUserId;    
                 }
 
-                if (string.IsNullOrEmpty(userNotificationPreferences.DfeUserId))
+                if (string.IsNullOrEmpty(userNotificationPreferences.DfeUserId)|| userEntity.DfEUserId != user.DfEUserId)
                 {
                     userNotificationPreferences.DfeUserId = user.DfEUserId;
                 }

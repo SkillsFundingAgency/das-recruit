@@ -182,14 +182,15 @@
                 model="@Model"></field-review-message>
             <div class="app-summary-list__row app-summary-list__row--no-border"
                 field-review-marker="TrainingDescription">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.TrainingDescription">The apprentice's
-                    training schedule (optional)</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.TrainingDescription">
+                    The apprentice's training plan (optional)
+                </dt>
 
 
                 @if (string.IsNullOrEmpty(Model.TrainingDescription))
                 {
                     <dd class="app-summary-list__value">
-                        Training schedule hasn't been agreed yet
+                        Training plan has not been agreed yet
                     </dd>
                 }
                 else
@@ -265,7 +266,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.Wage" model="@Model"></field-review-message>
             <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="WageText">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.Wage">Pay rate</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.Wage">Wage</dt>
                 <dd id="YearlyWage" class="app-summary-list__value">
                     @Model.WageText
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.Wage" tag-name="strong"
@@ -470,7 +471,7 @@
             <field-review-message field-name="@FieldIdentifiers.OutcomeDescription"
                                   model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="OutcomeDescription">
-                <dt class="app-summary-list__key" id="OutcomeDescription">Future prospects</dt>
+                <dt class="app-summary-list__key" id="OutcomeDescription">What is the expected career progression after this apprenticeship?</dt>
                 <dd class="app-summary-list__value">
                     <div class="app-ugc-wrap">
                         @Html.Raw(Model.OutcomeDescription)
@@ -488,7 +489,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.ThingsToConsider" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="ThingsToConsider">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.ThingsToConsider">Other things to consider</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.ThingsToConsider">What other requirements are there for this apprenticeship?</dt>
                 <dd class="app-summary-list__value">
                     @if (string.IsNullOrEmpty(Model.ThingsToConsider))
                     {
@@ -565,7 +566,7 @@
                                   model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="IsDisabilityConfident">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.DisabilityConfident">Disability Confident
-                    Employer?</dt>
+                    employer</dt>
                 <dd class="app-summary-list__value">
                     @(Model.IsDisabilityConfident ? "Yes" : "No")
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.DisabilityConfident"
@@ -619,7 +620,7 @@
             <field-review-message field-name="@FieldIdentifiers.ApplicationMethod" model="@Model"></field-review-message>
             <field-review-message field-name="@FieldIdentifiers.ApplicationUrl" model="@Model"></field-review-message>
             <div class="app-summary-list__row @(Model.HasApplicationInstructions ? "app-summary-list__row--no-border" : "")" field-review-marker="ApplicationUrl">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationMethod">Application website</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationMethod">Application website link</dt>
                 <dd class="app-summary-list__value" id="@FieldIdentifiers.ApplicationUrl">
                     @if (Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)
                     {
@@ -645,7 +646,7 @@
                 <field-review-message field-name="@FieldIdentifiers.ApplicationInstructions"
                                       model="@Model"></field-review-message>
                 <div class="app-summary-list__row" field-review-marker="ApplicationInstructions">
-                    <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationInstructions">Application process
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationInstructions">How to apply
                         (optional)</dt>
                     <dd class="app-summary-list__value">
                         @(Model.HasApplicationInstructions ? Model.ApplicationInstructions : "None")
