@@ -245,34 +245,84 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
         private string GetCandidateAppliedLocation(List<Responses.Address> addresses)
         {
             if (addresses == null || addresses.Count == 0)
-            {
                 return null;
-            }
 
-            // Filter selected addresses and deserialize them
-            var selectedAddresses = addresses
-                .Where(x => x.IsSelected)
+            // Parse all addresses (originalParsed)
+            var originalParsed = addresses
+                .Where(x => !string.IsNullOrWhiteSpace(x.FullAddress))
                 .Select(x =>
                 {
-                    Address employmentAddress;
                     try
                     {
-                        employmentAddress = !string.IsNullOrWhiteSpace(x.FullAddress)
-                            ? JsonConvert.DeserializeObject<Address>(x.FullAddress)
-                            : null;
+                        var parsed = JsonConvert.DeserializeObject<Address>(x.FullAddress);
+                        if (parsed == null) return null;
+
+                        return new
+                        {
+                            City = parsed.GetCity()?.Trim(),
+                            AddressLine1 = parsed.AddressLine1?.Trim()
+                        };
                     }
                     catch (JsonException)
                     {
-                        // If deserialization fails, we set employmentAddress to null
-                        logger.LogWarning("Failed to deserialize address:{Address}", x.FullAddress);
-                        employmentAddress = null;
+                        logger.LogWarning("Failed to deserialize address: {Address}", x.FullAddress);
+                        return null;
                     }
-
-                    return employmentAddress;
                 })
+                .Where(x => !string.IsNullOrWhiteSpace(x?.City))
                 .ToList();
 
-            return selectedAddresses.GetCities();
+            // Count city occurrences in originalParsed
+            var cityCounts = originalParsed
+                .GroupBy(x => x.City, StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(g => g.Key, g => g.Count(), StringComparer.OrdinalIgnoreCase);
+
+            // Parse selected addresses only
+            var selectedParsed = addresses
+                .Where(x => x.IsSelected && !string.IsNullOrWhiteSpace(x.FullAddress))
+                .Select(x =>
+                {
+                    try
+                    {
+                        var parsed = JsonConvert.DeserializeObject<Address>(x.FullAddress);
+                        if (parsed == null) return null;
+
+                        return new
+                        {
+                            City = parsed.GetCity()?.Trim(),
+                            AddressLine1 = parsed.AddressLine1?.Trim()
+                        };
+                    }
+                    catch (JsonException)
+                    {
+                        logger.LogWarning("Failed to deserialize address: {Address}", x.FullAddress);
+                        return null;
+                    }
+                })
+                .Where(x => !string.IsNullOrWhiteSpace(x?.City))
+                .ToList();
+
+            if (!selectedParsed.Any())
+                return null;
+
+            var results = new List<string>();
+
+            // For each selected address:
+            foreach (var addr in selectedParsed)
+            {
+                bool hasMultiple = cityCounts.TryGetValue(addr.City, out int count) && count > 1;
+                if (hasMultiple && !string.IsNullOrWhiteSpace(addr.AddressLine1))
+                {
+                    results.Add($"{addr.City} ({addr.AddressLine1})");
+                }
+                else if (!results.Contains(addr.City, StringComparer.OrdinalIgnoreCase))
+                {
+                    // Add city once if not multiple and not already added
+                    results.Add(addr.City);
+                }
+            }
+
+            return string.Join(", ", results);
         }
 
         private Domain.Entities.ApplicationReview MapToDomainApplicationReview(Responses.ApplicationReview response)

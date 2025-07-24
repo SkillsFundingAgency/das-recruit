@@ -1,27 +1,69 @@
 ﻿@model Esfa.Recruit.Provider.Web.ViewModels.VacancyView.VacancyApplicationsViewModel
-<table class="govuk-table das-table--responsive">
-    <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <partial name="@PartialNames.MultipleApplicationsTableHeader" model="@Model.CanShowCandidateAppliedLocations" />
-        </tr>
-    </thead>
-    <tbody class="govuk-table__body">
-        @foreach (var application in Model.Applications)
-        {
-            <tr class="govuk-table__row" asp-show="@application.IsNotWithdrawn">
-                <td class="govuk-table__cell" data-label="Application ID"><a id="@($"application-id-{application.GetFriendlyId()}")" asp-route="@RouteNames.ApplicationReview_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-applicationReviewId="@application.ApplicationReviewId" class="govuk-link">@application.GetFriendlyId()</a></td>
-                <td class="govuk-table__cell" data-label="Name">@application.CandidateName</td>
-                <td class="govuk-table__cell" data-label="Status"><strong class="@application.Status.GetCssClassForApplicationReviewStatus()">@application.Status.GetDisplayName(UserType.Provider)</strong></td>
-                <td class="govuk-table__cell" data-label="Date Applied">@application.SubmittedDate.AsGdsDate()</td>
-                <td class="govuk-table__cell" asp-show="@application.CanShowCandidateAppliedLocations" data-label="Locations">@application.CandidateAppliedLocations</td>
+<form method="get" autocomplete="off">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="locationFilter">Filter by location</label>
+                <select class="govuk-select"
+                        id="locationFilter"
+                        name="locationFilter"
+                        data-ays-ignore="true">
+                    <option value="">All locations</option>
+                    @foreach (var location in Model.EmploymentLocations)
+                    {
+                        if (location == Model.SelectedLocation)
+                        {
+                            <option value="@location" selected>@location</option>
+                        }
+                        else
+                        {
+                            <option value="@location">@location</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div>
+            <h2 class="govuk-heading-s">
+                @Model.FilteredApplicationsLabelText
+            </h2>
+        </div>
+    </div>
+</div>
+<div asp-show="@Model.HasApplications">
+    <table class="govuk-table das-table--responsive">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <partial name="@PartialNames.MultipleApplicationsTableHeader" model="Model.CanShowCandidateAppliedLocations" />
             </tr>
-            <tr class="govuk-table__row" asp-show="@application.IsWithdrawn">
-                <td class="govuk-table__cell" data-label="Application ID">@application.GetFriendlyId()</td>
-                <td class="govuk-table__cell" data-label="Name">Application withdrawn by candidate</td>
-                <td class="govuk-table__cell" data-label="Status">Withdrawn</td>
-                <td class="govuk-table__cell" data-label="Date Applied">@application.SubmittedDate.AsGdsDate()</td>
-                <td class="govuk-table__cell" asp-show="@application.CanShowCandidateAppliedLocations" data-label="Locations">@application.CandidateAppliedLocations</td>
-            </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody class="govuk-table__body">
+            @foreach (var application in Model.Applications)
+            {
+                <tr class="govuk-table__row" asp-show="@application.IsNotWithdrawn">
+                    <td class="govuk-table__cell" data-label="Application ID"><a id="@($"application-id-{application.GetFriendlyId()}")" asp-route="@RouteNames.ApplicationReview_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-applicationReviewId="@application.ApplicationReviewId" class="govuk-link">@application.GetFriendlyId()</a></td>
+                    <td class="govuk-table__cell" data-label="Name">@application.CandidateName</td>
+                    <td class="govuk-table__cell" data-label="Status"><strong class="@application.Status.GetCssClassForApplicationReviewStatus()">@application.Status.GetDisplayName(UserType.Provider)</strong></td>
+                    <td class="govuk-table__cell" data-label="Date Applied">@application.SubmittedDate.AsGdsDate()</td>
+                    <td class="govuk-table__cell" data-label="Locations">@application.CandidateAppliedLocations</td>
+                </tr>
+                <tr class="govuk-table__row" asp-show="@application.IsWithdrawn">
+                    <td class="govuk-table__cell" data-label="Application ID">@application.GetFriendlyId()</td>
+                    <td class="govuk-table__cell" data-label="Name">Application withdrawn by candidate</td>
+                    <td class="govuk-table__cell" data-label="Status">Withdrawn</td>
+                    <td class="govuk-table__cell" data-label="Date Applied">@application.SubmittedDate.AsGdsDate()</td>
+                    <td class="govuk-table__cell" asp-show="@application.CanShowCandidateAppliedLocations" data-label="Locations">@application.CandidateAppliedLocations</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div asp-show="@Model.HasNoApplications">
+    <p class="govuk-body">
+        No applications for @Model.SelectedLocation have been received.
+    </p>
+</div>
