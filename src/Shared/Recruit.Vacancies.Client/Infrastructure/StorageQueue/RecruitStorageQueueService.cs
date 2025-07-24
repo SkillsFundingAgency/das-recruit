@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using Azure.Storage.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore;
-using Newtonsoft.Json;
+using Microsoft.WindowsAzure.Storage;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
 {
@@ -46,13 +45,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
             if(string.IsNullOrEmpty(queueName))
                 throw new InvalidEnumArgumentException($"Cannot map type {typeof(T).Name} to a queue name");
 
-            var queueClient = new QueueClient(ConnectionString, queueName);
+            var storageAccount = CloudStorageAccount.Parse(ConnectionString);
+            var client = storageAccount.CreateCloudQueueClient();
 
-            await queueClient.CreateIfNotExistsAsync();
+            var queue = client.GetQueueReference(queueName);
 
-            string messageText = JsonConvert.SerializeObject(message);
-            await queueClient.SendMessageAsync(messageText);
-
+            await AddMessageToQueueAsync(queue, message);
         }
     }
 }
