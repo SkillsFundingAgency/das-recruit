@@ -52,10 +52,44 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
             return lines.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x))?.Trim();
         }
 
-        public static string GetCities(this IEnumerable<Address> addresses)
+        public static string GetCities(this IEnumerable<Address> addresses, bool includeAddressLine = false)
         {
+            if (addresses == null) return string.Empty;
+
             // Group by city
             var cityGroups = addresses
+                .Where(a => !string.IsNullOrWhiteSpace(a.GetCity()))
+                .GroupBy(a => a.GetCity())
+                .ToDictionary(g => g.Key.Trim(), g => g.Count());
+
+            // Build display values
+            //var displayValues = cityGroups.SelectMany(group =>
+            //{
+            //    bool isDuplicate = group.Count() > 1 && includeAddressLine;
+            //    return group.Select(a =>
+            //        isDuplicate
+            //            ? $"{a.GetCity()} ({a.AddressLine1?.Trim()})"
+            //            : a.GetCity().Trim()
+            //    );
+            //});
+
+            //return string.Join(", ", displayValues);
+
+            return string.Empty;
+        }
+
+        public static List<string> GetCityDisplayList(this IEnumerable<Address> addresses)
+        {
+            if (addresses == null) return [];
+
+            var enumerable = addresses.ToList();
+            if (!enumerable.Any())
+            {
+                return [];
+            }
+
+            // Group by city
+            var cityGroups = enumerable
                 .Where(a => !string.IsNullOrWhiteSpace(a.GetCity()))
                 .GroupBy(a => a.GetCity());
 
@@ -70,7 +104,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
                 );
             });
 
-            return string.Join(", ", displayValues);
+            return displayValues.ToList();
+
         }
 
         public static List<string> SplitCitiesToList(this string cities)
