@@ -191,7 +191,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             MongoDbConventions.RegisterMongoConventions();
 
             services.AddTransient<MongoDbCollectionChecker>();
-
             //Repositories
             services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
             
@@ -208,7 +207,12 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
             services.AddTransient<IApplicationWriteRepository, ApplicationReviewService>();
             services.AddTransient<IApplicationWriteRepository, MongoDbApplicationReviewRepository>();
+            
+            services.AddTransient<ISqlDbRepository, ApplicationReviewService>();
+            services.AddTransient<IMongoDbRepository, MongoDbApplicationReviewRepository>();
+
             services.AddTransient<IApplicationReviewRepository, MongoDbApplicationReviewRepository>();
+
             services.AddTransient<IApplicationReviewRepositoryRunner, ApplicationReviewRepositoryRunner>();
 
 

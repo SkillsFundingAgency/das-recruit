@@ -75,7 +75,7 @@ public class ApplicationReviewsCommandHandler :
                 await _applicationReviewRepository.GetForVacancyAsync<ApplicationReview>(vacancy.VacancyReference!.Value);
             
             await Parallel.ForEachAsync(applicationReviewsByReference.Where(x =>
-                x.Application!.IsFaaV2Application && !x.IsWithdrawn && applicationReviews.Contains(x.Id)).ToList(), new ParallelOptions() , async (applicationReview, token) => 
+                !x.IsWithdrawn && x.Application is { IsFaaV2Application: true } && applicationReviews.Contains(x.Id)).ToList(), new ParallelOptions() , async (applicationReview, token) => 
                 {
                     await _outerApiClient.Post(new PostApplicationStatusRequest(applicationReview.CandidateId,
                         applicationReview.Application.ApplicationId, new PostApplicationStatus

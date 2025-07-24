@@ -34,12 +34,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         
         public async Task<Domain.Entities.User> GetByDfEUserId(string dfEUserId)
         {
-            var filter = Builders<Domain.Entities.User>.Filter.Eq(v => v.DfEUserId, dfEUserId);
+            var filter = Builders<Domain.Entities.User>.Filter.Regex(v => v.DfEUserId, 
+                new BsonRegularExpression(Regex.Escape(dfEUserId.ToLower()),"i" ));
 
             var collection = GetCollection<Domain.Entities.User>();
             var result = await RetryPolicy.ExecuteAsync(_ => 
                     collection.Find(filter)
-                        .SingleOrDefaultAsync(),
+                        .FirstOrDefaultAsync(),
                 new Context(nameof(GetAsync)));
             return result;
         }
@@ -69,6 +70,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return RetryPolicy.ExecuteAsync(_ => 
                 collection.Find(filter).ToListAsync(),
                 new Context(nameof(GetProviderUsersAsync)));
+        }
+        
+        public async Task<Domain.Entities.User> GetUserByEmail(string email, UserType userType)
+        {
+            var builder = Builders<Domain.Entities.User>.Filter;
+            var filter = builder.Regex(v => v.Email, new BsonRegularExpression(Regex.Escape(email.ToLower()),"i" )) &
+                         builder.Eq(cm => cm.UserType, userType);
+            
+            var collection = GetCollection<Domain.Entities.User>();
+            var result = await RetryPolicy.ExecuteAsync(_ => 
+                    collection.Find(filter)
+                        .FirstOrDefaultAsync(),
+                new Context(nameof(MongoDbUserRepository.GetAsync)));
+            return result;
         }
     }
 }
