@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
-        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
+        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm, [FromQuery] string sortColumn, [FromQuery] string sortOrder, [FromQuery] string locationFilter = "")
         {
             Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
             Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return HandleRedirectOfEditableVacancy(vacancy);
             }
 
-            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy, vrm, outputSortColumn, outputSortOrder);
+            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy, vrm, outputSortColumn, outputSortOrder, locationFilter);
 
             if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
                 viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();
