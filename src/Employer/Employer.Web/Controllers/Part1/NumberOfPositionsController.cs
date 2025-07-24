@@ -6,15 +6,13 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.NumberOfPositions;
-using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
-using FeatureNames = Esfa.Recruit.Employer.Web.Configuration.FeatureNames;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class NumberOfPositionsController(NumberOfPositionsOrchestrator orchestrator, IFeature feature) : Controller
+    public class NumberOfPositionsController(NumberOfPositionsOrchestrator orchestrator) : Controller
     {
         [HttpGet("number-of-positions", Name = RouteNames.NumberOfPositions_Get)]
         public async Task<IActionResult> NumberOfPositions(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
@@ -52,9 +50,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             }
 
             return wizard 
-                ? feature.IsFeatureEnabled(FeatureNames.MultipleLocations)
-                    ? RedirectToRoute(RouteNames.MultipleLocations_Get, new {m.VacancyId, m.EmployerAccountId, wizard})
-                    : RedirectToRoute(RouteNames.Location_Get, new {m.VacancyId, m.EmployerAccountId, wizard}) 
+                ? RedirectToRoute(RouteNames.MultipleLocations_Get, new {m.VacancyId, m.EmployerAccountId, wizard})
                 : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId});
         }
     }
