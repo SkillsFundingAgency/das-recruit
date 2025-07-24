@@ -8,7 +8,18 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyView
 {
     public class VacancyApplicationsViewModel : VacancyRouteModel
     {
-        public List<VacancyApplication> Applications { get; internal set; }
+        public List<VacancyApplication> Applications { get; set; }
+
+        public List<string> EmploymentLocations { get; set; } = [];
+        public string? SelectedLocation { get; set; }
+        public int TotalUnfilteredApplicationsCount { get; set; } = 0;
+
+        public string FilteredApplicationsLabelText => Applications.Count == 1
+            ? "1 Application"
+            : $"{Applications.Count} Applications";
+
+        public bool HasApplications => Applications is not null && Applications.Any();
+        public bool HasNoApplications => !HasApplications;
 
         public bool ShowDisability { get; internal set; }
 
