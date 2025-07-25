@@ -106,6 +106,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
                 });
         }
 
+        public async Task<IEnumerable<TrainingProviderSummary>> GetCourseProviders(int programmeId)
+        {
+            var result = await outerApiClient.Get<GetCourseProvidersResponse>(new GetCourseProvidersRequest(programmeId));
+            return result.Providers?.Select(x => new TrainingProviderSummary
+            {
+                ProviderName = x.Name,
+                Ukprn = x.Ukprn
+            }) ?? [];
+        }
+
         private Task<TrainingProviders> GetProviders()
         {
             return cache.CacheAsideAsync(

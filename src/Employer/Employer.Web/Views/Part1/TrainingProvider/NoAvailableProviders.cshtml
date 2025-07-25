@@ -1,0 +1,31 @@
+@model Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider.NoAvailableProvidersViewModel
+
+@inject SFA.DAS.Employer.Shared.UI.UrlBuilder LinkGenerator
+
+@{ 
+    ViewBag.Vpv = "/recruitment/employer/page-part1-select-training-provider";
+    ViewBag.Title = "No training providers current deliver your selected course";
+    ViewBag.ZenDeskLabel = "recruit-have-you-found-a-training-provider";
+}
+
+@section BackLink {
+    <a asp-route="@RouteNames.TrainingProvider_Select_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-l">@Model.VacancyTitle</span>
+            There are currently no training providers available for your selected course 
+        </h1>
+
+        <p class="govuk-body">
+            A provider might still be able to deliver <b>@Model.CourseTitle</b>.
+            Use your account to <a href="@LinkGenerator.RequestApprenticeshipTrainingLink("TrainingRequest", Model.EmployerAccountId, Model.ProgrammeId)">ask if any training providers can run this course for you</a>.
+        </p>
+        
+        <p class="govuk-body">
+            If you’ve already found a provider, tell them you’ve reached this page. They can help you to continue.
+        </p>
+    </div>
+</div>

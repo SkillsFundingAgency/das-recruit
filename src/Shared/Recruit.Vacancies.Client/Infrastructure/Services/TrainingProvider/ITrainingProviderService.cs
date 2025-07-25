@@ -40,5 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
         /// <returns></returns>
         Task<GetVacanciesDashboardResponse> GetProviderDashboardVacanciesByApplicationReviewStatuses(long ukprn,
             List<ApplicationReviewStatus> vacancyReferences, int pageNumber);
+
+        Task<IEnumerable<TrainingProviderSummary>> GetCourseProviders(int programmeId);
     }
 }
