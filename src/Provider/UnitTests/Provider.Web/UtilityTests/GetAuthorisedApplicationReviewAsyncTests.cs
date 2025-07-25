@@ -33,7 +33,8 @@ public class GetAuthorisedApplicationReviewAsyncTests
                 {
                     Id = _vacancyId,
                     TrainingProvider = new TrainingProvider { Ukprn = _applicationReviewUkprn },
-                    OwnerType = OwnerType.Provider
+                    OwnerType = OwnerType.Provider,
+                    DisabilityConfident = DisabilityConfident.No, 
                 });
     }
 
@@ -46,7 +47,7 @@ public class GetAuthorisedApplicationReviewAsyncTests
         {
             Ukprn = requestedUkprn,
             ApplicationReviewId = _applicationReviewId,
-            VacancyId = _vacancyId
+            VacancyId = _vacancyId,
         };
 
         var applicationReview = await utility.GetAuthorisedApplicationReviewAsync(rm);

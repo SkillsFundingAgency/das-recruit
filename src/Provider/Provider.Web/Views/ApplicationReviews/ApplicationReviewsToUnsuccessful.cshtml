@@ -52,7 +52,7 @@
                                 <tr class="govuk-table__row">
                                     <th scope="col" class="govuk-table__header das-table-cell-width-4" data-checkboxes-select-all-cell>
                                     </th>
-                                    <partial name="@PartialNames.MultipleApplicationsTableHeader" />
+                                    <partial name="@PartialNames.MultipleApplicationsTableHeader" model="@Model.CanShowCandidateAppliedLocations" />
                                 </tr>
                             </thead>
 
@@ -77,6 +77,7 @@
                                             <td class="govuk-table__cell">@vacancyApplication.CandidateName</td>
                                             <td class="govuk-table__cell"><strong class="@vacancyApplication.Status.GetCssClassForApplicationReviewStatus()">@vacancyApplication.Status.GetDisplayName(UserType.Provider)</strong></td>
                                             <td class="govuk-table__cell">@vacancyApplication.SubmittedDate.AsGdsDate()</td>
+                                            <td class="govuk-table__cell" asp-show="@vacancyApplication.CanShowCandidateAppliedLocations" data-label="Locations">@vacancyApplication.CandidateAppliedLocations</td>
                                         </tr>
                                     }
                                 }

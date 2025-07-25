@@ -181,7 +181,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                 frameworkStatus = programmeStatus;
             }
 
-            if (programme.ApprenticeshipType == TrainingType.Standard)
+            if (programme.ApprenticeshipType == TrainingType.Standard 
+                || programme.ApprenticeshipType == TrainingType.Foundation)
             {
                 standard = programmeValue;
                 standardStatus = programmeStatus;

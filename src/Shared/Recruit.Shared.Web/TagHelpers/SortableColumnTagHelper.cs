@@ -56,7 +56,8 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers
                 SearchTerm = GetSearchTermFromQueryString(),
                 SortColumn = ColumnName,
                 SortOrder = isSortColumn ? sortOrder.Reverse().ToString() : DefaultSortOrder.ToString(),
-                VacancySharedByProvider = GetSharedVacancyFromQueryString()
+                VacancySharedByProvider = GetSharedVacancyFromQueryString(),
+                locationFilter = GetLocationFilterFromQueryString(),
             };
 
             var href = _urlHelper.Action(action, controller, values);
@@ -127,6 +128,16 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers
             }
 
             return null;
+        }
+
+        private string? GetLocationFilterFromQueryString()
+        {
+            if (ViewContext.HttpContext.Request.Query.ContainsKey("locationFilter"))
+            {
+                return ViewContext.HttpContext.Request.Query["locationFilter"];
+            }
+
+            return string.Empty;
         }
     }
 }

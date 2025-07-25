@@ -1,7 +1,4 @@
-﻿@using System.Net
-@using Esfa.Recruit.Shared.Web.TagHelpers
-@using Esfa.Recruit.Vacancies.Client.Domain.Extensions
-@using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications
+﻿@using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications
 @model Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews.ShareMultipleApplicationReviewsViewModel
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-application-reviews-to-share";
@@ -28,18 +25,13 @@
                         </div>
                         <span esfa-validation-message-for="ApplicationsToShare" class="govuk-error-message"></span>
                         <div esfa-validation-marker-for="ApplicationsToShare" id="Multiple-unsuccessful-candidate-feedback" class="govuk-form-group">
-
                             <table class="govuk-table" aria-label="Share applications" data-checkboxes-select-all>
-
                                 <thead class="govuk-table__head">
                                     <tr class="govuk-table__row">
-                                        <th scope="col" class="govuk-table__header das-table-cell-width-4" data-checkboxes-select-all-cell>
-
-                                        </th>
-                            <partial name="@PartialNames.MultipleApplicationsTableHeader" />
+                                        <th scope="col" class="govuk-table__header das-table-cell-width-4" data-checkboxes-select-all-cell></th>
+                                        <partial name="@PartialNames.MultipleApplicationsTableHeader" model="@Model.CanShowCandidateAppliedLocations"  />
                                     </tr>
                                 </thead>
-
                                 <tbody class="govuk-table__body">
                                     @{
                                         foreach (VacancyApplication vacancyApplication in Model.VacancyApplications)
@@ -61,16 +53,15 @@
                                                 <td class="govuk-table__cell">@vacancyApplication.CandidateName</td>
                                                 <td class="govuk-table__cell"><strong class="@vacancyApplication.Status.GetCssClassForApplicationReviewStatus()">@vacancyApplication.Status.GetDisplayName(UserType.Provider)</strong></td>
                                                 <td class="govuk-table__cell">@vacancyApplication.SubmittedDate.AsGdsDate()</td>
+                                                <td class="govuk-table__cell" asp-show="@vacancyApplication.CanShowCandidateAppliedLocations" data-label="Locations">@vacancyApplication.CandidateAppliedLocations</td>
                                             </tr>
                                         }
                                     }
                                 </tbody>
                             </table>
                         </div>
-
                         </fieldset>
                     </div>
-
             <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
                 <div class="govuk-button-group">
@@ -78,7 +69,6 @@
                 </div>
             </div>
         </div>
-
         </form>
     </div>
 </div>
