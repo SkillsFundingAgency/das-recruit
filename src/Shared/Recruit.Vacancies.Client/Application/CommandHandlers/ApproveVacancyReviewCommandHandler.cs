@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         private readonly ILogger<ApproveVacancyReviewCommandHandler> _logger;
         private readonly IVacancyRepository _vacancyRepository;
-        private readonly IVacancyReviewRespositoryRunner _vacancyReviewRespositoryRunner;
+        private readonly IVacancyReviewRepositoryRunner _vacancyReviewRepositoryRunner;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly IMessaging _messaging;
         private readonly AbstractValidator<VacancyReview> _vacancyReviewValidator;
@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly ICommunicationQueueService _communicationQueueService;
 
         public ApproveVacancyReviewCommandHandler(ILogger<ApproveVacancyReviewCommandHandler> logger,
-                                        IVacancyReviewRespositoryRunner vacancyReviewRespositoryRunner,
+                                        IVacancyReviewRepositoryRunner vacancyReviewRepositoryRunner,
                                         IVacancyReviewQuery vacancyReviewQuery,
                                         IVacancyRepository vacancyRepository,
                                         IMessaging messaging,
@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             _logger = logger;
             _vacancyRepository = vacancyRepository;
-            _vacancyReviewRespositoryRunner = vacancyReviewRespositoryRunner;
+            _vacancyReviewRepositoryRunner = vacancyReviewRepositoryRunner;
             _vacancyReviewQuery = vacancyReviewQuery;
             _messaging = messaging;
             _vacancyReviewValidator = vacancyReviewValidator;
@@ -76,7 +76,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             Validate(review);
 
-            await _vacancyReviewRespositoryRunner.UpdateAsync(review);
+            await _vacancyReviewRepositoryRunner.UpdateAsync(review);
 
             var closureReason = await TryGetReasonToCloseVacancy(review, vacancy);
 

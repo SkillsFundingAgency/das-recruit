@@ -11,12 +11,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
     public class UnassignVacancyReviewCommandHandler : IRequestHandler<UnassignVacancyReviewCommand, Unit>
     {
-        private readonly IVacancyReviewRespositoryRunner _repository;
+        private readonly IVacancyReviewRepositoryRunner _repository;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly ILogger<UnassignVacancyReviewCommandHandler> _logger;
 
         public UnassignVacancyReviewCommandHandler(
-            IVacancyReviewRespositoryRunner repository,
+            IVacancyReviewRepositoryRunner repository,
             IVacancyReviewQuery vacancyReviewQuery,
             ILogger<UnassignVacancyReviewCommandHandler> logger)
         {

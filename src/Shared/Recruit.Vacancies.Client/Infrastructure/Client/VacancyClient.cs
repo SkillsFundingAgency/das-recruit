@@ -21,6 +21,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
@@ -41,6 +42,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IVacancyService vacancyService,
         IEmployerProfileRepository employerProfileRepository,
         IUserRepository userRepository,
+        IUserRepositoryRunner userWriteRepository,
         IQualificationsProvider qualificationsProvider,
         IEmployerService employerService,
         IReportRepository reportRepository,
@@ -541,17 +543,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 AccountLegalEntityPublicHashedIds = accountLegalEntityPublicHashedIds
             });
         }
-        public Task<User> GetUsersDetailsAsync(string userId)
+        public Task<Domain.Entities.User> GetUsersDetailsAsync(string userId)
         {
             return userRepository.GetAsync(userId);
         }
 
-        public Task UpsertUserDetails(User user)
+        public Task UpsertUserDetails(Domain.Entities.User user)
         {
-            return userRepository.UpsertUserAsync(user);
+            return userWriteRepository.UpsertUserAsync(user);
         }
         
-        public Task<User> GetUsersDetailsByDfEUserId(string dfeUserId)
+        public Task<Domain.Entities.User> GetUsersDetailsByDfEUserId(string dfeUserId)
         {
             return userRepository.GetByDfEUserId(dfeUserId);
         }

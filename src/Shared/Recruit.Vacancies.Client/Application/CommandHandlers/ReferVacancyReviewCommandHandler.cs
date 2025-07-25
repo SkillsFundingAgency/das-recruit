@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     public class ReferVacancyReviewCommandHandler : IRequestHandler<ReferVacancyReviewCommand, Unit>
     {
         private readonly ILogger<ReferVacancyReviewCommandHandler> _logger;
-        private readonly IVacancyReviewRespositoryRunner _vacancyReviewRespositoryRunner;
+        private readonly IVacancyReviewRepositoryRunner _vacancyReviewRepositoryRunner;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly IMessaging _messaging;
         private readonly AbstractValidator<VacancyReview> _vacancyReviewValidator;
@@ -26,14 +26,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public ReferVacancyReviewCommandHandler(
             ILogger<ReferVacancyReviewCommandHandler> logger,
-            IVacancyReviewRespositoryRunner vacancyReviewRespositoryRunner,
+            IVacancyReviewRepositoryRunner vacancyReviewRepositoryRunner,
             IVacancyReviewQuery vacancyReviewQuery,
             IMessaging messaging,
             AbstractValidator<VacancyReview> vacancyReviewValidator,
             ITimeProvider timeProvider)
         {
             _logger = logger;
-            _vacancyReviewRespositoryRunner = vacancyReviewRespositoryRunner;
+            _vacancyReviewRepositoryRunner = vacancyReviewRepositoryRunner;
             _vacancyReviewQuery = vacancyReviewQuery;
             _messaging = messaging;
             _timeProvider = timeProvider;
@@ -81,7 +81,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             Validate(review);
 
-            await _vacancyReviewRespositoryRunner.UpdateAsync(review);
+            await _vacancyReviewRepositoryRunner.UpdateAsync(review);
 
             await _messaging.PublishEvent(new VacancyReviewReferredEvent
             {
