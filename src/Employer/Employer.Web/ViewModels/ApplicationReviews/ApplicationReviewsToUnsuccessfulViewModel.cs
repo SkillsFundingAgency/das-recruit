@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 
@@ -13,4 +14,5 @@ public class ApplicationReviewsToUnsuccessfulViewModel : ApplicationReviewsToUns
     public string PositionsFilledBannerBody { get; set; }
     public bool CanShowPositionsFilledBanner => !string.IsNullOrEmpty(PositionsFilledBannerHeader);
     public List<Guid> ApplicationsToUnsuccessful { get; set; }
+    public bool CanShowCandidateAppliedLocations => VacancyApplications?.Any(app => app.CanShowCandidateAppliedLocations) ?? false;
 }

@@ -1,15 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
-using FluentAssertions;
-using Moq;
 using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.Services
 {
@@ -18,12 +15,14 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         [Test, MoqAutoData]
         public async Task Then_The_Service_Is_Called_And_VacancyApplications_Returned(
             long vacancyReference,
-            List<ApplicationReview> applicationReviews,
-            [Frozen] Mock<IApplicationReviewRepository> applicationReviewRepository,
+            List<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview> applicationReviews,
+            [Frozen] Mock<IFeature> feature,
+            [Frozen] Mock<ISqlDbRepository> applicationReviewRepository,
             VacancyClient vacancyClient)
         {
             //Arrange
-            applicationReviewRepository.Setup(x => x.GetForVacancyAsync<ApplicationReview>(vacancyReference))
+            feature.Setup(x=>x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(true);
+            applicationReviewRepository.Setup(x => x.GetForVacancyAsync<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview>(vacancyReference))
                 .ReturnsAsync(applicationReviews);
             
             //Act
@@ -40,8 +39,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             VacancyClient vacancyClient)
         {
             //Arrange
-            applicationReviewRepository.Setup(x => x.GetForVacancyAsync<ApplicationReview>(vacancyReference))
-                .ReturnsAsync(new List<ApplicationReview>());
+            applicationReviewRepository.Setup(x => x.GetForVacancyAsync<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview>(vacancyReference))
+                .ReturnsAsync(new List<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview>());
             
             //Act
             var actual = await vacancyClient.GetVacancyApplicationsAsync(vacancyReference);
@@ -57,14 +56,34 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             VacancyClient vacancyClient)
         {
             //Arrange
-            applicationReviewRepository.Setup(x => x.GetForVacancyAsync<ApplicationReview>(vacancyReference))
-                .ReturnsAsync((List<ApplicationReview>) null);
+            applicationReviewRepository.Setup(x => x.GetForVacancyAsync<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview>(vacancyReference))
+                .ReturnsAsync((List<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview>) null);
             
             //Act
             var actual = await vacancyClient.GetVacancyApplicationsAsync(vacancyReference);
             
             //Assert
             actual.Should().BeEmpty();
+        }
+
+        [Test, MoqAutoData]
+        public async Task GetVacancyApplicationsSortedAsync_ReturnsEmptyList_WhenNoApplications(
+            long vacancyReference,
+            [Frozen] Mock<IFeature> feature,
+            [Frozen] Mock<ISqlDbRepository> mockAppReviewRepo,
+            [Greedy] VacancyClient vacancyClient)
+        {
+            // Arrange
+            feature.Setup(x=>x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(true);
+            mockAppReviewRepo.Setup(r => r.GetForVacancySortedAsync(vacancyReference, It.IsAny<SortColumn>(), It.IsAny<SortOrder>()))
+                .ReturnsAsync([]);
+
+            // Act
+            var result = await vacancyClient.GetVacancyApplicationsSortedAsync(vacancyReference, SortColumn.DateApplied, SortOrder.Ascending, false);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEmpty();
         }
     }
 }
