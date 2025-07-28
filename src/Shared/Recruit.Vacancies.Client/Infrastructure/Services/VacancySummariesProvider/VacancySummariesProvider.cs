@@ -68,8 +68,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             var closingSoonReferencesTask = RunClosingSoonVacancies(closingSoonAggPipeline);
 
             await Task.WhenAll(dashboardValuesTask, closingSoonReferencesTask);
-
-            // If the Mongo migration feature is enabled, retrieve the application review stats
             
             var closingSoonReferences = await closingSoonReferencesTask;
             if (closingSoonReferences == null || closingSoonReferences.Count == 0)
