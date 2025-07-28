@@ -8,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
@@ -15,6 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     public class UserSignedInCommandHandler : IRequestHandler<UserSignedInCommand, Unit>
     {
         private readonly ILogger<UserSignedInCommandHandler> _logger;
+        private readonly IUserRepositoryRunner _userWriteRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserNotificationPreferencesRepository _userNotificationPreferencesRepository;
         private readonly ITimeProvider _timeProvider;
@@ -22,6 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public UserSignedInCommandHandler(
             ILogger<UserSignedInCommandHandler> logger,
+            IUserRepositoryRunner userWriteRepository, 
             IUserRepository userRepository, 
             IUserNotificationPreferencesRepository userNotificationPreferencesRepository,
             ITimeProvider timeProvider, 
@@ -32,6 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _timeProvider = timeProvider;
             _queueService = queueService;
             _logger = logger;
+            _userWriteRepository = userWriteRepository;
         }
 
         public async Task<Unit> Handle(UserSignedInCommand message, CancellationToken cancellationToken)
@@ -96,7 +100,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 }
             }
 
-            await _userRepository.UpsertUserAsync(userEntity);
+            await _userWriteRepository.UpsertUserAsync(userEntity);
             await _userNotificationPreferencesRepository.UpsertAsync(userNotificationPreferences);
 
             if (userType == UserType.Employer)

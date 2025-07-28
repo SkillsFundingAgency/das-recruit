@@ -12,17 +12,17 @@ using SFA.DAS.Encoding;
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 
 
-public interface IVacancyReviewRespositoryRunner
+public interface IVacancyReviewRepositoryRunner
 {
     Task CreateAsync(Domain.Entities.VacancyReview vacancy);
     Task UpdateAsync(Domain.Entities.VacancyReview review);
 }
 
-public class VacancyReviewRespositoryRunner : IVacancyReviewRespositoryRunner
+public class VacancyReviewRepositoryRunner : IVacancyReviewRepositoryRunner
 {
     private readonly IEnumerable<IVacancyReviewRepository> _vacancyReviewResolver;
 
-    public VacancyReviewRespositoryRunner(IEnumerable<IVacancyReviewRepository> vacancyReviewResolver)
+    public VacancyReviewRepositoryRunner(IEnumerable<IVacancyReviewRepository> vacancyReviewResolver)
     {
         _vacancyReviewResolver = vacancyReviewResolver;
     }
