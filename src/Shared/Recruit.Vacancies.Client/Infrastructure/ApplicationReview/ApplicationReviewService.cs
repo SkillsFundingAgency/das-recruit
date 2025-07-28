@@ -340,9 +340,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                 Id = response.Id,
                 CandidateId = response.CandidateId,
                 VacancyReference = response.VacancyReference,
-                Status = Enum.Parse<ApplicationReviewStatus>(response.Status),
+                Status = Enum.Parse<ApplicationReviewStatus>(response.Status, true),
                 TemporaryReviewStatus = response.TemporaryReviewStatus is not null
-                    ? Enum.Parse<ApplicationReviewStatus>(response.TemporaryReviewStatus)
+                    ? Enum.Parse<ApplicationReviewStatus>(response.TemporaryReviewStatus, true)
                     : null,
                 CreatedDate = response.CreatedDate,
                 DateSharedWithEmployer = response.DateSharedWithEmployer,

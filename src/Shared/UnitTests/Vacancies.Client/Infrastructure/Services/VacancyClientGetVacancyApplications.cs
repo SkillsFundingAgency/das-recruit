@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoFixture.NUnit3;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -15,10 +16,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public async Task Then_The_Service_Is_Called_And_VacancyApplications_Returned(
             long vacancyReference,
             List<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview> applicationReviews,
-            [Frozen] Mock<IApplicationReviewRepository> applicationReviewRepository,
+            [Frozen] Mock<IFeature> feature,
+            [Frozen] Mock<ISqlDbRepository> applicationReviewRepository,
             VacancyClient vacancyClient)
         {
             //Arrange
+            feature.Setup(x=>x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(true);
             applicationReviewRepository.Setup(x => x.GetForVacancyAsync<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview>(vacancyReference))
                 .ReturnsAsync(applicationReviews);
             
@@ -66,10 +69,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         [Test, MoqAutoData]
         public async Task GetVacancyApplicationsSortedAsync_ReturnsEmptyList_WhenNoApplications(
             long vacancyReference,
-            [Frozen] Mock<IApplicationReviewRepository> mockAppReviewRepo,
+            [Frozen] Mock<IFeature> feature,
+            [Frozen] Mock<ISqlDbRepository> mockAppReviewRepo,
             [Greedy] VacancyClient vacancyClient)
         {
             // Arrange
+            feature.Setup(x=>x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(true);
             mockAppReviewRepo.Setup(r => r.GetForVacancySortedAsync(vacancyReference, It.IsAny<SortColumn>(), It.IsAny<SortOrder>()))
                 .ReturnsAsync([]);
 
