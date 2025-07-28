@@ -6,14 +6,12 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Humanizer;
 using Microsoft.Extensions.Options;
-using FeatureNames = Esfa.Recruit.Employer.Web.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Employer.Web.Mappings
 {
@@ -21,8 +19,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
         IGeocodeImageService mapService,
         IOptions<ExternalLinksConfiguration> externalLinksOptions,
         IRecruitVacancyClient vacancyClient,
-        IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider,
-        IFeature feature)
+        IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider)
     {
         private const int MapImageWidth = 465;
         private const int MapImageHeight = 256;
@@ -81,10 +78,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.NumberOfPositionsCaption = vacancy.NumberOfPositions.HasValue
                 ? $"{"position".ToQuantity(vacancy.NumberOfPositions.Value)} available"
                 : null;
-            if (feature.IsFeatureEnabled(FeatureNames.MultipleLocations))
-            {
-                vm.OrganisationName = vacancy.LegalEntityName;
-            }
+            vm.OrganisationName = vacancy.LegalEntityName;
             vm.OutcomeDescription = vacancy.OutcomeDescription;
             vm.PossibleStartDate = vacancy.StartDate?.ToFullDateTimeString();
             vm.PostedDate = vacancy.CreatedDate?.AsGdsDate();

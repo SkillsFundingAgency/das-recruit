@@ -1,39 +1,28 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Middleware;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyManage;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Microsoft.AspNetCore.Mvc;
-using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.Middleware;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using InfoMsg = Esfa.Recruit.Shared.Web.ViewModels.InfoMessages;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
     [Authorize(Policy = nameof(PolicyNames.HasEmployerOwnerOrTransactorAccount))]
-    public class VacancyManageController : Controller
+    public class VacancyManageController(
+        VacancyManageOrchestrator orchestrator,
+        IWebHostEnvironment hostingEnvironment,
+        IUtility utility)
+        : Controller
     {
-        private readonly VacancyManageOrchestrator _orchestrator;
-        private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly IUtility _utility;
-        private readonly IFeature _feature;
-
-        public VacancyManageController(VacancyManageOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment, IUtility utility, IFeature feature)
-        {
-            _orchestrator = orchestrator;
-            _hostingEnvironment = hostingEnvironment;
-            _utility = utility;
-            _feature = feature;
-        }
-
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
         public async Task<IActionResult> ManageVacancy(ManageVacancyRouteModel vrm,
             [FromQuery] string sortColumn,
@@ -46,14 +35,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
             Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
 
-            var vacancy = await _orchestrator.GetVacancy(vrm, vacancySharedByProvider);
+            var vacancy = await orchestrator.GetVacancy(vrm, vacancySharedByProvider);
 
             if (vacancy.CanEmployerEdit)
             {
                 return HandleRedirectOfEditableVacancy(vacancy);
             }
 
-            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy, outputSortColumn, outputSortOrder, vacancySharedByProvider, locationFilter);
+            var viewModel = await orchestrator.GetManageVacancyViewModel(vacancy, outputSortColumn, outputSortOrder, vacancySharedByProvider, locationFilter);
 
             if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
                 viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();
@@ -78,7 +67,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("edit", Name = RouteNames.VacancyEdit_Get)]
         public async Task<IActionResult> EditVacancy(VacancyRouteModel vrm)
         {
-            var vacancy = await _orchestrator.GetVacancy(vrm);
+            var vacancy = await orchestrator.GetVacancy(vrm);
 
             if (vacancy.CanEmployerEdit)
             {
@@ -93,7 +82,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             var parsedClosingDate = Request.Cookies.GetProposedClosingDate(vacancy.Id);
             var parsedStartDate = Request.Cookies.GetProposedStartDate(vacancy.Id);
 
-            var viewModel = await _orchestrator.GetEditVacancyViewModel(vrm, parsedClosingDate, parsedStartDate);
+            var viewModel = await orchestrator.GetEditVacancyViewModel(vrm, parsedClosingDate, parsedStartDate);
 
             return View(viewModel);
         }
@@ -101,14 +90,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpPost("submit-vacancy-changes", Name = RouteNames.SubmitVacancyChanges_Post)]
         public async Task<IActionResult> UpdatePublishedVacancy(ProposedChangesEditModel m)
         {
-            var response = await _orchestrator.UpdatePublishedVacancyAsync(m, User.ToVacancyUser());
+            var response = await orchestrator.UpdatePublishedVacancyAsync(m, User.ToVacancyUser());
 
             if (!response.Success)
             {
                 return RedirectToRoute(RouteNames.VacancyEditDates_Get, new {m.VacancyId, m.EmployerAccountId});
             }
 
-            var vacancy = await _orchestrator.GetVacancy(m);
+            var vacancy = await orchestrator.GetVacancy(m);
             TempData.Add(TempDataKeys.DashboardInfoMessage, string.Format(InfoMsg.VacancyUpdated, vacancy.Title));
 
             EnsureProposedChangesCookiesAreCleared(m.VacancyId);
@@ -126,13 +115,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         private void EnsureProposedChangesCookiesAreCleared(Guid vacancyId)
         {
-            Response.Cookies.ClearProposedClosingDate(_hostingEnvironment, vacancyId);
-            Response.Cookies.ClearProposedStartDate(_hostingEnvironment, vacancyId);
+            Response.Cookies.ClearProposedClosingDate(hostingEnvironment, vacancyId);
+            Response.Cookies.ClearProposedStartDate(hostingEnvironment, vacancyId);
         }
 
         private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
         {
-            if (_utility.IsTaskListCompleted(vacancy))
+            if (utility.IsTaskListCompleted(vacancy))
             {
                 return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {VacancyId = vacancy.Id, vacancy.EmployerAccountId});
             }
