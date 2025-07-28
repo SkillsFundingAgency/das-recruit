@@ -31,6 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             int rejectedCount,
             string employerAccountId,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
+            [Frozen] Mock<IEmployerAccountProvider> employerAccountProvider,
             VacancyClient vacancyClient)
         {
             var vacancyApplicationsDashboard = new List<VacancyApplicationsDashboard>
@@ -67,7 +68,17 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 VacanciesClosingSoonWithNoApplications = closingSoonNoApplications,
                 VacancySharedApplicationsDashboard = vacancySharedApplicationsDashboard
             });
+            employerAccountProvider.Setup(x => x.GetEmployerDashboardStats(employerAccountId))
+                .ReturnsAsync(new GetDashboardCountApiResponse
+                {
+                    NewApplicationsCount = numberOfNewApplications,
+                    UnsuccessfulApplicationsCount = numberOfUnsuccessfulApplications,
+                    SuccessfulApplicationsCount = numberOfSuccessfulApplications,
+                    SharedApplicationsCount = numberOfSharedApplications,
+                    EmployerReviewedApplicationsCount = reviewCount
+                });
             
+
             var actual = await vacancyClient.GetDashboardSummary(employerAccountId);
 
             actual.Closed.Should().Be(closedCount);
@@ -75,10 +86,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             actual.Review.Should().Be(reviewCount);
             actual.Referred.Should().Be(referredCount + rejectedCount);
             actual.Live.Should().Be(liveCount + closingSoon);
-            actual.NumberOfNewApplications.Should().Be(numberOfNewApplications*4);
-            actual.NumberOfUnsuccessfulApplications.Should().Be(numberOfUnsuccessfulApplications*2 + closedUnsuccessfulApplications*2);
-            actual.NumberOfSuccessfulApplications.Should().Be(numberOfSuccessfulApplications*2 + closedSuccessfulApplications*2);
-            actual.NumberOfSharedApplications.Should().Be(numberOfSharedApplications * 2);
+            actual.NumberOfNewApplications.Should().Be(numberOfNewApplications);
+            actual.NumberOfUnsuccessfulApplications.Should().Be(numberOfUnsuccessfulApplications);
+            actual.NumberOfSuccessfulApplications.Should().Be(numberOfSuccessfulApplications);
+            actual.NumberOfSharedApplications.Should().Be(numberOfSharedApplications);
             actual.NumberClosingSoon.Should().Be(closingSoon);
             actual.NumberClosingSoonWithNoApplications.Should().Be(closingSoonNoApplications);
             actual.HasVacancies.Should().BeTrue();
@@ -91,6 +102,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public async Task Then_Model_Values_Set_For_No_Vacancies(
             string employerAccountId,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
+            [Frozen] Mock<IEmployerAccountProvider> employerAccountProvider,
             VacancyClient vacancyClient)
         {
             vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId)).ReturnsAsync(new VacancyDashboard
@@ -99,7 +111,16 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 VacancyStatusDashboard = [],
                 VacancySharedApplicationsDashboard = []
             });
-            
+            employerAccountProvider.Setup(x => x.GetEmployerDashboardStats(employerAccountId))
+                .ReturnsAsync(new GetDashboardCountApiResponse
+                {
+                    NewApplicationsCount = 0,
+                    UnsuccessfulApplicationsCount = 0,
+                    SuccessfulApplicationsCount = 0,
+                    SharedApplicationsCount = 0,
+                    EmployerReviewedApplicationsCount = 0
+                });
+
             var actual = await vacancyClient.GetDashboardSummary(employerAccountId);
             
             actual.HasVacancies.Should().BeFalse();

@@ -650,7 +650,11 @@ if (locationFilterSelect) {
         const locationValue = e.target.value;
         const queryString = window.location.search;
         const params = new URLSearchParams(queryString);
-        params.delete("locationFilter");
+        for (const key of [...params.keys()]) {
+            if (key.toLowerCase() === "locationfilter") {
+                params.delete(key);
+            }
+        }
         params.append("locationFilter", locationValue);
         document.location.href = "?" + params.toString();
     });

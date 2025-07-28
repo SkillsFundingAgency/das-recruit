@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
@@ -34,6 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             int rejectedCount,
             long ukprn,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
+            [Frozen] Mock<ITrainingProviderService> trainingProviderService,
             VacancyClient vacancyClient)
         {
             var vacancyApplicationsDashboard = new List<VacancyApplicationsDashboard>
@@ -65,6 +65,14 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 VacanciesClosingSoonWithNoApplications = closingSoonNoApplications
             });
 
+            trainingProviderService.Setup(x => x.GetProviderDashboardStats(ukprn)).ReturnsAsync(new GetDashboardCountApiResponse
+            {
+                NewApplicationsCount = numberOfNewApplications,
+                EmployerReviewedApplicationsCount = numberOfEmployerReviewedApplications,
+                UnsuccessfulApplicationsCount = numberOfUnsuccessfulApplications,
+                SuccessfulApplicationsCount = numberOfSuccessfulApplications,
+            });
+
             var actual = await vacancyClient.GetDashboardSummary(ukprn);
 
             actual.Closed.Should().Be(closedCount);
@@ -72,10 +80,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             actual.Review.Should().Be(reviewCount);
             actual.Referred.Should().Be(referredCount + rejectedCount);
             actual.Live.Should().Be(liveCount + closingSoon);
-            actual.NumberOfNewApplications.Should().Be(numberOfNewApplications * 4);
-            actual.NumberOfEmployerReviewedApplications.Should().Be(numberOfEmployerReviewedApplications * 4);
-            actual.NumberOfUnsuccessfulApplications.Should().Be(numberOfUnsuccessfulApplications * 2 + closedUnsuccessfulApplications * 2);
-            actual.NumberOfSuccessfulApplications.Should().Be(numberOfSuccessfulApplications * 2 + closedSuccessfulApplications * 2);
+            actual.NumberOfNewApplications.Should().Be(numberOfNewApplications);
+            actual.NumberOfEmployerReviewedApplications.Should().Be(numberOfEmployerReviewedApplications);
+            actual.NumberOfUnsuccessfulApplications.Should().Be(numberOfUnsuccessfulApplications);
+            actual.NumberOfSuccessfulApplications.Should().Be(numberOfSuccessfulApplications);
             actual.NumberClosingSoon.Should().Be(closingSoon);
             actual.NumberClosingSoonWithNoApplications.Should().Be(closingSoonNoApplications);
 
@@ -89,12 +97,23 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public async Task Then_Model_Values_Set_For_No_Vacancies(
             long ukprn,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
+            [Frozen] Mock<ITrainingProviderService> trainingProviderService,
             VacancyClient vacancyClient)
         {
             vacanciesSummaryProvider.Setup(x => x.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn)).ReturnsAsync(new VacancyDashboard
             {
                 VacancyApplicationsDashboard = [],
-                VacancyStatusDashboard = []
+                VacancyStatusDashboard = [],
+                VacanciesClosingSoonWithNoApplications = 0,
+                VacancySharedApplicationsDashboard = [],
+            });
+
+            trainingProviderService.Setup(x => x.GetProviderDashboardStats(ukprn)).ReturnsAsync(new GetDashboardCountApiResponse
+            {
+                NewApplicationsCount = 0,
+                EmployerReviewedApplicationsCount = 0,
+                UnsuccessfulApplicationsCount = 0,
+                SuccessfulApplicationsCount = 0,
             });
 
             var actual = await vacancyClient.GetDashboardSummary(ukprn);

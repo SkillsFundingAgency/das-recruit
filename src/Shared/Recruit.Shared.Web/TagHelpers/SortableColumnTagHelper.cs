@@ -57,7 +57,7 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers
                 SortColumn = ColumnName,
                 SortOrder = isSortColumn ? sortOrder.Reverse().ToString() : DefaultSortOrder.ToString(),
                 VacancySharedByProvider = GetSharedVacancyFromQueryString(),
-                LocationFilter = GetLocationFilterFromQueryString(),
+                locationFilter = GetLocationFilterFromQueryString(),
             };
 
             var href = _urlHelper.Action(action, controller, values);

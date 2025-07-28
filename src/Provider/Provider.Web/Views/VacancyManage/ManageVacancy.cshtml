@@ -141,5 +141,5 @@
 </div>
 <div asp-show="@(Model.IsApplyThroughFaaVacancy || Model.IsApplyThroughFatVacancy)">
     <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications" />
-    <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">Candidate applications for this apprenticeship will appear here.</p>
+    <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">No applications for this apprenticeship have been received.</p>
 </div>
