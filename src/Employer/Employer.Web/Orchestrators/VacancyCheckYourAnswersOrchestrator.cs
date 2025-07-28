@@ -10,7 +10,6 @@ using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -20,7 +19,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Microsoft.Extensions.Logging;
 using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
-using FeatureNames = Esfa.Recruit.Employer.Web.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators;
 
@@ -33,8 +31,7 @@ public class VacancyCheckYourAnswersOrchestrator(
     IReviewSummaryService reviewSummaryService,
     ILegalEntityAgreementService legalEntityAgreementService,
     IMessaging messaging,
-    ILocationsService locationsService,
-    IFeature feature) : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>(logger)
+    ILocationsService locationsService) : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>(logger)
 {
     private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage | VacancyRuleSet.TrainingExpiryDate;
     private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
@@ -179,12 +176,7 @@ public class VacancyCheckYourAnswersOrchestrator(
         mappings.Add(e => e.EmployerContact.Name, vm => vm.EmployerContactName);
         mappings.Add(e => e.EmployerContact.Email, vm => vm.EmployerContactEmail);
         mappings.Add(e => e.EmployerContact.Phone, vm => vm.EmployerContactTelephone);
-            
-        if (feature.IsFeatureEnabled(FeatureNames.MultipleLocations))
-        {
-            mappings.Add(e => e.EmployerLocations, vm => vm.AvailableLocations);
-        }
-            
+        mappings.Add(e => e.EmployerLocations, vm => vm.AvailableLocations);
         mappings.Add(e => e.EmployerLocation, vm => vm.EmployerAddressElements);
         mappings.Add(e => e.EmployerLocation.AddressLine1, vm => vm.EmployerAddressElements);
         mappings.Add(e => e.EmployerLocation.AddressLine2, vm => vm.EmployerAddressElements);

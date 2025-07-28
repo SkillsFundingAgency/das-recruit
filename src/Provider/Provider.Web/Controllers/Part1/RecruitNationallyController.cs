@@ -25,7 +25,6 @@ public class RecruitNationallyController: Controller
         { "EmployerLocationInformation", "AdditionalInformation" }
     };
     
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpGet("location-information", Name = RouteNames.RecruitNationally_Get)]
     public async Task<IActionResult> RecruitNationally([FromServices] IUtility utility, [FromServices] IReviewSummaryService reviewSummaryService, VacancyRouteModel model, [FromQuery] bool wizard = true)
     {
@@ -48,7 +47,6 @@ public class RecruitNationallyController: Controller
         return View(viewModel);
     }
     
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("location-information", Name = RouteNames.RecruitNationally_Post)]
     public async Task<IActionResult> RecruitNationally(
         [FromServices] IVacancyLocationService vacancyLocationService,
