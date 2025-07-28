@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -9,13 +7,11 @@ using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
-using Projections = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
-using Microsoft.Extensions.Logging;
-using Moq;
-using Xunit;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
+using Microsoft.Extensions.Logging;
+using Xunit;
+using Projections = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.EventHandlers
 {

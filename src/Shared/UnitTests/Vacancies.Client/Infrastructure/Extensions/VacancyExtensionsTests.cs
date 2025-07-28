@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using AutoFixture;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;

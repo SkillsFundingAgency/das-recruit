@@ -19,7 +19,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
         private readonly ITimeProvider _timeProvider;
         private readonly IOuterApiClient _outerApiClient;
         private readonly IFeature _feature;
-        private readonly bool _isTestEnvironment;
 
         public ApprenticeshipProgrammeProvider(ICache cache, ITimeProvider timeProvider, IOuterApiClient outerApiClient, IFeature feature, IConfiguration configuration)
         {
@@ -27,15 +26,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
             _timeProvider = timeProvider;
             _outerApiClient = outerApiClient;
             _feature = feature;
-            var env = configuration["ResourceEnvironmentName"];
-            if (env != null && (env.Equals("TEST", StringComparison.CurrentCultureIgnoreCase) ||
-                                env.Equals("TEST2", StringComparison.CurrentCultureIgnoreCase) ||
-                                env.Equals("DEMO", StringComparison.CurrentCultureIgnoreCase) ||
-                                env.Equals("AT", StringComparison.CurrentCultureIgnoreCase) ||
-                                env.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase)))
-            {
-                _isTestEnvironment = true;
-            }
         }
 
         public async Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId)
@@ -53,10 +43,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
         public async Task<IEnumerable<IApprenticeshipProgramme>> GetApprenticeshipProgrammesAsync(bool includeExpired = false)
         {
             var queryItem = await GetApprenticeshipProgrammes();
-            return includeExpired ?
-                queryItem.Data :
-                queryItem.Data.Where(x => x.IsActive
-                                          || (_isTestEnvironment && x.ApprenticeshipType == TrainingType.Foundation));
+            return includeExpired ? 
+                queryItem.Data : 
+                queryItem.Data.Where(x =>x.IsActive || (x.ApprenticeshipType == TrainingType.Foundation && IsStandardActive(x.EffectiveTo,x.LastDateStarts)));
         }
 
         private Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammes()
@@ -74,6 +63,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
 
                     };
                 });
+        }
+        
+        private bool IsStandardActive(DateTime? effectiveTo, DateTime? lastDateStarts)
+        {
+            return (!effectiveTo.HasValue || effectiveTo.Value.Date >= DateTime.UtcNow.Date)
+                   && (!lastDateStarts.HasValue || lastDateStarts.Value.Date >= DateTime.UtcNow.Date);
         }
     }
 }
