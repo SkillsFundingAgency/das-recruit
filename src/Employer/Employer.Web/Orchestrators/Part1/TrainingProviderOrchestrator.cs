@@ -52,7 +52,10 @@ public class TrainingProviderOrchestrator(
             Title = vacancy.Title,
             TrainingProviders = trainingProviders.Select(t => FormatSuggestion(t.ProviderName, t.Ukprn)),
             PageInfo = utility.GetPartOnePageInfo(vacancy),
-            Programme = programme.ToViewModel()
+            Programme = programme.ToViewModel(),
+            CurrentSelectedTrainingProvider = vacancy.TrainingProvider is not null
+                ? FormatSuggestion(vacancy.TrainingProvider.Name, vacancy.TrainingProvider.Ukprn!.Value)
+                : null
         };
 
         TrySetSelectedTrainingProvider(vm, trainingProviders, vacancy, ukprn);
@@ -204,6 +207,7 @@ public class TrainingProviderOrchestrator(
     {
         if (trainingProviders.SingleOrDefault(x => x.ProviderName == vacancy.TrainingProvider.Name) is null)
         {
+            vm.ProviderDoesNotSupportCourse = true;
             return;
         }
         
@@ -216,7 +220,10 @@ public class TrainingProviderOrchestrator(
     {
         var trainingProvider = trainingProviders.SingleOrDefault(p => p.Ukprn == ukprn);
         if (trainingProvider == null)
+        {
+            vm.ProviderDoesNotSupportCourse = true;
             return;
+        }
 
         vm.Ukprn = ukprn.ToString();
         vm.TrainingProviderSearch = FormatSuggestion(trainingProvider.ProviderName, trainingProvider.Ukprn);
