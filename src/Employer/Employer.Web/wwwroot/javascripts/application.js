@@ -479,3 +479,16 @@ const selects = document.querySelectorAll("[data-select-conditional-reveal]");
 selects.forEach(function (select) {
   new SelectConditionalReveal(select);
 });
+
+const locationFilterSelect = document.getElementById("locationFilter");
+
+if (locationFilterSelect) {
+    locationFilterSelect.addEventListener("change", (e) => {
+        const locationValue = e.target.value;
+        const queryString = window.location.search;
+        const params = new URLSearchParams(queryString);
+        params.delete("locationFilter");
+        params.append("locationFilter", locationValue);
+        document.location.href = "?" + params.toString();
+    });
+}

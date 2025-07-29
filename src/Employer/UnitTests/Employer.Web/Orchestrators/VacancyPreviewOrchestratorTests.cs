@@ -1,18 +1,17 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration;
+﻿using Esfa.Recruit.Employer.Web;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
+using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Esfa.Recruit.Employer.Web;
-using Esfa.Recruit.Shared.Web.Domain;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators;
 
@@ -56,7 +55,7 @@ public class VacancyPreviewOrchestratorTests
 
         var geocodeImageService = new Mock<IGeocodeImageService>();
         var externalLinks = new Mock<IOptions<ExternalLinksConfiguration>>();
-        var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, mockRecruitVacancyClient.Object, Mock.Of<IApprenticeshipProgrammeProvider>(), Mock.Of<IFeature>());
+        var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, mockRecruitVacancyClient.Object, Mock.Of<IApprenticeshipProgrammeProvider>());
 
         var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();
         legalEntityAgreement.Setup(l => l.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId))
@@ -117,7 +116,7 @@ public class VacancyPreviewOrchestratorTests
 
         var geocodeImageService = new Mock<IGeocodeImageService>();
         var externalLinks = new Mock<IOptions<ExternalLinksConfiguration>>();
-        var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, mockRecruitVacancyClient.Object, Mock.Of<IApprenticeshipProgrammeProvider>(), Mock.Of<IFeature>());
+        var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, mockRecruitVacancyClient.Object, Mock.Of<IApprenticeshipProgrammeProvider>());
         var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();            
         var utility = new Utility(mockRecruitVacancyClient.Object, Mock.Of<ITaskListValidator>());
             

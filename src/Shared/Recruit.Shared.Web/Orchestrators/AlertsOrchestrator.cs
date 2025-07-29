@@ -27,7 +27,8 @@ namespace Esfa.Recruit.Shared.Web.Orchestrators
             {
                 IdamsUserId = user.UserId,
                 AlertType = alertType,
-                DismissedOn = _timeProvider.Now
+                DismissedOn = _timeProvider.Now,
+                DfEUserId = user.DfEUserId
             });
         }
     }

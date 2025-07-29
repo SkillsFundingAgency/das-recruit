@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -5,62 +6,44 @@ using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Shared.Web.Helpers;
-using System;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FeatureNames = Esfa.Recruit.Employer.Web.Configuration.FeatureNames;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class EmployerOrchestrator : VacancyValidatingOrchestrator<VacancyEmployerInfoModel>
+    public class EmployerOrchestrator(
+        IEmployerVacancyClient employerVacancyClient,
+        IRecruitVacancyClient vacancyClient,
+        ILogger<EmployerOrchestrator> logger,
+        IUtility utility)
+        : VacancyValidatingOrchestrator<VacancyEmployerInfoModel>(logger)
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.None;
-        private readonly IEmployerVacancyClient _employerVacancyClient;
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly ILogger<EmployerOrchestrator> _logger;
-        private readonly IUtility _utility;
-        private readonly IFeature _feature;
 
         private const int MaxLegalEntitiesPerPage = 25;
-
-        public EmployerOrchestrator(
-            IEmployerVacancyClient employerVacancyClient,
-            IRecruitVacancyClient vacancyClient,
-            ILogger<EmployerOrchestrator> logger,
-            IUtility utility,
-            IFeature feature) : base(logger)
-        {
-            _employerVacancyClient = employerVacancyClient;
-            _vacancyClient = vacancyClient;
-            _logger = logger;
-            _utility = utility;
-            _feature = feature;
-        }
 
         public async Task<EmployerViewModel> GetEmployerViewModelAsync(VacancyRouteModel vrm, string searchTerm, int? requestedPageNo, string selectedAccountLegalEntityPublicHashedId)
         {
             const int NotFoundIndex = -1;
             var setPage = requestedPageNo.HasValue ? requestedPageNo.Value : 1;
 
-            var getEmployerDataTask = _employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
-            var getVacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Employer_Get);
+            var getEmployerDataTask = employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
+            var getVacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Employer_Get);
             await Task.WhenAll(getEmployerDataTask, getVacancyTask);
             var employerData = getEmployerDataTask.Result;
             var vacancy = getVacancyTask.Result;
 
             if (employerData?.LegalEntities == null || !employerData.LegalEntities.Any())
             {
-                await _employerVacancyClient.SetupEmployerAsync(vrm.EmployerAccountId);
-                employerData = await _employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
+                await employerVacancyClient.SetupEmployerAsync(vrm.EmployerAccountId);
+                employerData = await employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
             }
             
             var legalEntities = BuildLegalEntityViewModels(employerData, vrm.EmployerAccountId);
@@ -70,7 +53,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 VacancyId = vrm.VacancyId,
                 EmployerAccountId = vrm.EmployerAccountId,
                 TotalNumberOfLegalEntities = legalEntities.Count(),
-                PageInfo = _utility.GetPartOnePageInfo(vacancy),
+                PageInfo = utility.GetPartOnePageInfo(vacancy),
                 SearchTerm = searchTerm,
                 SelectedOrganisationId = vacancy.AccountLegalEntityPublicHashedId,
                 VacancyTitle = vacancy.Title,
@@ -126,30 +109,21 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task SetAccountLegalEntityPublicId(VacancyRouteModel vrm, VacancyEmployerInfoModel info, VacancyUser user)
         {
-            Vacancy vacancy;
-            
-            if (_feature.IsFeatureEnabled(FeatureNames.MultipleLocations))
-            {
-                var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Employer_Get);
-                var legalEntitiesTask = _employerVacancyClient.GetEmployerLegalEntitiesAsync(vrm.EmployerAccountId);
-                await Task.WhenAll(vacancyTask, legalEntitiesTask);
+            var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Employer_Get);
+            var legalEntitiesTask = employerVacancyClient.GetEmployerLegalEntitiesAsync(vrm.EmployerAccountId);
+            await Task.WhenAll(vacancyTask, legalEntitiesTask);
 
-                vacancy = vacancyTask.Result;
-                vacancy.AccountLegalEntityPublicHashedId = info.AccountLegalEntityPublicHashedId;
-                vacancy.LegalEntityName = legalEntitiesTask.Result?.FirstOrDefault(x => x.AccountLegalEntityPublicHashedId == vacancy.AccountLegalEntityPublicHashedId)?.Name;    
-            }
-            else
-            {
-                vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Employer_Get);
-                vacancy.AccountLegalEntityPublicHashedId = info.AccountLegalEntityPublicHashedId;
-            }
+            var vacancy = vacancyTask.Result;
+            vacancy.AccountLegalEntityPublicHashedId = info.AccountLegalEntityPublicHashedId;
+            vacancy.LegalEntityName = legalEntitiesTask.Result?.FirstOrDefault(x => x.AccountLegalEntityPublicHashedId == vacancy.AccountLegalEntityPublicHashedId)?.Name;
+            
             
             await ValidateAndExecute(
                 vacancy,
-                v => _vacancyClient.Validate(v, ValidationRules),
+                v => vacancyClient.Validate(v, ValidationRules),
                 async v =>
                 {
-                    await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+                    await vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
                 });
         }
 
@@ -192,7 +166,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             if (info == null || !info.LegalEntities.Any())
             {
-                _logger.LogError("No legal entities found for {employerAccountId}", employerAccountId);
+                logger.LogError("No legal entities found for {employerAccountId}", employerAccountId);
                 return new List<OrganisationViewModel>();
             }
 

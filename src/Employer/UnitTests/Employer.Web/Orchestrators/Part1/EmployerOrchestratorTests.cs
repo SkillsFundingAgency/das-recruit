@@ -2,17 +2,14 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
-using FeatureNames = Esfa.Recruit.Employer.Web.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 {
@@ -48,12 +45,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             [Frozen] Mock<IEmployerVacancyClient> employerVacancyClient,
             [Frozen] Mock<IUtility> utility,
             [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
-            [Frozen] Mock<IFeature> feature,
             EmployerOrchestrator sut)
         {
             // arrange
             legalEntities.First().AccountLegalEntityPublicHashedId = vacancyEmployerInfoModel.AccountLegalEntityPublicHashedId;
-            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MultipleLocations)).Returns(true);
             utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.Employer_Get)).ReturnsAsync(vacancy);
             vacancyClient.Setup(x => x.Validate(vacancy, VacancyRuleSet.None)).Returns(new EntityValidationResult { Errors = null });
             employerVacancyClient.Setup(x => x.GetEmployerLegalEntitiesAsync(vacancyRouteModel.EmployerAccountId)).ReturnsAsync(legalEntities);

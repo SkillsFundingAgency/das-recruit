@@ -46,6 +46,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProviderSummaryProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 using FluentValidation;
 using MediatR;
@@ -190,7 +191,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             MongoDbConventions.RegisterMongoConventions();
 
             services.AddTransient<MongoDbCollectionChecker>();
-
             //Repositories
             //----------------------------------------------------------------------------------------
             // WARNING: Do not change the order of these registrations
@@ -202,13 +202,23 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             
             services.AddTransient<IVacancyReviewRepository, VacancyReviewService>();
             services.AddTransient<IVacancyReviewRepository, MongoDbVacancyReviewRepository>();
-            services.AddTransient<IVacancyReviewRespositoryRunner, VacancyReviewRespositoryRunner>();
+            services.AddTransient<IVacancyReviewRepositoryRunner, VacancyReviewRepositoryRunner>();
+
             
             services.AddTransient<IUserRepository, MongoDbUserRepository>();
+            services.AddTransient<IUserRepositoryRunner, UserRepositoryRunner>();
+            services.AddTransient<IUserWriteRepository, MongoDbUserRepository>();
+            services.AddTransient<IUserWriteRepository, UserService>();
+            
 
             services.AddTransient<IApplicationWriteRepository, ApplicationReviewService>();
             services.AddTransient<IApplicationWriteRepository, MongoDbApplicationReviewRepository>();
+            
+            services.AddTransient<ISqlDbRepository, ApplicationReviewService>();
+            services.AddTransient<IMongoDbRepository, MongoDbApplicationReviewRepository>();
+
             services.AddTransient<IApplicationReviewRepository, MongoDbApplicationReviewRepository>();
+
             services.AddTransient<IApplicationReviewRepositoryRunner, ApplicationReviewRepositoryRunner>();
 
 

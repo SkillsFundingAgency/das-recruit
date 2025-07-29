@@ -1,7 +1,7 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.ConsiderationsViewModel
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part2-considerations";
-    ViewBag.Title = "What else would you like the applicant to consider? (optional)";
+    ViewBag.Title = "Other requirements";
     ViewBag.ZenDeskLabel = "recruit-what-else-would-you-like-the-applicant-to-consider";
 }
 
@@ -15,18 +15,26 @@
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }'/>
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
-        <span class="govuk-caption-l">@Model.Title</span>
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-l">@Model.Title</span>
+            Other requirements
+        </h1>
+
+        <p class="govuk-body">Tell applicants about requirements that are not skills or qualifications.</p>
+        <p class="govuk-body">For example:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>passing a Disclosure and Barring Service (DBS) check</li>
+            <li>being comfortable with working at height</li>
+        </ul>
+
         <form asp-route="@RouteNames.Considerations_Post" asp-all-route-data="@Model.RouteDictionary">
-            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="350">
+            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="4000">
                 <div esfa-validation-marker-for="ThingsToConsider" class="govuk-form-group">
-                    <h1 class="govuk-label-wrapper">
-                        <label class="govuk-label govuk-label--xl" asp-for="ThingsToConsider">
-                            What else would you like the applicant to consider? (optional)
+                    <h2 class="govuk-label-wrapper">
+                        <label class="govuk-label govuk-label--m" asp-for="ThingsToConsider">
+                            What other requirements are there for this apprenticeship? (optional)
                         </label>
-                    </h1>
-                    <div id="ThingsToConsider-hint" class="govuk-hint">
-                        For example, if the vacancy will involve working outdoors or lifting heavy objects.
-                    </div>
+                    </h2>
                     <span esfa-validation-message-for="ThingsToConsider" class="govuk-error-message"></span>
                     <textarea class="govuk-textarea govuk-js-character-count" asp-for="ThingsToConsider" rows="5" aria-describedby="ThingsToConsider-info ThingsToConsider-hint"></textarea>
                 </div>
