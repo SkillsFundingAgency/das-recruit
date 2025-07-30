@@ -23,16 +23,9 @@
     <h1 id="previewTitle" class="govuk-heading-l faa-vacancy__title">@Model.Title</h1>
     <p class="govuk-body-l faa-vacancy__organisation">@Model.EmployerName</p>
     <p class="govuk-body-l faa-vacancy__location">
-        <esfaFeatureEnabled name="@FeatureNames.MultipleLocations">
-            <span itemprop="jobLocation">
-                @Model.GetLocationDescription()
-            </span>
-        </esfaFeatureEnabled>
-        <esfaFeatureDisabled name="@FeatureNames.MultipleLocations">
-            <span itemprop="jobLocation">
-                @Model.EmployerAddressElements.SkipLast(1).LastOrDefault(), @Model.EmployerAddressElements.LastOrDefault()
-            </span>
-        </esfaFeatureDisabled>
+        <span itemprop="jobLocation">
+            @Model.GetLocationDescription()
+        </span>
     </p>
     <p class="govuk-body faa-vacancy__closing-date">Closes on @Model.ClosingDate</p>
     <p class="govuk-body govuk-!-font-size-16 das-!-color-dark-grey">Posted on @Model.PostedDate</p>
@@ -195,7 +188,6 @@
                 <h3 class="govuk-heading-s">What you’ll do at work</h3>
                 <p>@Html.Raw(Model.VacancyDescription)</p>
                 <h3 class="govuk-heading-s">Where you’ll work</h3>
-                <esfaFeatureEnabled name="@FeatureNames.MultipleLocations">
                     @switch (Model.AvailableWhere)
                     {
                         case AvailableWhere.OneLocation:
@@ -235,15 +227,6 @@
                             break;
                         }
                     }
-                </esfaFeatureEnabled>
-                <esfaFeatureDisabled name="@FeatureNames.MultipleLocations">
-                    @foreach (var addressLine in Model.EmployerAddressElements)
-                    {
-                        <p class="govuk-body govuk-!-margin-bottom-0">@addressLine</p>
-                    }
-
-                    @{ RenderMapSection(); }
-                </esfaFeatureDisabled>
             </section>
             <section class="faa-vacancy__section" id="training">
                 <h2 class="govuk-heading-m">Training</h2>
