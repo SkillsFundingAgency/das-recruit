@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
-        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm, [FromQuery] string sortColumn, [FromQuery] string sortOrder, [FromQuery] string locationFilter = "")
+        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm, [FromQuery] string sortColumn, [FromQuery] string sortOrder, [FromQuery] string locationFilter = "All")
         {
             Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
             Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
