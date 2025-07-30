@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vacancy;
         }
 
-        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider, string locationFilter = "")
+        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider, string locationFilter = "All")
         {
             var viewModel = new ManageVacancyViewModel
             {
@@ -74,9 +74,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             viewModel.Applications = new VacancyApplicationsViewModel
             {
-                Applications = string.IsNullOrEmpty(locationFilter)
+                Applications = string.IsNullOrEmpty(locationFilter) ||
+                               locationFilter.Equals("All",
+                                   StringComparison.CurrentCultureIgnoreCase) ||
+                               applications.Any(fil => fil.CandidateAppliedLocations == null)
                     ? applications
-                    : applications.Where(fil => fil.CandidateAppliedLocations.Contains(locationFilter)).ToList(),
+                    : applications.Where(fil => fil.CandidateAppliedLocations != null &&
+                                                fil.CandidateAppliedLocations.Contains(locationFilter,
+                                                    StringComparison.CurrentCultureIgnoreCase))
+                        .ToList(),
                 TotalUnfilteredApplicationsCount = applications.Count,
                 EmploymentLocations = vacancy.EmployerLocations.GetCityDisplayList(),
                 SelectedLocation = locationFilter,
