@@ -41,6 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             _logger.LogInformation("Assigning vacancy number for vacancy {vacancyId}.", message.VacancyId);
 
+            // TODO: we'll want to replace with: IOuterApiVacancyClient.GetNextVacancyIdAsync() at some point
             vacancy.VacancyReference = await _generator.GenerateAsync();
 
             await _repository.UpdateAsync(vacancy);
