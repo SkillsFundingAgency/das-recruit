@@ -22,5 +22,6 @@
         public const string AccessDenied = "AccessDenied";
         public const string PageNotFound = "PageNotFound";
         public const string ApplicationWithdrawn = "ApplicationWithdrawn";
+        public const string NoAvailableProviders = "NoAvailableProviders";
     }
 }

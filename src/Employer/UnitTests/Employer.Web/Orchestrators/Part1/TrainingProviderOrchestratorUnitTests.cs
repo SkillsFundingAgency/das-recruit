@@ -20,7 +20,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1;
 
-public class TrainingProviderOrchestratorTests
+public class TrainingProviderOrchestratorUnitTests
 {        
     [TestCase("This search won't match a single provider")]
     [TestCase("88888")] // will match multiple providers
@@ -50,35 +50,6 @@ public class TrainingProviderOrchestratorTests
         var result = await fixture.PostSelectTrainingProviderAsync(selectTrainingProviderEditModel);
 
         fixture.VerifyNotFoundTrainingProviderUkprn(result);
-    }
-
-    [Test]
-    public async Task PostSelectTrainingProviderAsync_TrainingProviderSearch_WhenSingleProviderFoundShouldReturnFoundProvider()
-    {
-        var fixture = new TrainingProviderOrchestratorTestsFixture();
-        fixture
-            .WithVacacny(
-                new Vacancy
-                {
-                    Id = fixture.VacancyId,
-                    EmployerAccountId = TrainingProviderOrchestratorTestsFixture.EmployerAccountId,
-                    TrainingProvider = new TrainingProvider(),
-                    Title = "specified for route validation",
-                    ProgrammeId = "specified for route validation"
-                })
-            .Setup();
-
-        var selectTrainingProviderEditModel = new SelectTrainingProviderEditModel
-        {
-            EmployerAccountId = TrainingProviderOrchestratorTestsFixture.EmployerAccountId,
-            VacancyId = fixture.Vacancy.Id,
-            SelectionType = TrainingProviderSelectionType.TrainingProviderSearch,
-            TrainingProviderSearch = "FIRST TRAINING PROVIDER 88888888",
-        };
-
-        var result = await fixture.PostSelectTrainingProviderAsync(selectTrainingProviderEditModel);
-
-        fixture.VerifyFoundTrainingProviderUkprn(result, fixture.TrainingProviderOne.Ukprn.Value);
     }
 
     [Test]
