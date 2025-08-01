@@ -116,7 +116,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 ShowDisability = vacancy.IsDisabilityConfident,
                 Ukprn = vacancyRouteModel.Ukprn,
                 VacancyId = vacancyRouteModel.VacancyId,
-                AvailableWhere = vacancy.EmployerLocationOption
+                AvailableWhere = vacancy.EmployerLocationOption,
                 Pager = pager
             };
 
