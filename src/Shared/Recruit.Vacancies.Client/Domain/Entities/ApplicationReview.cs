@@ -27,5 +27,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public bool? HasEverBeenEmployerInterviewing { get; set; }
         public string VacancyTitle { get; set; }
         public DateTime? MigrationDate { get; set; }
+        public ApprenticeshipTypes ApprenticeshipType { get; set; }
     }
 }

@@ -38,6 +38,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings.Extensions
                 Improvements = r.Application.Improvements,
                 WhatIsYourInterest = r.Application.WhatIsYourInterest,
                 Phone = r.Application.Phone,
+                ApprenticeshipType = r.ApprenticeshipType,
                 AdditionalQuestionAnswer1 = r.Application.AdditionalQuestion1,
                 AdditionalQuestionAnswer2 = r.Application.AdditionalQuestion2,
                 AdditionalQuestion1 = r.Application.IsFaaV2Application ? r.Application.AdditionalQuestion1Text : r.AdditionalQuestion1,

@@ -89,6 +89,7 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
         applicationReview.Result.AdditionalQuestion1 = vacancy.Result.AdditionalQuestion1;
         applicationReview.Result.AdditionalQuestion2 = vacancy.Result.AdditionalQuestion2;
         applicationReview.Result.VacancyTitle = vacancy.Result.Title;
+        applicationReview.Result.ApprenticeshipType = vacancy.Result.ApprenticeshipType ?? ApprenticeshipTypes.Standard;
         try
         {
             CheckAuthorisedAccess(vacancy.Result, rm.EmployerAccountId, vacancySharedByProvider);
