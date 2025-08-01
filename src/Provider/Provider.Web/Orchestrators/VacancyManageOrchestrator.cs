@@ -88,7 +88,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 SelectedLocation = locationFilter,
                 ShowDisability = vacancy.IsDisabilityConfident,
                 Ukprn = vacancyRouteModel.Ukprn,
-                VacancyId = vacancyRouteModel.VacancyId
+                VacancyId = vacancyRouteModel.VacancyId,
+                AvailableWhere = vacancy.EmployerLocationOption
             };
 
             return viewModel;
