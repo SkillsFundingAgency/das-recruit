@@ -1,32 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Text.Encodings.Web;
-using Esfa.Recruit.Shared.Web.TagHelpers;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Esfa.Recruit.Shared.Web.TagHelpers;
 using NUnit.Framework;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.TagHelpers;
 
-public class AddressListTagHelperTests
+public class AddressListTagHelperTests: TagHelperTestsBase
 {
-    private TagHelperContext _tagHelperContext;
-    private TagHelperOutput _tagHelperOutput;
-    
-    [SetUp]
-    public void SetUp()
-    {
-        _tagHelperContext = new TagHelperContext([], new Dictionary<object, object>(), "id");
-        _tagHelperOutput = new TagHelperOutput(AddressListTagHelper.TagName, [], Func);
-        return;
-
-        static Task<TagHelperContent> Func(bool result, HtmlEncoder encoder)
-        {
-            var tagHelperContent = new DefaultTagHelperContent();
-            tagHelperContent.SetHtmlContent(string.Empty);
-            return Task.FromResult<TagHelperContent>(tagHelperContent);
-        }
-    }
-    
     [Test]
     public async Task Output_Is_Suppressed_When_Address_Is_Null()
     {
@@ -34,10 +13,10 @@ public class AddressListTagHelperTests
         var sut = new AddressListTagHelper();
 
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
 
         // assert
-        _tagHelperOutput.AsString().Should().BeEmpty();
+        TagHelperOutput.AsString().Should().BeEmpty();
     }
     
     [TestCase("address1", "address2", "address3", "address4", "postcode", "<ul><li>address1, address2, address3, address4, postcode</li></ul>")]
@@ -61,10 +40,10 @@ public class AddressListTagHelperTests
         };
     
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
     
         // assert
-        _tagHelperOutput.AsString().Should().Be(output);
+        TagHelperOutput.AsString().Should().Be(output);
     }
     
     [Test]
@@ -85,10 +64,10 @@ public class AddressListTagHelperTests
         };
     
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
     
         // assert
-        _tagHelperOutput.AsString().Should().Be("<ul><li>city (SW1A)</li></ul>");
+        TagHelperOutput.AsString().Should().Be("<ul><li>city (SW1A)</li></ul>");
     }
     
     [Test]
@@ -115,10 +94,10 @@ public class AddressListTagHelperTests
         };
     
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
     
         // assert
-        _tagHelperOutput.AsString().Should().Be("<ul><li>city (SW1A)</li></ul>");
+        TagHelperOutput.AsString().Should().Be("<ul><li>city (SW1A)</li></ul>");
     }
     
     [Test]
@@ -144,10 +123,10 @@ public class AddressListTagHelperTests
         };
     
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
     
         // assert
-        _tagHelperOutput.AsString().Should().Be("<ul><li>address1, city1, SW1A 2AA</li><li>address1, city2, SW1A 2AB</li></ul>");
+        TagHelperOutput.AsString().Should().Be("<ul><li>address1, city1, SW1A 2AA</li><li>address1, city2, SW1A 2AB</li></ul>");
     }
     
     [Test]
@@ -174,10 +153,10 @@ public class AddressListTagHelperTests
         };
     
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
     
         // assert
-        _tagHelperOutput.AsString().Should().Be("<ul><li>city1 (SW1A 2AA)</li><li>city2 (SW1A 2AB)</li></ul>");
+        TagHelperOutput.AsString().Should().Be("<ul><li>city1 (SW1A 2AA)</li><li>city2 (SW1A 2AB)</li></ul>");
     }
 
     [Test]
@@ -191,9 +170,9 @@ public class AddressListTagHelperTests
         };
 
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
 
         // assert
-        _tagHelperOutput.AsString().Should().Be("<ul class=\"class1 class2\"><li>address1, postcode</li></ul>");
+        TagHelperOutput.AsString().Should().Be("<ul class=\"class1 class2\"><li>address1, postcode</li></ul>");
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.Encodings.Web;
+﻿using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
@@ -9,7 +8,8 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers;
 
 public enum BannerStyle
 {
-    Success
+    Important,
+    Success,
 }
 
 [HtmlTargetElement(TagName)]
@@ -28,6 +28,12 @@ public class GovUkBannerTagHelper: TagHelper
         
         switch (Type)
         {
+            case BannerStyle.Important:
+                {
+                    output.AddClass("govuk-notification-banner", HtmlEncoder.Default);
+                    Title ??= "Important";
+                    break;
+                }
             case BannerStyle.Success:
                 {
                     output.AddClass("govuk-notification-banner--success", HtmlEncoder.Default);
@@ -67,5 +73,20 @@ public class GovUkBannerTagHelper: TagHelper
         div.AddCssClass("govuk-notification-banner__header");
         div.InnerHtml.AppendHtml(header);
         return div;
+    }
+}
+
+[HtmlTargetElement(TagName, ParentTag = GovUkBannerTagHelper.TagName)]
+[OutputElementHint("h3")]
+public class GovUkBannerHeadingTagHelper: TagHelper
+{
+    public const string TagName = "govuk-banner-heading";
+
+    public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+    {
+        output.TagName = "h3";
+        output.TagMode = TagMode.StartTagAndEndTag;
+        output.AddClass("govuk-notification-banner__heading", HtmlEncoder.Default);
+        output.Content.AppendHtml(await output.GetChildContentAsync());
     }
 }

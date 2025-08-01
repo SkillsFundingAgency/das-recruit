@@ -1,31 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Text.Encodings.Web;
-using Esfa.Recruit.Shared.Web.TagHelpers;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Esfa.Recruit.Shared.Web.TagHelpers;
 using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.TagHelpers;
 
-public class GovUkBannerTagHelperTests
+public class GovUkBannerTagHelperTests: TagHelperTestsBase
 {
-    private TagHelperContext _tagHelperContext;
-    private TagHelperOutput _tagHelperOutput;
-
-    [SetUp]
-    public void SetUp()
-    {
-        _tagHelperContext = new TagHelperContext([], new Dictionary<object, object>(), "id");
-        _tagHelperOutput = new TagHelperOutput(GovUkBannerTagHelper.TagName, [], Func);
-        return;
-
-        static Task<TagHelperContent> Func(bool result, HtmlEncoder encoder)
-        {
-            var tagHelperContent = new DefaultTagHelperContent();
-            tagHelperContent.SetHtmlContent("default content");
-            return Task.FromResult<TagHelperContent>(tagHelperContent);
-        }
-    }
-    
     [Test]
     public async Task Output_Is_Suppresed_When_Banner_Type_Ommitted()
     {
@@ -33,13 +12,14 @@ public class GovUkBannerTagHelperTests
         var sut = new GovUkBannerTagHelper();
 
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
 
         // assert
-        _tagHelperOutput.AsString().Should().BeEmpty();
+        TagHelperOutput.AsString().Should().BeEmpty();
     }
     
     [TestCase(BannerStyle.Success, "Success")]
+    [TestCase(BannerStyle.Important, "Important")]
     public async Task Output_Contains_Default_Header_For_Type(BannerStyle? bannerStyle, string title)
     {
         // arrange
@@ -49,10 +29,10 @@ public class GovUkBannerTagHelperTests
         };
 
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
 
         // assert
-        _tagHelperOutput.AsString().Should().Contain($">{title}<");
+        TagHelperOutput.AsString().Should().Contain($">{title}<");
     }
     
     [TestCase(BannerStyle.Success, "New Title")]
@@ -66,10 +46,10 @@ public class GovUkBannerTagHelperTests
         };
 
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
 
         // assert
-        _tagHelperOutput.AsString().Should().Contain($">{title}<");
+        TagHelperOutput.AsString().Should().Contain($">{title}<");
     }
     
     [Test]
@@ -79,10 +59,10 @@ public class GovUkBannerTagHelperTests
         var sut = new GovUkBannerTagHelper { Type = BannerStyle.Success };
 
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
 
         // assert
-        _tagHelperOutput.AsString().Should().Contain($">default content<");
+        TagHelperOutput.AsString().Should().Contain(">default content<");
     }
     
     [Test]
@@ -92,9 +72,9 @@ public class GovUkBannerTagHelperTests
         var sut = new GovUkBannerTagHelper { Type = BannerStyle.Success };
 
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
 
         // assert
-        _tagHelperOutput.AsString().Should().Contain("role=\"HtmlEncode[[alert]]\"");
+        TagHelperOutput.AsString().Should().Contain("role=\"HtmlEncode[[alert]]\"");
     }
 }
