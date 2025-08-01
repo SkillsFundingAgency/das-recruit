@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Responses;
 public record ApplicationReview
@@ -21,6 +22,7 @@ public record ApplicationReview
     public long VacancyReference { get; set; }
     public string Status { get; set; }
     public string VacancyTitle { get; set; }
+    public ApprenticeshipTypes? ApprenticeshipType { get; set; } = ApprenticeshipTypes.Standard;
     public string? AdditionalQuestion1 { get; set; }
     public string? AdditionalQuestion2 { get; set; }
     public string? CandidateFeedback { get; set; }
