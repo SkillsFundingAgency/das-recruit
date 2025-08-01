@@ -11,31 +11,29 @@ using InfoMsg = Esfa.Recruit.Shared.Web.ViewModels.InfoMessages;
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class VacancyManageController : Controller
+    public class VacancyManageController(VacancyManageOrchestrator orchestrator,
+        IUtility utility) : Controller
     {
-        private readonly VacancyManageOrchestrator _orchestrator;
-        private readonly IUtility _utility;
-
-        public VacancyManageController(VacancyManageOrchestrator orchestrator, IUtility utility)
-        {
-            _orchestrator = orchestrator;
-            _utility = utility;
-        }
+        private const int PageSize = 20;
 
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
-        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm, [FromQuery] string sortColumn, [FromQuery] string sortOrder, [FromQuery] string locationFilter = "All")
+        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm,
+            [FromQuery] string sortColumn,
+            [FromQuery] string sortOrder,
+            [FromQuery] string locationFilter = "All",
+            [FromQuery] int page = 1)
         {
             Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
             Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
 
-            var vacancy = await _orchestrator.GetVacancy(vrm);
+            var vacancy = await orchestrator.GetVacancy(vrm);
 
             if (vacancy.CanEdit)
             {
                 return HandleRedirectOfEditableVacancy(vacancy);
             }
 
-            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy, vrm, outputSortColumn, outputSortOrder, locationFilter);
+            var viewModel = await orchestrator.GetManageVacancyViewModel(vacancy, vrm, page, PageSize, outputSortColumn, outputSortOrder, locationFilter);
 
             if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
                 viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();
@@ -79,7 +77,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
         {
-            if (_utility.IsTaskListCompleted(vacancy))
+            if (utility.IsTaskListCompleted(vacancy))
             {
                 return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id });
             }

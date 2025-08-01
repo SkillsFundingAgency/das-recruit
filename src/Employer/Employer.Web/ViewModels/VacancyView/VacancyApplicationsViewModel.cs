@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 
@@ -11,12 +12,15 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public IEnumerable<VacancyApplication> Applications { get; internal set; }
 
         public AvailableWhere? AvailableWhere { get; set; }
+        public PagerViewModel Pager { get; internal set; }
         public List<string> EmploymentLocations { get; set; } = [];
         public string? SelectedLocation { get; set; }
         public int TotalUnfilteredApplicationsCount { get; set; } = 0;
-        public string FilteredApplicationsLabelText => Applications.Count() == 1
+        public int TotalFilteredApplicationsCount { get; set; } = 0;
+
+        public string FilteredApplicationsLabelText => TotalFilteredApplicationsCount == 1
             ? "1 Application"
-            : $"{Applications.Count()} Applications";
+            : $"{TotalFilteredApplicationsCount} Applications";
 
         public bool HasApplications => Applications != null && Applications.Any();
         public bool HasNoApplications => !HasApplications;

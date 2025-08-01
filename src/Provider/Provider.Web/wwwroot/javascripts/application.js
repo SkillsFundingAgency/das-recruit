@@ -654,8 +654,12 @@ if (locationFilterSelect) {
             if (key.toLowerCase() === "locationfilter") {
                 params.delete(key);
             }
+            if (key.toLowerCase() === "page") {
+                params.delete(key);
+            }
         }
         params.append("locationFilter", locationValue);
+        params.append("page", 1);
         document.location.href = "?" + params.toString();
     });
 }
