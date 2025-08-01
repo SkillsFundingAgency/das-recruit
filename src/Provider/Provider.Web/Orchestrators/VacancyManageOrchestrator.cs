@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyManage;
@@ -9,6 +10,7 @@ using Esfa.Recruit.Provider.Web.ViewModels.VacancyView;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
@@ -41,7 +43,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         }
 
         public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy,
-            VacancyRouteModel vacancyRouteModel, SortColumn sortColumn, SortOrder sortOrder, string locationFilter = "All")
+            VacancyRouteModel vacancyRouteModel,
+            int pageNumber,
+            int pageSize,
+            SortColumn sortColumn,
+            SortOrder sortOrder,
+            string locationFilter = "All")
         {
             var viewModel = new ManageVacancyViewModel
             {
@@ -70,25 +77,46 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             }
 
             var vacancyApplications = await client.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, sortColumn, sortOrder);
-            var applications = vacancyApplications ?? [];
+            int totalUnfilteredApplicationsCount = vacancyApplications?.Count ?? 0;
+
+            var applications = string.IsNullOrEmpty(locationFilter)
+                               || locationFilter.Equals("All", StringComparison.CurrentCultureIgnoreCase)
+                               || vacancyApplications.Any(fil => fil.CandidateAppliedLocations == null)
+                ? vacancyApplications
+                : vacancyApplications.Where(fil => fil.CandidateAppliedLocations != null 
+                                                   && fil.CandidateAppliedLocations.Contains(locationFilter, StringComparison.CurrentCultureIgnoreCase))
+                    .ToList();
+
+            var pager = new PagerViewModel(
+                applications?.Count ?? 0,
+                pageSize,
+                pageNumber,
+                "Showing {0} to {1} of {2} applications",
+                RouteNames.VacancyManage_Get,
+                new Dictionary<string, string>
+                {
+                    { "locationFilter", locationFilter },
+                    { "SortColumn", sortColumn.ToString() },
+                    { "SortOrder", sortColumn.ToString() }
+                });
+
+            // Apply pagination: skip and take
+            var pagedApplications = applications?
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
             viewModel.Applications = new VacancyApplicationsViewModel
             {
-                Applications = string.IsNullOrEmpty(locationFilter) ||
-                               locationFilter.Equals("All",
-                                   StringComparison.CurrentCultureIgnoreCase) ||
-                               applications.Any(fil => fil.CandidateAppliedLocations == null)
-                        ? applications
-                        : applications.Where(fil => fil.CandidateAppliedLocations != null &&
-                                                    fil.CandidateAppliedLocations.Contains(locationFilter,
-                                                        StringComparison.CurrentCultureIgnoreCase))
-                            .ToList(),
-                TotalUnfilteredApplicationsCount = applications.Count,
+                Applications = pagedApplications,
+                TotalUnfilteredApplicationsCount = totalUnfilteredApplicationsCount,
+                TotalFilteredApplicationsCount = applications?.Count ?? 0,
                 EmploymentLocations = vacancy.EmployerLocations.GetCityDisplayList(),
                 SelectedLocation = locationFilter,
                 ShowDisability = vacancy.IsDisabilityConfident,
                 Ukprn = vacancyRouteModel.Ukprn,
-                VacancyId = vacancyRouteModel.VacancyId
+                VacancyId = vacancyRouteModel.VacancyId,
+                Pager = pager
             };
 
             return viewModel;
