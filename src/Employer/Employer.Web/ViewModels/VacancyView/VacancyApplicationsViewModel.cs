@@ -10,6 +10,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
     public class VacancyApplicationsViewModel : VacancyRouteModel
     {
         public IEnumerable<VacancyApplication> Applications { get; internal set; }
+
+        public AvailableWhere? AvailableWhere { get; set; }
         public PagerViewModel Pager { get; internal set; }
         public List<string> EmploymentLocations { get; set; } = [];
         public string? SelectedLocation { get; set; }
@@ -30,5 +32,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
             Applications?.Any(app => app.Status != ApplicationReviewStatus.Successful && app.Status != ApplicationReviewStatus.Unsuccessful) ?? false;
 
         public bool CanShowCandidateAppliedLocations => Applications?.Any(app => app.CanShowCandidateAppliedLocations) ?? false;
+        public bool CanShowLocationFilter => AvailableWhere is Esfa.Recruit.Vacancies.Client.Domain.Entities.AvailableWhere
+            .MultipleLocations;
     }
 }
