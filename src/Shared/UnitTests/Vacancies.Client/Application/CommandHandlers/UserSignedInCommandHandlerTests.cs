@@ -9,6 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
@@ -17,6 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
 {
     public class UserSignedInCommandHandlerTests
     {
+        private readonly Mock<IUserRepositoryRunner> _mockUserWriteRepository = new Mock<IUserRepositoryRunner>();
         private readonly Mock<IUserRepository> _mockUserRepository = new Mock<IUserRepository>();
         private readonly Mock<IUserNotificationPreferencesRepository> _mockUserNotificationPreferencesRepository = new Mock<IUserNotificationPreferencesRepository>();
         private readonly Mock<ITimeProvider> _mockTimeProvider = new Mock<ITimeProvider>();
@@ -37,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             var sut = GetSut(user, preference);
             await sut.Handle(command, new CancellationToken());
 
-            _mockUserRepository.Verify(u => u.UpsertUserAsync(user));
+            _mockUserWriteRepository.Verify(u => u.UpsertUserAsync(user));
             _mockUserNotificationPreferencesRepository.Verify(u => u.UpsertAsync(preference));
             _mockQueueService.Verify(q => q.AddMessageAsync(It.Is<UpdateEmployerUserAccountQueueMessage>(u => u.IdamsUserId == user.IdamsUserId)));
         }
@@ -55,7 +57,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             var sut = GetSut(user, preference, true);
             await sut.Handle(command, new CancellationToken());
 
-            _mockUserRepository.Verify(u => u.UpsertUserAsync(user));
+            _mockUserWriteRepository.Verify(u => u.UpsertUserAsync(user));
             _mockUserNotificationPreferencesRepository.Verify(u => u.UpsertAsync(preference));
             _mockQueueService.Verify(q => q.AddMessageAsync(It.IsAny<UpdateEmployerUserAccountQueueMessage>()), Times.Never);
         }
@@ -74,7 +76,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             var sut = GetSut(user, preference);
             await sut.Handle(command, new CancellationToken());
 
-            _mockUserRepository.Verify(u => u.UpsertUserAsync(It.Is<User>(c=> c.Ukprn == vacancyUser.Ukprn)));
+            _mockUserWriteRepository.Verify(u => u.UpsertUserAsync(It.Is<User>(c=> c.Ukprn == vacancyUser.Ukprn)));
         }
         
         [Fact]
@@ -93,7 +95,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             await sut.Handle(command, new CancellationToken());
 
             _mockUserRepository.Verify(x=>x.GetByDfEUserId(command.User.DfEUserId), Times.Once);
-            _mockUserRepository.Verify(u => u.UpsertUserAsync(It.Is<User>(c=> c.Ukprn == vacancyUser.Ukprn)));
+            _mockUserWriteRepository.Verify(u => u.UpsertUserAsync(It.Is<User>(c=> c.Ukprn == vacancyUser.Ukprn)));
         }
         
         [Fact]
@@ -113,7 +115,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
 
             _mockUserRepository.Verify(x=>x.GetByDfEUserId(command.User.DfEUserId), Times.Once);
             _mockUserRepository.Verify(x=>x.GetUserByEmail(command.User.Email, UserType.Provider), Times.Once);
-            _mockUserRepository.Verify(u => u.UpsertUserAsync(It.Is<User>(c=> c.Ukprn == vacancyUser.Ukprn && c.DfEUserId == command.User.DfEUserId)));
+            _mockUserWriteRepository.Verify(u => u.UpsertUserAsync(It.Is<User>(c=> c.Ukprn == vacancyUser.Ukprn && c.DfEUserId == command.User.DfEUserId)));
         }
 
         [Fact]
@@ -130,7 +132,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             var sut = GetSut(user, preference);
             await sut.Handle(command, new CancellationToken());
 
-            _mockUserRepository.Verify(u => u.UpsertUserAsync(It.Is<User>(c=> c.Ukprn == null)));
+            _mockUserWriteRepository.Verify(u => u.UpsertUserAsync(It.Is<User>(c=> c.Ukprn == null)));
         }
 
         private UserSignedInCommandHandler GetSut(User user, UserNotificationPreferences preference, bool dfeUser = false)
@@ -151,6 +153,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
 
             return new UserSignedInCommandHandler (
                 Mock.Of<ILogger<UserSignedInCommandHandler>>(),
+                _mockUserWriteRepository.Object,
                 _mockUserRepository.Object,
                 _mockUserNotificationPreferencesRepository.Object,
                 _mockTimeProvider.Object,

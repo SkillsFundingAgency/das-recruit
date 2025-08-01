@@ -17,13 +17,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly ILogger<ResetSubmittedVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
-        private readonly IVacancyReviewRespositoryRunner _vacancyReviewRespositoryRunner;
+        private readonly IVacancyReviewRepositoryRunner _vacancyReviewRepositoryRunner;
         private readonly ITimeProvider _timeProvider;
         private readonly IMessaging _messaging;
         public ResetSubmittedVacancyCommandHandler(
             IVacancyRepository vacancyRepository,
             IVacancyReviewQuery vacancyReviewQuery,
-            IVacancyReviewRespositoryRunner vacancyReviewRespositoryRunner,
+            IVacancyReviewRepositoryRunner vacancyReviewRepositoryRunner,
             ITimeProvider timeProvider,
             IMessaging messaging,
             ILogger<ResetSubmittedVacancyCommandHandler> logger)
@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _logger = logger;
             _vacancyRepository = vacancyRepository;
             _vacancyReviewQuery = vacancyReviewQuery;
-            _vacancyReviewRespositoryRunner = vacancyReviewRespositoryRunner;
+            _vacancyReviewRepositoryRunner = vacancyReviewRepositoryRunner;
             _timeProvider = timeProvider;
             _messaging = messaging;
         }
@@ -83,7 +83,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             review.ManualOutcome = ManualQaOutcome.Blocked;
             review.Status = ReviewStatus.Closed;
             review.ClosedDate = _timeProvider.Now;
-            return _vacancyReviewRespositoryRunner.UpdateAsync(review);
+            return _vacancyReviewRepositoryRunner.UpdateAsync(review);
         }
     }
 }
