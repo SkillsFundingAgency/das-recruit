@@ -1,37 +1,39 @@
 @using Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
 @model VacancyApplicationsViewModel
-<form method="get" autocomplete="off">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-third">
-            <div class="govuk-form-group">
-                <label class="govuk-label" for="locationFilter">Filter by location</label>
-                <select class="govuk-select"
-                        id="locationFilter"
-                        name="locationFilter"
-                        data-ays-ignore="true">
-                    <option value="">All locations</option>
-                    @foreach (var location in Model.EmploymentLocations)
-                    {
-                        if (location == Model.SelectedLocation)
+<div asp-show="Model.CanShowLocationFilter">
+    <form method="get" autocomplete="off">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-third">
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="locationFilter">Filter by location</label>
+                    <select class="govuk-select"
+                            id="locationFilter"
+                            name="locationFilter"
+                            data-ays-ignore="true">
+                        <option value="All">All locations</option>
+                        @foreach (var location in Model.EmploymentLocations)
                         {
-                            <option value="@location" selected>@location</option>
+                            if (location == Model.SelectedLocation)
+                            {
+                                <option value="@location" selected>@location</option>
+                            }
+                            else
+                            {
+                                <option value="@location">@location</option>
+                            }
                         }
-                        else
-                        {
-                            <option value="@location">@location</option>
-                        }
-                    }
-                </select>
+                    </select>
+                </div>
             </div>
         </div>
-    </div>
-</form>
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <div>
-            <h2 class="govuk-heading-s">
-                @Model.FilteredApplicationsLabelText
-            </h2>
+    </form>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div>
+                <h2 class="govuk-heading-s">
+                    @Model.FilteredApplicationsLabelText
+                </h2>
+            </div>
         </div>
     </div>
 </div>
