@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -30,7 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             clientMock.Setup(c => c.GetUsersDetailsAsync(userId))
                 .ReturnsAsync(user);
 
-            var userRepositoryMock = new Mock<IUserRepository>();
+            var userRepositoryMock = new Mock<IUserRepositoryRunner>();
 
             var sut = new UpdateUserAlertCommandHandler(clientMock.Object, userRepositoryMock.Object);
 

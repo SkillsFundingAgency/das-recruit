@@ -50,8 +50,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
 
         private Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammes()
         {
-            var includeFoundationApprenticeships =_feature.IsFeatureEnabled("FoundationApprenticeships");
-            
+            var includeFoundationApprenticeships = _feature.IsFeatureEnabled(FeatureNames.FoundationApprenticeships);
+
             return _cache.CacheAsideAsync(CacheKeys.ApprenticeshipProgrammes,
                 _timeProvider.NextDay6am,
                 async () =>
@@ -60,7 +60,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                     return new ApprenticeshipProgrammes
                     {
                         Data = result.TrainingProgrammes.Select(c => (ApprenticeshipProgramme)c).ToList(),
-                        
+
                     };
                 });
         }

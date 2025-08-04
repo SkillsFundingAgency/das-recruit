@@ -10,6 +10,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyView
     {
         public List<VacancyApplication> Applications { get; set; }
 
+        public AvailableWhere? AvailableWhere { get; set; }
         public List<string> EmploymentLocations { get; set; } = [];
         public string? SelectedLocation { get; set; }
         public int TotalUnfilteredApplicationsCount { get; set; } = 0;
@@ -30,5 +31,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyView
           Applications?.Any(app => app.Status != ApplicationReviewStatus.Successful && app.Status != ApplicationReviewStatus.Unsuccessful) ?? false;
 
         public bool CanShowCandidateAppliedLocations => Applications?.Any(app => app.CanShowCandidateAppliedLocations) ?? false;
+
+        public bool CanShowLocationFilter => AvailableWhere is Vacancies.Client.Domain.Entities.AvailableWhere
+            .MultipleLocations;
     }
 }

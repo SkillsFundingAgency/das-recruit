@@ -1,18 +1,16 @@
-﻿using Employer.Web.Configuration;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Collections.Generic;
-using System.Linq;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
 {
@@ -37,7 +35,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             _logger = new Mock<ILogger<VacancyManageOrchestrator>>();
             _geocodeImageService = new Mock<IGeocodeImageService>();
             _externalLinksConfig = new Mock<IOptions<ExternalLinksConfiguration>>();
-            _vacancyDisplayMapper = new DisplayVacancyViewModelMapper(_geocodeImageService.Object, _externalLinksConfig.Object, _vacancyClient.Object, Mock.Of<IApprenticeshipProgrammeProvider>(), Mock.Of<IFeature>());
+            _vacancyDisplayMapper = new DisplayVacancyViewModelMapper(_geocodeImageService.Object,
+                _externalLinksConfig.Object,
+                _vacancyClient.Object,
+                Mock.Of<IApprenticeshipProgrammeProvider>());
             _orchestrator = new VacancyManageOrchestrator(_logger.Object, _vacancyDisplayMapper, _vacancyClient.Object, _utility.Object);
             _vacancyId = Guid.NewGuid();
         }

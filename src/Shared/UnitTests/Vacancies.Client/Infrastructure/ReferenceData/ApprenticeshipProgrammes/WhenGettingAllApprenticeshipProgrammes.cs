@@ -1,8 +1,5 @@
-using System;
 using System.Linq;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
-using Castle.Core.Configuration;
 using Esfa.Recruit.UnitTests.TestHelpers;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
@@ -11,10 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
-using FluentAssertions;
-using Moq;
 using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;

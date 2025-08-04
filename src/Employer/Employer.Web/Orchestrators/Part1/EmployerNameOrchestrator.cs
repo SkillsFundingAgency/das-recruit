@@ -2,23 +2,20 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
+using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
-using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.Models;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
-using FeatureNames = Esfa.Recruit.Employer.Web.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 
@@ -27,8 +24,7 @@ public class EmployerNameOrchestrator(
     IRecruitVacancyClient recruitVacancyClient,
     ILogger<EmployerNameOrchestrator> logger,
     IReviewSummaryService reviewSummaryService,
-    IUtility utility,
-    IFeature feature)
+    IUtility utility)
     : VacancyValidatingOrchestrator<EmployerNameEditModel>(logger)
 {
     private Expression<Func<EmployerNameEditModel, object>> _vmPropertyToMapEmployerNameTo = null;
@@ -83,14 +79,11 @@ public class EmployerNameOrchestrator(
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.EmployerName_Post);
         vacancy.EmployerNameOption =  model.SelectedEmployerIdentityOption?.ConvertToDomainOption();
 
-        if (feature.IsFeatureEnabled(FeatureNames.MultipleLocations))
-        {
-            SetVacancyWithEmployerReviewFieldIndicators(
-                vacancy.EmployerNameOption,
-                FieldIdResolver.ToFieldId(v => v.EmployerName),
-                vacancy,
-                _ => model.SelectedEmployerIdentityOption?.ConvertToDomainOption());
-        }
+        SetVacancyWithEmployerReviewFieldIndicators(
+            vacancy.EmployerNameOption,
+            FieldIdResolver.ToFieldId(v => v.EmployerName),
+            vacancy,
+            _ => model.SelectedEmployerIdentityOption?.ConvertToDomainOption());
             
         // temporarily set the employer name for validation
         EmployerProfile profile = null;
@@ -98,14 +91,11 @@ public class EmployerNameOrchestrator(
         {
             profile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
 
-            if (feature.IsFeatureEnabled(FeatureNames.MultipleLocations))
-            {
-                SetVacancyWithEmployerReviewFieldIndicators(
-                    profile.TradingName,
-                    FieldIdResolver.ToFieldId(v => v.EmployerName),
-                    vacancy,
-                    _ => model.NewTradingName);
-            }
+            SetVacancyWithEmployerReviewFieldIndicators(
+                profile.TradingName,
+                FieldIdResolver.ToFieldId(v => v.EmployerName),
+                vacancy,
+                _ => model.NewTradingName);
                 
             validationRules = VacancyRuleSet.EmployerNameOption | VacancyRuleSet.TradingName;
             vacancy.EmployerName = model.NewTradingName;
@@ -120,10 +110,7 @@ public class EmployerNameOrchestrator(
         }
         else
         {
-            if (feature.IsFeatureEnabled(FeatureNames.MultipleLocations))
-            {
-                vacancy.AnonymousReason = null;
-            }
+            vacancy.AnonymousReason = null;
         }
             
         return await ValidateAndExecute(
