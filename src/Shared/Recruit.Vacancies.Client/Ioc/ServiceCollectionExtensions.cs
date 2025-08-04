@@ -192,7 +192,13 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
             services.AddTransient<MongoDbCollectionChecker>();
             //Repositories
-            services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
+            //----------------------------------------------------------------------------------------
+            // WARNING: Do not change the order of these registrations
+            //----------------------------------------------------------------------------------------
+            services.AddKeyedTransient<IVacancyRepository, SqlVacancyRepository>("sql");
+            services.AddKeyedTransient<IVacancyRepository, MongoDbVacancyRepository>("mongo");
+            services.AddTransient<IVacancyRepository, MigrationVacancyRepository>();
+            //----------------------------------------------------------------------------------------
             
             services.AddTransient<IVacancyReviewRepository, VacancyReviewService>();
             services.AddTransient<IVacancyReviewRepository, MongoDbVacancyReviewRepository>();
@@ -281,7 +287,8 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
                 .AddTransient<IJobsVacancyClient, VacancyClient>()
                 .AddTransient<IGetAddressesClient, OuterApiGetAddressesClient>()
                 .AddTransient<IGetProviderStatusClient, OuterApiGetProviderStatusClient>()
-                .AddTransient<ILocationsClient, LocationsClient>();
+                .AddTransient<ILocationsClient, LocationsClient>()
+                .AddTransient<IOuterApiVacancyClient, OuterApiVacancyClient>();
         }
 
 
