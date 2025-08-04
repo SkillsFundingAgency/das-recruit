@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             [FromQuery] string sortColumn,
             [FromQuery] string sortOrder,
             [FromQuery] bool vacancySharedByProvider,
-            [FromQuery] string locationFilter = "")
+            [FromQuery] string locationFilter = "All")
         {
             EnsureProposedChangesCookiesAreCleared(vrm.VacancyId);
 

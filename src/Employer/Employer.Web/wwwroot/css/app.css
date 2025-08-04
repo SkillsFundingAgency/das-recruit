@@ -607,3 +607,7 @@ span.govuk-error-message:empty {
 .das-inset-text-pink {
   border-left: 10px solid rgb(248.7,225.15,235.95) !important;
 }
+
+dd.govuk-summary-list__value .faa-user-content:first-child {
+    white-space: normal
+}

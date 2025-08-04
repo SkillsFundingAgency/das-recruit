@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         }
 
         public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy,
-            VacancyRouteModel vacancyRouteModel, SortColumn sortColumn, SortOrder sortOrder, string locationFilter = "")
+            VacancyRouteModel vacancyRouteModel, SortColumn sortColumn, SortOrder sortOrder, string locationFilter = "All")
         {
             var viewModel = new ManageVacancyViewModel
             {
@@ -74,15 +74,22 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             viewModel.Applications = new VacancyApplicationsViewModel
             {
-                Applications = string.IsNullOrEmpty(locationFilter)
+                Applications = string.IsNullOrEmpty(locationFilter) ||
+                               locationFilter.Equals("All",
+                                   StringComparison.CurrentCultureIgnoreCase) ||
+                               applications.Any(fil => fil.CandidateAppliedLocations == null)
                         ? applications
-                        : applications.Where(fil => fil.CandidateAppliedLocations.Contains(locationFilter)).ToList(),
+                        : applications.Where(fil => fil.CandidateAppliedLocations != null &&
+                                                    fil.CandidateAppliedLocations.Contains(locationFilter,
+                                                        StringComparison.CurrentCultureIgnoreCase))
+                            .ToList(),
                 TotalUnfilteredApplicationsCount = applications.Count,
                 EmploymentLocations = vacancy.EmployerLocations.GetCityDisplayList(),
                 SelectedLocation = locationFilter,
                 ShowDisability = vacancy.IsDisabilityConfident,
                 Ukprn = vacancyRouteModel.Ukprn,
-                VacancyId = vacancyRouteModel.VacancyId
+                VacancyId = vacancyRouteModel.VacancyId,
+                AvailableWhere = vacancy.EmployerLocationOption
             };
 
             return viewModel;
