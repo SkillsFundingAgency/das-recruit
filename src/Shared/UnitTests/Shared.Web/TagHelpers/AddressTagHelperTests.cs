@@ -1,32 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Text.Encodings.Web;
-using Esfa.Recruit.Shared.Web.TagHelpers;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Esfa.Recruit.Shared.Web.TagHelpers;
 using NUnit.Framework;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.TagHelpers;
 
-public class AddressTagHelperTests
+public class AddressTagHelperTests: TagHelperTestsBase
 {
-    private TagHelperContext _tagHelperContext;
-    private TagHelperOutput _tagHelperOutput;
-    
-    [SetUp]
-    public void SetUp()
-    {
-        _tagHelperContext = new TagHelperContext([], new Dictionary<object, object>(), "id");
-        _tagHelperOutput = new TagHelperOutput(AddressTagHelper.TagName, [], Func);
-        return;
-
-        static Task<TagHelperContent> Func(bool result, HtmlEncoder encoder)
-        {
-            var tagHelperContent = new DefaultTagHelperContent();
-            tagHelperContent.SetHtmlContent(string.Empty);
-            return Task.FromResult<TagHelperContent>(tagHelperContent);
-        }
-    }
-    
     [Test]
     public async Task Output_Is_Suppressed_When_Address_Is_Null()
     {
@@ -34,10 +13,10 @@ public class AddressTagHelperTests
         var sut = new AddressTagHelper();
 
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
 
         // assert
-        _tagHelperOutput.AsString().Should().BeEmpty();
+        TagHelperOutput.AsString().Should().BeEmpty();
     }
     
     [TestCase("address1", "address2", "address3", "address4", "postcode", "<p>address1<br>address2<br>address3<br>address4<br>postcode</p>")]
@@ -61,10 +40,10 @@ public class AddressTagHelperTests
         };
 
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
 
         // assert
-        _tagHelperOutput.AsString().Should().Be(output);
+        TagHelperOutput.AsString().Should().Be(output);
     }
     
     [TestCase("address1", "address2", "address3", "address4", "postcode", "<span>address1, address2, address3, address4, postcode</span>")]
@@ -89,10 +68,10 @@ public class AddressTagHelperTests
         };
 
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
 
         // assert
-        _tagHelperOutput.AsString().Should().Be(output);
+        TagHelperOutput.AsString().Should().Be(output);
     }
     
     [TestCase(true, "<span>address4 (SW1A)</span>")]
@@ -115,10 +94,10 @@ public class AddressTagHelperTests
         };
 
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
 
         // assert
-        _tagHelperOutput.AsString().Should().Be(output);
+        TagHelperOutput.AsString().Should().Be(output);
     }
 
     [Test]
@@ -132,9 +111,9 @@ public class AddressTagHelperTests
         };
 
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
 
         // assert
-        _tagHelperOutput.AsString().Should().Be("<p class=\"class1 class2\">address1<br>postcode</p>");
+        TagHelperOutput.AsString().Should().Be("<p class=\"class1 class2\">address1<br>postcode</p>");
     }
 }
