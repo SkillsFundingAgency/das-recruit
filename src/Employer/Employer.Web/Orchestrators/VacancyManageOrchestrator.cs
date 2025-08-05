@@ -118,7 +118,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 VacancyId = vacancy.Id,
                 EmployerAccountId = vacancy.EmployerAccountId,
                 VacancySharedByProvider = vacancySharedByProvider,
-                AvailableWhere = vacancy.EmployerLocationOption
+                AvailableWhere = vacancy.EmployerLocationOption,
+                Pager = pager,
             };
 
             return viewModel;
