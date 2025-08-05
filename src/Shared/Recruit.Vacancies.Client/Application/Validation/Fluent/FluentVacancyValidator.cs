@@ -871,7 +871,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             RuleFor(x => x.TrainingProvider)
                 .NotNull()
-                    .WithMessage("You must enter a training provider or UKPRN to continue")
+                    .WithMessage("Enter the name or UKPRN of a training provider who delivers the training course you’ve selected")
                     .WithErrorCode(ErrorCodes.TrainingProviderUkprnNotEmpty)
                 .WithState(_ => VacancyRuleSet.TrainingProvider)
                 .SetValidator(trainingProviderValidator)

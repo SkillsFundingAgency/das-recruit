@@ -1,7 +1,6 @@
 ﻿@using Esfa.Recruit.Provider.Web.ViewModels.Part1.MultipleLocations
 @using Esfa.Recruit.Shared.Web.Domain
 @using Esfa.Recruit.Shared.Web.TagHelpers
-@using Microsoft.AspNetCore.Mvc.TagHelpers
 
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.MultipleLocations.AddMoreThanOneLocationViewModel
 
@@ -18,9 +17,9 @@
     <div class="govuk-grid-column-two-thirds">
 
         <govuk-banner asp-show="@Model.BannerAddress is not null" type="@BannerStyle.Success">
-            <h3 class="govuk-notification-banner__heading">
+            <govuk-banner-heading>
                 @Model.BannerAddress added.
-            </h3>
+            </govuk-banner-heading>
         </govuk-banner>
         
         <partial name="@PartialNames.ValidationSummary" model=@(new ValidationSummaryViewModel { ModelState = ViewData.ModelState })/>
