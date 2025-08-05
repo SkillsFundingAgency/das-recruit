@@ -51,7 +51,6 @@ public class TrainingController(TrainingOrchestrator orchestrator) : Controller
     public async Task<IActionResult> Training(TrainingEditModel m, [FromQuery] bool wizard)
     {
         var programme = await orchestrator.GetProgrammeAsync(m.SelectedProgrammeId);
-
         if (programme == null)
         {
             return await ProgrammeNotFound(m, wizard);
@@ -133,6 +132,12 @@ public class TrainingController(TrainingOrchestrator orchestrator) : Controller
         }
 
         var vacancy = await vacancyClient.GetVacancyAsync(m.VacancyId);
+        if (response.Data.IsChangingSelectedCourse)
+        {
+            // redirect to select the provider no matter where we came from, because the course has changed
+            return RedirectToRoute(RouteNames.TrainingProvider_Select_Get, new { m.VacancyId, m.EmployerAccountId });
+        }
+        
         bool isTaskListCompleted = await taskListValidator.IsCompleteAsync(vacancy, EmployerTaskListSectionFlags.All);
         return isTaskListCompleted
             ? RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { m.VacancyId, m.EmployerAccountId })
