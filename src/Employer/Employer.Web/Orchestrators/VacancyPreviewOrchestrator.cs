@@ -80,7 +80,7 @@ public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, 
         vm.EducationLevelName =
             EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel);
         vm.WageType = vacancy.Wage?.WageType;
-        vm.ApprenticeshipType = (ApprenticeshipTypes)vacancy.ApprenticeshipType;
+        vm.ApprenticeshipType = vacancy.ApprenticeshipType ?? ApprenticeshipTypes.Standard;
 
         if (programme != null) vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
 

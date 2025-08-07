@@ -240,7 +240,7 @@
         <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--xl" />
 
         <h2 class="govuk-heading-m">Application questions</h2>
-        @if (!Model.ApprenticeshipType.IsFoundation())
+        @if (!Model.IsFoundation)
         {
             <h3 class="govuk-heading-s govuk-!-margin-bottom-2">What are your skills and strengths?</h3>
             <p class="faa-user-content">@Model.Strengths</p>

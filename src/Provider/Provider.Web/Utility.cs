@@ -94,7 +94,6 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
         applicationReview.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
         applicationReview.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
         applicationReview.VacancyTitle = vacancy.Title;
-        applicationReview.ApprenticeshipType = vacancy.ApprenticeshipType ?? ApprenticeshipTypes.Standard;
 
         // Set Disability Status based on DisabilityConfident setting
         if (applicationReview.Application != null)

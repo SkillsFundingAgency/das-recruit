@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             vm.WageType = vacancy.Wage?.WageType;
             vm.Ukprn = vrm.Ukprn;
             vm.VacancyId = vrm.VacancyId;
-            vm.ApprenticeshipType = (ApprenticeshipTypes)vacancy.ApprenticeshipType;
+            vm.ApprenticeshipType = vacancy.ApprenticeshipType ?? ApprenticeshipTypes.Standard;
 
             if (vacancy.Status == VacancyStatus.Referred)
             {

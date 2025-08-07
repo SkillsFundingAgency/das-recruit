@@ -356,7 +356,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                 IsWithdrawn = response.WithdrawnDate is not null,
                 AdditionalQuestion1 = response.AdditionalQuestion1,
                 AdditionalQuestion2 = response.AdditionalQuestion2,
-                ApprenticeshipType = (ApprenticeshipTypes)response.ApprenticeshipType,
                 Application = app is not null ? new Domain.Entities.Application
                 {
                     ApplicationId = app.Id,

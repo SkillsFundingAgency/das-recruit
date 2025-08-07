@@ -22,7 +22,6 @@ public record ApplicationReview
     public long VacancyReference { get; set; }
     public string Status { get; set; }
     public string VacancyTitle { get; set; }
-    public ApprenticeshipTypes? ApprenticeshipType { get; set; } = ApprenticeshipTypes.Standard;
     public string? AdditionalQuestion1 { get; set; }
     public string? AdditionalQuestion2 { get; set; }
     public string? CandidateFeedback { get; set; }
