@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Responses;
 public record ApplicationReview
