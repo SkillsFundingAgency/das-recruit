@@ -72,6 +72,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             vm.WageType = vacancy.Wage?.WageType;
             vm.Ukprn = vrm.Ukprn;
             vm.VacancyId = vrm.VacancyId;
+            vm.ApprenticeshipType = vacancy.ApprenticeshipType ?? ApprenticeshipTypes.Standard;
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
@@ -196,6 +197,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             mappings.Add(e => e.ApplicationUrl, vm => vm.ApplicationUrl);
             mappings.Add(e => e.TrainingProvider, vm => vm.ProviderName);
             mappings.Add(e => e.TrainingProvider.Ukprn, vm => vm.ProviderName);
+            mappings.Add(e => e.ApprenticeshipType, vm => vm.ApprenticeshipType);
 
             return mappings;
         }
