@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.Reports;
@@ -53,20 +52,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IVacancySummariesProvider vacancySummariesQuery,
         ITimeProvider timeProvider,
         ITrainingProviderService trainingProviderService,
-        IFeature feature,
         IApplicationReviewRepository applicationReviewRepository,
-        IMongoDbRepository mongoDbRepository, 
         ISqlDbRepository sqlDbRepository)
         : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
-        private bool IsMongoMigrationFeatureEnabled
-        {
-            get
-            {
-                return feature.IsFeatureEnabled(FeatureNames.MongoMigration);
-            }
-        }
-
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
         {
             var command = new UpdateDraftVacancyCommand
@@ -177,44 +166,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         
         public async Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId)
         {
-            var dashboardValue = await  vacancySummariesQuery.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId, IsMongoMigrationFeatureEnabled);
+            var dashboardValue = await vacancySummariesQuery.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId);
             var dashboardStats = await employerAccountProvider.GetEmployerDashboardStats(employerAccountId);
             
             var dashboard = dashboardValue.VacancyStatusDashboard;
-            var dashboardApplications = dashboardValue.VacancyApplicationsDashboard;
-            var dashboardSharedApplications = dashboardValue.VacancySharedApplicationsDashboard;
 
             return new EmployerDashboardSummary
             {
                 Closed = dashboard.FirstOrDefault(c => c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
                 Draft = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Draft)?.StatusCount ?? 0,
-                Review = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Review)?.StatusCount ?? 0,
                 Referred = (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
                 Live = dashboard.Where(c => c.Status == VacancyStatus.Live).Sum(c => c.StatusCount),
                 Submitted = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
 
-                NumberOfNewApplications = IsMongoMigrationFeatureEnabled
-                    ? dashboardStats.NewApplicationsCount
-                    : dashboardApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfNewApplications),
-
-                NumberOfSuccessfulApplications = IsMongoMigrationFeatureEnabled
-                    ? dashboardStats.SuccessfulApplicationsCount
-                    : dashboardApplications.Where(c => c.Status == VacancyStatus.Live).Sum(x => x.NoOfSuccessfulApplications)
-                      + dashboardApplications.Where(c => c.Status == VacancyStatus.Closed).Sum(x => x.NoOfSuccessfulApplications),
-
-                NumberOfUnsuccessfulApplications = IsMongoMigrationFeatureEnabled
-                    ? dashboardStats.UnsuccessfulApplicationsCount
-                    : dashboardApplications.Where(c => c.Status == VacancyStatus.Live).Sum(x => x.NoOfUnsuccessfulApplications)
-                      + dashboardApplications.Where(c => c.Status == VacancyStatus.Closed).Sum(x => x.NoOfUnsuccessfulApplications),
-
-                NumberOfSharedApplications = IsMongoMigrationFeatureEnabled
-                    ? dashboardStats.SharedApplicationsCount
-                    : dashboardSharedApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfSharedApplications),
-
-                NumberOfAllSharedApplications = IsMongoMigrationFeatureEnabled
-                    ? dashboardStats.AllSharedApplicationsCount
-                    : dashboardSharedApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfAllSharedApplications),
-
+                Review = dashboardStats.EmployerReviewedApplicationsCount,
+                NumberOfNewApplications = dashboardStats.NewApplicationsCount,
+                NumberOfSuccessfulApplications = dashboardStats.SuccessfulApplicationsCount,
+                NumberOfUnsuccessfulApplications = dashboardStats.UnsuccessfulApplicationsCount,
+                NumberOfSharedApplications = dashboardStats.SharedApplicationsCount,
+                NumberOfAllSharedApplications = dashboardStats.AllSharedApplicationsCount,
                 NumberClosingSoon = dashboard.FirstOrDefault(c => c.Status == VacancyStatus.Live && c.ClosingSoon)?.StatusCount ?? 0,
                 NumberClosingSoonWithNoApplications = dashboardValue.VacanciesClosingSoonWithNoApplications
             };
@@ -288,28 +258,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<Domain.Entities.ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId)
         {
-            return IsMongoMigrationFeatureEnabled
-                ? await sqlDbRepository.GetAsync(applicationReviewId)
-                : await mongoDbRepository.GetAsync(applicationReviewId);
+            return await sqlDbRepository.GetAsync(applicationReviewId);
         }
 
         public async Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider = false)
         {
-            List<Domain.Entities.ApplicationReview> applicationReviews = null;
-
-            if (IsMongoMigrationFeatureEnabled)
-            {
-                applicationReviews = vacancySharedByProvider
+            var applicationReviews = vacancySharedByProvider
                     ? await sqlDbRepository.GetForSharedVacancySortedAsync(vacancyReference, sortColumn, sortOrder)
                     : await sqlDbRepository.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder);
-            }
-            else
-            {
-                applicationReviews = vacancySharedByProvider
-                    ? await mongoDbRepository.GetForSharedVacancySortedAsync(vacancyReference, sortColumn, sortOrder)
-                    : await mongoDbRepository.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder);
-            }
-
+            
             return applicationReviews == null
                 ? []
                 : applicationReviews.Select(c => (VacancyApplication)c).ToList();
@@ -317,20 +274,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference, bool vacancySharedByProvider = false)
         {
-            List<Domain.Entities.ApplicationReview> applicationReviews = null;
-
-            if (IsMongoMigrationFeatureEnabled)
-            {
-                applicationReviews = vacancySharedByProvider
+            var applicationReviews = vacancySharedByProvider
                     ? await sqlDbRepository.GetForSharedVacancyAsync(vacancyReference)
                     : await sqlDbRepository.GetForVacancyAsync<Domain.Entities.ApplicationReview>(vacancyReference);
-            }
-            else
-            {
-                applicationReviews = vacancySharedByProvider 
-                    ? await mongoDbRepository.GetForSharedVacancyAsync(vacancyReference)
-                    : await mongoDbRepository.GetForVacancyAsync<Domain.Entities.ApplicationReview>(vacancyReference);
-            }
 
             return applicationReviews == null
                 ? []
@@ -618,27 +564,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         
         public async Task<long> GetVacancyCount(string employerAccountId, FilteringOptions? filteringOptions, string searchTerm)
         {
-            var ownerType = (filteringOptions == FilteringOptions.NewSharedApplications || filteringOptions == FilteringOptions.AllSharedApplications) ? OwnerType.Provider : OwnerType.Employer;
+            var ownerType = filteringOptions is FilteringOptions.NewSharedApplications or FilteringOptions.AllSharedApplications ? OwnerType.Provider : OwnerType.Employer;
 
-            if (!IsMongoMigrationFeatureEnabled || !string.IsNullOrEmpty(searchTerm))
-            {
-                return await vacancySummariesQuery.VacancyCount(null, employerAccountId, filteringOptions, searchTerm, ownerType);
-            }
-
-            
             var dashboardStats = await employerAccountProvider.GetEmployerDashboardStats(employerAccountId);
 
-            switch (filteringOptions)
+            return filteringOptions switch
             {
-                case FilteringOptions.NewApplications:
-                    return dashboardStats.NewApplicationsCount;
-                case FilteringOptions.AllSharedApplications:
-                    return dashboardStats.AllSharedApplicationsCount;
-                case FilteringOptions.EmployerReviewedApplications:
-                    return dashboardStats.EmployerReviewedApplicationsCount;
-                default:
-                    return await vacancySummariesQuery.VacancyCount(null, employerAccountId, filteringOptions, searchTerm, ownerType);
-            }
+                FilteringOptions.NewApplications => dashboardStats.NewApplicationsCount,
+                FilteringOptions.AllSharedApplications => dashboardStats.AllSharedApplicationsCount,
+                FilteringOptions.EmployerReviewedApplications => dashboardStats.EmployerReviewedApplicationsCount,
+                _ => await vacancySummariesQuery.VacancyCount(null, employerAccountId, filteringOptions, searchTerm,
+                    ownerType)
+            };
         }
     }
 }

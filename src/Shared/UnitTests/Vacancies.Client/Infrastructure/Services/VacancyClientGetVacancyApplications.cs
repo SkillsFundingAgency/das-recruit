@@ -16,12 +16,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public async Task Then_The_Service_Is_Called_And_VacancyApplications_Returned(
             long vacancyReference,
             List<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview> applicationReviews,
-            [Frozen] Mock<IFeature> feature,
             [Frozen] Mock<ISqlDbRepository> applicationReviewRepository,
             VacancyClient vacancyClient)
         {
             //Arrange
-            feature.Setup(x=>x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(true);
             applicationReviewRepository.Setup(x => x.GetForVacancyAsync<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview>(vacancyReference))
                 .ReturnsAsync(applicationReviews);
             
@@ -69,12 +67,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         [Test, MoqAutoData]
         public async Task GetVacancyApplicationsSortedAsync_ReturnsEmptyList_WhenNoApplications(
             long vacancyReference,
-            [Frozen] Mock<IFeature> feature,
             [Frozen] Mock<ISqlDbRepository> mockAppReviewRepo,
             [Greedy] VacancyClient vacancyClient)
         {
             // Arrange
-            feature.Setup(x=>x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(true);
             mockAppReviewRepo.Setup(r => r.GetForVacancySortedAsync(vacancyReference, It.IsAny<SortColumn>(), It.IsAny<SortOrder>()))
                 .ReturnsAsync([]);
 
