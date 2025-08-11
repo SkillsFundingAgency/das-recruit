@@ -1,15 +1,12 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Training.ConfirmTrainingViewModel
-
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part1-confirm-training";
     ViewBag.Title = "Confirm apprenticeship training";
     ViewBag.ZenDeskLabel = "recruit-confirm-apprenticeship-training";
 }
-
 @section BackLink {
     <a asp-route="@RouteNames.Training_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-programmeid="@Model.ProgrammeId" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-back-link">Back</a>
 }
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <vacancy-heading vacancy-title="@Model.VacancyTitle" heading="Confirm apprenticeship training course" />
@@ -21,8 +18,6 @@
                     @Model.EducationLevelName
                     <br>
                     Typical duration: @Model.DurationMonths months
-                    <br>
-                    @Model.ProgrammeType
                     <br>
                 </span>
             </h2>
@@ -41,14 +36,14 @@
         </div>
         
         <div asp-show="@(Model.IsChangingApprenticeshipType && Model.IsFoundation)" class="govuk-inset-text">
-            <p class="govuk-body">This will change the course from an <strong>apprenticeship standard</strong> to a <strong>foundation apprenticeship</strong>.</p>
-            <p class="govuk-body">We’ll remove this advert’s skills and qualifications requirements. Applicants do not need specific skills or qualifications to apply for a foundation apprenticeship.</p>
+            <p class="govuk-body">This will change the course to a foundation apprenticeship.</p>
+            <p class="govuk-body">We'll remove your advert's skills and qualifications requirements. This is because applicants do not need specific skills or qualifications to apply for a foundation apprenticeship</p>
             <p class="govuk-body">You should also review the other sections of your advert.</p>
         </div>
         
         <div asp-show="@(Model.IsChangingApprenticeshipType && !Model.IsFoundation)" class="govuk-inset-text">
-            <p class="govuk-body">This will change the course from a <strong>foundation apprenticeship</strong> to an <strong>apprenticeship standard</strong>.</p>
-            <p class="govuk-body">You'll need to review this advert’s requirements. This is because standards can have different entry requirements for applicants.</p>
+            <p class="govuk-body">The course will no longer be a foundation apprenticeship.</p>
+            <p class="govuk-body">This means you'll need to tell us if there's any entry requirements for applicants.</p>
             <p class="govuk-body">You should also review the other sections of your advert.</p>
         </div>
 
