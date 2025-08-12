@@ -141,8 +141,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             await Task.WhenAll(tasks);
         }
 
-        public Task CreateAsync(Domain.Entities.ApplicationReview review)
+        public Task CreateAsync(Domain.Entities.ApplicationReview _)
         {
+            // Not required as this insertion happens from the outer API.
             throw new NotImplementedException();
         }
 
