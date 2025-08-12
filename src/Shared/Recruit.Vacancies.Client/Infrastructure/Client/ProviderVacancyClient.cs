@@ -250,5 +250,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             }
         }
 
+        public Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync(int ukprn)
+        {
+            return apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync(ukprn: ukprn);
+        }
     }
 }
