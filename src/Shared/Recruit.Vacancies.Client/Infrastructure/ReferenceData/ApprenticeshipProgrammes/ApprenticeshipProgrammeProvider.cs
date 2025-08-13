@@ -52,24 +52,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
         {
             var includeFoundationApprenticeships = _feature.IsFeatureEnabled(FeatureNames.FoundationApprenticeships);
 
-            var cacheKey = ukprn.HasValue
-                    ? $"{CacheKeys.ApprenticeshipProgrammes}_{ukprn.Value}"
-                    : CacheKeys.ApprenticeshipProgrammes;
-
-#if DEBUG
-            await _cache.RemoveAsync(cacheKey);
-#endif
-
-            return await _cache.CacheAsideAsync(cacheKey,
-                _timeProvider.NextDay6am,
-                async () =>
-                {
-                    var result = await _outerApiClient.Get<GetTrainingProgrammesResponse>(new GetTrainingProgrammesRequest(includeFoundationApprenticeships, ukprn));
-                    return new ApprenticeshipProgrammes
-                    {
-                        Data = result.TrainingProgrammes.Select(c => (ApprenticeshipProgramme)c).ToList(),
-                    };
-                });
+            var result = await _outerApiClient.Get<GetTrainingProgrammesResponse>(new GetTrainingProgrammesRequest(includeFoundationApprenticeships, ukprn));
+            return new ApprenticeshipProgrammes
+            {
+                Data = result.TrainingProgrammes.Select(c => (ApprenticeshipProgramme)c).ToList(),
+            };
         }
         
         private bool IsStandardActive(DateTime? effectiveTo, DateTime? lastDateStarts)

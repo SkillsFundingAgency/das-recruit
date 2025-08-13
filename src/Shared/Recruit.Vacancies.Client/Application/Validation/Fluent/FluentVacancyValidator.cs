@@ -333,7 +333,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.ProgrammeId)
                 .NotEmpty()
-                    .WithMessage($"You must select {VacancyContext} training")
+                    .WithMessage($"Enter a valid training course")
                     .WithErrorCode("25")
                     .WithState(_ => VacancyRuleSet.TrainingProgramme)
                 .RunCondition(VacancyRuleSet.TrainingProgramme);
