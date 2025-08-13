@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                 queryItem.Data.Where(x =>x.IsActive || (x.ApprenticeshipType == TrainingType.Foundation && IsStandardActive(x.EffectiveTo,x.LastDateStarts)));
         }
 
-        private Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammes(int? ukprn)
+        private async Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammes(int? ukprn)
         {
             var includeFoundationApprenticeships = _feature.IsFeatureEnabled(FeatureNames.FoundationApprenticeships);
 
@@ -56,7 +56,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                     ? $"{CacheKeys.ApprenticeshipProgrammes}_{ukprn.Value}"
                     : CacheKeys.ApprenticeshipProgrammes;
 
-            return _cache.CacheAsideAsync(cacheKey,
+#if DEBUG
+            await _cache.RemoveAsync(cacheKey);
+#endif
+
+            return await _cache.CacheAsideAsync(cacheKey,
                 _timeProvider.NextDay6am,
                 async () =>
                 {
@@ -64,7 +68,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                     return new ApprenticeshipProgrammes
                     {
                         Data = result.TrainingProgrammes.Select(c => (ApprenticeshipProgramme)c).ToList(),
-
                     };
                 });
         }

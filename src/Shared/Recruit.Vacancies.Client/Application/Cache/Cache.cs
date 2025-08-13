@@ -22,5 +22,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Cache
                 return objectToCache();
             });
         }
+
+        public Task RemoveAsync(string key)
+        {
+            _memoryCache.Remove(key);
+            return Task.CompletedTask;
+        }
     }
 }
