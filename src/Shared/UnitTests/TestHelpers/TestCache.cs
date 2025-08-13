@@ -10,5 +10,10 @@ namespace Esfa.Recruit.UnitTests.TestHelpers
         {
             return objectToCache();
         }
+
+        public Task RemoveAsync(string key)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

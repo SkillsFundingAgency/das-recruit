@@ -10,5 +10,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client
         {
             return objectToCache();
         }
+
+        public Task RemoveAsync(string key)
+        {
+            return Task.CompletedTask;
+        }
     }
 }
