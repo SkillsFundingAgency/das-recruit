@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using FluentValidation;
 using FluentValidation.Results;
 using SFA.DAS.VacancyServices.Wage;
@@ -105,6 +106,36 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             });
         }
 
+        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingProviderMustBeDeliverTheTrainingCourse(
+            this IRuleBuilder<Vacancy, Vacancy> ruleBuilder,
+            ITrainingProviderService trainingProviderService,
+            IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider)
+        {
+            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
+            {
+                var programme = await apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+
+                if (int.TryParse(programme.Id, out int programmeId))
+                {
+                    var trainingProviders = await trainingProviderService.GetCourseProviders(programmeId);
+
+                    var trainingProvider = trainingProviders.FirstOrDefault(x => x.Ukprn == vacancy.TrainingProvider?.Ukprn);
+
+                    if (trainingProvider != null)
+                    {
+                        return;
+                    }
+                }
+                
+                var failure = new ValidationFailure("Provider", "Enter the name of UKPRN of a training provider who delivers the training course you've selected")
+                {
+                    ErrorCode = ErrorCodes.TrainingProviderMustDeliverTrainingCourse,
+                    CustomState = VacancyRuleSet.TrainingProvider,
+                };
+                context.AddFailure(failure);
+            });
+        }
+
         internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForStartDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider)
         {
             return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
@@ -178,7 +209,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 context.AddFailure(failure);
             });
         }
-
+        
         internal static IRuleBuilderInitial<TrainingProvider, TrainingProvider> TrainingProviderMustNotBeBlocked(this IRuleBuilder<TrainingProvider, TrainingProvider> ruleBuilder, IBlockedOrganisationQuery blockedOrganisationRep)
         {
             return (IRuleBuilderInitial<TrainingProvider, TrainingProvider>)ruleBuilder.CustomAsync(async (trainingProvider, context, cancellationToken) =>

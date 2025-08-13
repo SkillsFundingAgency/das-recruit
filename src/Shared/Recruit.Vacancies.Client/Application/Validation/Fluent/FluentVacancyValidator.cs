@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidato
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using FluentValidation;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
@@ -17,6 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
         private readonly IHtmlSanitizerService _htmlSanitizerService;
         private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
+        private readonly ITrainingProviderService _trainingProviderService;
         private readonly IBlockedOrganisationQuery _blockedOrganisationRepo;
         private readonly IProfanityListProvider _profanityListProvider;
         private readonly IProviderRelationshipsService _providerRelationshipService;
@@ -28,6 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             IQualificationsProvider qualificationsProvider,
             IHtmlSanitizerService htmlSanitizerService,
             ITrainingProviderSummaryProvider trainingProviderSummaryProvider,
+            ITrainingProviderService trainingProviderService,
             IBlockedOrganisationQuery blockedOrganisationRepo,
             IProfanityListProvider profanityListProvider,
             IProviderRelationshipsService providerRelationshipService)
@@ -38,6 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
             _htmlSanitizerService = htmlSanitizerService;
             _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
+            _trainingProviderService = trainingProviderService;
             _blockedOrganisationRepo = blockedOrganisationRepo;
             _profanityListProvider = profanityListProvider;
             _providerRelationshipService = providerRelationshipService;
@@ -87,6 +91,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateThingsToConsider();
             ValidateEmployerInformation();
             ValidateTrainingProvider();
+            ValidateTrainingProviderDeliverTrainingCourse();
         }
 
         private void CrossFieldValidations()
@@ -881,6 +886,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             RuleFor(x => x)
                 .TrainingProviderVacancyMustHaveEmployerPermission(_providerRelationshipService)
                 .RunCondition(VacancyRuleSet.TrainingProvider);
+        }
+
+        private void ValidateTrainingProviderDeliverTrainingCourse()
+        {
+            When(x => x.TrainingProvider != null, () =>
+            {
+                RuleFor(x => x)
+                    .TrainingProviderMustBeDeliverTheTrainingCourse(_trainingProviderService, _apprenticeshipProgrammesProvider)
+                    .RunCondition(VacancyRuleSet.TrainingProviderDeliverCourse);
+            });
         }
 
         private void ValidateStartDateClosingDate()

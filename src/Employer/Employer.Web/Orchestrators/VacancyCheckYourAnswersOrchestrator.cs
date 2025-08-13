@@ -33,7 +33,9 @@ public class VacancyCheckYourAnswersOrchestrator(
     IMessaging messaging,
     ILocationsService locationsService) : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>(logger)
 {
-    private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage | VacancyRuleSet.TrainingExpiryDate;
+    private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage |
+                                                       VacancyRuleSet.TrainingExpiryDate |
+                                                       VacancyRuleSet.TrainingProviderDeliverCourse;
     private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
 
     public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel vrm)
