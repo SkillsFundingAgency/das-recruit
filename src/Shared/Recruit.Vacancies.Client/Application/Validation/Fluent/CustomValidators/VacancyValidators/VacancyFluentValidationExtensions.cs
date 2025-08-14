@@ -83,6 +83,29 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 }
             });
         }
+
+        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeValid(
+            this IRuleBuilder<Vacancy, Vacancy> ruleBuilder,
+            IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider)
+        {
+            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
+            {
+                var programme =
+                    await apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+
+                if (programme == null)
+                {
+                    var failure = new ValidationFailure("Training", "Enter a valid training course")
+                    {
+                        ErrorCode = ErrorCodes.TrainingNotExist,
+                        CustomState = VacancyRuleSet.TrainingProgramme,
+                        PropertyName = nameof(Vacancy.ProgrammeId)
+                    };
+                    context.AddFailure(failure);
+                }
+            });
+        }
+
         internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForCurrentDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider, ITimeProvider timeProvider)
         {
             return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
