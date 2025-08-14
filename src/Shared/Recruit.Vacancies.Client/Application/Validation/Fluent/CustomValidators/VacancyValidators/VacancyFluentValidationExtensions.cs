@@ -93,13 +93,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 var programme =
                     await apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
-                if (programme == null)
+                if (programme is null)
                 {
                     var failure = new ValidationFailure("Training", "Enter a valid training course")
                     {
                         ErrorCode = ErrorCodes.TrainingNotExist,
                         CustomState = VacancyRuleSet.TrainingProgramme,
-                        PropertyName = nameof(Vacancy.ProgrammeId)
+                        PropertyName = "Training",
                     };
                     context.AddFailure(failure);
                 }
@@ -108,7 +108,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
         internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForCurrentDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider, ITimeProvider timeProvider)
         {
-            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
+            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
             {
                 var allProgrammes = await apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync();
 
@@ -117,14 +117,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 if (matchingProgramme == null || (matchingProgramme.LastDateStarts != null && matchingProgramme.LastDateStarts < timeProvider.Now.Date) ||
                     (matchingProgramme.EffectiveTo != null && matchingProgramme.EffectiveTo < timeProvider.Now.Date))
                 {
-                    var failure = new ValidationFailure(string.Empty, "The training course you have selected is no longer available. You can select a new course or create a new advert.")
+                    var failure = new ValidationFailure("Training", "Enter a current training course. The training course you've selected will not be available on your start date")
                     {
                         ErrorCode = ErrorCodes.TrainingNotExist,
                         CustomState = VacancyRuleSet.TrainingProgramme,
-                        PropertyName = nameof(Vacancy.ProgrammeId),
+                        PropertyName = "Training",
                     };
                     context.AddFailure(failure);
-                    
                 }
             });
         }
