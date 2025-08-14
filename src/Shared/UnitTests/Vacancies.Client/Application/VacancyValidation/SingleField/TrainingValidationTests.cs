@@ -70,5 +70,26 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             result.Errors[0].ErrorCode.Should().Be("25");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProgramme);
         }
+
+        [Fact]
+        public void ErrorWhenTrainingProviderDoesNotTrainTheCourse()
+        {
+            var vacancy = new Vacancy
+            {
+                ProgrammeId = "000",
+                TrainingProvider = new TrainingProvider
+                {
+                    Ukprn = 10000000
+                },
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProviderDeliverCourse);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be("Provider");
+            result.Errors[0].ErrorCode.Should().Be("106");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProviderDeliverCourse);
+        }
     }
 }

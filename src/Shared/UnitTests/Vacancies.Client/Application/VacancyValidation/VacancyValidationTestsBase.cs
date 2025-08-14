@@ -35,6 +35,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             MockApprenticeshipProgrammeProvider = new Mock<IApprenticeshipProgrammeProvider>();
             MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("123"))
                 .ReturnsAsync(new ApprenticeshipProgramme());
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("000"))
+                .ReturnsAsync(new ApprenticeshipProgramme()
+                {
+                    Id = "abc"
+                });
             MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false))
                 .ReturnsAsync(new List<ApprenticeshipProgramme>
                 {
