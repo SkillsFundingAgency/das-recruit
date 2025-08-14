@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         {
             var vacancy = new Vacancy
             {
-                ProgrammeId = "11"
+                ProgrammeId = "123",
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProgramme);

@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
+﻿using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -34,9 +35,21 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             MockApprenticeshipProgrammeProvider = new Mock<IApprenticeshipProgrammeProvider>();
             MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("123"))
                 .ReturnsAsync(new ApprenticeshipProgramme());
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false))
+                .ReturnsAsync(new List<ApprenticeshipProgramme>
+                {
+                    new()
+                    {
+                        Id = "123"
+                    }
+                });
             MockQualificationsProvider = new Mock<IQualificationsProvider>();
             SanitizerService = new HtmlSanitizerService(new Mock<ILogger<HtmlSanitizerService>>().Object);
             MockTrainingProviderSummaryProvider = new Mock<ITrainingProviderSummaryProvider>();
+            MockTrainingProviderSummaryProvider.Setup(x => x.IsTrainingProviderMainOrEmployerProfile(10000000))
+                .ReturnsAsync(true);
+            MockTrainingProviderSummaryProvider.Setup(x => x.GetAsync(10000000))
+                .ReturnsAsync(new TrainingProviderSummary());
             MockBlockedOrganisationRepo = new Mock<IBlockedOrganisationQuery>();
             MockProfanityListProvider = new TestProfanityListProvider();
             MockProviderRelationshipsService = new Mock<IProviderRelationshipsService>();
