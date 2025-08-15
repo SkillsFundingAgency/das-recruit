@@ -8,6 +8,10 @@
 
 @model ManageNotificationsViewModelEx
 
+@section BackLink {
+    <a asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-back-link" esfa-automation="link-back">Back</a>
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
