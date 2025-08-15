@@ -149,7 +149,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                     }
                 }
                 
-                var failure = new ValidationFailure("Provider", "Enter the name of UKPRN of a training provider who delivers the training course you've selected")
+                var failure = new ValidationFailure("Provider", "Enter the name or UKPRN of a training provider who delivers the training course you've selected")
                 {
                     ErrorCode = ErrorCodes.TrainingProviderMustDeliverTrainingCourse,
                     CustomState = VacancyRuleSet.TrainingProviderDeliverCourse,
