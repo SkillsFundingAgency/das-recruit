@@ -92,6 +92,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateEmployerInformation();
             ValidateTrainingProvider();
             ValidateTrainingProviderDeliverTrainingCourse();
+            ValidateTrainingCourse();
         }
 
         private void CrossFieldValidations()
@@ -928,6 +929,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .TrainingMustBeActiveForCurrentDate(_apprenticeshipProgrammesProvider, _timeProvider)
                     .TrainingMustBeActiveForStartDate(_apprenticeshipProgrammesProvider)
                 .RunCondition(VacancyRuleSet.TrainingExpiryDate);
+            });
+        }
+
+        private void ValidateTrainingCourse()
+        {
+            When(x => !string.IsNullOrWhiteSpace(x.ProgrammeId), () =>
+            {
+                RuleFor(x => x)
+                    .Cascade(CascadeMode.Stop)
+                    .TrainingMustBeValid(_apprenticeshipProgrammesProvider)
+                    .TrainingMustBeActiveForCurrentDate(_apprenticeshipProgrammesProvider, _timeProvider)
+                    .RunCondition(VacancyRuleSet.TrainingProgramme);
             });
         }
     }

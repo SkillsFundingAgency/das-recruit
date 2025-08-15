@@ -35,7 +35,9 @@ public class VacancyCheckYourAnswersOrchestrator(
 {
     private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage |
                                                        VacancyRuleSet.TrainingExpiryDate |
-                                                       VacancyRuleSet.TrainingProviderDeliverCourse;
+                                                       VacancyRuleSet.TrainingProviderDeliverCourse |
+                                                       VacancyRuleSet.TrainingProgramme;
+
     private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
 
     public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel vrm)
