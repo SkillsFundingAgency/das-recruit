@@ -58,9 +58,9 @@ public class ManageNotificationsOrchestrator(
     public async Task<OrchestratorResponse> NewUpdateUserNotificationPreferencesAsync(ManageNotificationsEditModelEx editModel, VacancyUser vacancyUser)
     {
         var currentPreferences = await mediator.Send(new GetEmployerNotificationPreferencesQuery(vacancyUser.UserId));
-        if (currentPreferences is null)
+        if (currentPreferences == GetEmployerNotificationPreferencesQueryResult.None)
         {
-            return new OrchestratorResponse(new EntityValidationResult());
+            return new OrchestratorResponse(false);
         }
 
         var applicationSubmittedPref = currentPreferences.NotificationPreferences.GetForEvent(NotificationTypesEx.ApplicationSubmitted);

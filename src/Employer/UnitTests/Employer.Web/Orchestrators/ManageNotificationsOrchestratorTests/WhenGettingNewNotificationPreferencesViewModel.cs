@@ -76,7 +76,6 @@ public class WhenGettingNewNotificationPreferencesViewModel
 
         // assert
         result.Should().NotBeNull();
-        //result.VacancyApprovedOrRejectedOptionValue.Should().Be(nameof(NotificationFrequencyEx.Never));
         result.ApplicationSubmittedOptionValue.Should().Be(expectedOptionValue);
         result.ApplicationSubmittedFrequencyAllOptionValue.Should().Be(expectedFrequencyValue);
         result.ApplicationSubmittedFrequencyMineOptionValue.Should().Be(expectedFrequencyValue);

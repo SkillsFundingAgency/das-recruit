@@ -12,7 +12,7 @@ public enum NotificationScope
 [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
 public enum NotificationScopeEx
 {
+    Default,
     UserSubmittedVacancies,
     OrganisationVacancies,
-    Default,
 }
