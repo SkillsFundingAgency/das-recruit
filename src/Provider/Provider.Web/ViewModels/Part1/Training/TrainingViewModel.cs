@@ -33,5 +33,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Training
         }
 
         public bool IsTaskListCompleted { get; set; }
+
+        public string ManageYourStandardsLink { get; set; }
     }
 }
