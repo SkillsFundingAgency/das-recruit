@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                     }).AsWholeMoneyAmount();
 
                     var errorMessage = (vacancy.Status == VacancyStatus.Live) ?
-                        $"National Minimum Wage is changing from {wagePeriod.ValidFrom:d MMM yyyy}. So the fixed wage you entered before will no longer be valid. Change the date to before {wagePeriod.ValidFrom:d MMM yyyy} or to change the wage, create a new vacancy." :
+                        $"National Minimum Wage is changing from {wagePeriod.ValidFrom:d MMM yyyy}. So the fixed wage you entered before will no longer be valid. Change the date to before {wagePeriod.ValidFrom:d MMM yyyy} or to change the wage, create a new vacancy" :
                         $"Yearly wage must be at least {minimumYearlyWageForApprentices}";
 
                     var failure = new ValidationFailure(string.Empty, errorMessage)
@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
                 if (programme == null)
                 {
-                    var message = $"Training programme {vacancy.ProgrammeId} does not exist.";
+                    var message = $"Training programme {vacancy.ProgrammeId} does not exist";
                     var failure = new ValidationFailure(string.Empty, message)
                     {
                         ErrorCode = ErrorCodes.TrainingNotExist,
@@ -94,7 +94,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 if (matchingProgramme == null || (matchingProgramme.LastDateStarts != null && matchingProgramme.LastDateStarts < timeProvider.Now.Date) ||
                     (matchingProgramme.EffectiveTo != null && matchingProgramme.EffectiveTo < timeProvider.Now.Date))
                 {
-                    var failure = new ValidationFailure(string.Empty, "The training course you have selected is no longer available. You can select a new course or create a new advert.")
+                    var failure = new ValidationFailure(string.Empty, "The training course you have selected is no longer available. You can select a new course or create a new advert")
                     {
                         ErrorCode = ErrorCodes.TrainingNotExist,
                         CustomState = VacancyRuleSet.TrainingProgramme,
@@ -142,7 +142,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             {
                 if (!vacancy.StartDate.HasValue)
                 {
-                    var failure = new ValidationFailure(string.Empty, "The start date must have a value.")
+                    var failure = new ValidationFailure(string.Empty, "The start date must have a value")
                     {
                         ErrorCode = ErrorCodes.TrainingExpiryDateMustExist,
                         CustomState = VacancyRuleSet.TrainingExpiryDate,
@@ -162,7 +162,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                         ? matchingProgramme.LastDateStarts.Value.AsGdsDate()
                         : matchingProgramme.EffectiveTo.Value.AsGdsDate();
                     
-                    var message = $"Start date must be on or before {dateToDisplay} as this is the last day for new starters for the training course you have selected. If you don’t want to change the start date, you can change the training course.";
+                    var message = $"Start date must be on or before {dateToDisplay} as this is the last day for new starters for the training course you have selected. If you don’t want to change the start date, you can change the training course";
                     var failure = new ValidationFailure(string.Empty, message)
                     {
                         ErrorCode = ErrorCodes.TrainingExpiryDate,
