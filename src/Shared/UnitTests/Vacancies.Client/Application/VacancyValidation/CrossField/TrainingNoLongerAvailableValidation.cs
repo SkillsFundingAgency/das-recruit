@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors.FirstOrDefault().ErrorMessage.Should().Be("The training course you have selected is no longer available. You can select a new course or create a new advert.");
+            result.Errors.FirstOrDefault().ErrorMessage.Should().Be("Enter a current training course. The training course you've selected will not be available on your start date");
         }
         
         [Fact]
@@ -78,7 +78,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors.FirstOrDefault().ErrorMessage.Should().Be("The training course you have selected is no longer available. You can select a new course or create a new advert.");
+            result.Errors.FirstOrDefault().ErrorMessage.Should().Be("Enter a current training course. The training course you've selected will not be available on your start date");
         }
 
         [Fact]
@@ -102,7 +102,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors.FirstOrDefault().ErrorMessage.Should().Be("The training course you have selected is no longer available. You can select a new course or create a new advert.");
+            result.Errors.FirstOrDefault().ErrorMessage.Should().Be("Enter a current training course. The training course you've selected will not be available on your start date");
         }
     }
 }

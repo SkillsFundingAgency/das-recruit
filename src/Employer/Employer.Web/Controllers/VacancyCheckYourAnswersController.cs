@@ -30,9 +30,15 @@ public class VacancyCheckYourAnswersController(VacancyCheckYourAnswersOrchestrat
     [HttpGet("check-answers", Name = RouteNames.EmployerCheckYourAnswersGet)]
     public async Task<IActionResult> CheckYourAnswers(VacancyRouteModel vrm)
     {
-        var viewModel = await orchestrator.GetVacancyTaskListModel(vrm); 
-        viewModel.CanHideValidationSummary = true;
-            
+        var viewModel = await orchestrator.GetVacancyTaskListModel(vrm);
+        
+        viewModel.CanHideValidationSummary = !viewModel.SoftValidationErrors.HasErrors;
+        ModelState.AddValidationErrorsWithMappings(viewModel.SoftValidationErrors, ValidationMappings);
+        viewModel.ValidationErrors = new ValidationSummaryViewModel
+        {
+            ModelState = ModelState, OrderedFieldNames = viewModel.OrderedFieldNames
+        };
+
         if (TempData.ContainsKey(TempDataKeys.VacancyClonedInfoMessage))
             viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyClonedInfoMessage].ToString();
             

@@ -11,5 +11,6 @@
         public const string TrainingProviderMustNotBeBlocked = "103";
         public const string TrainingProviderMustHaveEmployerPermission = "104";
         public const string TrainingProviderMustBeMainOrEmployerProfile = "105";
+        public const string TrainingProviderMustDeliverTrainingCourse = "106";
     }
 }

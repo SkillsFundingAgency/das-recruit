@@ -104,9 +104,11 @@
                     </dd>
                 </div>
             }
-            <field-review-message field-name="@FieldIdentifiers.Training" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="TrainingTitle">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.Training">Training course</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.Training">
+                    <field-review-message field-name="@FieldIdentifiers.Training" model="@Model"></field-review-message>
+                    Training course
+                </dt>
                 <dd id="TrainingLevel" class="app-summary-list__value">
                     <p>@Model.TrainingTitle</p>
                     <govuk-tag-foundation asp-show="@(Model.ApprenticeshipType is ApprenticeshipTypes.Foundation)"/>
@@ -118,9 +120,11 @@
                         <span class="govuk-visually-hidden"> training course</span></a>
                 </dd>
             </div>
-            <field-review-message field-name="@FieldIdentifiers.Provider" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="ProviderName">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.Provider">Training provider</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.Provider">
+                    <field-review-message field-name="@FieldIdentifiers.Provider" model="@Model"></field-review-message>
+                    Training provider
+                </dt>
                 <dd class="app-summary-list__value">
                     @Model.ProviderName
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.Provider"

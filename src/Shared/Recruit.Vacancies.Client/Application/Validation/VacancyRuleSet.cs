@@ -42,6 +42,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
         AdditionalQuestion2 = 1L << 33,
         CompetitiveWage = 1L << 34,
         AdditionalTrainingDescription = 1L << 35,
+        TrainingProviderDeliverCourse = 1L << 36,
         All = ~None,
     }
 }
