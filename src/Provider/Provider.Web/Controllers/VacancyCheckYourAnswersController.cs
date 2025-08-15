@@ -32,10 +32,15 @@ public class VacancyCheckYourAnswersController(VacancyCheckYourAnswersOrchestrat
     [HttpGet("{vacancyId:guid}/check-your-answers", Name = RouteNames.ProviderCheckYourAnswersGet)]
     public async Task<IActionResult> CheckYourAnswers(VacancyRouteModel vrm)
     {
-        var viewModel = await orchestrator.GetVacancyTaskListModel(vrm); 
-        viewModel.CanHideValidationSummary = true;
-        AddSoftValidationErrorsToModelState(viewModel);
-            
+        var viewModel = await orchestrator.GetVacancyTaskListModel(vrm);
+        viewModel.CanHideValidationSummary = !viewModel.SoftValidationErrors.HasErrors;
+        ModelState.AddValidationErrorsWithMappings(viewModel.SoftValidationErrors, ValidationMappings);
+        viewModel.ValidationErrors = new ValidationSummaryViewModel
+        {
+            ModelState = ModelState,
+            OrderedFieldNames = viewModel.OrderedFieldNames
+        };
+
         if (TempData.ContainsKey(TempDataKeys.VacancyPreviewInfoMessage))
             viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyPreviewInfoMessage].ToString();
             
@@ -79,16 +84,5 @@ public class VacancyCheckYourAnswersController(VacancyCheckYourAnswersOrchestrat
             {ModelState = ModelState, OrderedFieldNames = viewModel.OrderedFieldNames};
             
         return View(viewModel);
-    }
-        
-    private void AddSoftValidationErrorsToModelState(VacancyPreviewViewModel viewModel)
-    {
-        if (!viewModel.SoftValidationErrors.HasErrors)
-            return;
-
-        foreach (var error in viewModel.SoftValidationErrors.Errors)
-        {
-            ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-        }
     }
 }

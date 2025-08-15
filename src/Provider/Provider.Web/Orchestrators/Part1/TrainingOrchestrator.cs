@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.RouteModel;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1 
 {
@@ -22,11 +24,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         IProviderVacancyClient providerVacancyClient,
         ILogger<TrainingOrchestrator> logger,
         IReviewSummaryService reviewSummaryService,
-        IUtility utility)
+        IUtility utility,
+        IOptions<ExternalLinksConfiguration> externalLinksOptions)
         : VacancyValidatingOrchestrator<TrainingEditModel>(logger)
     {
+        private ExternalLinksConfiguration _externalLinks = externalLinksOptions.Value;
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProgramme;
-        private const string InvalidTraining = "Select a training course";
+        private const string InvalidTraining = "Enter a valid training course";
 
         public async Task<TrainingViewModel> GetTrainingViewModelAsync(VacancyRouteModel vrm, VacancyUser user)
         {
@@ -51,7 +55,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 PageInfo = utility.GetPartOnePageInfo(vacancy),
                 HasMoreThanOneLegalEntity = employerInfo.LegalEntities.Count > 1,
                 Ukprn = vrm.Ukprn,
-                IsTaskListCompleted = utility.IsTaskListCompleted(vacancy)
+                IsTaskListCompleted = utility.IsTaskListCompleted(vacancy),
+                ManageYourStandardsLink = $"{_externalLinks.ManageYourStandardsUrl}/{vrm.Ukprn}/standards"
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
