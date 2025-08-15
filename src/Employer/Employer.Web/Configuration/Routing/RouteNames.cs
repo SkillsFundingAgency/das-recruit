@@ -184,6 +184,7 @@
 
         public const string ManageNotifications_Get = "ManageNotifications_Get";
         public const string ManageNotifications_Post = "ManageNotifications_Post";
+        //public const string NewManageNotifications_Post = "NewManageNotifications_Post";
 
         public const string ConfirmUnsubscribeNotifications_Get = "ConfirmUnsubscribeNotifications_Get";
         public const string ConfirmUnsubscribeNotifications_Post = "ConfirmUnsubscribeNotifications_Post";
