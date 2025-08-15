@@ -1,20 +1,16 @@
-﻿@using Esfa.Recruit.Shared.Web.Mappers
-@model Esfa.Recruit.Provider.Web.ViewModels.Part1.Training.ConfirmTrainingViewModel
-
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.Part1.Training.ConfirmTrainingViewModel
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-confirm";
-    ViewBag.Title = "Confirm apprenticeship training";
+    ViewBag.Title = "Confirm apprenticeship training course";
 }
-
 @section BackLink {
     <a asp-route="@RouteNames.Training_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-programmeid="@Model.ProgrammeId" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-back-link">Back</a>
 }
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-xl">@Model.Title</span>
-            Confirm apprenticeship training
+            Confirm apprenticeship training course
         </h1>
         <div class="das-highlight">
             <govuk-tag-foundation asp-show="@Model.IsFoundation" class="govuk-!-margin-bottom-2"/>
@@ -24,8 +20,6 @@
                     @Model.EducationLevelName
                     <br>
                     Typical duration: @Model.DurationMonths months
-                    <br>
-                    @Model.ProgrammeType
                     <br>
                 </span>
             </h2>
@@ -47,15 +41,15 @@
         </div>
         
         <div asp-show="@(Model.IsChangingApprenticeshipType && Model.IsFoundation)" class="govuk-inset-text">
-            <p class="govuk-body">This will change the course from an <strong>apprenticeship standard</strong> to a <strong>foundation apprenticeship</strong>.</p>
-            <p class="govuk-body">We’ll remove this vacancy's skills and qualifications requirements. Applicants do not need specific skills or qualifications to apply for a foundation apprenticeship.</p>
-            <p class="govuk-body">You should also review the other sections of your vacancy.</p>
+            <p class="govuk-body">This will change the course to a <strong>foundation apprenticeship</strong>.</p>
+            <p class="govuk-body">This means we'll remove your advert's skills and qualifications requirements. Applicants do not need specific skills or qualifications to apply for a foundation apprenticeship.</p>
+            <p class="govuk-body">You should also review the other sections of your advert.</p>
         </div>
         
         <div asp-show="@(Model.IsChangingApprenticeshipType && !Model.IsFoundation)" class="govuk-inset-text">
-            <p class="govuk-body">This will change the course from a <strong>foundation apprenticeship</strong> to an <strong>apprenticeship standard</strong>.</p>
-            <p class="govuk-body">You'll need to review this vacancy’s requirements. This is because standards can have different entry requirements for applicants.</p>
-            <p class="govuk-body">You should also review the other sections of your vacancy.</p>
+            <p class="govuk-body">The course will no longer be a foundation apprenticeship.</p>
+            <p class="govuk-body">This means you'll need to tell us if there's any entry requirements for applicants.</p>
+            <p class="govuk-body">You should also review the other sections of your advert.</p>
         </div>
         
         <form asp-route="@RouteNames.Training_Confirm_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
