@@ -39,9 +39,7 @@ public class ManageNotificationsOrchestrator(
 
         var applicationSubmittedPref = result.NotificationPreferences.GetForEvent(NotificationTypesEx.ApplicationSubmitted);
         var vacancyAppRefPref = result.NotificationPreferences.GetForEvent(NotificationTypesEx.VacancyApprovedOrRejectedByDfE);
-        return result is null
-            ? null
-            : new ManageNotificationsViewModelEx
+        return new ManageNotificationsViewModelEx
             {
                 EmployerAccountId = employerAccountId,
                 ApplicationSubmittedOptionValue = applicationSubmittedPref.Frequency == NotificationFrequencyEx.Never
