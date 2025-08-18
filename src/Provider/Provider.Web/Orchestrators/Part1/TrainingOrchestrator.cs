@@ -56,7 +56,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 HasMoreThanOneLegalEntity = employerInfo.LegalEntities.Count > 1,
                 Ukprn = vrm.Ukprn,
                 IsTaskListCompleted = utility.IsTaskListCompleted(vacancy),
-                ManageYourStandardsLink = $"{_externalLinks.ManageYourStandardsUrl}/{vrm.Ukprn}/standards"
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
