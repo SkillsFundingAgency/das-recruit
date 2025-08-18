@@ -17,10 +17,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1;
 public class TrainingController(TrainingOrchestrator orchestrator) : Controller
 {
     private const string InvalidTraining = "Enter a valid training course";
-    private const string EmptyOrNullTraining = "Enter a training course";
 
     [HttpGet("training", Name = RouteNames.Training_Get)]
-    public async Task<IActionResult> Training(VacancyRouteModel vrm, [FromQuery] string wizard = "true", [FromQuery] string clear = "", [FromQuery] string hasTraining = "", [FromQuery] string programmeId = "")
+    public async Task<IActionResult> Training(VacancyRouteModel vrm,
+        [FromQuery] string wizard = "true",
+        [FromQuery] string clear = "",
+        [FromQuery] string hasTraining = "",
+        [FromQuery] string programmeId = "")
     {
         var clearTraining = string.IsNullOrWhiteSpace(clear) == false;
 
@@ -52,7 +55,7 @@ public class TrainingController(TrainingOrchestrator orchestrator) : Controller
     public async Task<IActionResult> Training(TrainingEditModel m, [FromQuery] bool wizard)
     {
         if (string.IsNullOrWhiteSpace(m.SelectedProgrammeId))
-            return await ProgrammeNotEntered(m, wizard);
+            return await ProgrammeNotFound(m, wizard);
 
         var programme = await orchestrator.GetProgrammeAsync(m.SelectedProgrammeId);
         if (programme is null)
@@ -147,15 +150,6 @@ public class TrainingController(TrainingOrchestrator orchestrator) : Controller
     private async Task<IActionResult> ProgrammeNotFound(TrainingEditModel m, bool wizard)
     {
         ModelState.AddModelError(nameof(TrainingEditModel.SelectedProgrammeId), InvalidTraining);
-
-        var vm = await orchestrator.GetTrainingViewModelAsync(m, User.ToVacancyUser());
-        vm.PageInfo.SetWizard(wizard);
-        return View(ViewNames.Training, vm);
-    }
-
-    private async Task<IActionResult> ProgrammeNotEntered(TrainingEditModel m, bool wizard)
-    {
-        ModelState.AddModelError(nameof(TrainingEditModel.SelectedProgrammeId), EmptyOrNullTraining);
 
         var vm = await orchestrator.GetTrainingViewModelAsync(m, User.ToVacancyUser());
         vm.PageInfo.SetWizard(wizard);
