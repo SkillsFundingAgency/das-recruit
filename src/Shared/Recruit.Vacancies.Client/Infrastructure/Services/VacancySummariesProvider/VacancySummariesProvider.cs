@@ -221,9 +221,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         break;
                 }
 
-                var results = await _trainingProviderService.GetProviderDashboardVacanciesByApplicationReviewStatuses(ukprn,
-                    applicationReviewStatusList, page);
-                
+                var results = await _trainingProviderService.GetProviderDashboardVacanciesByApplicationReviewStatuses(
+                    ukprn,
+                    applicationReviewStatusList,
+                    1, //override
+                    1000); // Get all results for the provider. Temp fix until Vacancy Reviews are migrated to Sql.
+
                 refs.Add("vacancyReference", new BsonDocument { { "$in", new BsonArray(results.Items.Select(result => result.VacancyReference).ToArray()) } });
                 vacancyReferenceMatch = new BsonDocument{
                 {
@@ -240,7 +243,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     BuildSearchMatch(searchTerm)
                 }
             };
-            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page, null,vacancyReferenceMatch, searchMatch);
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page, null, vacancyReferenceMatch, searchMatch);
 
             var pipelineResult = await RunAggPipelineQuery(aggPipeline);
 
@@ -254,11 +257,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             var applicationReviewStatsLookup = dashboardStats.ApplicationReviewStatsList
                 .ToDictionary(x => x.VacancyReference);
 
+            var tempCount = 0;
+            var unknownCount = 0;
+
             foreach (var vacancySummary in pipelineResult)
             {
                 if (!vacancySummary.VacancyReference.HasValue ||
                     !applicationReviewStatsLookup.TryGetValue(vacancySummary.VacancyReference.Value,
-                        out var applicationReview)) continue;
+                        out var applicationReview))
+                {
+                    unknownCount++;
+                    continue;
+                }
 
                 vacancySummary.NoOfSuccessfulApplications = applicationReview.SuccessfulApplications;
                 vacancySummary.NoOfUnsuccessfulApplications = applicationReview.UnsuccessfulApplications;
@@ -266,7 +276,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 vacancySummary.NoOfSharedApplications = applicationReview.SharedApplications;
                 vacancySummary.NoOfAllSharedApplications = applicationReview.AllSharedApplications;
                 vacancySummary.NoOfEmployerReviewedApplications = applicationReview.EmployerReviewedApplications;
+
+                tempCount += vacancySummary.NoOfNewApplications;
             }
+
+            Console.WriteLine(tempCount);
+            Console.WriteLine(unknownCount);
 
             return (pipelineResult,totalCount);
         }

@@ -48,7 +48,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             await Task.WhenAll(getDashboardTask, getUserDetailsTask, providerTask);
             
-            long providerVacancyCountTask = getDashboardTask.Result?.TotalVacancies ?? await _providerVacancyClient.GetVacancyCount(user.Ukprn.Value, filteringOption, searchTerm);//TODO FAI-2541 - ignore this for ones for applications
+            long providerVacancyCountTask = getDashboardTask.Result?.TotalVacancies 
+                                            ?? await _providerVacancyClient.GetVacancyCount(user.Ukprn.Value, filteringOption, searchTerm);//TODO FAI-2541 - ignore this for ones for applications
 
             var dashboard = getDashboardTask.Result;
             var userDetails = getUserDetailsTask.Result;
