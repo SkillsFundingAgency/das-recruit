@@ -44,6 +44,9 @@ public class TrainingController(TrainingOrchestrator orchestrator) : Controller
     [HttpPost("training", Name = RouteNames.Training_Post)]
     public async Task<IActionResult> Training(TrainingEditModel m, [FromQuery] bool wizard)
     {
+        if (string.IsNullOrWhiteSpace(m.SelectedProgrammeId))
+            return await ProgrammeNotFound(m, wizard);
+
         var programme = await orchestrator.GetProgrammeAsync(m.SelectedProgrammeId);
         if (programme is null)
             return await ProgrammeNotFound(m, wizard);
