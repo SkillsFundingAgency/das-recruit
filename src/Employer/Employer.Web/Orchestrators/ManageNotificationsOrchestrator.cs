@@ -38,7 +38,7 @@ public class ManageNotificationsOrchestrator(
         }
 
         var applicationSubmittedPref = result.NotificationPreferences.GetForEvent(NotificationTypesEx.ApplicationSubmitted);
-        var vacancyAppRefPref = result.NotificationPreferences.GetForEvent(NotificationTypesEx.VacancyApprovedOrRejectedByDfE);
+        var vacancyAppRefPref = result.NotificationPreferences.GetForEvent(NotificationTypesEx.VacancyApprovedOrRejected);
         return new ManageNotificationsViewModelEx
             {
                 EmployerAccountId = employerAccountId,
@@ -62,11 +62,11 @@ public class ManageNotificationsOrchestrator(
         }
 
         var applicationSubmittedPref = currentPreferences.NotificationPreferences.GetForEvent(NotificationTypesEx.ApplicationSubmitted);
-        var vacancyAppRefPref = currentPreferences.NotificationPreferences.GetForEvent(NotificationTypesEx.VacancyApprovedOrRejectedByDfE);
+        var vacancyAppRefPref = currentPreferences.NotificationPreferences.GetForEvent(NotificationTypesEx.VacancyApprovedOrRejected);
         if (Enum.TryParse<NotificationScopeEx>(editModel.VacancyApprovedOrRejectedOptionValue, out var vacancyScope))
         {
             vacancyAppRefPref.Scope = vacancyScope;
-            vacancyAppRefPref.Frequency = NotificationFrequencyEx.Default;
+            vacancyAppRefPref.Frequency = NotificationFrequencyEx.NotSet;
         }
         else
         {

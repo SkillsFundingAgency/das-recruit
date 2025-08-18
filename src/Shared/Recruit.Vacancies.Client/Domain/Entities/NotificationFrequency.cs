@@ -13,7 +13,7 @@ public enum NotificationFrequency
 [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
 public enum NotificationFrequencyEx
 {
-    Default,
+    NotSet,
     Never,
     Immediately,
     Daily,
