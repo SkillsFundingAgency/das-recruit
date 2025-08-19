@@ -197,7 +197,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 }
             };
 
-
+            // FAI-2733: Temporary fix to get all results for the provider. For more information, please check the ticket FAI-2733.
+            // This whole logic could be simplified by having the business logic in the recruit inner api layer. Once we migrate the Vacancy Reviews to Sql, we can remove this logic.
             BsonDocument vacancyReferenceMatch = null; 
             int? totalCount = null;
             if (status is FilteringOptions.EmployerReviewedApplications or FilteringOptions.AllApplications or FilteringOptions.NewApplications)
@@ -225,7 +226,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     ukprn,
                     applicationReviewStatusList,
                     1, //override
-                    1000); // Get all results for the provider. Temp fix until Vacancy Reviews are migrated to Sql.
+                    1000); // FAI-2733: Get all results for the provider. Temp fix until Vacancy Reviews are migrated to Sql.
 
                 refs.Add("vacancyReference", new BsonDocument { { "$in", new BsonArray(results.Items.Select(result => result.VacancyReference).ToArray()) } });
                 vacancyReferenceMatch = new BsonDocument{
@@ -254,11 +255,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 
             var dashboardStats = await _trainingProviderService.GetProviderDashboardApplicationReviewStats(ukprn, vacancyReferences);
 
-            var applicationReviewStatsLookup = dashboardStats.ApplicationReviewStatsList
+            var applicationReviewStatsLookup = dashboardStats
+                .ApplicationReviewStatsList
                 .ToDictionary(x => x.VacancyReference);
 
             var tempCount = 0;
-            var unknownCount = 0;
 
             foreach (var vacancySummary in pipelineResult)
             {
@@ -266,7 +267,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     !applicationReviewStatsLookup.TryGetValue(vacancySummary.VacancyReference.Value,
                         out var applicationReview))
                 {
-                    unknownCount++;
                     continue;
                 }
 
@@ -280,10 +280,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 tempCount += vacancySummary.NoOfNewApplications;
             }
 
-            Console.WriteLine(tempCount);
-            Console.WriteLine(unknownCount);
-
-            return (pipelineResult,totalCount);
+            return (pipelineResult, totalCount);
         }
 
         public async Task<(IList<VacancySummary>, int? totalCount)> GetEmployerOwnedVacancySummariesByEmployerAccountId(string employerAccountId, int page,
@@ -348,8 +345,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         break;
                 }
 
-                var results = await _employerAccountProvider.GetEmployerVacancyDashboardStats(employerAccountId,page,
-                    applicationReviewStatusList);
+                // FAI-2733: Temporary fix to get all results for the employer. For more information, please check the ticket FAI-2733.
+                // This whole logic could be simplified by having the business logic in the recruit inner api layer. Once we migrate the Vacancy Reviews to Sql, we can remove this logic.
+                var results = await _employerAccountProvider.GetEmployerVacancyDashboardStats(employerAccountId,
+                    applicationReviewStatusList,
+                    1,
+                    1000); // FAI-2733: Get all results for the employer. Temp fix until Vacancy Reviews are migrated to Sql.
                 
                 refs.Add("vacancyReference", new BsonDocument { { "$in", new BsonArray(results.Items.Select(result => result.VacancyReference).ToArray()) } });
                 vacancyReferenceMatch = new BsonDocument{
@@ -387,7 +388,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 if (!vacancySummary.VacancyReference.HasValue ||
                     !applicationReviewStatsLookup.TryGetValue(vacancySummary.VacancyReference.Value,
-                        out var applicationReview)) continue;
+                        out var applicationReview))
+                {
+                    continue;
+                }
 
                 vacancySummary.NoOfSuccessfulApplications = applicationReview.SuccessfulApplications;
                 vacancySummary.NoOfUnsuccessfulApplications = applicationReview.UnsuccessfulApplications;
@@ -397,7 +401,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 vacancySummary.NoOfEmployerReviewedApplications = applicationReview.EmployerReviewedApplications;
             }
 
-            return (pipelineResult,totalCount);
+            return (pipelineResult, totalCount);
         }
 
         public async Task<IList<TransferInfo>> GetTransferredFromProviderAsync(long ukprn)

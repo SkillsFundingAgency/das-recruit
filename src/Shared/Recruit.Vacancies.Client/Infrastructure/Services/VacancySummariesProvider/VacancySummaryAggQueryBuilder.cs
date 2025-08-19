@@ -779,8 +779,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 pipeline.Insert(index, vacancyRefMatch);
             }
             
-            pipeline.Insert(pipeline.Count, new BsonDocument { { "$skip", (pageNumber - 1) * 100 } });
-            pipeline.Insert(pipeline.Count, new BsonDocument { { "$limit", 100 } });
+            pipeline.Insert(pipeline.Count, new BsonDocument { { "$skip", (pageNumber - 1) * 25 } });
+            pipeline.Insert(pipeline.Count, new BsonDocument { { "$limit", 25 } });
             
             pipeline.Insert(0, vacanciesMatchClause);
 
