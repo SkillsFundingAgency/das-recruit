@@ -67,8 +67,14 @@ public class VacancyReviewDto
             AccountLegalEntityId = encodingService.Decode(source.VacancySnapshot.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId),
             HashedAccountId = source.VacancySnapshot.EmployerAccountId,
             EmployerName =  source.VacancySnapshot.EmployerName,
+            Locations = source.VacancySnapshot.EmployerLocations,
+            EmployerLocationOption = source.VacancySnapshot.EmployerLocationOption
         };
     }
+
+    public AvailableWhere? EmployerLocationOption { get; set; }
+
+    public List<Address> Locations { get; set; }
 
     public static explicit operator Domain.Entities.VacancyReview(VacancyReviewDto source)
     {
