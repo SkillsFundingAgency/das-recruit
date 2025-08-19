@@ -18,9 +18,10 @@ public enum NotificationTypes
 [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
 public enum NotificationTypesEx
 {
-    VacancyApprovedOrRejectedByDfE,
+    VacancyApprovedOrRejected,
     VacancyClosingSoon,
     ApplicationSubmitted,
     VacancySentForReview,
-    VacancyRejectedByEmployer,
+    SharedApplicationReviewedByEmployer,
+    ProviderAttachedToVacancy
 }

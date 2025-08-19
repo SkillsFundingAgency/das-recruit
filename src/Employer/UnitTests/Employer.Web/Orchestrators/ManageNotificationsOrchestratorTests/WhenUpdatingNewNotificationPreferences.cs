@@ -35,9 +35,9 @@ public class WhenUpdatingNewNotificationPreferences
     }
     
     [Test]
-    [MoqInlineAutoData(nameof(NotificationFrequencyEx.Never), NotificationScopeEx.Default, NotificationFrequencyEx.Never)]
-    [MoqInlineAutoData(nameof(NotificationScopeEx.UserSubmittedVacancies), NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.Default)]
-    [MoqInlineAutoData(nameof(NotificationScopeEx.OrganisationVacancies), NotificationScopeEx.OrganisationVacancies, NotificationFrequencyEx.Default)]
+    [MoqInlineAutoData(nameof(NotificationFrequencyEx.Never), NotificationScopeEx.NotSet, NotificationFrequencyEx.Never)]
+    [MoqInlineAutoData(nameof(NotificationScopeEx.UserSubmittedVacancies), NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.NotSet)]
+    [MoqInlineAutoData(nameof(NotificationScopeEx.OrganisationVacancies), NotificationScopeEx.OrganisationVacancies, NotificationFrequencyEx.NotSet)]
     public async Task For_VacancyApprovedOrUpdatedByDfE_Event_It_Succeeds_When_User_Found(
         string optionValue,
         NotificationScopeEx expectedScope,
@@ -56,7 +56,7 @@ public class WhenUpdatingNewNotificationPreferences
             {
                 EventPreferences = [
                     new NotificationPreference { Event = NotificationTypesEx.ApplicationSubmitted, Scope = NotificationScopeEx.OrganisationVacancies, Frequency = NotificationFrequencyEx.Daily },
-                    new NotificationPreference { Event = NotificationTypesEx.VacancyApprovedOrRejectedByDfE, Scope = NotificationScopeEx.Default, Frequency = NotificationFrequencyEx.Never }
+                    new NotificationPreference { Event = NotificationTypesEx.VacancyApprovedOrRejected, Scope = NotificationScopeEx.NotSet, Frequency = NotificationFrequencyEx.Never }
                 ]
             }
         };
@@ -86,7 +86,7 @@ public class WhenUpdatingNewNotificationPreferences
         capturedCommand.Should().NotBeNull();
         capturedCommand.Id.Should().Be(response.Id);
         
-        var vac = capturedCommand.NotificationPreferences.GetForEvent(NotificationTypesEx.VacancyApprovedOrRejectedByDfE);
+        var vac = capturedCommand.NotificationPreferences.GetForEvent(NotificationTypesEx.VacancyApprovedOrRejected);
         vac.Scope.Should().Be(expectedScope);
         vac.Frequency.Should().Be(expectedFrequency);
     }
@@ -126,7 +126,7 @@ public class WhenUpdatingNewNotificationPreferences
             {
                 EventPreferences = [
                     new NotificationPreference { Event = NotificationTypesEx.ApplicationSubmitted, Scope = NotificationScopeEx.OrganisationVacancies, Frequency = NotificationFrequencyEx.Daily },
-                    new NotificationPreference { Event = NotificationTypesEx.VacancyApprovedOrRejectedByDfE, Scope = NotificationScopeEx.Default, Frequency = NotificationFrequencyEx.Never }
+                    new NotificationPreference { Event = NotificationTypesEx.VacancyApprovedOrRejected, Scope = NotificationScopeEx.NotSet, Frequency = NotificationFrequencyEx.Never }
                 ]
             }
         };
@@ -179,7 +179,7 @@ public class WhenUpdatingNewNotificationPreferences
             {
                 EventPreferences = [
                     new NotificationPreference { Event = NotificationTypesEx.ApplicationSubmitted, Scope = NotificationScopeEx.OrganisationVacancies, Frequency = NotificationFrequencyEx.Daily },
-                    new NotificationPreference { Event = NotificationTypesEx.VacancyApprovedOrRejectedByDfE, Scope = NotificationScopeEx.Default, Frequency = NotificationFrequencyEx.Never }
+                    new NotificationPreference { Event = NotificationTypesEx.VacancyApprovedOrRejected, Scope = NotificationScopeEx.NotSet, Frequency = NotificationFrequencyEx.Never }
                 ]
             }
         };

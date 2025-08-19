@@ -32,7 +32,7 @@ public class WhenGettingNewNotificationPreferencesViewModel
     }
     
     [Test]
-    [MoqInlineAutoData(NotificationScopeEx.Default, NotificationFrequencyEx.Never, nameof(NotificationFrequencyEx.Never), nameof(NotificationFrequencyEx.Never))]
+    [MoqInlineAutoData(NotificationScopeEx.NotSet, NotificationFrequencyEx.Never, nameof(NotificationFrequencyEx.Never), nameof(NotificationFrequencyEx.Never))]
     [MoqInlineAutoData(NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.Weekly, nameof(NotificationScopeEx.UserSubmittedVacancies), nameof(NotificationFrequencyEx.Weekly))]
     [MoqInlineAutoData(NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.Daily, nameof(NotificationScopeEx.UserSubmittedVacancies), nameof(NotificationFrequencyEx.Daily))]
     [MoqInlineAutoData(NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.Immediately, nameof(NotificationScopeEx.UserSubmittedVacancies), nameof(NotificationFrequencyEx.Immediately))]
@@ -63,7 +63,7 @@ public class WhenGettingNewNotificationPreferencesViewModel
                         Scope = scope,
                         Frequency = frequency
                     },
-                    new NotificationPreference { Event = NotificationTypesEx.VacancyApprovedOrRejectedByDfE, Scope = NotificationScopeEx.Default, Frequency = NotificationFrequencyEx.Never }
+                    new NotificationPreference { Event = NotificationTypesEx.VacancyApprovedOrRejected, Scope = NotificationScopeEx.NotSet, Frequency = NotificationFrequencyEx.Never }
                 ]
             }
         };
@@ -82,7 +82,7 @@ public class WhenGettingNewNotificationPreferencesViewModel
     }
     
     [Test]
-    [MoqInlineAutoData(NotificationScopeEx.Default, NotificationFrequencyEx.Never, nameof(NotificationFrequencyEx.Never))]
+    [MoqInlineAutoData(NotificationScopeEx.NotSet, NotificationFrequencyEx.Never, nameof(NotificationFrequencyEx.Never))]
     [MoqInlineAutoData(NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.Weekly, nameof(NotificationScopeEx.UserSubmittedVacancies))]
     [MoqInlineAutoData(NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.Daily, nameof(NotificationScopeEx.UserSubmittedVacancies))]
     [MoqInlineAutoData(NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.Immediately, nameof(NotificationScopeEx.UserSubmittedVacancies))]
@@ -108,11 +108,11 @@ public class WhenGettingNewNotificationPreferencesViewModel
                 EventPreferences = [
                     new NotificationPreference
                     {
-                        Event = NotificationTypesEx.VacancyApprovedOrRejectedByDfE,
+                        Event = NotificationTypesEx.VacancyApprovedOrRejected,
                         Scope = scope,
                         Frequency = frequency,
                     },
-                    new NotificationPreference { Event = NotificationTypesEx.ApplicationSubmitted, Scope = NotificationScopeEx.Default, Frequency = NotificationFrequencyEx.Never },
+                    new NotificationPreference { Event = NotificationTypesEx.ApplicationSubmitted, Scope = NotificationScopeEx.NotSet, Frequency = NotificationFrequencyEx.Never },
                 ]
             }
         };
