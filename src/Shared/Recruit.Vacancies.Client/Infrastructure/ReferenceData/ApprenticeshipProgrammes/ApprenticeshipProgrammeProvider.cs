@@ -50,9 +50,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
 
         private async Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammes(int? ukprn)
         {
-            var includeFoundationApprenticeships = _feature.IsFeatureEnabled(FeatureNames.FoundationApprenticeships);
-
-            var result = await _outerApiClient.Get<GetTrainingProgrammesResponse>(new GetTrainingProgrammesRequest(includeFoundationApprenticeships, ukprn));
+            var result = await _outerApiClient.Get<GetTrainingProgrammesResponse>(new GetTrainingProgrammesRequest(true, ukprn));
             return new ApprenticeshipProgrammes
             {
                 Data = result.TrainingProgrammes.Select(c => (ApprenticeshipProgramme)c).ToList(),

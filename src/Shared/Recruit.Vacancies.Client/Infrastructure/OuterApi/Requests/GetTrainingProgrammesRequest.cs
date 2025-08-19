@@ -5,7 +5,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests
         private readonly bool _includeFoundationApprenticeships;
         private readonly int? _ukprn;
 
-        public GetTrainingProgrammesRequest(bool includeFoundationApprenticeships = false, int? ukprn = null)
+        public GetTrainingProgrammesRequest(bool includeFoundationApprenticeships = true, int? ukprn = null)
         {
             _includeFoundationApprenticeships = includeFoundationApprenticeships;
             _ukprn = ukprn;
