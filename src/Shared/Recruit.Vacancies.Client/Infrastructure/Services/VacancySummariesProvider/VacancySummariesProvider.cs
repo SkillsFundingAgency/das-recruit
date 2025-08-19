@@ -366,7 +366,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 
             var pipelineResult = await RunAggPipelineQuery(aggPipeline);
 
-            // If the Mongo migration feature is enabled, retrieve the application review stats
             var vacancyReferences = pipelineResult
                 .Where(x => x.VacancyReference.HasValue)
                 .Select(x => x.VacancyReference.Value)
