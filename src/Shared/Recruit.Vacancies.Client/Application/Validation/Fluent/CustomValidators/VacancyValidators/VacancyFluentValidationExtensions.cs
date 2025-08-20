@@ -93,7 +93,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 var programme =
                     await apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
-                if (programme is null)
+                if (programme is null || programme.IsActive is false)
                 {
                     var failure = new ValidationFailure("Training", "Enter a valid training course")
                     {
