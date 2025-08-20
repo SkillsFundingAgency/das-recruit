@@ -16,7 +16,7 @@ public class RadioButtonGroupTagHelper : TagHelper
 {
     public const string TagName = "govuk-radio-group";
 
-    public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+    public override void Process(TagHelperContext context, TagHelperOutput output)
     {
         output.TagName = "div";
         output.TagMode = TagMode.StartTagAndEndTag;
