@@ -68,10 +68,10 @@ public class WhenUpdatingNewNotificationPreferences
 
         var editModel = new ManageNotificationsEditModelEx()
         {
-            ApplicationSubmittedOptionValue = nameof(NotificationFrequencyEx.Never),
-            VacancyApprovedOrRejectedOptionValue = nameof(NotificationFrequencyEx.Never),
-            SharedApplicationReviewedOptionValue = nameof(NotificationFrequencyEx.Never),
-            ProviderAttachedToVacancyOptionValue = nameof(NotificationFrequencyEx.Never),
+            ApplicationSubmittedValue = nameof(NotificationFrequencyEx.Never),
+            VacancyApprovedOrRejectedValue = nameof(NotificationFrequencyEx.Never),
+            SharedApplicationReviewedValue = nameof(NotificationFrequencyEx.Never),
+            ProviderAttachedToVacancyValue = nameof(NotificationFrequencyEx.Never),
         };
         
         // act
@@ -117,11 +117,10 @@ public class WhenUpdatingNewNotificationPreferences
 
         var editModel = new ManageNotificationsEditModelEx()
         {
-            ApplicationSubmittedOptionValue = nameof(NotificationScopeEx.OrganisationVacancies),
-            VacancyApprovedOrRejectedOptionValue = nameof(NotificationScopeEx.OrganisationVacancies),
-            SharedApplicationReviewedOptionValue = nameof(NotificationScopeEx.OrganisationVacancies),
-            ApplicationSubmittedFrequencyAllOptionValue = nameof(NotificationFrequencyEx.Daily),
-            ApplicationSubmittedFrequencyMineOptionValue = nameof(NotificationFrequencyEx.Daily),
+            ApplicationSubmittedValue = nameof(NotificationScopeEx.OrganisationVacancies),
+            VacancyApprovedOrRejectedValue = nameof(NotificationScopeEx.OrganisationVacancies),
+            SharedApplicationReviewedValue = nameof(NotificationScopeEx.OrganisationVacancies),
+            ApplicationSubmittedFrequencyValue = nameof(NotificationFrequencyEx.Daily),
         };
         
         // act
@@ -167,11 +166,10 @@ public class WhenUpdatingNewNotificationPreferences
 
         var editModel = new ManageNotificationsEditModelEx()
         {
-            ApplicationSubmittedOptionValue = nameof(NotificationScopeEx.UserSubmittedVacancies),
-            VacancyApprovedOrRejectedOptionValue = nameof(NotificationScopeEx.UserSubmittedVacancies),
-            SharedApplicationReviewedOptionValue = nameof(NotificationScopeEx.UserSubmittedVacancies),
-            ApplicationSubmittedFrequencyAllOptionValue = nameof(NotificationFrequencyEx.Daily),
-            ApplicationSubmittedFrequencyMineOptionValue = nameof(NotificationFrequencyEx.Daily),
+            ApplicationSubmittedValue = nameof(NotificationScopeEx.UserSubmittedVacancies),
+            VacancyApprovedOrRejectedValue = nameof(NotificationScopeEx.UserSubmittedVacancies),
+            SharedApplicationReviewedValue = nameof(NotificationScopeEx.UserSubmittedVacancies),
+            ApplicationSubmittedFrequencyValue = nameof(NotificationFrequencyEx.Daily),
         };
         
         // act
@@ -214,11 +212,10 @@ public class WhenUpdatingNewNotificationPreferences
         
         var editModel = new ManageNotificationsEditModelEx()
         {
-            ApplicationSubmittedOptionValue = nameof(NotificationScopeEx.UserSubmittedVacancies),
-            VacancyApprovedOrRejectedOptionValue = nameof(NotificationScopeEx.UserSubmittedVacancies),
-            SharedApplicationReviewedOptionValue = nameof(NotificationScopeEx.UserSubmittedVacancies),
-            ApplicationSubmittedFrequencyAllOptionValue = null,
-            ApplicationSubmittedFrequencyMineOptionValue = null,
+            ApplicationSubmittedValue = nameof(NotificationScopeEx.UserSubmittedVacancies),
+            VacancyApprovedOrRejectedValue = nameof(NotificationScopeEx.UserSubmittedVacancies),
+            SharedApplicationReviewedValue = nameof(NotificationScopeEx.UserSubmittedVacancies),
+            ApplicationSubmittedFrequencyValue = null,
         };
         
         // act

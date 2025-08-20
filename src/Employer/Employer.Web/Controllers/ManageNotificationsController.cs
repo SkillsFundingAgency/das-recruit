@@ -49,10 +49,9 @@ public class ManageNotificationsController(ManageNotificationsOrchestrator orche
 
             var vm = new ManageNotificationsViewModelEx
             {
-                VacancyApprovedOrRejectedOptionValue = model.VacancyApprovedOrRejectedOptionValue,
-                ApplicationSubmittedFrequencyAllOptionValue = model.ApplicationSubmittedFrequencyAllOptionValue,
-                ApplicationSubmittedFrequencyMineOptionValue = model.ApplicationSubmittedFrequencyMineOptionValue,
-                ApplicationSubmittedOptionValue = model.ApplicationSubmittedOptionValue,
+                VacancyApprovedOrRejectedValue = model.VacancyApprovedOrRejectedValue,
+                ApplicationSubmittedFrequencyValue = model.ApplicationSubmittedFrequencyValue,
+                ApplicationSubmittedValue = model.ApplicationSubmittedValue,
             };
             return View("NewManageNotifications", vm);
         }

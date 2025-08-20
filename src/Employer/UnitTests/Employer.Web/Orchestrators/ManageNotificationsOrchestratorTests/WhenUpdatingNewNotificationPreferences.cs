@@ -72,10 +72,9 @@ public class WhenUpdatingNewNotificationPreferences
 
         var editModel = new ManageNotificationsEditModelEx()
         {
-            ApplicationSubmittedOptionValue = "Never",
-            ApplicationSubmittedFrequencyAllOptionValue = "Daily",
-            ApplicationSubmittedFrequencyMineOptionValue = "Weekly",
-            VacancyApprovedOrRejectedOptionValue = optionValue,
+            ApplicationSubmittedValue = "Never",
+            ApplicationSubmittedFrequencyValue = "Weekly",
+            VacancyApprovedOrRejectedValue = optionValue,
         };
         
         // act
@@ -92,24 +91,18 @@ public class WhenUpdatingNewNotificationPreferences
     }
     
     [Test]
-    [MoqInlineAutoData(nameof(NotificationFrequencyEx.Never), nameof(NotificationFrequencyEx.Never), nameof(NotificationFrequencyEx.Never), NotificationScopeEx.OrganisationVacancies, NotificationFrequencyEx.Never)]
-    [MoqInlineAutoData(nameof(NotificationScopeEx.UserSubmittedVacancies), nameof(NotificationFrequencyEx.Never), nameof(NotificationFrequencyEx.Never), NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.Never)]
-    [MoqInlineAutoData(nameof(NotificationScopeEx.UserSubmittedVacancies), nameof(NotificationFrequencyEx.Daily), nameof(NotificationFrequencyEx.Never), NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.Daily)]
-    [MoqInlineAutoData(nameof(NotificationScopeEx.UserSubmittedVacancies), nameof(NotificationFrequencyEx.Weekly), nameof(NotificationFrequencyEx.Never), NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.Weekly)]
-    [MoqInlineAutoData(nameof(NotificationScopeEx.UserSubmittedVacancies), nameof(NotificationFrequencyEx.Immediately), nameof(NotificationFrequencyEx.Never), NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.Immediately)]
-    [MoqInlineAutoData(nameof(NotificationScopeEx.UserSubmittedVacancies), nameof(NotificationFrequencyEx.Never), nameof(NotificationFrequencyEx.Daily), NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.Never)]
-    [MoqInlineAutoData(nameof(NotificationScopeEx.UserSubmittedVacancies), nameof(NotificationFrequencyEx.Never), nameof(NotificationFrequencyEx.Weekly), NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.Never)]
-    [MoqInlineAutoData(nameof(NotificationScopeEx.UserSubmittedVacancies), nameof(NotificationFrequencyEx.Never), nameof(NotificationFrequencyEx.Immediately), NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.Never)]
-    [MoqInlineAutoData(nameof(NotificationScopeEx.OrganisationVacancies), nameof(NotificationFrequencyEx.Never), nameof(NotificationFrequencyEx.Daily), NotificationScopeEx.OrganisationVacancies, NotificationFrequencyEx.Daily)]
-    [MoqInlineAutoData(nameof(NotificationScopeEx.OrganisationVacancies), nameof(NotificationFrequencyEx.Never), nameof(NotificationFrequencyEx.Weekly), NotificationScopeEx.OrganisationVacancies, NotificationFrequencyEx.Weekly)]
-    [MoqInlineAutoData(nameof(NotificationScopeEx.OrganisationVacancies), nameof(NotificationFrequencyEx.Never), nameof(NotificationFrequencyEx.Immediately), NotificationScopeEx.OrganisationVacancies, NotificationFrequencyEx.Immediately)]
-    [MoqInlineAutoData(nameof(NotificationScopeEx.OrganisationVacancies), nameof(NotificationFrequencyEx.Daily), nameof(NotificationFrequencyEx.Never), NotificationScopeEx.OrganisationVacancies, NotificationFrequencyEx.Never)]
-    [MoqInlineAutoData(nameof(NotificationScopeEx.OrganisationVacancies), nameof(NotificationFrequencyEx.Weekly), nameof(NotificationFrequencyEx.Never), NotificationScopeEx.OrganisationVacancies, NotificationFrequencyEx.Never)]
-    [MoqInlineAutoData(nameof(NotificationScopeEx.OrganisationVacancies), nameof(NotificationFrequencyEx.Immediately), nameof(NotificationFrequencyEx.Never), NotificationScopeEx.OrganisationVacancies, NotificationFrequencyEx.Never)]
+    [MoqInlineAutoData(nameof(NotificationFrequencyEx.Never), nameof(NotificationFrequencyEx.Never), NotificationScopeEx.OrganisationVacancies, NotificationFrequencyEx.Never)]
+    [MoqInlineAutoData(nameof(NotificationScopeEx.UserSubmittedVacancies), nameof(NotificationFrequencyEx.Never), NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.Never)]
+    [MoqInlineAutoData(nameof(NotificationScopeEx.UserSubmittedVacancies), nameof(NotificationFrequencyEx.Daily), NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.Daily)]
+    [MoqInlineAutoData(nameof(NotificationScopeEx.UserSubmittedVacancies), nameof(NotificationFrequencyEx.Weekly), NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.Weekly)]
+    [MoqInlineAutoData(nameof(NotificationScopeEx.UserSubmittedVacancies), nameof(NotificationFrequencyEx.Immediately), NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.Immediately)]
+    [MoqInlineAutoData(nameof(NotificationScopeEx.OrganisationVacancies), nameof(NotificationFrequencyEx.Never), NotificationScopeEx.OrganisationVacancies, NotificationFrequencyEx.Never)]
+    [MoqInlineAutoData(nameof(NotificationScopeEx.OrganisationVacancies), nameof(NotificationFrequencyEx.Daily), NotificationScopeEx.OrganisationVacancies, NotificationFrequencyEx.Daily)]
+    [MoqInlineAutoData(nameof(NotificationScopeEx.OrganisationVacancies), nameof(NotificationFrequencyEx.Weekly), NotificationScopeEx.OrganisationVacancies, NotificationFrequencyEx.Weekly)]
+    [MoqInlineAutoData(nameof(NotificationScopeEx.OrganisationVacancies), nameof(NotificationFrequencyEx.Immediately), NotificationScopeEx.OrganisationVacancies, NotificationFrequencyEx.Immediately)]
     public async Task For_ApplicationSubmitted_Event_It_Succeeds_When_User_Found(
         string optionValue,
-        string frequencyMineOptionValue,
-        string frequencyAllOptionValue,
+        string frequencyOptionValue,
         NotificationScopeEx expectedScope,
         NotificationFrequencyEx expectedFrequency,
         string employerAccountId,
@@ -142,10 +135,9 @@ public class WhenUpdatingNewNotificationPreferences
 
         var editModel = new ManageNotificationsEditModelEx()
         {
-            ApplicationSubmittedOptionValue = optionValue,
-            ApplicationSubmittedFrequencyAllOptionValue = frequencyAllOptionValue,
-            ApplicationSubmittedFrequencyMineOptionValue = frequencyMineOptionValue,
-            VacancyApprovedOrRejectedOptionValue = "Never",
+            ApplicationSubmittedValue = optionValue,
+            ApplicationSubmittedFrequencyValue = frequencyOptionValue,
+            VacancyApprovedOrRejectedValue = "Never",
         };
         
         // act
@@ -190,10 +182,9 @@ public class WhenUpdatingNewNotificationPreferences
         
         var editModel = new ManageNotificationsEditModelEx()
         {
-            ApplicationSubmittedOptionValue = optionValue,
-            ApplicationSubmittedFrequencyAllOptionValue = null,
-            ApplicationSubmittedFrequencyMineOptionValue = null,
-            VacancyApprovedOrRejectedOptionValue = "Never",
+            ApplicationSubmittedValue = optionValue,
+            ApplicationSubmittedFrequencyValue = null,
+            VacancyApprovedOrRejectedValue = "Never",
         };
         
         // act

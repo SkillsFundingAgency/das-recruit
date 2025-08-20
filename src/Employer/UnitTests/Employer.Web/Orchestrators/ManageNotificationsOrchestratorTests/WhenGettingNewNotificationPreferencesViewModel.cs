@@ -76,9 +76,8 @@ public class WhenGettingNewNotificationPreferencesViewModel
 
         // assert
         result.Should().NotBeNull();
-        result.ApplicationSubmittedOptionValue.Should().Be(expectedOptionValue);
-        result.ApplicationSubmittedFrequencyAllOptionValue.Should().Be(expectedFrequencyValue);
-        result.ApplicationSubmittedFrequencyMineOptionValue.Should().Be(expectedFrequencyValue);
+        result.ApplicationSubmittedValue.Should().Be(expectedOptionValue);
+        result.ApplicationSubmittedFrequencyValue.Should().Be(expectedFrequencyValue);
     }
     
     [Test]
@@ -125,6 +124,6 @@ public class WhenGettingNewNotificationPreferencesViewModel
 
         // assert
         result.Should().NotBeNull();
-        result.VacancyApprovedOrRejectedOptionValue.Should().Be(expectedOptionValue);
+        result.VacancyApprovedOrRejectedValue.Should().Be(expectedOptionValue);
     }
 }

@@ -17,9 +17,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications
     public class ManageNotificationsViewModelEx : ManageNotificationsRouteModel
     {
         public bool Updated { get; set; }
-        public string VacancyApprovedOrRejectedOptionValue { get; init; }
-        public string ApplicationSubmittedOptionValue { get; init; }
-        public string ApplicationSubmittedFrequencyMineOptionValue { get; init; }
-        public string ApplicationSubmittedFrequencyAllOptionValue { get; init; }
+        public string VacancyApprovedOrRejectedValue { get; init; }
+        public string ApplicationSubmittedValue { get; init; }
+        public string ApplicationSubmittedFrequencyValue { get; init; }
     }
 }

@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -39,17 +42,21 @@ public class RadioButtonTagHelper(IHtmlGenerator htmlGenerator): TagHelper
     [HtmlAttributeName("for")]
     public ModelExpression For { get; set; }
 
-    [HtmlAttributeName("conditional")]
-    public string DataAriaControls { get; set; }
-
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
-        output.TagName = "div";
-        output.TagMode = TagMode.StartTagAndEndTag;
-        output.AddClass("govuk-radios__item", HtmlEncoder.Default);
-        if (DataAriaControls is not null)
+        output.SuppressOutput();
+        output.Content.Clear();
+        var div = new TagBuilder("div");
+        div.AddCssClass("govuk-radios__item");
+
+        var dataAttributes = context.AllAttributes.Where(x => x.Name.StartsWith("data-"));
+        var radioAttributes = new ExpandoObject();
+        ICollection<KeyValuePair<string, object>> attributes = radioAttributes;
+        attributes.Add(new KeyValuePair<string, object>("class", "govuk-radios__input"));
+        attributes.Add(new KeyValuePair<string, object>("id", Id));
+        foreach (var dataAttribute in dataAttributes)
         {
-            output.AddClass("govuk-checkboxes--conditional", HtmlEncoder.Default);
+            attributes.Add(new KeyValuePair<string, object>(dataAttribute.Name, dataAttribute.Value));
         }
 
         var radio = htmlGenerator.GenerateRadioButton(
@@ -58,13 +65,9 @@ public class RadioButtonTagHelper(IHtmlGenerator htmlGenerator): TagHelper
             For?.Name,
             Value,
             null,
-            new { @class = "govuk-radios__input", id = Id });
+            radioAttributes);
         
-        if (DataAriaControls is not null)
-        {
-            radio.MergeAttribute("data-aria-controls", DataAriaControls);
-        }
-        output.Content.AppendHtml(radio);
+        div.InnerHtml.AppendHtml(radio);
 
         var label = new TagBuilder("label");
         label.AddCssClass("govuk-label");
@@ -72,6 +75,8 @@ public class RadioButtonTagHelper(IHtmlGenerator htmlGenerator): TagHelper
         label.Attributes.Add("for", Id);
         var labelText = await output.GetChildContentAsync();
         label.InnerHtml.AppendHtml(labelText);
-        output.Content.AppendHtml(label);
+        div.InnerHtml.AppendHtml(label);
+        
+        output.Content.AppendHtml(div);
     }
 }

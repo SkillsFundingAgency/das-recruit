@@ -35,56 +35,43 @@
                 <govuk-fieldset>
                     <govuk-legend size="@HeadingSize.Medium">When a vacancy is approved or rejected by DfE</govuk-legend>
                     <govuk-radio-group>
-                        <govuk-radio-button id="approved-rejected-mine" value="@NotificationScopeEx.UserSubmittedVacancies" for="VacancyApprovedOrRejectedOptionValue">Only get for adverts I’ve submitted</govuk-radio-button>
-                        <govuk-radio-button id="approved-rejected-all" value="@NotificationScopeEx.OrganisationVacancies" for="VacancyApprovedOrRejectedOptionValue">Get for all adverts in our team’s account</govuk-radio-button>
-                        <govuk-radio-button id="approved-rejected-none" value="@NotificationFrequencyEx.Never" for="VacancyApprovedOrRejectedOptionValue">Do not get this email</govuk-radio-button>
+                        <govuk-radio-button id="approved-rejected-none" value="@NotificationFrequencyEx.Never" for="VacancyApprovedOrRejectedValue">Do not get this email</govuk-radio-button>
+                        <govuk-radio-button id="approved-rejected-mine" value="@NotificationScopeEx.UserSubmittedVacancies" for="VacancyApprovedOrRejectedValue">Only get for adverts I’ve submitted</govuk-radio-button>
+                        <govuk-radio-button id="approved-rejected-all" value="@NotificationScopeEx.OrganisationVacancies" for="VacancyApprovedOrRejectedValue">Get for all adverts in our team’s account</govuk-radio-button>
                     </govuk-radio-group>
                 </govuk-fieldset>
             </div>
             
-            <div class="govuk-form-group" data-module="govuk-radios">
+            <div class="govuk-form-group">
                 <govuk-fieldset>
                     <govuk-legend size="@HeadingSize.Medium">When adverts receive new applications</govuk-legend>
                     <govuk-radio-group>
-                        <govuk-radio-button id="applications-mine" value="@NotificationScopeEx.UserSubmittedVacancies" for="ApplicationSubmittedOptionValue" conditional="mine-notify-options">
+                        <govuk-radio-button id="applications-none" value="@NotificationFrequencyEx.Never" for="ApplicationSubmittedValue" data-radio-conditional-hide="application-frequency-options">
+                            Do not get this email
+                        </govuk-radio-button>
+                        <govuk-radio-button id="applications-mine" value="@NotificationScopeEx.UserSubmittedVacancies" for="ApplicationSubmittedValue" data-radio-conditional-reveal="application-frequency-options">
                             Only get for adverts I’ve submitted
                         </govuk-radio-button>
-                        <div esfa-validation-marker-for="ApplicationSubmittedFrequencyMineOptionValue" class="govuk-radios__conditional govuk-radios__conditional--hidden" id="mine-notify-options">
-                            <div class="custom-inset">
-                                <govuk-fieldset>
-                                    <govuk-legend size="@HeadingSize.Small">How often do you want to receive emails about new applications?</govuk-legend>
-                                    <span esfa-validation-message-for="ApplicationSubmittedFrequencyMineOptionValue" class="govuk-error-message"></span>
-                                    <govuk-radio-group>
-                                        <govuk-radio-button id="mine-notify-now" value="@NotificationFrequencyEx.Immediately" for="ApplicationSubmittedFrequencyMineOptionValue">As soon as a new application is received</govuk-radio-button>
-                                        <govuk-radio-button id="mine-notify-daily" value="@NotificationFrequencyEx.Daily" for="ApplicationSubmittedFrequencyMineOptionValue">Once a day</govuk-radio-button>
-                                        <govuk-radio-button id="mine-notify-weekly" value="@NotificationFrequencyEx.Weekly" for="ApplicationSubmittedFrequencyMineOptionValue">Once a week</govuk-radio-button>
-                                    </govuk-radio-group>
-                                </govuk-fieldset>
-                            </div>
-                        </div>
-
-                        <govuk-radio-button id="applications-all" value="@NotificationScopeEx.OrganisationVacancies" for="ApplicationSubmittedOptionValue" conditional="all-notify-options">
+                        <govuk-radio-button id="applications-all" value="@NotificationScopeEx.OrganisationVacancies" for="ApplicationSubmittedValue" data-radio-conditional-reveal="application-frequency-options">
                             Get for all adverts in our team’s account
-                        </govuk-radio-button>
-                        <div esfa-validation-marker-for="ApplicationSubmittedFrequencyAllOptionValue" class="govuk-radios__conditional govuk-radios__conditional--hidden" id="all-notify-options">
-                            <div class="custom-inset">
-                                <govuk-fieldset>
-                                    <govuk-legend size="@HeadingSize.Small">How often do you want to receive emails about new applications?</govuk-legend>
-                                    <span esfa-validation-message-for="ApplicationSubmittedFrequencyAllOptionValue" class="govuk-error-message"></span>
-                                    <govuk-radio-group>
-                                        <govuk-radio-button id="all-notify-now" value="@NotificationFrequencyEx.Immediately" for="ApplicationSubmittedFrequencyAllOptionValue">As soon as a new application is received</govuk-radio-button>
-                                        <govuk-radio-button id="all-notify-daily" value="@NotificationFrequencyEx.Daily" for="ApplicationSubmittedFrequencyAllOptionValue">Once a day</govuk-radio-button>
-                                        <govuk-radio-button id="all-notify-weekly" value="@NotificationFrequencyEx.Weekly" for="ApplicationSubmittedFrequencyAllOptionValue">Once a week</govuk-radio-button>
-                                    </govuk-radio-group>
-                                </govuk-fieldset>
-                            </div>
-                        </div>
-                        <govuk-radio-button id="applications-none" value="@NotificationFrequencyEx.Never" for="ApplicationSubmittedOptionValue">
-                            Do not get this email
                         </govuk-radio-button>
                     </govuk-radio-group>
                 </govuk-fieldset>
             </div>
+            <div class="govuk-radios__conditional" data-module="govuk-radios" id="application-frequency-options">
+                <div class="govuk-form-group" esfa-validation-marker-for="ApplicationSubmittedFrequencyValue">
+                    <govuk-fieldset>
+                        <govuk-legend size="@HeadingSize.Small">How often do you want to receive emails about new applications?</govuk-legend>
+                        <span esfa-validation-message-for="ApplicationSubmittedFrequencyValue" class="govuk-error-message"></span>
+                        <govuk-radio-group>
+                            <govuk-radio-button id="notify-now" value="@NotificationFrequencyEx.Immediately" for="ApplicationSubmittedFrequencyValue">As soon as a new application is received</govuk-radio-button>
+                            <govuk-radio-button id="notify-daily" value="@NotificationFrequencyEx.Daily" for="ApplicationSubmittedFrequencyValue">Once a day</govuk-radio-button>
+                            <govuk-radio-button id="notify-weekly" value="@NotificationFrequencyEx.Weekly" for="ApplicationSubmittedFrequencyValue">Once a week</govuk-radio-button>
+                        </govuk-radio-group>
+                    </govuk-fieldset>
+                </div>
+            </div>
+            
             <div class="govuk-button-group">
                 <button class="govuk-button submit" type="submit">Save settings</button>
             </div>

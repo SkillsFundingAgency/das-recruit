@@ -18,10 +18,9 @@ public class ManageNotificationsEditModel
 
 public class ManageNotificationsEditModelEx : ManageNotificationsEditModel
 {
-    public string VacancyApprovedOrRejectedOptionValue { get; init; }
-    public string ApplicationSubmittedOptionValue { get; init; }
-    public string ApplicationSubmittedFrequencyMineOptionValue { get; init; }
-    public string ApplicationSubmittedFrequencyAllOptionValue { get; init; }
-    public string SharedApplicationReviewedOptionValue { get; init; }
-    public string ProviderAttachedToVacancyOptionValue { get; init; }
+    public string VacancyApprovedOrRejectedValue { get; init; }
+    public string ApplicationSubmittedValue { get; init; }
+    public string ApplicationSubmittedFrequencyValue { get; init; }
+    public string SharedApplicationReviewedValue { get; init; }
+    public string ProviderAttachedToVacancyValue { get; init; }
 }

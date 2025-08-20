@@ -15,8 +15,7 @@ public class ManageNotificationsEditModel : ManageNotificationsRouteModel
 
 public class ManageNotificationsEditModelEx : ManageNotificationsEditModel
 {
-    public string VacancyApprovedOrRejectedOptionValue { get; init; }
-    public string ApplicationSubmittedOptionValue { get; init; }
-    public string ApplicationSubmittedFrequencyMineOptionValue { get; init; }
-    public string ApplicationSubmittedFrequencyAllOptionValue { get; init; }
+    public string VacancyApprovedOrRejectedValue { get; init; }
+    public string ApplicationSubmittedValue { get; init; }
+    public string ApplicationSubmittedFrequencyValue { get; init; }
 }

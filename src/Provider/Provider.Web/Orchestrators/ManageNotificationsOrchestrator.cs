@@ -76,18 +76,17 @@ public class ManageNotificationsOrchestrator(
         
         return new ManageNotificationsViewModelEx
         {
-            ApplicationSubmittedOptionValue = applicationSubmittedPref.Frequency == NotificationFrequencyEx.Never
+            ApplicationSubmittedValue = applicationSubmittedPref.Frequency == NotificationFrequencyEx.Never
                 ? nameof(NotificationFrequencyEx.Never)
                 : applicationSubmittedPref.Scope.ToString(),
-            ApplicationSubmittedFrequencyMineOptionValue = applicationSubmittedPref.Frequency.ToString(),
-            ApplicationSubmittedFrequencyAllOptionValue = applicationSubmittedPref.Frequency.ToString(),
-            VacancyApprovedOrRejectedOptionValue = vacancyAppRefPref.Frequency == NotificationFrequencyEx.Never
+            ApplicationSubmittedFrequencyValue = applicationSubmittedPref.Frequency.ToString(),
+            VacancyApprovedOrRejectedValue = vacancyAppRefPref.Frequency == NotificationFrequencyEx.Never
                 ? nameof(NotificationFrequencyEx.Never)
                 : vacancyAppRefPref.Scope.ToString(),
-            SharedApplicationReviewedOptionValue = sharedAppReviewPref.Frequency == NotificationFrequencyEx.Never
+            SharedApplicationReviewedValue = sharedAppReviewPref.Frequency == NotificationFrequencyEx.Never
                 ? nameof(NotificationFrequencyEx.Never)
                 : sharedAppReviewPref.Scope.ToString(),
-            ProviderAttachedToVacancyOptionValue = providerAttachedPref.Frequency == NotificationFrequencyEx.Never
+            ProviderAttachedToVacancyValue = providerAttachedPref.Frequency == NotificationFrequencyEx.Never
                 ? nameof(NotificationFrequencyEx.Never)
                 : nameof(NotificationFrequencyEx.Immediately),
         };
@@ -106,25 +105,19 @@ public class ManageNotificationsOrchestrator(
         var reviewedSharedAppPref = currentPreferences.NotificationPreferences.GetForEvent(NotificationTypesEx.SharedApplicationReviewedByEmployer);
         var providerAttachedPref = currentPreferences.NotificationPreferences.GetForEvent(NotificationTypesEx.ProviderAttachedToVacancy);
 
-        if (Enum.TryParse<NotificationFrequencyEx>(editModel.ProviderAttachedToVacancyOptionValue, out var providerAttachedFrequency))
+        if (Enum.TryParse<NotificationFrequencyEx>(editModel.ProviderAttachedToVacancyValue, out var providerAttachedFrequency))
         {
             providerAttachedPref.Frequency = providerAttachedFrequency;
             providerAttachedPref.Scope = NotificationScopeEx.NotSet;
         }
         
-        ParseScope(editModel.VacancyApprovedOrRejectedOptionValue, vacancyAppRefPref);
-        ParseScope(editModel.SharedApplicationReviewedOptionValue, reviewedSharedAppPref);
-        ParseScope(editModel.ApplicationSubmittedOptionValue, applicationSubmittedPref);
+        ParseScope(editModel.VacancyApprovedOrRejectedValue, vacancyAppRefPref);
+        ParseScope(editModel.SharedApplicationReviewedValue, reviewedSharedAppPref);
+        ParseScope(editModel.ApplicationSubmittedValue, applicationSubmittedPref);
 
         if (applicationSubmittedPref.Frequency != NotificationFrequencyEx.Never)
         {
-            string frequencyValue = applicationSubmittedPref.Scope switch
-            {
-                NotificationScopeEx.UserSubmittedVacancies => editModel.ApplicationSubmittedFrequencyMineOptionValue,
-                NotificationScopeEx.OrganisationVacancies => editModel.ApplicationSubmittedFrequencyAllOptionValue,
-            };
-            
-            if (Enum.TryParse<NotificationFrequencyEx>(frequencyValue, out var applicationFrequency))
+            if (Enum.TryParse<NotificationFrequencyEx>(editModel.ApplicationSubmittedFrequencyValue, out var applicationFrequency))
             {
                 applicationSubmittedPref.Frequency = applicationFrequency;
             }
@@ -134,9 +127,7 @@ public class ManageNotificationsOrchestrator(
                 {
                     Errors = [new EntityValidationError(
                         1100,
-                        applicationSubmittedPref.Scope == NotificationScopeEx.OrganisationVacancies
-                            ? nameof(ManageNotificationsEditModelEx.ApplicationSubmittedFrequencyAllOptionValue)
-                            : nameof(ManageNotificationsEditModelEx.ApplicationSubmittedFrequencyMineOptionValue),
+                        nameof(ManageNotificationsEditModelEx.ApplicationSubmittedFrequencyValue),
                         "Select how often you want to get emails about new applications",
                         "1100")]
                 });
