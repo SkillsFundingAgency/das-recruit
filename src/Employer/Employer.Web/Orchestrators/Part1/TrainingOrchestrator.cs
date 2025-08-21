@@ -29,7 +29,7 @@ public class TrainingOrchestrator(
     : VacancyValidatingOrchestrator<TrainingEditModel>(logger)
 {
     private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProgramme;
-    private const string InvalidTraining = "Select the training the apprentice will take";
+    private const string InvalidTraining = "Enter a valid training course";
 
     public async Task<TrainingViewModel> GetTrainingViewModelAsync(VacancyRouteModel vrm, VacancyUser user)
     {
