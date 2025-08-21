@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
 
         private async Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammes(int? ukprn)
         {
-            var result = await _outerApiClient.Get<GetTrainingProgrammesResponse>(new GetTrainingProgrammesRequest(true, ukprn));
+            var result = await _outerApiClient.Get<GetTrainingProgrammesResponse>(new GetTrainingProgrammesRequest(ukprn));
             return new ApprenticeshipProgrammes
             {
                 Data = result.TrainingProgrammes.Select(c => (ApprenticeshipProgramme)c).ToList(),

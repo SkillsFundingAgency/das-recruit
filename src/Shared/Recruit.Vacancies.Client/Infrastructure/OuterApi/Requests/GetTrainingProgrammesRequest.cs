@@ -2,12 +2,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests
 {
     public class GetTrainingProgrammesRequest : IGetApiRequest
     {
-        private readonly bool _includeFoundationApprenticeships;
         private readonly int? _ukprn;
 
-        public GetTrainingProgrammesRequest(bool includeFoundationApprenticeships = true, int? ukprn = null)
+        public GetTrainingProgrammesRequest(int? ukprn = null)
         {
-            _includeFoundationApprenticeships = includeFoundationApprenticeships;
             _ukprn = ukprn;
         }
 
@@ -15,11 +13,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests
         {
             get
             {
-                var query = $"trainingprogrammes?includeFoundationApprenticeships={_includeFoundationApprenticeships}";
+                var query = $"trainingprogrammes";
 
                 if (_ukprn.HasValue)
                 {
-                    query += $"&ukprn={_ukprn.Value}";
+                    query += $"?ukprn={_ukprn.Value}";
                 }
                 return query;
             }
