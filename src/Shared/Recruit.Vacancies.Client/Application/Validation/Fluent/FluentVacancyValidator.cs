@@ -892,7 +892,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateTrainingProviderDeliverTrainingCourse()
         {
-            When(x => x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn && x.TrainingProvider != null, () =>
+            When(x => x.TrainingProvider != null && x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn, () =>
             {
                 RuleFor(x => x)
                     .TrainingProviderMustBeDeliverTheTrainingCourse(_trainingProviderService, _apprenticeshipProgrammesProvider)
@@ -923,7 +923,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private void TrainingExpiryDateValidation()
         {
             // This rule is only applicable for non-ESFA test training providers
-            When(x => x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn && !string.IsNullOrWhiteSpace(x.ProgrammeId), () =>
+            When(x => x.TrainingProvider is { Ukprn: not null } && x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn && !string.IsNullOrWhiteSpace(x.ProgrammeId), () =>
             {
                 RuleFor(x => x)
                     .Cascade(CascadeMode.Stop)
@@ -937,7 +937,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private void ValidateTrainingCourse()
         {
             // This rule is only applied when the training provider is not the ESFA test training provider
-            When(x => x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn && !string.IsNullOrWhiteSpace(x.ProgrammeId), () =>
+            When(x => x.TrainingProvider is { Ukprn: not null } && x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn && !string.IsNullOrWhiteSpace(x.ProgrammeId), () =>
             {
                 RuleFor(x => x)
                     .Cascade(CascadeMode.Stop)
