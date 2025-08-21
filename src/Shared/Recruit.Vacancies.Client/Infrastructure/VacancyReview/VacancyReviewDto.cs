@@ -31,7 +31,11 @@ public class VacancyReviewDto
     public required string VacancySnapshot { get; set; }
     public long Ukprn { get; set; }
     public long AccountId { get; set; }
-    public long AccountLegalEntityID { get; set; }
+    public long AccountLegalEntityId { get; set; }
+    public string EmployerName { get; set; }
+
+    public string HashedAccountId { get; set; }
+    public Guid VacancyId { get; set; }
 
     public static VacancyReviewDto MapVacancyReviewDto(Domain.Entities.VacancyReview source, IEncodingService encodingService)
     {
@@ -61,11 +65,18 @@ public class VacancyReviewDto
             OwnerType = source.VacancySnapshot.OwnerType.ToString(),
             AccountId = encodingService.Decode(source.VacancySnapshot.EmployerAccountId, EncodingType.AccountId),
             Ukprn = source.VacancySnapshot.TrainingProvider.Ukprn!.Value,
-            AccountLegalEntityID = encodingService.Decode(source.VacancySnapshot.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId)
+            AccountLegalEntityId = encodingService.Decode(source.VacancySnapshot.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId),
+            HashedAccountId = source.VacancySnapshot.EmployerAccountId,
+            EmployerName =  source.VacancySnapshot.EmployerName,
+            EmployerLocations = source.VacancySnapshot.EmployerLocations,
+            EmployerLocationOption = source.VacancySnapshot.EmployerLocationOption,
+            VacancyId = source.VacancySnapshot.Id
         };
     }
 
-    
+    public AvailableWhere? EmployerLocationOption { get; set; }
+
+    public List<Address> EmployerLocations { get; set; }
 
     public static explicit operator Domain.Entities.VacancyReview(VacancyReviewDto source)
     {
