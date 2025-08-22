@@ -1,18 +1,12 @@
 ﻿@using Esfa.Recruit.Shared.Web.Mappers
-@using Esfa.Recruit.Shared.Web.TagHelpers
 @using Microsoft.AspNetCore.Mvc.ModelBinding
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using Esfa.Recruit.Provider.Web.TagHelpers
-@using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle
 @model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
-
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/check-your-answers";
     ViewBag.Title = "Check your answers before submitting your vacancy";
 }
-
 @section BackLink {
-    @if (Model.Status == VacancyStatus.Rejected || Model.Status == VacancyStatus.Referred)
+    @if (Model.Status is VacancyStatus.Rejected or VacancyStatus.Referred)
     {
         <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Return to dashboard</a>        
     }
@@ -20,10 +14,7 @@
     {
         <a asp-route="@RouteNames.ProviderTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back to task list</a>    
     }
-    
 }
-
-
 @if (!Model.CanHideValidationSummary)
 {
     <div class="govuk-error-summary review-summary govuk-!-margin-top-0" role="alert" tabindex="-1">
@@ -50,7 +41,6 @@
         </div>
     </div>
 }
-
 <div asp-show="Model.CanShowVacancyClonedStatusHeader" class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
   <div class="govuk-notification-banner__header">
     <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
@@ -193,8 +183,6 @@
             <field-review-message field-name="@FieldIdentifiers.TrainingDescription" model="@Model"></field-review-message>
             <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="TrainingDescription">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.TrainingDescription">The apprentice's training schedule (optional)</dt>
-                
-                    
                         @if (string.IsNullOrEmpty(Model.TrainingDescription))
                         {
                             <dd class="app-summary-list__value">
@@ -210,7 +198,6 @@
                             </dd>
                         }
                         <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.TrainingDescription" tag-name="strong" model="@Model"/>
-                
                 <dd class="app-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyHowTheApprenticeWillTrain_Index_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-description">Change<span class="govuk-visually-hidden"> how the apprentice will train</span></a>     
                 </dd>
@@ -225,7 +212,6 @@
                     <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.AdditionalTrainingDescription" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
-
                 </dd>
             </div>
         </dl>

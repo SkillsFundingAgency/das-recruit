@@ -36,7 +36,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("123"))
                 .ReturnsAsync(new ApprenticeshipProgramme
                 {
-                    IsActive = true
+                    IsActive = true,
+                    Id = "123",
                 });
             MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("000"))
                 .ReturnsAsync(new ApprenticeshipProgramme
@@ -64,6 +65,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             MockProfanityListProvider = new TestProfanityListProvider();
             MockProviderRelationshipsService = new Mock<IProviderRelationshipsService>();
             MockTrainingProviderService = new Mock<ITrainingProviderService>();
+            MockTrainingProviderService.Setup(x => x.GetCourseProviders(123)).ReturnsAsync(new List<TrainingProviderSummary>()
+            {
+                new()
+                {
+                    Ukprn = 10000000,
+                }
+            });
             TimeProvider = new CurrentUtcTimeProvider();
             Feature = new Mock<IFeature>();
         }
