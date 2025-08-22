@@ -92,12 +92,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
                 });
         }
 
-        public async Task<GetVacanciesDashboardResponse> GetProviderDashboardVacanciesByApplicationReviewStatuses(long ukprn, List<ApplicationReviewStatus> vacancyReferences, int pageNumber)
+        public async Task<GetVacanciesDashboardResponse> GetProviderDashboardVacanciesByApplicationReviewStatuses(
+            long ukprn,
+            List<ApplicationReviewStatus> applicationReviewStatusList,
+            int pageNumber = 1,
+            int pageSize = 25)
         {
             var retryPolicy = PollyRetryPolicy.GetPolicy();
 
             return await retryPolicy.Execute(_ => outerApiClient.Get<GetVacanciesDashboardResponse>(
-                    new GetProviderDashboardVacanciesApiRequest(ukprn,pageNumber,vacancyReferences)),
+                    new GetProviderDashboardVacanciesApiRequest(ukprn, pageNumber, pageSize, applicationReviewStatusList)),
                 new Dictionary<string, object>
                 {
                     {

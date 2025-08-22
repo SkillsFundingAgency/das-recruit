@@ -66,6 +66,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             string hashedAccountId,
             long accountId,
             int pageNumber, 
+            int pageSize,
             List<ApplicationReviewStatus> statuses,
             GetVacanciesDashboardResponse response,
             [Frozen] Mock<IEncodingService> encodingService,
@@ -75,12 +76,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             encodingService.Setup(x => x.Decode(hashedAccountId, EncodingType.AccountId))
                 .Returns(accountId);
 
-            var expectedGetUrl = new GetEmployerDashboardVacanciesApiRequest(accountId, pageNumber, statuses);
+            var expectedGetUrl = new GetEmployerDashboardVacanciesApiRequest(accountId, pageNumber, pageSize, statuses);
             outerApiClient.Setup(x => x.Get<GetVacanciesDashboardResponse>(
                     It.Is<GetEmployerDashboardVacanciesApiRequest>(r => r.GetUrl == expectedGetUrl.GetUrl)))
                 .ReturnsAsync(response);
 
-            var result = await employerAccountProvider.GetEmployerVacancyDashboardStats(hashedAccountId, pageNumber, statuses);
+            var result = await employerAccountProvider.GetEmployerVacancyDashboardStats(hashedAccountId, statuses, pageNumber, pageSize);
 
 
             result.Should().BeEquivalentTo(response);

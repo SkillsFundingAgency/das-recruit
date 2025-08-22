@@ -35,11 +35,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
         
         
         /// <summary>
-        /// Contract to get the vacancies under a application review statuses.
+        /// Contract to get the vacancies under an application review statuses.
         /// </summary>
         /// <returns></returns>
         Task<GetVacanciesDashboardResponse> GetProviderDashboardVacanciesByApplicationReviewStatuses(long ukprn,
-            List<ApplicationReviewStatus> vacancyReferences, int pageNumber);
+            List<ApplicationReviewStatus> vacancyReferences, int pageNumber, int pageSize);
 
         Task<IEnumerable<TrainingProviderSummary>> GetCourseProviders(int programmeId);
     }

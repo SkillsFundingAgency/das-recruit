@@ -159,13 +159,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
                     }
                 });
         }
-        public async Task<GetVacanciesDashboardResponse> GetEmployerVacancyDashboardStats(string hashedAccountId, int pageNumber, List<ApplicationReviewStatus> statuses)
+        public async Task<GetVacanciesDashboardResponse> GetEmployerVacancyDashboardStats(string hashedAccountId,
+            List<ApplicationReviewStatus> statuses,
+            int pageNumber = 1,
+            int pageSize = 25)
         {
             var retryPolicy = PollyRetryPolicy.GetPolicy();
             long accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
 
             return await retryPolicy.Execute(_ => outerApiClient.Get<GetVacanciesDashboardResponse>(
-                    new GetEmployerDashboardVacanciesApiRequest(accountId,pageNumber,statuses)),
+                    new GetEmployerDashboardVacanciesApiRequest(accountId, pageNumber, pageSize, statuses)),
                 new Dictionary<string, object>
                 {
                     {

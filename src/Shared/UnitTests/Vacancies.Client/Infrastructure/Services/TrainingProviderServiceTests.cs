@@ -109,17 +109,18 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public async Task GetProviderDashboardVacanciesByApplicationReviewStatuses_Should_Return_As_Expected(
             long ukprn,
             int pageNumber,
+            int pageSize,
             List<ApplicationReviewStatus> status,
             GetVacanciesDashboardResponse response,
             [Frozen] Mock<IOuterApiClient> outerApiClient,
             [Greedy] TrainingProviderService trainingProviderService)
         {
-            var expectedGetUrl = new GetProviderDashboardVacanciesApiRequest(ukprn, pageNumber, status);
+            var expectedGetUrl = new GetProviderDashboardVacanciesApiRequest(ukprn, pageNumber, pageSize, status);
             outerApiClient.Setup(x => x.Get<GetVacanciesDashboardResponse>(
                     It.Is<GetProviderDashboardVacanciesApiRequest>(r => r.GetUrl == expectedGetUrl.GetUrl)))
                 .ReturnsAsync(response);
 
-            var result = await trainingProviderService.GetProviderDashboardVacanciesByApplicationReviewStatuses(ukprn, status, pageNumber);
+            var result = await trainingProviderService.GetProviderDashboardVacanciesByApplicationReviewStatuses(ukprn, status, pageNumber, pageSize);
 
             result.Should().BeEquivalentTo(response);
         }

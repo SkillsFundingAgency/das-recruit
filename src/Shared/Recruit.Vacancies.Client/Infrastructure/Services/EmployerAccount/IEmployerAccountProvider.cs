@@ -22,6 +22,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             string sortColumn,
             bool isAscending);
 
-        Task<GetVacanciesDashboardResponse> GetEmployerVacancyDashboardStats(string hashedAccountId, int pageNumber, List<ApplicationReviewStatus> statuses);
+        Task<GetVacanciesDashboardResponse> GetEmployerVacancyDashboardStats(string hashedAccountId,
+            List<ApplicationReviewStatus> statuses,
+            int pageNumber,
+            int pageSize);
     }
 }
