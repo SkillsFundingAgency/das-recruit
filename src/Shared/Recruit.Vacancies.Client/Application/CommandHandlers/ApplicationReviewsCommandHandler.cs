@@ -12,6 +12,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using MediatR;
+using SFA.DAS.Encoding;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 
@@ -33,7 +34,8 @@ public class ApplicationReviewsCommandHandler(
     ITimeProvider timeProvider,
     IOuterApiClient outerApiClient,
     IVacancyRepository vacancyRepository,
-    IApplicationReviewRepositoryRunner applicationReviewRepositoryRunner)
+    IApplicationReviewRepositoryRunner applicationReviewRepositoryRunner,
+    IEncodingService encodingService)
     :
         IRequestHandler<ApplicationReviewsSharedCommand, Unit>,
         IRequestHandler<ApplicationReviewsUnsuccessfulCommand, Unit>
@@ -95,13 +97,13 @@ public class ApplicationReviewsCommandHandler(
     {
         var tasks = reviews.Select(applicationReview =>
         {
+            long accountId = encodingService.Decode(vacancy.EmployerAccountId, EncodingType.AccountId);
             var requestData = new PostApplicationSharedNotificationApiRequest.PostApplicationSharedNotificationApiRequestData
             {
                 AdvertTitle = vacancy.Title,
                 ApplicationId = applicationReview.Application!.ApplicationId,
-                FirstName = vacancy.EmployerName,
                 HashAccountId = vacancy.EmployerAccountId,
-                RecipientEmail = vacancy.SubmittedByUser.Email,
+                AccountId = accountId, 
                 TrainingProvider = vacancy.TrainingProvider.Name,
                 VacancyId = vacancy.Id,
                 VacancyReference = vacancy.VacancyReference!.Value
