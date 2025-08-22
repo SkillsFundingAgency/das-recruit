@@ -891,7 +891,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateTrainingProviderDeliverTrainingCourse()
         {
-            When(x => x.TrainingProvider != null, () =>
+            When(x => x.TrainingProvider != null && x.OwnerType == OwnerType.Employer, () =>
             {
                 RuleFor(x => x)
                     .TrainingProviderMustBeDeliverTheTrainingCourse(_trainingProviderService, _apprenticeshipProgrammesProvider)
@@ -939,6 +939,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 RuleFor(x => x)
                     .Cascade(CascadeMode.Stop)
                     .TrainingMustBeValid(_apprenticeshipProgrammesProvider)
+                    .TrainingCourseMustBeOfferedByTrainingProvider(_trainingProviderService, _apprenticeshipProgrammesProvider)
                     .TrainingMustBeActiveForCurrentDate(_apprenticeshipProgrammesProvider, _timeProvider)
                     .RunCondition(VacancyRuleSet.TrainingProgramme);
             });
