@@ -42,7 +42,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         {
             var vacancy = new Vacancy
             {
-                ProgrammeId = "abc"
+                ProgrammeId = "abc",
+                TrainingProvider = new TrainingProvider
+                {
+                    Ukprn = 1000
+                }
             };
             
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
