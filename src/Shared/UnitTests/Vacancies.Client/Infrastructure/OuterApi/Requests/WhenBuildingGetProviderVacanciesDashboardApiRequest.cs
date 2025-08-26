@@ -12,10 +12,11 @@ public class WhenBuildingGetProviderVacanciesDashboardApiRequest
     public void Then_It_Is_Correctly_Constructed(
         int ukprn,
         List<ApplicationReviewStatus> status,
-        int pageNumber)
+        int pageNumber,
+        int pageSize)
     {
-        var actual = new GetProviderDashboardVacanciesApiRequest(ukprn, pageNumber, status);
+        var actual = new GetProviderDashboardVacanciesApiRequest(ukprn, pageNumber, pageSize, status);
 
-        actual.GetUrl.Should().Be($"providers/dashboard/{ukprn}/vacancies?pageNumber={pageNumber}&status={string.Join("&status=", status)}");
+        actual.GetUrl.Should().Be($"providers/dashboard/{ukprn}/vacancies?pageNumber={pageNumber}&pageSize={pageSize}&status={string.Join("&status=", status)}");
     }
 }
