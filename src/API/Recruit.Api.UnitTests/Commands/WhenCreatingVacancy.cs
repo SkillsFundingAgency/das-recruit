@@ -553,4 +553,43 @@ public class WhenCreatingVacancy
         // assert
         locationsService.Verify(x => x.GetBulkPostcodeDataAsync(ItIs.EquivalentTo(postcodes)), Times.Once);
     }
+    [Test, MoqAutoData]
+    public async Task Then_Addresses_Are_Looked_Up_and_If_Not_Does_Not_Error(
+        Vacancy vacancy,
+        CreateVacancyCommand command,
+        TrainingProvider provider,
+        [Frozen]Mock<ILocationsService> locationsService,
+        [Frozen]Mock<ITrainingProviderService> trainingProviderService,
+        [Frozen] Mock<ITrainingProviderSummaryProvider> trainingProviderSummaryProvider,
+        [Frozen]Mock<IRecruitVacancyClient> recruitVacancyClient,
+        [Greedy] CreateVacancyCommandHandler sut)
+    {
+        // arrange
+        var postcodes = command.Vacancy.EmployerLocations.Select(x => x.Postcode).ToList();
+        command.ValidateOnly = false;
+        trainingProviderService
+            .Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
+            .ReturnsAsync(provider);
+        trainingProviderSummaryProvider
+            .Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
+            .ReturnsAsync(true);
+        recruitVacancyClient
+            .Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
+            .Returns(new EntityValidationResult());
+        recruitVacancyClient
+            .Setup(x => x.GetVacancyAsync(command.Vacancy.Id))
+            .ReturnsAsync(vacancy);
+        locationsService.Setup(x => x.GetBulkPostcodeDataAsync(It.IsAny<List<string>>()))
+            .ReturnsAsync(postcodes.ToDictionary(x => x, PostcodeData (_) => null));
+
+        command.Vacancy.EmployerLocation = null;
+        command.Vacancy.EmployerLocations.ForEach(x => x.Country = null);
+            
+        // act
+        var actual = await sut.Handle(command, CancellationToken.None);
+            
+        // assert
+        actual.ResultCode.Should().Be(ResponseCode.Created);
+        locationsService.Verify(x => x.GetBulkPostcodeDataAsync(ItIs.EquivalentTo(postcodes)), Times.Once);
+    }
 }
