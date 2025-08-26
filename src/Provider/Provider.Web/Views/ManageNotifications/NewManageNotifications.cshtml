@@ -1,0 +1,101 @@
+@using Esfa.Recruit.Provider.Web.ViewModels.ManageNotifications;
+@using Esfa.Recruit.Shared.Web.TagHelpers
+@{ 
+    ViewBag.Vpv = "/recruitment/employer/page-manage-notifications";
+    ViewBag.Title = "Manage your emails";
+}
+
+@model ManageNotificationsViewModelEx
+
+@section BackLink {
+    <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
+
+        <govuk-banner asp-show="@Model.Updated" type="@BannerStyle.Success">
+            <govuk-banner-heading>
+                Recruitment email settings saved.
+            </govuk-banner-heading>
+        </govuk-banner>
+        
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Manage your advert notifications</h1>
+        
+        <p>
+            Choose when to get emails about your adverts. We’ll always email you if a training provider recruiting on your behalf needs you to do something.
+        </p>
+        
+        <form method="post" asp-route="@RouteNames.ManageNotifications_Post"  asp-route-ukprn="@Model.Ukprn">
+
+            <div class="govuk-form-group" data-module="govuk-radios">
+                <govuk-fieldset>
+                    <govuk-legend size="@HeadingSize.Medium">When a vacancy is approved or rejected</govuk-legend>
+                    <div class="govuk-hint govuk-!-margin-bottom-4">DfE reviews vacancies before they go live. Depending on your permissions, employers may also review vacancies.</div>
+                    <govuk-radio-group>
+                        <govuk-radio-button id="approved-rejected-none" value="@NotificationFrequencyEx.Never" for="VacancyApprovedOrRejectedValue">Do not get this email</govuk-radio-button>
+                        <govuk-radio-button id="approved-rejected-mine" value="@NotificationScopeEx.UserSubmittedVacancies" for="VacancyApprovedOrRejectedValue">Only get for vacancies I’ve submitted</govuk-radio-button>
+                        <govuk-radio-button id="approved-rejected-all" value="@NotificationScopeEx.OrganisationVacancies" for="VacancyApprovedOrRejectedValue">Get for all vacancies in our team’s account</govuk-radio-button>
+                    </govuk-radio-group>
+                </govuk-fieldset>
+            </div>
+            
+            <div class="govuk-form-group">
+                <govuk-fieldset>
+                    <govuk-legend size="@HeadingSize.Medium">When adverts receive new applications</govuk-legend>
+                    <govuk-radio-group>
+                        <govuk-radio-button id="applications-none" value="@NotificationFrequencyEx.Never" for="ApplicationSubmittedValue" data-radio-conditional-hide="application-frequency-options">
+                            Do not get this email
+                        </govuk-radio-button>
+                        <govuk-radio-button id="applications-mine" value="@NotificationScopeEx.UserSubmittedVacancies" for="ApplicationSubmittedValue" data-radio-conditional-reveal="application-frequency-options">
+                            Only get for vacancies I’ve submitted
+                        </govuk-radio-button>
+                        <govuk-radio-button id="applications-all" value="@NotificationScopeEx.OrganisationVacancies" for="ApplicationSubmittedValue" data-radio-conditional-reveal="application-frequency-options">
+                            Get for all vacancies in our team’s account
+                        </govuk-radio-button>
+                    </govuk-radio-group>
+                </govuk-fieldset>
+            </div>
+
+            <div class="govuk-radios__conditional" data-module="govuk-radios" id="application-frequency-options">
+                <div class="govuk-form-group" esfa-validation-marker-for="ApplicationSubmittedFrequencyValue">
+                    <govuk-fieldset>
+                        <govuk-legend size="@HeadingSize.Small">How often do you want to receive emails about new applications?</govuk-legend>
+                        <span esfa-validation-message-for="ApplicationSubmittedFrequencyValue" class="govuk-error-message"></span>
+                        <govuk-radio-group>
+                            <govuk-radio-button id="notify-now" value="@NotificationFrequencyEx.Immediately" for="ApplicationSubmittedFrequencyValue">As soon as a new application is received</govuk-radio-button>
+                            <govuk-radio-button id="notify-daily" value="@NotificationFrequencyEx.Daily" for="ApplicationSubmittedFrequencyValue">Once a day</govuk-radio-button>
+                            <govuk-radio-button id="notify-weekly" value="@NotificationFrequencyEx.Weekly" for="ApplicationSubmittedFrequencyValue">Once a week</govuk-radio-button>
+                        </govuk-radio-group>
+                    </govuk-fieldset>
+                </div>
+            </div>
+
+            <div class="govuk-form-group" data-module="govuk-radios">
+                <govuk-fieldset>
+                    <govuk-legend size="@HeadingSize.Medium">When an employer has reviewed applications shared with them</govuk-legend>
+                    <govuk-radio-group>
+                        <govuk-radio-button id="vacancy-reviewed-none" value="@NotificationFrequencyEx.Never" for="SharedApplicationReviewedValue">Do not get this email</govuk-radio-button>
+                        <govuk-radio-button id="vacancy-reviewed-mine" value="@NotificationScopeEx.UserSubmittedVacancies" for="SharedApplicationReviewedValue">Only get for vacancies I’ve submitted</govuk-radio-button>
+                        <govuk-radio-button id="vacancy-reviewed-all" value="@NotificationScopeEx.OrganisationVacancies" for="SharedApplicationReviewedValue">Get for all vacancies in our team’s account</govuk-radio-button>
+                    </govuk-radio-group>
+                </govuk-fieldset>
+            </div>
+            
+            <div class="govuk-form-group" data-module="govuk-radios">
+                <govuk-fieldset>
+                    <govuk-legend size="@HeadingSize.Medium">When an employer publishes a vacancy with us as the training provider</govuk-legend>
+                    <govuk-radio-group>
+                        <govuk-radio-button id="employer-publish-vacancy-rejected-none" value="@NotificationFrequencyEx.Never" for="ProviderAttachedToVacancyValue">Do not get this email</govuk-radio-button>
+                        <govuk-radio-button id="employer-publish-vacancy-rejected-all" value="@NotificationFrequencyEx.Immediately" for="ProviderAttachedToVacancyValue">Get this email</govuk-radio-button>
+                    </govuk-radio-group>
+                </govuk-fieldset>
+            </div>
+            <div class="govuk-button-group">
+                <button class="govuk-button submit" type="submit">Save settings</button>
+            </div>
+        </form>
+    </div>
+</div>
