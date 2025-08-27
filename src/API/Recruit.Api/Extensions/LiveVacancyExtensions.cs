@@ -34,8 +34,7 @@ namespace SFA.DAS.Recruit.Api.Extensions
             }
             else if (vacancy.Wage.WageType == WageType.NationalMinimumWageForApprentices.ToString())
             {
-                var weeklyHours = (int)decimal.Round(vacancy.Wage.WeeklyHours, MidpointRounding.AwayFromZero);
-                var rates = NationalMinimumWageService.GetAnnualRates(vacancy.StartDate, weeklyHours);
+                var rates = NationalMinimumWageService.GetAnnualRates(vacancy.StartDate, vacancy.Wage.WeeklyHours);
 
                 vacancy.Wage.ApprenticeMinimumWage = rates.ApprenticeMinimumWage;
                 vacancy.Wage.Under18NationalMinimumWage = rates.ApprenticeMinimumWage;
@@ -45,8 +44,7 @@ namespace SFA.DAS.Recruit.Api.Extensions
             }
             else
             {
-                var weeklyHours = (int)decimal.Round(vacancy.Wage.WeeklyHours, MidpointRounding.AwayFromZero);
-                var rates = NationalMinimumWageService.GetAnnualRates(vacancy.StartDate, weeklyHours);
+                var rates = NationalMinimumWageService.GetAnnualRates(vacancy.StartDate, vacancy.Wage.WeeklyHours);
 
                 vacancy.Wage.ApprenticeMinimumWage = rates.ApprenticeMinimumWage;
                 vacancy.Wage.Under18NationalMinimumWage = rates.Under18NationalMinimumWage;
