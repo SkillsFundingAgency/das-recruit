@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         : VacancyValidatingOrchestrator<TrainingEditModel>(logger)
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProgramme;
-        private const string InvalidTraining = "Select a training course";
+        private const string InvalidTraining = "Select a valid training course";
 
         public async Task<TrainingViewModel> GetTrainingViewModelAsync(VacancyRouteModel vrm, VacancyUser user)
         {
