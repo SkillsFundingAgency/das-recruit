@@ -340,7 +340,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.ProgrammeId)
                 .NotEmpty()
-                    .WithMessage($"You must select {VacancyContext} training")
+                    .WithMessage($"Enter a valid training course")
                     .WithErrorCode("25")
                     .WithState(_ => VacancyRuleSet.TrainingProgramme)
                 .RunCondition(VacancyRuleSet.TrainingProgramme);
@@ -892,7 +892,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateTrainingProviderDeliverTrainingCourse()
         {
-            When(x => x.TrainingProvider != null && x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn, () =>
+            When(x => x.TrainingProvider != null && x.OwnerType == OwnerType.Employer && x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn, () =>            
             {
                 RuleFor(x => x)
                     .TrainingProviderMustBeDeliverTheTrainingCourse(_trainingProviderService, _apprenticeshipProgrammesProvider)
@@ -942,6 +942,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 RuleFor(x => x)
                     .Cascade(CascadeMode.Stop)
                     .TrainingMustBeValid(_apprenticeshipProgrammesProvider)
+                    .TrainingCourseMustBeOfferedByTrainingProvider(_trainingProviderService, _apprenticeshipProgrammesProvider)
                     .TrainingMustBeActiveForCurrentDate(_apprenticeshipProgrammesProvider, _timeProvider)
                     .RunCondition(VacancyRuleSet.TrainingProgramme);
             });
