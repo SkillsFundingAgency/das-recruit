@@ -27,7 +27,7 @@ public class VacancyDto
     public DateTime? CreatedDate { get; init; }
     public DateTime? LastUpdatedDate { get; init; }
     public DateTime? SubmittedDate { get; init; }
-    public DateTime? ReviewDate { get; init; }
+    public DateTime? ReviewRequestedDate { get; init; }
     public DateTime? ClosedDate { get; init; }
     public DateTime? DeletedDate { get; init; }
     public DateTime? LiveDate { get; init; }
@@ -73,6 +73,7 @@ public class VacancyDto
     public List<ReviewFieldIndicator>? EmployerReviewFieldIndicators { get; init; }
     public List<ReviewFieldIndicator>? ProviderReviewFieldIndicators { get; init; }
     public string? SubmittedByUserId { get; init; }
+    public string? ReviewRequestedByUserId { get; init; }
     
     public static VacancyDto From(Vacancy vacancy, IEncodingService encodingService)
     {
@@ -120,7 +121,8 @@ public class VacancyDto
             ProviderReviewFieldIndicators = vacancy.ProviderReviewFieldIndicators?.Select(x => new ReviewFieldIndicator() { FieldIdentifier = x.FieldIdentifier, IsChangeRequested = x.IsChangeRequested }).ToList(),
             Qualifications = vacancy.Qualifications,
             ReviewCount = vacancy.ReviewCount,
-            ReviewDate = vacancy.ReviewDate,
+            ReviewRequestedByUserId = vacancy.ReviewByUser?.UserId,
+            ReviewRequestedDate = vacancy.ReviewDate,
             ShortDescription = vacancy.ShortDescription,
             Skills = vacancy.Skills,
             SourceOrigin = vacancy.SourceOrigin,
