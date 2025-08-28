@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Esfa.Recruit.Provider.UnitTests.Provider.Web.HardMocks;
 using Esfa.Recruit.Provider.Web;
+using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Shared.Web.Domain;
@@ -11,6 +12,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1;
@@ -82,6 +84,7 @@ public class TrainingOrchestratorTests
             MockClient = new Mock<IProviderVacancyClient>();
             MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
             MockProviderRecruitVacancyClient = new Mock<IProviderVacancyClient>();
+            MockExternalLinksConfiguration = new Mock<IOptions<ExternalLinksConfiguration>>();
 
             User = VacancyOrchestratorTestData.GetVacancyUser();
             Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
@@ -100,8 +103,13 @@ public class TrainingOrchestratorTests
             MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
             MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
-            Sut = new TrainingOrchestrator(MockRecruitVacancyClient.Object, MockProviderRecruitVacancyClient.Object, Mock.Of<ILogger<TrainingOrchestrator>>(), 
-                Mock.Of<IReviewSummaryService>(), new Utility(MockRecruitVacancyClient.Object, Mock.Of<ITaskListValidator>()));
+            Sut = new TrainingOrchestrator(MockRecruitVacancyClient.Object,
+                MockProviderRecruitVacancyClient.Object,
+                Mock.Of<ILogger<TrainingOrchestrator>>(), 
+                Mock.Of<IReviewSummaryService>(),
+                new Utility(MockRecruitVacancyClient.Object,
+                    Mock.Of<ITaskListValidator>()),
+                    MockExternalLinksConfiguration.Object);
         }
 
         public async Task PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel model)
@@ -120,5 +128,6 @@ public class TrainingOrchestratorTests
         public Mock<IProviderVacancyClient> MockClient { get; set; }
         public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
         public Mock<IProviderVacancyClient> MockProviderRecruitVacancyClient { get; set; }
+        public Mock<IOptions<ExternalLinksConfiguration>> MockExternalLinksConfiguration { get; set; }
     }
 }
