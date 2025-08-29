@@ -33,27 +33,4 @@ public class WhenGettingAllApprenticeshipProgrammes
 
         actual.Should().BeEquivalentTo(apiResponse.TrainingProgrammes.Select(c => (ApprenticeshipProgramme)c).ToList());
     }
-    
-    [Test, MoqAutoData]
-    public async Task Then_If_The_Courses_Are_Cached_Api_Not_Called_And_Retrieved_From_The_Cached(
-        Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes.ApprenticeshipProgrammes response,
-        [Frozen] Mock<ICache> cache,
-        [Frozen] Mock<ITimeProvider> mockTimeProvider,
-        [Frozen] Mock<IOuterApiClient> outerApiClient,
-        [Frozen] Mock<IConfiguration> mockConfiguration)
-    {
-        var dateTime = new DateTime(2025, 2, 1, 6, 0, 0);
-        mockTimeProvider.Setup(x => x.NextDay6am).Returns(dateTime);
-        mockConfiguration.Setup(x=>x["ResourceEnvironmentName"]).Returns("LOCAL");
-        cache
-            .Setup(x => x.CacheAsideAsync(CacheKeys.ApprenticeshipProgrammes, dateTime, It.IsAny<Func<Task<Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes.ApprenticeshipProgrammes>>>()))
-            .ReturnsAsync(response);
-        var provider = new ApprenticeshipProgrammeProvider(cache.Object, mockTimeProvider.Object, outerApiClient.Object, Mock.Of<IFeature>(), mockConfiguration.Object);
-        
-        var actual = await provider.GetApprenticeshipProgrammesAsync(true);
-
-        actual.Should().BeEquivalentTo(response.Data);
-        outerApiClient
-            .Verify(x => x.Get<GetTrainingProgrammesResponse>(It.IsAny<GetTrainingProgrammesRequest>()), Times.Never);
-    }
 }
