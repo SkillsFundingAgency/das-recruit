@@ -39,7 +39,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.PasAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
@@ -109,7 +108,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             // Configuration
             services.AddSingleton(configuration);
             services.Configure<NextVacancyReviewServiceConfiguration>(o => o.VacancyReviewAssignationTimeoutMinutes = configuration.GetValue<int>("RecruitConfiguration:VacancyReviewAssignationTimeoutMinutes"));
-            services.Configure<PasAccountApiConfiguration>(configuration.GetSection("PasAccountApiConfiguration"));
             services.Configure<OuterApiConfiguration>(configuration.GetSection("OuterApiConfiguration"));
 
             // Domain services
@@ -149,7 +147,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IEmployerAccountProvider, EmployerAccountProvider>();
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
             services.AddTransient<ITrainingProviderSummaryProvider, TrainingProviderSummaryProvider>();
-            services.AddTransient<IPasAccountProvider, PasAccountProvider>();
             services.AddHttpClient<IOuterApiClient, OuterApiClient>();
             services.AddTransient<IOuterApiGeocodeService, OuterApiGeocodeService>();
             services.AddTransient<ILocationsService, LocationsService>();
