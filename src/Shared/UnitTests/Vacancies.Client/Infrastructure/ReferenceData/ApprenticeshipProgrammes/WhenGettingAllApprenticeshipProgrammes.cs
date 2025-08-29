@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.UnitTests.TestHelpers;
@@ -48,6 +49,9 @@ public class WhenGettingAllApprenticeshipProgrammes
         cache
             .Setup(x => x.CacheAsideAsync(CacheKeys.ApprenticeshipProgrammes, dateTime, It.IsAny<Func<Task<Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes.ApprenticeshipProgrammes>>>()))
             .ReturnsAsync(response);
+        outerApiClient
+            .Setup(x => x.Get<GetTrainingProgrammesResponse>(It.IsAny<GetTrainingProgrammesRequest>())).ReturnsAsync(new GetTrainingProgrammesResponse{TrainingProgrammes = new List<GetTrainingProgrammesResponseItem>()});
+        
         var provider = new ApprenticeshipProgrammeProvider(cache.Object, mockTimeProvider.Object, outerApiClient.Object, Mock.Of<IFeature>(), mockConfiguration.Object);
         
         var actual = await provider.GetApprenticeshipProgrammesAsync(true);
