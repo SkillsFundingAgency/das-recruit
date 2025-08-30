@@ -12,7 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             {
                 new object[] { DateTime.UtcNow.Date },
                 new object[] { DateTime.UtcNow },
-                //new object[] { DateTime.UtcNow.AddDays(13) }
+                new object[] { DateTime.UtcNow.AddDays(13) }
             };
 
 
