@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
@@ -122,7 +123,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
                     var trainingProvider = trainingProviders.FirstOrDefault(x => x.Ukprn == vacancy.TrainingProvider?.Ukprn);
 
-                    if (trainingProvider != null)
+                    if (trainingProvider != null || vacancy.TrainingProvider?.Ukprn == EsfaTestTrainingProvider.Ukprn)
                     {
                         return;
                     }
