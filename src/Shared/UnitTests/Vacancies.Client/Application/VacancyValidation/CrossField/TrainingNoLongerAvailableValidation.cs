@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 StartDate = DateTime.UtcNow.AddDays(10),
                 TrainingProvider = new TrainingProvider
                 {
-                    Ukprn = 1000000
+                    Ukprn = 10000000
                 }
             };
          
@@ -78,7 +78,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 StartDate = DateTime.UtcNow.AddDays(10),
                 TrainingProvider = new TrainingProvider
                 {
-                    Ukprn = 1000000
+                    Ukprn = 10000000
                 }
             };
          
@@ -86,7 +86,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors.FirstOrDefault().ErrorMessage.Should().Be("Enter a current training course. The training course you've selected will not be available on your start date");
+            result.Errors.First().ErrorMessage.Should().Be("Enter a current training course. The training course you've selected will not be available on your start date");
         }
 
         [Fact]
@@ -106,7 +106,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 StartDate = DateTime.UtcNow.AddDays(10),
                 TrainingProvider = new TrainingProvider
                 {
-                    Ukprn = 1000000
+                    Ukprn = 10000000
                 }
             };
          

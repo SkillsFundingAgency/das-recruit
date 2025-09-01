@@ -95,7 +95,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 ProgrammeId = "123",
                 TrainingProvider = new TrainingProvider
                 {
-                    Ukprn = 1000000
+                    Ukprn = 10000000
                 }
             };
 
@@ -128,7 +128,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 ProgrammeId = "123",
                 TrainingProvider = new TrainingProvider
                 {
-                    Ukprn = 1000000
+                    Ukprn = 10000000
                 }
             };
 
