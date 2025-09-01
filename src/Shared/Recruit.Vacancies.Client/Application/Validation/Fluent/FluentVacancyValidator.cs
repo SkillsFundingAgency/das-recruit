@@ -942,9 +942,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 RuleFor(x => x)
                     .Cascade(CascadeMode.Stop)
                     .TrainingMustBeValid(_apprenticeshipProgrammesProvider)
-                    .TrainingCourseMustBeOfferedByTrainingProvider(_trainingProviderService, _apprenticeshipProgrammesProvider)
                     .TrainingMustBeActiveForCurrentDate(_apprenticeshipProgrammesProvider, _timeProvider)
                     .RunCondition(VacancyRuleSet.TrainingProgramme);
+            });
+
+            When(x => !string.IsNullOrWhiteSpace(x.ProgrammeId) && x.TrainingProvider is not null, () =>
+            {
+                RuleFor(x => x)
+                    .Cascade(CascadeMode.Stop)
+                    .TrainingCourseMustBeOfferedByTrainingProvider(_trainingProviderService, _apprenticeshipProgrammesProvider);
             });
         }
     }
