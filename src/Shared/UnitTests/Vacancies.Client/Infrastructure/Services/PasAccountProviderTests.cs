@@ -1,24 +1,23 @@
-﻿using System.Threading.Tasks;
+﻿using AutoFixture.NUnit3;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.PasAccount;
-using FluentAssertions;
-using Microsoft.Extensions.Options;
-using Moq;
-using Xunit;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.Services
 {
     public class PasAccountProviderTests
     {
-        [Fact]
-        public async Task HasAgreementAsync_EsfaTestTrainingProviderShouldHaveAgreement()
+        [Test, MoqAutoData]
+        public async Task HasAgreementAsync_EsfaTestTrainingProviderShouldHaveAgreement(
+            [Frozen] Mock<IOuterApiClient> outerApiClient,
+            OuterApiGetProviderStatusClient outerApiGetProviderStatusClient)
         {
-            var config = new Mock<IOptions<PasAccountApiConfiguration>>();
-            var sut = new PasAccountProvider(config.Object);
-
-            var result = await sut.HasAgreementAsync(EsfaTestTrainingProvider.Ukprn);
-
-            result.Should().BeTrue();
+            var result = await outerApiGetProviderStatusClient.GetProviderStatus(EsfaTestTrainingProvider.Ukprn);
+            
+            result.CanAccessService.Should().BeTrue();
+            outerApiClient.Verify(x=>x.Get<ProviderAccountResponse>(It.IsAny<GetProviderStatusDetails>()), Times.Never);
         }
     }
 }
