@@ -208,7 +208,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IUserRepository, MongoDbUserRepository>();
             services.AddTransient<IUserRepositoryRunner, UserRepositoryRunner>();
             services.AddTransient<IUserWriteRepository, MongoDbUserRepository>();
-            services.AddTransient<IUserWriteRepository, UserService>();
+            //services.AddTransient<IUserWriteRepository, UserService>();
             
 
             services.AddTransient<IApplicationWriteRepository, ApplicationReviewService>();
