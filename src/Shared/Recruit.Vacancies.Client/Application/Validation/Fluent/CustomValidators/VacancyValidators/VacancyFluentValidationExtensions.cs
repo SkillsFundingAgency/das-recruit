@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
@@ -103,6 +104,38 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                     };
                     context.AddFailure(failure);
                 }
+            });
+        }
+
+        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingCourseMustBeOfferedByTrainingProvider(
+            this IRuleBuilder<Vacancy, Vacancy> ruleBuilder,
+            ITrainingProviderService trainingProviderService,
+            IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider)
+        {
+            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
+            {
+                var programme =
+                    await apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+
+                if (int.TryParse(programme.Id, out int programmeId))
+                {
+                    var trainingProviders = await trainingProviderService.GetCourseProviders(programmeId);
+
+                    var trainingProvider = trainingProviders.FirstOrDefault(x => x.Ukprn == vacancy.TrainingProvider?.Ukprn);
+
+                    if (trainingProvider != null || vacancy.TrainingProvider?.Ukprn == EsfaTestTrainingProvider.Ukprn)
+                    {
+                        return;
+                    }
+                }
+
+                var failure = new ValidationFailure("Training", "Enter a valid training course")
+                {
+                    ErrorCode = ErrorCodes.TrainingNotExist,
+                    CustomState = VacancyRuleSet.TrainingProgramme,
+                    PropertyName = "Training",
+                };
+                context.AddFailure(failure);
             });
         }
 

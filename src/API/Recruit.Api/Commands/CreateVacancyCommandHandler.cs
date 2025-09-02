@@ -160,7 +160,7 @@ namespace SFA.DAS.Recruit.Api.Commands
             {
                 if (x.Country is null && results.TryGetValue(x.Postcode, out var postcodeData))
                 {
-                    x.Country = postcodeData.Country;
+                    x.Country = postcodeData?.Country;
                 }
             });
         }
