@@ -47,7 +47,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             var vacancy = new Vacancy
             {
                 ProgrammeId = "123",
-                StartDate = DateTime.UtcNow.AddDays(10)
+                StartDate = DateTime.UtcNow.AddDays(10),
+                TrainingProvider = new TrainingProvider
+                {
+                    Ukprn = 10000000
+                }
             };
          
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
@@ -71,14 +75,18 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             var vacancy = new Vacancy
             {
                 ProgrammeId = "123",
-                StartDate = DateTime.UtcNow.AddDays(10)
+                StartDate = DateTime.UtcNow.AddDays(10),
+                TrainingProvider = new TrainingProvider
+                {
+                    Ukprn = 10000000
+                }
             };
          
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors.FirstOrDefault().ErrorMessage.Should().Be("Enter a current training course. The training course you've selected will not be available on your start date");
+            result.Errors.First().ErrorMessage.Should().Be("Enter a current training course. The training course you've selected will not be available on your start date");
         }
 
         [Fact]
@@ -95,7 +103,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             var vacancy = new Vacancy
             {
                 ProgrammeId = "123",
-                StartDate = DateTime.UtcNow.AddDays(10)
+                StartDate = DateTime.UtcNow.AddDays(10),
+                TrainingProvider = new TrainingProvider
+                {
+                    Ukprn = 10000000
+                }
             };
          
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);

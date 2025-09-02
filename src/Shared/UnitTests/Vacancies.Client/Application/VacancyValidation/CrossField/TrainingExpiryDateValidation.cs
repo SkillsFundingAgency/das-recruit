@@ -92,7 +92,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             var vacancy = new Vacancy
             {
                 StartDate = startDate,
-                ProgrammeId = "123"
+                ProgrammeId = "123",
+                TrainingProvider = new TrainingProvider
+                {
+                    Ukprn = 10000000
+                }
             };
 
             var programmes = new List<IApprenticeshipProgramme>
@@ -121,7 +125,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             var vacancy = new Vacancy
             {
                 StartDate = startDate,
-                ProgrammeId = "123"
+                ProgrammeId = "123",
+                TrainingProvider = new TrainingProvider
+                {
+                    Ukprn = 10000000
+                }
             };
 
             var programmes = new List<IApprenticeshipProgramme>
