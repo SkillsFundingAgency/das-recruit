@@ -9,16 +9,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 // TODO: Proxies calls to the new outer api endpoints - this class should go once we have migrated vacancies over to SQL
 public class SqlVacancyRepository(IOuterApiVacancyClient outerApiVacancyClient): IVacancyRepository
 {
-    public Task CreateAsync(Vacancy vacancy)
+    public async Task CreateAsync(Vacancy vacancy)
     {
-        return Task.FromResult(0);
-        //await outerApiVacancyClient.CreateAsync(vacancy);
+        await outerApiVacancyClient.CreateAsync(vacancy);
     }
 
-    public Task UpdateAsync(Vacancy vacancy)
+    public async Task UpdateAsync(Vacancy vacancy)
     {
-        return Task.FromResult(0);
-        //await outerApiVacancyClient.UpdateAsync(vacancy);
+        await outerApiVacancyClient.UpdateAsync(vacancy);
     }
 
     public Task<Vacancy> GetVacancyAsync(Guid id)
