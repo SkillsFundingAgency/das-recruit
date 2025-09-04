@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             var vacancy = await _vacancyRepository.GetVacancyAsync(message.Application.VacancyReference);
 
             var existingReview = await _applicationReviewRepository.GetAsync(vacancy.VacancyReference.Value, message.Application.CandidateId);
-            if (existingReview is { IsWithdrawn: false })
+            if (existingReview != null)
             {
                 _logger.LogWarning("Application review already exists for vacancyReference:{vacancyReference} and candidateId:{candidateId}. Found applicationReviewId:{applicationReviewId}",
                     vacancy.VacancyReference.Value, message.Application.CandidateId, existingReview.Id);
@@ -45,13 +45,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             
             var review = new ApplicationReview
             {
-                Id = Guid.NewGuid(),
+                Id = message.Application.ApplicationId,// to fit inline with migration and new recruit api
                 VacancyReference = vacancy.VacancyReference.Value,
                 Application = message.Application,
                 CandidateId = message.Application.CandidateId,
                 CreatedDate = _timeProvider.Now,                
                 Status = ApplicationReviewStatus.New,
-                SubmittedDate = message.Application.ApplicationDate
+                SubmittedDate = message.Application.ApplicationDate,
+                MigrationDate = message.Application.MigrationDate
             };
 
             await _applicationReviewRepository.CreateAsync(review);

@@ -8,8 +8,8 @@ using Esfa.Recruit.Provider.Web.ViewModels.Part1.AddLocation;
 using Esfa.Recruit.Provider.Web.ViewModels.Validations;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
@@ -19,7 +19,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
 [Route(RoutePaths.AccountVacancyRoutePath)]
 public class AddLocationController(IUtility utility) : Controller
 {
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpGet("add-location", Name = RouteNames.AddLocation_Get)]
     public async Task<IActionResult> AddLocation(AddLocationJourneyModel model)
     {
@@ -30,7 +29,6 @@ public class AddLocationController(IUtility utility) : Controller
         return View(viewModel);
     }
     
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("add-location", Name = RouteNames.AddLocation_Post)]
     public async Task<IActionResult> AddLocation(
         [FromServices] ILocationsService locationsService,

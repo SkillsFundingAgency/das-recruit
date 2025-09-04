@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
@@ -12,8 +13,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     public class UpdateUserAlertCommandHandler : IRequestHandler<UpdateUserAlertCommand, Unit>
     {
         private readonly IRecruitVacancyClient _client;
-        private readonly IUserRepository _userRepository;
-        public UpdateUserAlertCommandHandler(IRecruitVacancyClient client, IUserRepository userRepository)
+        private readonly IUserRepositoryRunner _userRepository;
+        public UpdateUserAlertCommandHandler(IRecruitVacancyClient client, IUserRepositoryRunner userRepository)
         {
             _userRepository = userRepository;
             _client = client;
@@ -21,7 +22,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task<Unit> Handle(UpdateUserAlertCommand message, CancellationToken cancellationToken)
         {
-            var user = await _client.GetUsersDetailsAsync(message.IdamsUserId);
+            var user = string.IsNullOrEmpty(message.DfEUserId) 
+                ? await _client.GetUsersDetailsAsync(message.IdamsUserId) 
+                : await _client.GetUsersDetailsByDfEUserId(message.DfEUserId);
 
             switch (message.AlertType)
             {

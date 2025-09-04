@@ -14,20 +14,30 @@
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
-        <vacancy-heading vacancy-title="@Model.VacancyTitle" heading="Do you have any questions you would like to ask applicants? (optional)" />
+        <vacancy-heading vacancy-title="@Model.VacancyTitle" heading="Application questions on Find an apprenticeship" />
         
-        <p class="govuk-body">Applicants will answer these questions if they apply through <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship (opens in a new tab)</a>.</p>
-        <p class="govuk-body">For example, 'How will you travel to this apprenticeship?'</p>
+        <p class="govuk-body">Find an apprenticeship includes set questions that applicants will need to answer. You can add extra questions if you need to ask more.</p>
 
+        <div>
+            <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-0">Question 1</p>
+            <p class="govuk-body">@(Model.ApprenticeshipType.IsFoundation() ? "What interests you about this apprenticeship?" : "What are your skills and strengths?")</p>
+        </div>
+        @if (!Model.ApprenticeshipType.IsFoundation())
+        {
+            <div>
+                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-0">Question 2</p>
+                <p class="govuk-body">What interests you about this apprenticeship?</p>
+            </div>
+        }
         <form asp-route="@RouteNames.AdditionalQuestions_Post" asp-all-route-data="@Model.RouteDictionary">
             <div esfa-validation-marker-for="AdditionalQuestion1" class="govuk-form-group">
-                <label asp-for="AdditionalQuestion1" class="govuk-label govuk-label--s">Question 1 (optional)</label>
-                <span esfa-validation-message-for="AdditionalQuestion1" class="govuk-error-message"></span>
+                <label asp-for="AdditionalQuestion1" class="govuk-label govuk-label--s">Question @(Model.QuestionCount - 1) (optional)</label>
+                <span esfa-validation-message-for="AdditionalQuestion1" show-all="true" class="govuk-error-message"></span>
                 <input asp-for="AdditionalQuestion1" class="govuk-input" />
             </div>
             <div esfa-validation-marker-for="AdditionalQuestion2" class="govuk-form-group">
-                <label asp-for="AdditionalQuestion2" class="govuk-label govuk-label--s">Question 2 (optional)</label>
-                <span esfa-validation-message-for="AdditionalQuestion2" class="govuk-error-message"></span>
+                <label asp-for="AdditionalQuestion2" class="govuk-label govuk-label--s">Question @(Model.QuestionCount) (optional)</label>
+                <span esfa-validation-message-for="AdditionalQuestion2" show-all="true" class="govuk-error-message"></span>
                 <input asp-for="AdditionalQuestion2" class="govuk-input" />
             </div>
 

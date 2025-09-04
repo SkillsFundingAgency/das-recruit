@@ -1,10 +1,12 @@
 using System;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using FluentValidation;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
@@ -17,6 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
         private readonly IHtmlSanitizerService _htmlSanitizerService;
         private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
+        private readonly ITrainingProviderService _trainingProviderService;
         private readonly IBlockedOrganisationQuery _blockedOrganisationRepo;
         private readonly IProfanityListProvider _profanityListProvider;
         private readonly IProviderRelationshipsService _providerRelationshipService;
@@ -28,6 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             IQualificationsProvider qualificationsProvider,
             IHtmlSanitizerService htmlSanitizerService,
             ITrainingProviderSummaryProvider trainingProviderSummaryProvider,
+            ITrainingProviderService trainingProviderService,
             IBlockedOrganisationQuery blockedOrganisationRepo,
             IProfanityListProvider profanityListProvider,
             IProviderRelationshipsService providerRelationshipService)
@@ -38,6 +42,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
             _htmlSanitizerService = htmlSanitizerService;
             _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
+            _trainingProviderService = trainingProviderService;
             _blockedOrganisationRepo = blockedOrganisationRepo;
             _profanityListProvider = profanityListProvider;
             _providerRelationshipService = providerRelationshipService;
@@ -87,6 +92,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateThingsToConsider();
             ValidateEmployerInformation();
             ValidateTrainingProvider();
+            ValidateTrainingProviderDeliverTrainingCourse();
+            ValidateTrainingCourse();
         }
 
         private void CrossFieldValidations()
@@ -308,8 +315,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Enter an application closing date")
                     .WithErrorCode("16")
                 .WithState(_ => VacancyRuleSet.ClosingDate)
-                .GreaterThan(v => _timeProvider.Now.Date.AddDays(14).AddTicks(-1))
-                    .WithMessage("Closing date should be at least 14 days in the future.")
+                .GreaterThan(v => _timeProvider.Now.Date.AddDays(1).AddTicks(-1))
+                    .WithMessage("Closing date should be at least 1 day in the future.")
                     .WithErrorCode("18")
                 .WithState(_ => VacancyRuleSet.ClosingDate)
                 .RunCondition(VacancyRuleSet.ClosingDate);
@@ -333,7 +340,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.ProgrammeId)
                 .NotEmpty()
-                    .WithMessage($"You must select {VacancyContext} training")
+                    .WithMessage($"Enter a valid training course")
                     .WithErrorCode("25")
                     .WithState(_ => VacancyRuleSet.TrainingProgramme)
                 .RunCondition(VacancyRuleSet.TrainingProgramme);
@@ -602,43 +609,60 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateAdditionalQuestions()
         {
-            When(x => !string.IsNullOrEmpty(x.AdditionalQuestion1), () =>
+            When(x => !string.IsNullOrEmpty(x.AdditionalQuestion1) &&
+                x.ApplicationMethod != ApplicationMethod.ThroughExternalApplicationSite, () =>
             {
                 RuleFor(x => x.AdditionalQuestion1)
                     .MaximumLength(250)
-                    .WithMessage("Question 1 must not exceed 250 characters")
-                    .WithErrorCode("321")
-                    .WithState(_ => VacancyRuleSet.AdditionalQuestion1)
+                        .WithMessage(x =>
+                        {
+                            var questionCount = x.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4;
+                            return $"Question {questionCount - 1} must not exceed 250 characters.";
+                        })
+                        .WithErrorCode("321")
+                        .WithState(_ => VacancyRuleSet.AdditionalQuestion1)
                     .ProfanityCheck(_profanityListProvider)
-                    .WithMessage("Questions must not contain a restricted word")
-                    .WithErrorCode("322")
-                    .WithState(_ => VacancyRuleSet.AdditionalQuestion1)
+                        .WithMessage("Questions must not contain a restricted word")
+                        .WithErrorCode("322")
+                        .WithState(_ => VacancyRuleSet.AdditionalQuestion1)
                     .Must(s => !string.IsNullOrEmpty(s) && s.Contains('?'))
-                    .WithMessage("Question 1 must include a question mark ('?')")
-                    .WithErrorCode("340")
-                    .WithState(_ => VacancyRuleSet.AdditionalQuestion1)
-                    .RunCondition(VacancyRuleSet.AdditionalQuestion1);
+                        .WithMessage(x =>
+                        {
+                            var questionCount = x.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4;
+                            return $"Question {questionCount - 1} must include a question mark (‘?’).";
+                        })
+                        .WithErrorCode("340")
+                        .WithState(_ => VacancyRuleSet.AdditionalQuestion1)
+                        .RunCondition(VacancyRuleSet.AdditionalQuestion1);
             });
 
 
-            When(x => !string.IsNullOrEmpty(x.AdditionalQuestion2), () =>
+            When(x => !string.IsNullOrEmpty(x.AdditionalQuestion2) &&
+                x.ApplicationMethod != ApplicationMethod.ThroughExternalApplicationSite, () =>
             {
-                RuleFor(x => x.AdditionalQuestion2)
-                    .MaximumLength(250)
-                    .WithMessage("Question 2 must not exceed 250 characters")
+            RuleFor(x => x.AdditionalQuestion2)
+                .MaximumLength(250)
+                    .WithMessage(x =>
+                    {
+                        var questionCount = x.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4;
+                        return $"Question {questionCount} must not exceed 250 characters.";
+                    })
                     .WithErrorCode("331")
                     .WithState(_ => VacancyRuleSet.AdditionalQuestion2)
-                    .ProfanityCheck(_profanityListProvider)
+                .ProfanityCheck(_profanityListProvider)
                     .WithMessage("Questions must not contain a restricted word")
                     .WithErrorCode("332")
                     .WithState(_ => VacancyRuleSet.AdditionalQuestion2)
-                    .Must(s => !string.IsNullOrEmpty(s) && s.Contains('?'))
-                    .WithMessage("Question 2 must include a question mark ('?')")
+                .Must(s => !string.IsNullOrEmpty(s) && s.Contains('?'))
+                        .WithMessage(x =>
+                        {
+                            var questionCount = x.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4;
+                            return $"Question {questionCount} must include a question mark (‘?’).";
+                        })
                     .WithErrorCode("340")
                     .WithState(_ => VacancyRuleSet.AdditionalQuestion2)
                     .RunCondition(VacancyRuleSet.AdditionalQuestion2);
             });
-
         }
         
         private void ValidateHowTheApprenticeWillTrain()
@@ -647,15 +671,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x.TrainingDescription)
                     .MaximumLength(4000)
-                    .WithMessage("The apprentice’s training schedule must not exceed 4000 characters")
+                    .WithMessage("The apprentice’s training plan must not exceed 4000 characters")
                     .WithErrorCode("321")
                     .WithState(_ => VacancyRuleSet.TrainingDescription)
                     .ProfanityCheck(_profanityListProvider)
-                    .WithMessage("The apprentice’s training schedule must not contain a restricted word")
+                    .WithMessage("The apprentice’s training plan must not contain a restricted word")
                     .WithErrorCode("322")
                     .WithState(_ => VacancyRuleSet.TrainingDescription)
                     .ValidHtmlCharacters(_htmlSanitizerService)
-                    .WithMessage("The apprentice’s training schedule contains some invalid characters")
+                    .WithMessage("The apprentice’s training plan contains some invalid characters")
                     .WithErrorCode("346")
                     .WithState(_ => VacancyRuleSet.TrainingDescription)
                     .RunCondition(VacancyRuleSet.TrainingDescription);
@@ -720,7 +744,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x.ApplicationUrl)
                     .Empty()
-                        .WithMessage($"Application url must be empty when apply through Find an apprenticeship service option is specified")
+                        .WithMessage($"Application website link must be empty when apply through Find an apprenticeship service option is specified")
                         .WithErrorCode("86")
                     .WithState(_ => VacancyRuleSet.ApplicationMethod)
                     .RunCondition(VacancyRuleSet.ApplicationMethod);
@@ -744,15 +768,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.ApplicationUrl)
                 .NotEmpty()
-                    .WithMessage("Enter a link where candidates can apply")
+                    .WithMessage("Enter the application website link")
                     .WithErrorCode("85")
                 .WithState(_ => VacancyRuleSet.ApplicationMethod)
                 .MaximumLength(2000)
-                    .WithMessage("The website address must not exceed {MaxLength} characters")
+                    .WithMessage("Application website link must not exceed {MaxLength} characters")
                     .WithErrorCode("84")
                 .WithState(_ => VacancyRuleSet.ApplicationMethod)
                 .Must(FluentExtensions.BeValidWebUrl)
-                    .WithMessage("Website address must be a valid link")
+                    .WithMessage("Application website link must be a valid link")
                     .WithErrorCode("86")
                 .WithState(_ => VacancyRuleSet.ApplicationMethod)
                 .RunCondition(VacancyRuleSet.ApplicationMethod);
@@ -762,15 +786,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.ApplicationInstructions)
                 .MaximumLength(500)
-                    .WithMessage("Application process must not exceed {MaxLength} characters")
+                    .WithMessage("How to apply must not exceed {MaxLength} characters")
                     .WithErrorCode("88")
                 .WithState(_ => VacancyRuleSet.ApplicationMethod)
                 .ValidFreeTextCharacters()
-                    .WithMessage("Application process contains some invalid characters")
+                    .WithMessage("How to apply contains some invalid characters")
                     .WithErrorCode("89")
                 .WithState(_ => VacancyRuleSet.ApplicationMethod)
                 .ProfanityCheck(_profanityListProvider)
-                .WithMessage("Application process must not contain a banned word or phrase.")
+                .WithMessage("How to apply must not contain a banned word or phrase.")
                 .WithErrorCode("612")
                 .WithState(_ => VacancyRuleSet.ApplicationMethod)
                 .RunCondition(VacancyRuleSet.ApplicationMethod);
@@ -800,15 +824,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.ThingsToConsider)
                 .MaximumLength(4000)
-                    .WithMessage("Things to consider must not exceed {MaxLength} characters")
+                    .WithMessage("Other requirements must not exceed {MaxLength} characters")
                     .WithErrorCode("75")
                 .WithState(_ => VacancyRuleSet.ThingsToConsider)
                 .ValidFreeTextCharacters()
-                    .WithMessage("Things to consider contains some invalid characters")
+                    .WithMessage("Other requirements contains some invalid characters")
                     .WithErrorCode("76")
                 .WithState(_ => VacancyRuleSet.ThingsToConsider)
                 .ProfanityCheck(_profanityListProvider)
-                .WithMessage("Things to consider must not contain a banned word or phrase.")
+                .WithMessage("Other requirements must not contain a banned word or phrase.")
                 .WithErrorCode("613")
                 .WithState(_ => VacancyRuleSet.ThingsToConsider)
                 .RunCondition(VacancyRuleSet.ThingsToConsider);
@@ -837,11 +861,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             RuleFor(x => x.EmployerWebsiteUrl)
                 .MaximumLength(100)
-                    .WithMessage("Website address must not exceed {MaxLength} characters")
+                    .WithMessage("Application website link must not exceed {MaxLength} characters")
                     .WithErrorCode("84")
                 .WithState(_ => VacancyRuleSet.EmployerWebsiteUrl)
                 .Must(FluentExtensions.BeValidWebUrl)
-                    .WithMessage("Website address must be a valid link")
+                    .WithMessage("Application website link must be a valid link")
                     .WithErrorCode("82")
                 .WithState(_ => VacancyRuleSet.EmployerWebsiteUrl)
                     .When(v => !string.IsNullOrEmpty(v.EmployerWebsiteUrl))
@@ -854,7 +878,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             RuleFor(x => x.TrainingProvider)
                 .NotNull()
-                    .WithMessage("You must enter a training provider or UKPRN to continue")
+                    .WithMessage("Enter the name or UKPRN of a training provider who delivers the training course you’ve selected")
                     .WithErrorCode(ErrorCodes.TrainingProviderUkprnNotEmpty)
                 .WithState(_ => VacancyRuleSet.TrainingProvider)
                 .SetValidator(trainingProviderValidator)
@@ -864,6 +888,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             RuleFor(x => x)
                 .TrainingProviderVacancyMustHaveEmployerPermission(_providerRelationshipService)
                 .RunCondition(VacancyRuleSet.TrainingProvider);
+        }
+
+        private void ValidateTrainingProviderDeliverTrainingCourse()
+        {
+            When(x => x.TrainingProvider != null && x.OwnerType == OwnerType.Employer && x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn, () =>            
+            {
+                RuleFor(x => x)
+                    .TrainingProviderMustBeDeliverTheTrainingCourse(_trainingProviderService, _apprenticeshipProgrammesProvider)
+                    .RunCondition(VacancyRuleSet.TrainingProviderDeliverCourse);
+            });
         }
 
         private void ValidateStartDateClosingDate()
@@ -888,7 +922,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void TrainingExpiryDateValidation()
         {
-            When(x => !string.IsNullOrWhiteSpace(x.ProgrammeId), () =>
+            // This rule is only applicable for non-ESFA test training providers
+            When(x => x.TrainingProvider is { Ukprn: not null } && x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn && !string.IsNullOrWhiteSpace(x.ProgrammeId), () =>
             {
                 RuleFor(x => x)
                     .Cascade(CascadeMode.Stop)
@@ -896,6 +931,26 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .TrainingMustBeActiveForCurrentDate(_apprenticeshipProgrammesProvider, _timeProvider)
                     .TrainingMustBeActiveForStartDate(_apprenticeshipProgrammesProvider)
                 .RunCondition(VacancyRuleSet.TrainingExpiryDate);
+            });
+        }
+
+        private void ValidateTrainingCourse()
+        {
+            // This rule is only applied when the training provider is not the ESFA test training provider
+            When(x => x.TrainingProvider is { Ukprn: not null } && x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn && !string.IsNullOrWhiteSpace(x.ProgrammeId), () =>
+            {
+                RuleFor(x => x)
+                    .Cascade(CascadeMode.Stop)
+                    .TrainingMustBeValid(_apprenticeshipProgrammesProvider)
+                    .TrainingMustBeActiveForCurrentDate(_apprenticeshipProgrammesProvider, _timeProvider)
+                    .RunCondition(VacancyRuleSet.TrainingProgramme);
+            });
+
+            When(x => !string.IsNullOrWhiteSpace(x.ProgrammeId) && x.TrainingProvider is not null, () =>
+            {
+                RuleFor(x => x)
+                    .Cascade(CascadeMode.Stop)
+                    .TrainingCourseMustBeOfferedByTrainingProvider(_trainingProviderService, _apprenticeshipProgrammesProvider);
             });
         }
     }

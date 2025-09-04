@@ -1,5 +1,5 @@
 @using Esfa.Recruit.Shared.Web.ViewModels.TaskList
-@using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration
+@using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle
 
 @model VacancyTaskListViewModel
 
@@ -38,14 +38,9 @@
                 <ul class="das-task-list__items">
                     <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.ClosingAndStartDatesEditable, "Closing and start dates", RouteNames.Dates_Get, Model.RouteDictionary))"/>
                     <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.DurationAndWorkingHoursEditable, "Duration and working hours", RouteNames.Duration_Get, Model.RouteDictionary))"/>
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.PayRateAndBenefitsEditable, "Pay rate and benefits", RouteNames.Wage_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.PayRateAndBenefitsEditable, "Wage and company benefits", RouteNames.Wage_Get, Model.RouteDictionary))"/>
                     <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.NumberOfPositionsEditable, "Number of positions", RouteNames.NumberOfPositions_Get, Model.RouteDictionary))"/>
-                    <esfaFeatureEnabled name="@FeatureNames.MultipleLocations">
-                        <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.LocationsEditable, "Locations", RouteNames.MultipleLocations_Get, Model.RouteDictionary))"/>
-                    </esfaFeatureEnabled>
-                    <esfaFeatureDisabled name="@FeatureNames.MultipleLocations">
-                        <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.LocationsEditable, "Address", RouteNames.Location_Get, Model.RouteDictionary))"/>
-                    </esfaFeatureDisabled>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.LocationsEditable, "Locations", RouteNames.MultipleLocations_Get, Model.RouteDictionary))"/>
                 </ul>
             </li>
             <li>
@@ -63,8 +58,8 @@
                     <partial asp-show="@(Model.ApprenticeshipType is not ApprenticeshipTypes.Foundation)" name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.QualificationsEditable, "Qualifications", RouteNames.Qualifications_Get, Model.RouteDictionary))"/>
                     @* ----------------------- *@
                     
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.FutureProspectsEditable, "Future prospects", RouteNames.FutureProspects_Get, Model.RouteDictionary))"/>
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.OtherThingsToConsiderEditable, "Other things to consider", RouteNames.Considerations_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.FutureProspectsEditable, "After this apprenticeship", RouteNames.FutureProspects_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.OtherThingsToConsiderEditable, "Other requirements", RouteNames.Considerations_Get, Model.RouteDictionary))"/>
                 </ul>
             </li>
             <li>
@@ -77,15 +72,17 @@
                 </ul>
             </li>
             <li>
-                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(5, "Application", Model.TaskListStates.SectionFiveState))"/>
+                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(5, "Application questions", Model.TaskListStates.SectionFiveState))"/>
                 <ul class="das-task-list__items">
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.AdditionalQuestionsEditable, "Questions for applicants", RouteNames.AdditionalQuestions_Get, Model.RouteDictionary))"/>
+                    <partial asp-show="@(Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)" name="_TaskListTextItem" model="@(new TaskListTextItemViewModel("You do not need to review this section because you’re using your own application website."))" />
+                    <partial asp-show="@(Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)" name="_TaskListItem" model="@(new DisabledTaskListItemViewModel("Application questions on Find an apprenticeship (not required)"))"/>
+                    <partial asp-hide="@(Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)" name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.AdditionalQuestionsEditable, "Application questions on Find an apprenticeship", RouteNames.AdditionalQuestions_Get, Model.RouteDictionary))"/>
                 </ul>
             </li>
             <li>
                 <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(6, "Check and submit your vacancy", Model.TaskListStates.SectionSixState))"/>
                 <ul class="das-task-list__items">
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.CheckYourAnswersEditable, "Check your answers and submit your vacancy", RouteNames.ProviderCheckYourAnswersGet, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.CheckYourAnswersEditable, "Check your answers and submit your vacancy", RouteNames.ProviderCheckYourAnswersGet, Model.RouteDictionary, IsTaskList: false))"/>
                 </ul>
             </li>
 

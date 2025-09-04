@@ -16,10 +16,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1;
 [Route(RoutePaths.AccountVacancyRoutePath)]
 public class TrainingController(TrainingOrchestrator orchestrator) : Controller
 {
-    private const string InvalidTraining = "Select the training the apprentice will take";
+    private const string InvalidTraining = "Enter a valid training course";
 
     [HttpGet("training", Name = RouteNames.Training_Get)]
-    public async Task<IActionResult> Training(VacancyRouteModel vrm, [FromQuery] string wizard = "true", [FromQuery] string clear = "", [FromQuery] string hasTraining = "", [FromQuery] string programmeId = "")
+    public async Task<IActionResult> Training(VacancyRouteModel vrm,
+        [FromQuery] string wizard = "true",
+        [FromQuery] string clear = "",
+        [FromQuery] string hasTraining = "",
+        [FromQuery] string programmeId = "")
     {
         var clearTraining = string.IsNullOrWhiteSpace(clear) == false;
 
@@ -50,18 +54,16 @@ public class TrainingController(TrainingOrchestrator orchestrator) : Controller
     [HttpPost("training", Name = RouteNames.Training_Post)]
     public async Task<IActionResult> Training(TrainingEditModel m, [FromQuery] bool wizard)
     {
-        var programme = await orchestrator.GetProgrammeAsync(m.SelectedProgrammeId);
-
-        if (programme == null)
-        {
+        if (string.IsNullOrWhiteSpace(m.SelectedProgrammeId))
             return await ProgrammeNotFound(m, wizard);
-        }
 
+        var programme = await orchestrator.GetProgrammeAsync(m.SelectedProgrammeId);
+        if (programme is null)
+            return await ProgrammeNotFound(m, wizard);
         if (!ModelState.IsValid)
         {
             var vm = await orchestrator.GetTrainingViewModelAsync(m, User.ToVacancyUser());
             vm.PageInfo.SetWizard(wizard);
-
             return View(vm);
         }
 
@@ -133,6 +135,12 @@ public class TrainingController(TrainingOrchestrator orchestrator) : Controller
         }
 
         var vacancy = await vacancyClient.GetVacancyAsync(m.VacancyId);
+        if (response.Data.IsChangingSelectedCourse)
+        {
+            // redirect to select the provider no matter where we came from, because the course has changed
+            return RedirectToRoute(RouteNames.TrainingProvider_Select_Get, new { m.VacancyId, m.EmployerAccountId });
+        }
+        
         bool isTaskListCompleted = await taskListValidator.IsCompleteAsync(vacancy, EmployerTaskListSectionFlags.All);
         return isTaskListCompleted
             ? RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { m.VacancyId, m.EmployerAccountId })

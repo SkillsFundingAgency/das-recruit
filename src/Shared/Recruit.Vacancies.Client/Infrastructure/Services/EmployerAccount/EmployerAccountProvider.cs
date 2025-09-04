@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
@@ -65,6 +66,41 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
         }
 
+        public async Task<GetAllAccountLegalEntitiesApiResponse> GetAllLegalEntitiesConnectedToAccountAsync(
+            List<string> hashedAccountIds,
+            string searchTerm,
+            int pageNumber,
+            int pageSize,
+            string sortColumn,
+            bool isAscending)
+        {
+            try
+            {
+                var accountIds = hashedAccountIds
+                    .Select(hashedAccountId => encodingService.Decode(hashedAccountId, EncodingType.AccountId))
+                    .ToList();
+
+                var legalEntities =
+                    await outerApiClient.Post<GetAllAccountLegalEntitiesApiResponse>(
+                        new GetAllAccountLegalEntitiesApiRequest(new GetAllAccountLegalEntitiesApiRequest.GetAllAccountLegalEntitiesApiRequestData
+                        {
+                            SearchTerm = searchTerm,
+                            AccountIds = accountIds,
+                            PageNumber = pageNumber,
+                            PageSize = pageSize,
+                            SortColumn = sortColumn,
+                            IsAscending = isAscending
+                        }));
+
+                return legalEntities;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to retrieve legal entities information");
+                throw;
+            }
+        }
+
         public async Task<string> GetEmployerAccountPublicHashedIdAsync(string hashedAccountId)
         {
             try
@@ -81,7 +117,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
         }
 
-        public async Task<GetApplicationReviewStatsResponse> GetEmployerDashboardApplicationReviewStats(string hashedAccountId, List<long> vacancyReferences)
+        public async Task<GetApplicationReviewStatsResponse> GetEmployerDashboardApplicationReviewStats(string hashedAccountId, List<long> vacancyReferences, string applicationSharedFilteringStatus)
         {
             try
             {
@@ -92,7 +128,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
 
                 return await retryPolicy.Execute(_ => outerApiClient.Post<GetApplicationReviewStatsResponse>(
                         new GetEmployerApplicationReviewsCountApiRequest(accountId,
-                            vacancyReferences)),
+                            vacancyReferences,applicationSharedFilteringStatus)),
                     new Dictionary<string, object>
                     {
                         {
@@ -119,7 +155,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
                 new Dictionary<string, object>
                 {
                     {
-                        "apiCall", "Providers"
+                        "apiCall", "Employers"
+                    }
+                });
+        }
+        public async Task<GetVacanciesDashboardResponse> GetEmployerVacancyDashboardStats(string hashedAccountId,
+            List<ApplicationReviewStatus> statuses,
+            int pageNumber = 1,
+            int pageSize = 25)
+        {
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
+            long accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
+
+            return await retryPolicy.Execute(_ => outerApiClient.Get<GetVacanciesDashboardResponse>(
+                    new GetEmployerDashboardVacanciesApiRequest(accountId, pageNumber, pageSize, statuses)),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Employers"
                     }
                 });
         }

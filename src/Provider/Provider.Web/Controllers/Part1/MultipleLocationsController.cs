@@ -17,10 +17,8 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.FeatureManagement.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
 
@@ -33,7 +31,6 @@ public class MultipleLocationsController(IWebHostEnvironment hostingEnvironment)
         { VacancyValidationErrorCodes.AddressCountryNotInEngland, Tuple.Create("SelectedLocations", "All locations must be in England. Your apprenticeship must be in England to advertise it on this service") },
     };
     
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpGet("location-availability", Name = RouteNames.MultipleLocations_Get)]
     public async Task<IActionResult> LocationAvailability(
         [FromServices] IUtility utility,
@@ -46,7 +43,6 @@ public class MultipleLocationsController(IWebHostEnvironment hostingEnvironment)
         return View(viewModel);
     }
 
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("location-availability", Name = RouteNames.MultipleLocations_Post)]
     public async Task<IActionResult> LocationAvailability(
         [FromServices] IUtility utility,
@@ -90,7 +86,6 @@ public class MultipleLocationsController(IWebHostEnvironment hostingEnvironment)
         return viewModel;
     }
     
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpGet("add-many-locations", Name = RouteNames.AddMoreThanOneLocation_Get)]
     public async Task<IActionResult> AddMoreThanOneLocation(
         [FromServices] IVacancyLocationService vacancyLocationService,
@@ -136,7 +131,6 @@ public class MultipleLocationsController(IWebHostEnvironment hostingEnvironment)
         return View(viewModel);
     }
     
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("add-many-locations", Name = RouteNames.AddMoreThanOneLocation_Post)]
     public async Task<IActionResult> AddMoreThanOneLocation(
         [FromServices] IVacancyLocationService vacancyLocationService,
@@ -182,7 +176,6 @@ public class MultipleLocationsController(IWebHostEnvironment hostingEnvironment)
         return View(viewModel);
     }
     
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("add-many-locations/add-new-location", Name = RouteNames.AddNewLocationJourney_Post)]
     public IActionResult AddALocation(AddMoreThanOneLocationEditModel editModel, [FromQuery] bool wizard)
     {
@@ -191,7 +184,6 @@ public class MultipleLocationsController(IWebHostEnvironment hostingEnvironment)
         return RedirectToRoute(RouteNames.AddLocation_Get, new { editModel.VacancyId, editModel.Ukprn, wizard, origin = MultipleLocationsJourneyOrigin.Many } );
     }
     
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpGet("confirm-locations", Name = RouteNames.MultipleLocationsConfirm_Get)]
     public async Task<IActionResult> ConfirmLocations(
         [FromServices] IUtility utility,
@@ -213,7 +205,6 @@ public class MultipleLocationsController(IWebHostEnvironment hostingEnvironment)
         return View(viewModel);
     }
 
-    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("confirm-locations", Name = RouteNames.MultipleLocationsConfirm_Post)]
     public async Task<IActionResult> ConfirmLocations([FromServices] IUtility utility, ConfirmLocationsEditModel model)
     {

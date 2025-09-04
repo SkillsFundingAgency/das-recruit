@@ -3,6 +3,7 @@ using AutoFixture.NUnit3;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
@@ -11,13 +12,14 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProvide
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
-using Xunit;
+using TrainingProvider = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders.TrainingProvider;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.Services
 {
+    [TestFixture]
     public class TrainingProviderServiceTests
     {
-        [Fact]
+        [Test]
         public async Task GetProviderAsync_ShouldReturnEsfaTestTrainingProvider()
         {
             var loggerMock = new Mock<ILogger<TrainingProviderService>>();
@@ -37,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             referenceDataReader.Verify(p => p.GetReferenceData<TrainingProviders>(), Times.Never);
         }
 
-        [Fact]
+        [Test]
         public async Task GetProviderAsync_ShouldAttemptToFindTrainingProvider()
         {
             const long ukprn = 88888888;
@@ -99,6 +101,26 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 .ReturnsAsync(response);
 
             var result = await trainingProviderService.GetProviderDashboardApplicationReviewStats(ukprn, vacancyReferences);
+
+            result.Should().BeEquivalentTo(response);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task GetProviderDashboardVacanciesByApplicationReviewStatuses_Should_Return_As_Expected(
+            long ukprn,
+            int pageNumber,
+            int pageSize,
+            List<ApplicationReviewStatus> status,
+            GetVacanciesDashboardResponse response,
+            [Frozen] Mock<IOuterApiClient> outerApiClient,
+            [Greedy] TrainingProviderService trainingProviderService)
+        {
+            var expectedGetUrl = new GetProviderDashboardVacanciesApiRequest(ukprn, pageNumber, pageSize, status);
+            outerApiClient.Setup(x => x.Get<GetVacanciesDashboardResponse>(
+                    It.Is<GetProviderDashboardVacanciesApiRequest>(r => r.GetUrl == expectedGetUrl.GetUrl)))
+                .ReturnsAsync(response);
+
+            var result = await trainingProviderService.GetProviderDashboardVacanciesByApplicationReviewStatuses(ukprn, status, pageNumber, pageSize);
 
             result.Should().BeEquivalentTo(response);
         }

@@ -1,9 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
+using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Shared.Web.Extensions;
@@ -30,7 +29,7 @@ public class TrainingOrchestrator(
     : VacancyValidatingOrchestrator<TrainingEditModel>(logger)
 {
     private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProgramme;
-    private const string InvalidTraining = "Select the training the apprentice will take";
+    private const string InvalidTraining = "Enter a valid training course";
 
     public async Task<TrainingViewModel> GetTrainingViewModelAsync(VacancyRouteModel vrm, VacancyUser user)
     {
@@ -129,29 +128,31 @@ public class TrainingOrchestrator(
         return clone;
     }
 
-    public async Task<OrchestratorResponse> PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel m, VacancyUser user)
+    public async Task<OrchestratorResponse<PostConfirmTrainingEditModelResponse>> PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel m, VacancyUser user)
     {
         var programmes = (await vacancyClient.GetActiveApprenticeshipProgrammesAsync()).ToList();
         var programme = programmes.SingleOrDefault(p => p.Id == m.ProgrammeId);
         if (programme == null)
         {
-            return new OrchestratorResponse(new EntityValidationResult
+            return new OrchestratorResponse<PostConfirmTrainingEditModelResponse>(new EntityValidationResult
             {
                 Errors = [new EntityValidationError(0, nameof(TrainingEditModel.SelectedProgrammeId), InvalidTraining, string.Empty)]
             });
         }
-            
+
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Training_Confirm_Post);
         vacancy.ApprenticeshipType = programme.ApprenticeshipType switch {
             TrainingType.Foundation => ApprenticeshipTypes.Foundation,
             _ => null
         };
-
+        
         if (vacancy.IsChangingApprenticeshipType(programmes, programme))
         {
             ProcessApprenticeshipTypeChanges(vacancy, programme);
         }
-            
+
+        bool isChangingCourse = !string.IsNullOrWhiteSpace(vacancy.ProgrammeId) && vacancy.ProgrammeId != m.ProgrammeId;
+        
         SetVacancyWithEmployerReviewFieldIndicators(
             vacancy.ProgrammeId,
             FieldIdResolver.ToFieldId(v => v.ProgrammeId),
@@ -164,8 +165,11 @@ public class TrainingOrchestrator(
         return await ValidateAndExecute(
             vacancy, 
             v => vacancyClient.Validate(v, ValidationRules),
-            v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
-        );
+            async _ =>
+            {
+                await vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+                return new PostConfirmTrainingEditModelResponse(isChangingCourse);
+            });
     }
 
     private static void ProcessApprenticeshipTypeChanges(Vacancy vacancy, IApprenticeshipProgramme programme)

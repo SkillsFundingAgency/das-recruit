@@ -39,7 +39,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>(logger)
     {
         private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
-        private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage | VacancyRuleSet.TrainingExpiryDate;
+        private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage |
+                                                           VacancyRuleSet.TrainingExpiryDate |
+                                                           VacancyRuleSet.TrainingProgramme;
 
         public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel routeModel)
         {
@@ -63,6 +65,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             vm.Ukprn = routeModel.Ukprn;
             vm.VacancyId = routeModel.VacancyId;
             vm.RequiresEmployerReview = hasProviderReviewPermission;
+            vm.AdditionalQuestionCount = vacancy.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4;
             
             if (vacancy.Status == VacancyStatus.Referred)
             {

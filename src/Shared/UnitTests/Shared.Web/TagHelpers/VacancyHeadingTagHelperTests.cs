@@ -1,31 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Text.Encodings.Web;
-using Esfa.Recruit.Shared.Web.TagHelpers;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Esfa.Recruit.Shared.Web.TagHelpers;
 using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.TagHelpers;
 
-public class VacancyHeadingTagHelperTests
+public class VacancyHeadingTagHelperTests: TagHelperTestsBase
 {
-    private TagHelperContext _tagHelperContext;
-    private TagHelperOutput _tagHelperOutput;
-    
-    [SetUp]
-    public void SetUp()
-    {
-        _tagHelperContext = new TagHelperContext([], new Dictionary<object, object>(), "id");
-        _tagHelperOutput = new TagHelperOutput(VacancyHeadingTagHelper.TagName, [], Func);
-        return;
-
-        static Task<TagHelperContent> Func(bool result, HtmlEncoder encoder)
-        {
-            var tagHelperContent = new DefaultTagHelperContent();
-            tagHelperContent.SetHtmlContent(string.Empty);
-            return Task.FromResult<TagHelperContent>(tagHelperContent);
-        }
-    }
-    
     [Test]
     public async Task Classes_Are_Added_To_The_Tag()
     {
@@ -36,10 +15,10 @@ public class VacancyHeadingTagHelperTests
         };
 
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
 
         // assert
-        _tagHelperOutput.AsString().Should().StartWith("<h1 class=\"govuk-heading-xl class1 class2\">");
+        TagHelperOutput.AsString().Should().StartWith("<h1 class=\"govuk-heading-xl class1 class2\">");
     }
     
     
@@ -50,10 +29,10 @@ public class VacancyHeadingTagHelperTests
         var sut = new VacancyHeadingTagHelper();
 
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
 
         // assert
-        _tagHelperOutput.AsString().Should().StartWith("<h1 ");
+        TagHelperOutput.AsString().Should().StartWith("<h1 ");
     }
     
     [Test]
@@ -66,10 +45,10 @@ public class VacancyHeadingTagHelperTests
         };
 
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
 
         // assert
-        _tagHelperOutput.AsString().Should().Contain("<span class=\"HtmlEncode[[govuk-caption-l]]\">vacancy title</span>");
+        TagHelperOutput.AsString().Should().Contain("<span class=\"HtmlEncode[[govuk-caption-l]]\">vacancy title</span>");
     }
     
     [Test]
@@ -82,9 +61,9 @@ public class VacancyHeadingTagHelperTests
         };
 
         // act
-        await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
 
         // assert
-        _tagHelperOutput.AsString().Should().Contain("heading text</h1>");
+        TagHelperOutput.AsString().Should().Contain("heading text</h1>");
     }
 }

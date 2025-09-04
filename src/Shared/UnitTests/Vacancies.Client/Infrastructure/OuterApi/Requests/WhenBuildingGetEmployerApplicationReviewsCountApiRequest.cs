@@ -11,11 +11,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         [Test, AutoData]
         public void Then_It_Is_Correctly_Constructed(
             long accountId,
-            List<long> vacancyReferences)
+            List<long> vacancyReferences,
+            string applicationSharedFilteringStatus)
         {
-            var actual = new GetEmployerApplicationReviewsCountApiRequest(accountId, vacancyReferences);
+            var actual = new GetEmployerApplicationReviewsCountApiRequest(accountId, vacancyReferences, applicationSharedFilteringStatus);
 
-            actual.PostUrl.Should().Be($"employerAccounts/{accountId}/count");
+            actual.PostUrl.Should().Be($"employerAccounts/{accountId}/count?applicationSharedFilteringStatus={applicationSharedFilteringStatus}");
             ((List<long>)actual.Data).Should().BeEquivalentTo(vacancyReferences);
         }
     }

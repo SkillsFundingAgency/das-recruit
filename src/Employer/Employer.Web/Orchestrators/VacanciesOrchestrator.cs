@@ -34,13 +34,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var filteringOption = SanitizeFilter(filter);
             var vacanciesTask = _vacancyClient.GetDashboardAsync(employerAccountId, page, filteringOption, searchTerm);
             var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
-            var employerVacancyCountTask = _vacancyClient.GetVacancyCount(employerAccountId, filteringOption, searchTerm);
+            
 
-            await Task.WhenAll(vacanciesTask, userDetailsTask, employerVacancyCountTask);
-
+            await Task.WhenAll(vacanciesTask, userDetailsTask);
+            
             var employerDashboard = vacanciesTask.Result;
             var userDetails = userDetailsTask.Result;
-            var vacancyCount = employerVacancyCountTask.Result;
+            
+            var employerVacancyCountTask = employerDashboard?.TotalVacancies ?? await _vacancyClient.GetVacancyCount(employerAccountId, filteringOption, searchTerm);
+            
+            var vacancyCount = employerVacancyCountTask;
             var totalItems = Convert.ToInt32(vacancyCount);
 
             var vacancies = new List<VacancySummary>(employerDashboard?.Vacancies ?? Array.Empty<VacancySummary>());

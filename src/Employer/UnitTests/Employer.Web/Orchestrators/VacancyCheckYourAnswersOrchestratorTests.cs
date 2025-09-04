@@ -9,7 +9,6 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -17,7 +16,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVa
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Microsoft.Extensions.Options;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
-using FeatureNames = Esfa.Recruit.Employer.Web.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators;
 
@@ -58,11 +56,8 @@ public class VacancyCheckYourAnswersOrchestratorTests
         externalLinksConfiguration.Object.Value.FindAnApprenticeshipUrl = findAnApprenticeshipUrl;
         var expectedViewModel = new VacancyPreviewViewModel();
 
-        var feature = new Mock<IFeature>();
-        feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MultipleLocations)).Returns(true);
-
         var mapper = new DisplayVacancyViewModelMapper(Mock.Of<IGeocodeImageService>(),
-            externalLinksConfiguration.Object, recruitVacancyClient.Object, outerApiClient.Object, feature.Object);
+            externalLinksConfiguration.Object, recruitVacancyClient.Object, outerApiClient.Object);
         await mapper.MapFromVacancyAsync(expectedViewModel, vacancy);
         
         expectedViewModel.VacancyId = routeModel.VacancyId;
@@ -80,6 +75,7 @@ public class VacancyCheckYourAnswersOrchestratorTests
             .Excluding(c=>c.CanShowReference)
             .Excluding(c=>c.CanShowDraftHeader)
             .Excluding(c=>c.AccountLegalEntityCount)
+            .Excluding(c=>c.AdditionalQuestionCount)
         );
         viewModel.ApprenticeshipLevel.Should().Be(standard.ApprenticeshipLevel);
         viewModel.AccountLegalEntityCount.Should().Be(legalEntities.Count);

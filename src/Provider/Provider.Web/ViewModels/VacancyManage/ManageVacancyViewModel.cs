@@ -1,4 +1,3 @@
-using System.Linq;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyView;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -17,9 +16,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public bool IsApplyThroughFaaVacancy { get; internal set; }
 
         public VacancyApplicationsViewModel Applications { get; internal set; }
-        public bool HasApplications => Applications.Applications.Any();
-        public bool HasNoApplications => Applications.Applications == null || Applications.Applications?.Any() == false;
-        public int ApplicationCount => Applications?.Applications.Count() ?? 0;
+        public bool HasApplications => TotalUnfilteredApplicationsCount > 0;
+        public bool HasNoApplications => TotalUnfilteredApplicationsCount == 0;
+        public int TotalUnfilteredApplicationsCount => Applications?.TotalUnfilteredApplicationsCount ?? 0;
         public bool CanShowEditVacancyLink { get; internal set; }
         public bool CanShowCloseVacancyLink { get; internal set; }
         public bool CanShowCloneVacancyLink { get; internal set; }

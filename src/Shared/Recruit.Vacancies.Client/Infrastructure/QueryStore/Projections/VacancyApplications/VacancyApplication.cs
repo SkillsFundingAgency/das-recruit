@@ -6,8 +6,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
 {
     public class VacancyApplication
     {
-        private string _candidateName;
-
         public DateTime SubmittedDate { get; set; }
         public ApplicationReviewStatus Status { get; set; }
         public Guid CandidateId { get; set; }
@@ -17,16 +15,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         {
             get
             {
-                if (string.IsNullOrEmpty(FirstName))
-                {
-                    return _candidateName;
-                }
-                else
-                {
-                    return $"{FirstName} {LastName}";
-                }
+                return string.IsNullOrEmpty(FirstName) ? " " : $"{FirstName} {LastName}";
             }
-            set { _candidateName = value; }
         }
 
         public DateTime? DateOfBirth { get; set; }
@@ -49,7 +39,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public long? VacancyReference { get; set; }
         public string CandidateFeedback { get; set; }
         public Guid? ApplicationId { get; set; }
-        public static implicit operator VacancyApplication(ApplicationReview applicationReview)
+        public string CandidateAppliedLocations { get; set; }
+        public bool CanShowCandidateAppliedLocations => !string.IsNullOrEmpty(CandidateAppliedLocations);
+
+
+        public static implicit operator VacancyApplication(Domain.Entities.ApplicationReview applicationReview)
         {
             var projection = new VacancyApplication
             {
@@ -63,7 +57,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
                 DateSharedWithEmployer = applicationReview.DateSharedWithEmployer,
                 ReviewedDate = applicationReview.ReviewedDate,
                 HasEverBeenEmployerInterviewing = applicationReview.HasEverBeenEmployerInterviewing,
-                CandidateFeedback = applicationReview.CandidateFeedback
+                CandidateFeedback = applicationReview.CandidateFeedback,
+                CandidateAppliedLocations = applicationReview.Application?.CandidateAppliedLocations
             };
 
             if (applicationReview.IsWithdrawn == false)
@@ -74,10 +69,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
                 projection.LastName = applicationReview.Application?.LastName;
                 projection.DateOfBirth = applicationReview.Application?.BirthDate;
                 projection.DisabilityStatus = applicationReview.Application?.DisabilityStatus ?? ApplicationReviewDisabilityStatus.Unknown;
+                projection.CandidateAppliedLocations = applicationReview.Application?.CandidateAppliedLocations;
             }
             return projection;
         }
-
-        
     }
 }

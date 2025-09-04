@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders;
 using Microsoft.Extensions.Logging;
-using Polly;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
 {
@@ -90,6 +90,34 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
                         "apiCall", "Providers"
                     }
                 });
+        }
+
+        public async Task<GetVacanciesDashboardResponse> GetProviderDashboardVacanciesByApplicationReviewStatuses(
+            long ukprn,
+            List<ApplicationReviewStatus> applicationReviewStatusList,
+            int pageNumber = 1,
+            int pageSize = 25)
+        {
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
+
+            return await retryPolicy.Execute(_ => outerApiClient.Get<GetVacanciesDashboardResponse>(
+                    new GetProviderDashboardVacanciesApiRequest(ukprn, pageNumber, pageSize, applicationReviewStatusList)),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Providers"
+                    }
+                });
+        }
+
+        public async Task<IEnumerable<TrainingProviderSummary>> GetCourseProviders(int programmeId)
+        {
+            var result = await outerApiClient.Get<GetCourseProvidersResponse>(new GetCourseProvidersRequest(programmeId));
+            return result.Providers?.Select(x => new TrainingProviderSummary
+            {
+                ProviderName = x.Name,
+                Ukprn = x.Ukprn
+            }) ?? [];
         }
 
         private Task<TrainingProviders> GetProviders()

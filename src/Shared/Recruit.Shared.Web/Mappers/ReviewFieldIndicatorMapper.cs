@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
         private IDictionary<string, string> ManualQaMessagesForApprenticeship => new Dictionary<string, string> 
         {
             { FieldIdentifiers.Title, "Title requires edit" },
-            { FieldIdentifiers.ShortDescription, "Brief overview requires edit" },
+            { FieldIdentifiers.ShortDescription, "Summary requires edit" },
             { FieldIdentifiers.ClosingDate, "Closing date requires edit" },
             { FieldIdentifiers.Wage, "Annual wage requires edit" },
             { FieldIdentifiers.CompanyBenefitsInformation, "Company benefits requires edit" },
@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdentifiers.TrainingLevel, "Apprenticeship level requires edit" },
             { FieldIdentifiers.NumberOfPositions, "Positions requires edit" },
             { FieldIdentifiers.VacancyDescription, "What will the apprentice do at work requires edit" },
-            { FieldIdentifiers.TrainingDescription, "The apprentice's training schedule requires edit" },
+            { FieldIdentifiers.TrainingDescription, "The apprentice's training plan requires edit" },
             { FieldIdentifiers.AdditionalTrainingDescription, "Additional training information requires edit" },
             { FieldIdentifiers.OutcomeDescription, "What is the expected career progression after this apprenticeship requires edit" },
             { FieldIdentifiers.Skills, "Skills requires edit" },

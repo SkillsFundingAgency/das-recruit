@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
+using Microsoft.Extensions.Configuration;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes
 {
@@ -18,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
         private readonly IOuterApiClient _outerApiClient;
         private readonly IFeature _feature;
 
-        public ApprenticeshipProgrammeProvider(ICache cache, ITimeProvider timeProvider, IOuterApiClient outerApiClient, IFeature feature)
+        public ApprenticeshipProgrammeProvider(ICache cache, ITimeProvider timeProvider, IOuterApiClient outerApiClient, IFeature feature, IConfiguration configuration)
         {
             _cache = cache;
             _timeProvider = timeProvider;
@@ -38,29 +40,27 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
             return await _outerApiClient.Get<GetVacancyPreviewApiResponse>(new GetVacancyPreviewApiRequest(programmedId));
         }
 
-        public async Task<IEnumerable<IApprenticeshipProgramme>> GetApprenticeshipProgrammesAsync(bool includeExpired = false)
+        public async Task<IEnumerable<IApprenticeshipProgramme>> GetApprenticeshipProgrammesAsync(bool includeExpired = false, int? ukprn = null)
         {
-            var queryItem = await GetApprenticeshipProgrammes();
+            var queryItem = await GetApprenticeshipProgrammes(ukprn);
             return includeExpired ? 
                 queryItem.Data : 
-                queryItem.Data.Where(x => x.IsActive);
+                queryItem.Data.Where(x =>x.IsActive || (x.ApprenticeshipType == TrainingType.Foundation && IsStandardActive(x.EffectiveTo,x.LastDateStarts)));
         }
 
-        private Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammes()
+        private async Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammes(int? ukprn)
         {
-            var includeFoundationApprenticeships =_feature.IsFeatureEnabled("FoundationApprenticeships");
-            
-            return _cache.CacheAsideAsync(CacheKeys.ApprenticeshipProgrammes,
-                _timeProvider.NextDay6am,
-                async () =>
-                {
-                    var result = await _outerApiClient.Get<GetTrainingProgrammesResponse>(new GetTrainingProgrammesRequest(includeFoundationApprenticeships));
-                    return new ApprenticeshipProgrammes
-                    {
-                        Data = result.TrainingProgrammes.Select(c => (ApprenticeshipProgramme)c).ToList(),
-                        
-                    };
-                });
+            var result = await _outerApiClient.Get<GetTrainingProgrammesResponse>(new GetTrainingProgrammesRequest(ukprn));
+            return new ApprenticeshipProgrammes
+            {
+                Data = result.TrainingProgrammes.Select(c => (ApprenticeshipProgramme)c).ToList(),
+            };
+        }
+        
+        private bool IsStandardActive(DateTime? effectiveTo, DateTime? lastDateStarts)
+        {
+            return (!effectiveTo.HasValue || effectiveTo.Value.Date >= DateTime.UtcNow.Date)
+                   && (!lastDateStarts.HasValue || lastDateStarts.Value.Date >= DateTime.UtcNow.Date);
         }
     }
 }
