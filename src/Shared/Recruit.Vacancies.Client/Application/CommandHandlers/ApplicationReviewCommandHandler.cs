@@ -45,19 +45,21 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             applicationReview.StatusUpdatedDate = timeProvider.Now;
             applicationReview.StatusUpdatedBy = message.User;
 
-            if (applicationReview.Status == ApplicationReviewStatus.EmployerInterviewing || applicationReview.Status == ApplicationReviewStatus.EmployerUnsuccessful)
+            if (applicationReview.Status is ApplicationReviewStatus.EmployerInterviewing or ApplicationReviewStatus.EmployerUnsuccessful)
             {
                 applicationReview.ReviewedDate = timeProvider.Now;
             }
 
-            if (applicationReview.Status == ApplicationReviewStatus.EmployerInterviewing) 
+            switch (applicationReview.Status)
             {
-                applicationReview.HasEverBeenEmployerInterviewing = true;
-            }
-
-            if (applicationReview.Status == ApplicationReviewStatus.EmployerUnsuccessful)
-            {
-                applicationReview.EmployerFeedback = message.CandidateFeedback;
+                case ApplicationReviewStatus.EmployerInterviewing:
+                    applicationReview.HasEverBeenEmployerInterviewing = true;
+                    break;
+                case ApplicationReviewStatus.EmployerUnsuccessful:
+                    applicationReview.EmployerFeedback = message.CandidateFeedback;
+                    break;
+                default:
+                    break;
             }
 
             Validate(applicationReview);
@@ -68,7 +70,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             var vacancy = await vacancyRepository.GetVacancyAsync(applicationReview.VacancyReference);
 
             // Notify the provider that the shared application has been reviewed by the employer.
-            if (applicationReview.Status is ApplicationReviewStatus.EmployerInterviewing)
+            if (applicationReview.Status is ApplicationReviewStatus.EmployerInterviewing or ApplicationReviewStatus.EmployerUnsuccessful)
             {
                 await outerApiClient.Post(new PostSharedApplicationReviewedEventApiRequest(
                     new PostSharedApplicationReviewedEventApiRequest.
