@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 new TestApprenticeshipProgramme {Id = "123", LastDateStarts = null, EffectiveTo = null}
             };
 
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null)).ReturnsAsync(programmes);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 new TestApprenticeshipProgramme {Id = "123", LastDateStarts = startDate.AddDays(daysAfterStartDate)}
             };
 
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null)).ReturnsAsync(programmes);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
@@ -75,7 +75,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 new TestApprenticeshipProgramme {Id = "123", EffectiveTo = startDate.AddDays(daysAfterStartDate)}
             };
 
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null)).ReturnsAsync(programmes);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
@@ -92,7 +92,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             var vacancy = new Vacancy
             {
                 StartDate = startDate,
-                ProgrammeId = "123"
+                ProgrammeId = "123",
+                TrainingProvider = new TrainingProvider
+                {
+                    Ukprn = 10000000
+                }
             };
 
             var programmes = new List<IApprenticeshipProgramme>
@@ -100,7 +104,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 new TestApprenticeshipProgramme {Id = "123", EffectiveTo = effectiveTo}
             };
 
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null)).ReturnsAsync(programmes);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
@@ -121,7 +125,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             var vacancy = new Vacancy
             {
                 StartDate = startDate,
-                ProgrammeId = "123"
+                ProgrammeId = "123",
+                TrainingProvider = new TrainingProvider
+                {
+                    Ukprn = 10000000
+                }
             };
 
             var programmes = new List<IApprenticeshipProgramme>
@@ -129,7 +137,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 new TestApprenticeshipProgramme {Id = "123", LastDateStarts = lastDateStarts}
             };
 
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null)).ReturnsAsync(programmes);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 

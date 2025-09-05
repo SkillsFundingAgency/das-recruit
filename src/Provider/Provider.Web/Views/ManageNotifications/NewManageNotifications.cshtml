@@ -22,11 +22,7 @@
             </govuk-banner-heading>
         </govuk-banner>
         
-        <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Manage your advert notifications</h1>
-        
-        <p>
-            Choose when to get emails about your adverts. We’ll always email you if a training provider recruiting on your behalf needs you to do something.
-        </p>
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Manage your recruitment emails</h1>
         
         <form method="post" asp-route="@RouteNames.ManageNotifications_Post"  asp-route-ukprn="@Model.Ukprn">
 
@@ -44,7 +40,7 @@
             
             <div class="govuk-form-group">
                 <govuk-fieldset>
-                    <govuk-legend size="@HeadingSize.Medium">When adverts receive new applications</govuk-legend>
+                    <govuk-legend size="@HeadingSize.Medium">When vacancies receive new applications</govuk-legend>
                     <govuk-radio-group>
                         <govuk-radio-button id="applications-none" value="@NotificationFrequencyEx.Never" for="ApplicationSubmittedValue" data-radio-conditional-hide="application-frequency-options">
                             Do not get this email
@@ -62,7 +58,7 @@
             <div class="govuk-radios__conditional" data-module="govuk-radios" id="application-frequency-options">
                 <div class="govuk-form-group" esfa-validation-marker-for="ApplicationSubmittedFrequencyValue">
                     <govuk-fieldset>
-                        <govuk-legend size="@HeadingSize.Small">How often do you want to receive emails about new applications?</govuk-legend>
+                        <govuk-legend size="@HeadingSize.Small">How often do you want to get emails about new applications?</govuk-legend>
                         <span esfa-validation-message-for="ApplicationSubmittedFrequencyValue" class="govuk-error-message"></span>
                         <govuk-radio-group>
                             <govuk-radio-button id="notify-now" value="@NotificationFrequencyEx.Immediately" for="ApplicationSubmittedFrequencyValue">As soon as a new application is received</govuk-radio-button>

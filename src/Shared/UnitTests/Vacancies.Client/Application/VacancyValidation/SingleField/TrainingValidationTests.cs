@@ -29,6 +29,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             var vacancy = new Vacancy
             {
                 ProgrammeId = "123",
+                TrainingProvider = new TrainingProvider
+                {
+                    Ukprn = 10000000
+                }
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProgramme);
@@ -42,13 +46,17 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         {
             var vacancy = new Vacancy
             {
-                ProgrammeId = "abc"
+                ProgrammeId = "000",
+                TrainingProvider = new TrainingProvider
+                {
+                    Ukprn = 10000000
+                }
             };
-            
+
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
             result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
+            result.Errors.Should().HaveCount(2);
             result.Errors[0].ErrorCode.Should().Be("260");
         }
 
@@ -57,11 +65,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [InlineData(null)]
         public void IdMustHaveAValue(string idValue)
         {
-            var vacancy = new Vacancy 
+            var vacancy = new Vacancy
             {
                 ProgrammeId = idValue
             };
-            
+
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProgramme);
 
             result.HasErrors.Should().BeTrue();
@@ -72,24 +80,21 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         }
 
         [Fact]
-        public void ErrorWhenTrainingProviderDoesNotTrainTheCourse()
+        public void ErrorWhenProgrammeIdIsWhitespace()
         {
             var vacancy = new Vacancy
             {
-                ProgrammeId = "000",
+                ProgrammeId = "   ",
                 TrainingProvider = new TrainingProvider
                 {
-                    Ukprn = 10000000
-                },
+                    Ukprn = 10000002
+                }
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProviderDeliverCourse);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProgramme);
 
             result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be("Provider");
-            result.Errors[0].ErrorCode.Should().Be("106");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProviderDeliverCourse);
+            result.Errors.Should().Contain(e => e.PropertyName == nameof(vacancy.ProgrammeId) && e.ErrorCode == "25");
         }
     }
 }
