@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -73,7 +73,7 @@ public class VacancyDto
     public List<ReviewFieldIndicator>? EmployerReviewFieldIndicators { get; init; }
     public List<ReviewFieldIndicator>? ProviderReviewFieldIndicators { get; init; }
     public string? SubmittedByUserId { get; init; }
-    public string? ReviewRequestedByUserId { get; init; }
+    public string? ReviewRequestedByUserId { get; set; }
     
     public static VacancyDto From(Vacancy vacancy, IEncodingService encodingService)
     {
@@ -139,6 +139,7 @@ public class VacancyDto
             TransferInfo = vacancy.TransferInfo,
             VacancyReference = vacancy.VacancyReference,
             Wage = vacancy.Wage,
+            ReviewRequestedByUserId = vacancy.ReviewByUser?.UserId
         };
     }
 
