@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -121,7 +121,6 @@ public class VacancyDto
             ProviderReviewFieldIndicators = vacancy.ProviderReviewFieldIndicators?.Select(x => new ReviewFieldIndicator() { FieldIdentifier = x.FieldIdentifier, IsChangeRequested = x.IsChangeRequested }).ToList(),
             Qualifications = vacancy.Qualifications,
             ReviewCount = vacancy.ReviewCount,
-            ReviewRequestedByUserId = vacancy.ReviewByUser?.UserId,
             ReviewRequestedDate = vacancy.ReviewDate,
             ShortDescription = vacancy.ShortDescription,
             Skills = vacancy.Skills,
