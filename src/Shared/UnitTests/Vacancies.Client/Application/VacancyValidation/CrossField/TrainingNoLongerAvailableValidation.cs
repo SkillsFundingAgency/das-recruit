@@ -4,6 +4,7 @@ using Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.Cros
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.CrossField
@@ -53,12 +54,19 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                     Ukprn = 10000000
                 }
             };
-         
+
+            string dateToDisplay = programmes[0].LastDateStarts.HasValue
+                ? programmes[0].LastDateStarts.Value.AsGdsDate()
+                : programmes[0].EffectiveTo.Value.AsGdsDate();
+
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors.FirstOrDefault().ErrorMessage.Should().Be("Enter a current training course. The training course you've selected will not be available on your start date");
+            result.Errors.FirstOrDefault()
+                .ErrorMessage.Should()
+                .Be(
+                    $"Start date must be on or before {dateToDisplay} as this is the last day for new starters for the training course you have selected. If you don’t want to change the start date, you can change the training course");
         }
         
         [Fact]
@@ -81,12 +89,18 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                     Ukprn = 10000000
                 }
             };
-         
+            string dateToDisplay = programmes[0].LastDateStarts.HasValue
+                ? programmes[0].LastDateStarts.Value.AsGdsDate()
+                : programmes[0].EffectiveTo.Value.AsGdsDate();
+
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors.First().ErrorMessage.Should().Be("Enter a current training course. The training course you've selected will not be available on your start date");
+            result.Errors.FirstOrDefault()
+                .ErrorMessage.Should()
+                .Be(
+                    $"Start date must be on or before {dateToDisplay} as this is the last day for new starters for the training course you have selected. If you don’t want to change the start date, you can change the training course");
         }
 
         [Fact]
@@ -97,7 +111,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             TimeProvider = mockTimeProvider.Object;
             var programmes = new List<IApprenticeshipProgramme>
             {
-                new TestApprenticeshipProgramme {Id = "1234", EffectiveTo = DateTime.UtcNow.AddDays(7) }
+                new TestApprenticeshipProgramme {Id = "123", EffectiveTo = DateTime.UtcNow.AddDays(7) }
             };
             MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null)).ReturnsAsync(programmes);
             var vacancy = new Vacancy
@@ -109,12 +123,18 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                     Ukprn = 10000000
                 }
             };
-         
+            string dateToDisplay = programmes[0].LastDateStarts.HasValue
+                ? programmes[0].LastDateStarts.Value.AsGdsDate()
+                : programmes[0].EffectiveTo.Value.AsGdsDate();
+
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors.FirstOrDefault().ErrorMessage.Should().Be("Enter a current training course. The training course you've selected will not be available on your start date");
+            result.Errors.FirstOrDefault()
+                .ErrorMessage.Should()
+                .Be(
+                    $"Start date must be on or before {dateToDisplay} as this is the last day for new starters for the training course you have selected. If you don’t want to change the start date, you can change the training course");
         }
     }
 }
