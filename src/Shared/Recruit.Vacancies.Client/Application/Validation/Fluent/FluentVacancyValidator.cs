@@ -1,4 +1,5 @@
 using System;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
@@ -891,7 +892,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateTrainingProviderDeliverTrainingCourse()
         {
-            When(x => x.TrainingProvider != null && x.OwnerType == OwnerType.Employer, () =>
+            When(x => x.TrainingProvider != null && x.OwnerType == OwnerType.Employer && x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn, () =>            
             {
                 RuleFor(x => x)
                     .TrainingProviderMustBeDeliverTheTrainingCourse(_trainingProviderService, _apprenticeshipProgrammesProvider)
@@ -921,7 +922,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void TrainingExpiryDateValidation()
         {
-            When(x => !string.IsNullOrWhiteSpace(x.ProgrammeId), () =>
+            // This rule is only applicable for non-ESFA test training providers
+            When(x => x.TrainingProvider is { Ukprn: not null } && x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn && !string.IsNullOrWhiteSpace(x.ProgrammeId), () =>
             {
                 RuleFor(x => x)
                     .Cascade(CascadeMode.Stop)
@@ -934,14 +936,21 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateTrainingCourse()
         {
-            When(x => !string.IsNullOrWhiteSpace(x.ProgrammeId), () =>
+            // This rule is only applied when the training provider is not the ESFA test training provider
+            When(x => x.TrainingProvider is { Ukprn: not null } && x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn && !string.IsNullOrWhiteSpace(x.ProgrammeId), () =>
             {
                 RuleFor(x => x)
                     .Cascade(CascadeMode.Stop)
                     .TrainingMustBeValid(_apprenticeshipProgrammesProvider)
-                    .TrainingCourseMustBeOfferedByTrainingProvider(_trainingProviderService, _apprenticeshipProgrammesProvider)
                     .TrainingMustBeActiveForCurrentDate(_apprenticeshipProgrammesProvider, _timeProvider)
                     .RunCondition(VacancyRuleSet.TrainingProgramme);
+            });
+
+            When(x => !string.IsNullOrWhiteSpace(x.ProgrammeId) && x.TrainingProvider is not null, () =>
+            {
+                RuleFor(x => x)
+                    .Cascade(CascadeMode.Stop)
+                    .TrainingCourseMustBeOfferedByTrainingProvider(_trainingProviderService, _apprenticeshipProgrammesProvider);
             });
         }
     }
