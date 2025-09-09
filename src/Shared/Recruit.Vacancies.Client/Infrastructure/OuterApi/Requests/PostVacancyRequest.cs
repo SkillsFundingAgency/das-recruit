@@ -73,7 +73,7 @@ public class VacancyDto
     public List<ReviewFieldIndicator>? EmployerReviewFieldIndicators { get; init; }
     public List<ReviewFieldIndicator>? ProviderReviewFieldIndicators { get; init; }
     public string? SubmittedByUserId { get; init; }
-    public string? ReviewRequestedByUserId { get; init; }
+    public string? ReviewRequestedByUserId { get; set; }
     
     public static VacancyDto From(Vacancy vacancy, IEncodingService encodingService)
     {
@@ -121,7 +121,6 @@ public class VacancyDto
             ProviderReviewFieldIndicators = vacancy.ProviderReviewFieldIndicators?.Select(x => new ReviewFieldIndicator() { FieldIdentifier = x.FieldIdentifier, IsChangeRequested = x.IsChangeRequested }).ToList(),
             Qualifications = vacancy.Qualifications,
             ReviewCount = vacancy.ReviewCount,
-            ReviewRequestedByUserId = vacancy.ReviewByUser?.UserId,
             ReviewRequestedDate = vacancy.ReviewDate,
             ShortDescription = vacancy.ShortDescription,
             Skills = vacancy.Skills,
@@ -139,6 +138,7 @@ public class VacancyDto
             TransferInfo = vacancy.TransferInfo,
             VacancyReference = vacancy.VacancyReference,
             Wage = vacancy.Wage,
+            ReviewRequestedByUserId = vacancy.ReviewByUser?.UserId
         };
     }
 
