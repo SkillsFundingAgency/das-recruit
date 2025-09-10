@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Microsoft.Extensions.Logging;
@@ -19,6 +20,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<ProviderAccountResponse> GetProviderStatus(long ukprn)
         {
+            if (ukprn == EsfaTestTrainingProvider.Ukprn)
+            {
+                return new ProviderAccountResponse
+                {
+                    CanAccessService = true
+                };
+            }
             try
             {
                 return await _outerApiClient.Get<ProviderAccountResponse>(new GetProviderStatusDetails(ukprn));
