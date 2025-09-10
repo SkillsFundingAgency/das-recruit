@@ -1,7 +1,6 @@
 using System.Linq;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.UnitTests.TestHelpers;
-using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
@@ -16,7 +15,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.A
 public class WhenGettingAllApprenticeshipProgrammes
 {
     [Test, MoqAutoData]
-    public async Task Then_The_Courses_Are_Retrieved_From_The_Api_When_Not_Cached(
+    public async Task Then_The_Courses_Are_Retrieved_From_The_Api(
         GetTrainingProgrammesResponse apiResponse,
         [Frozen] Mock<IConfiguration> mockConfiguration,
         [Frozen] Mock<ITimeProvider> mockTimeProvider,
