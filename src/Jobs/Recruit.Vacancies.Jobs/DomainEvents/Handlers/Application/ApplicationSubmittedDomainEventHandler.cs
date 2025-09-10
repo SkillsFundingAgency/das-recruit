@@ -55,10 +55,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application
                 {
                     var communicationRequest = GetApplicationSubmittedCommunicationRequest(vacancyReference);
 
-                    await _client.CreateApplicationReviewAsync(@event.Application);
-
                     await _communicationQueueService.AddMessageAsync(communicationRequest);                    
                 }
+                
+                await _client.CreateApplicationReviewAsync(@event.Application);
 
                 _logger.LogInformation($"Finished Processing {nameof(ApplicationSubmittedEvent)} for vacancy: {{VacancyReference}} and candidate: {{CandidateId}}", vacancyReference, candidateId);
             }
