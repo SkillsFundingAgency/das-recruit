@@ -185,7 +185,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                         ? matchingProgramme.LastDateStarts.Value.AsGdsDate()
                         : matchingProgramme.EffectiveTo.Value.AsGdsDate();
                     
-                    var message = $"Start date must be on or before {dateToDisplay} as this is the last day for new starters for the training course you have selected. If you don’t want to change the start date, you can change the training course";
+                    var message = $"Start date must be on or before {dateToDisplay} as this is the last day for new starters for the training course you have selected. If you don't want to change the start date, you can change the training course";
                     var failure = new ValidationFailure(string.Empty, message)
                     {
                         ErrorCode = ErrorCodes.TrainingExpiryDate,
