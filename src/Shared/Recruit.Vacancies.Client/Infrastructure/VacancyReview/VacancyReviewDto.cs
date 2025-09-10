@@ -41,7 +41,6 @@ public class VacancyReviewDto
     {
         return new VacancyReviewDto
         {
-            
             Id = source.Id,
             VacancyReference = source.VacancyReference,
             VacancyTitle = source.Title,
@@ -68,8 +67,8 @@ public class VacancyReviewDto
             AccountLegalEntityId = encodingService.Decode(source.VacancySnapshot.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId),
             HashedAccountId = source.VacancySnapshot.EmployerAccountId,
             EmployerName =  source.VacancySnapshot.EmployerName,
-            EmployerLocations = source.VacancySnapshot.EmployerLocations,
-            EmployerLocationOption = source.VacancySnapshot.EmployerLocationOption,
+            EmployerLocations = source.VacancySnapshot.EmployerLocationOption == null ? [ source.VacancySnapshot.EmployerLocation ] : source.VacancySnapshot.EmployerLocations,
+            EmployerLocationOption = source.VacancySnapshot.EmployerLocationOption ?? AvailableWhere.OneLocation,
             VacancyId = source.VacancySnapshot.Id
         };
     }

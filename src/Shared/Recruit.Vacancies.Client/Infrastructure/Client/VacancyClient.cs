@@ -178,8 +178,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 Referred = (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
                 Live = dashboard.Where(c => c.Status == VacancyStatus.Live).Sum(c => c.StatusCount),
                 Submitted = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
-
-                Review = dashboardStats.EmployerReviewedApplicationsCount,
+                Review = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Review)?.StatusCount ?? 0,
+                
                 NumberOfNewApplications = dashboardStats.NewApplicationsCount,
                 NumberOfSuccessfulApplications = dashboardStats.SuccessfulApplicationsCount,
                 NumberOfUnsuccessfulApplications = dashboardStats.UnsuccessfulApplicationsCount,
