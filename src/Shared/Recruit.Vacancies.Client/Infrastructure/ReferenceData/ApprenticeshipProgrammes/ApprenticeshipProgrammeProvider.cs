@@ -15,22 +15,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
 {
     public class ApprenticeshipProgrammeProvider : IApprenticeshipProgrammeProvider
     {
-        private readonly ICache _cache;
-        private readonly ITimeProvider _timeProvider;
         private readonly IOuterApiClient _outerApiClient;
-        private readonly IFeature _feature;
 
-        public ApprenticeshipProgrammeProvider(ICache cache, ITimeProvider timeProvider, IOuterApiClient outerApiClient, IFeature feature, IConfiguration configuration)
+        public ApprenticeshipProgrammeProvider(IOuterApiClient outerApiClient)
         {
-            _cache = cache;
-            _timeProvider = timeProvider;
             _outerApiClient = outerApiClient;
-            _feature = feature;
         }
 
-        public async Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId)
+        public async Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId, int? ukprn = null)
         {
-            var apprenticeships = await GetApprenticeshipProgrammesAsync(true);
+            var apprenticeships = await GetApprenticeshipProgrammesAsync(true, ukprn);
 
             return apprenticeships?.SingleOrDefault(x => x.Id == programmeId);
         }

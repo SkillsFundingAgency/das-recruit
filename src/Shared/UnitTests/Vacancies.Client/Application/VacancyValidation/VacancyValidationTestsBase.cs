@@ -33,13 +33,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         {
             MockMinimumWageService = new Mock<IMinimumWageProvider>();
             MockApprenticeshipProgrammeProvider = new Mock<IApprenticeshipProgrammeProvider>();
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("123"))
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("123", null))
                 .ReturnsAsync(new ApprenticeshipProgramme
                 {
                     IsActive = true,
                     Id = "123",
                 });
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("000"))
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("000", null))
                 .ReturnsAsync(new ApprenticeshipProgramme
                 {
                     Id = "abc",

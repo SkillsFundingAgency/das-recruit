@@ -91,8 +91,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
         {
             return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
             {
+                var ukprn = vacancy.TrainingProvider.Ukprn != null ? Convert.ToInt32(vacancy.TrainingProvider.Ukprn) : (int?) null;
+
                 var programme =
-                    await apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+                    await apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId, ukprn);
 
                 if (programme is null || programme.IsActive is false)
                 {
