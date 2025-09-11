@@ -120,7 +120,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             await Task.WhenAll(hasLegalEntityAgreementTask, hasProviderAgreementTask);
 
-            var hasProviderReviewPermission = await providerRelationshipsService.HasProviderGotEmployersPermissionAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
+            var hasProviderReviewPermission = await providerRelationshipsService.HasProviderGotEmployersPermissionAsync(
+                vacancy.TrainingProvider.Ukprn.Value,
+                vacancy.EmployerAccountId,
+                vacancy.AccountLegalEntityPublicHashedId,
+                OperationType.RecruitmentRequiresReview);
 
             var response = new SubmitVacancyResponse
             {
