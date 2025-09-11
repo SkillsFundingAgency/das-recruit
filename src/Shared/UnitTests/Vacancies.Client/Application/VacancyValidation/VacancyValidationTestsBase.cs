@@ -39,6 +39,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                     IsActive = true,
                     Id = "123",
                 });
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("123", 10000000))
+                .ReturnsAsync(new ApprenticeshipProgramme
+                {
+                    IsActive = true,
+                    Id = "123",
+                });
             MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("000", null))
                 .ReturnsAsync(new ApprenticeshipProgramme
                 {
