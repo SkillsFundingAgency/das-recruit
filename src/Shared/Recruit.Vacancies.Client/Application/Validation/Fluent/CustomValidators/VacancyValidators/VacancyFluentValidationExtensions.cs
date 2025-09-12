@@ -74,11 +74,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 if (programme == null)
                 {
                     var message = $"Training programme {vacancy.ProgrammeId} does not exist";
-                    var failure = new ValidationFailure(string.Empty, message)
+                    var failure = new ValidationFailure("Training", message)
                     {
                         ErrorCode = ErrorCodes.TrainingNotExist,
                         CustomState = VacancyRuleSet.TrainingProgramme,
-                        PropertyName = nameof(Vacancy.ProgrammeId)
+                        PropertyName = "Training"
                     };
                     context.AddFailure(failure);
                 }
@@ -89,6 +89,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             this IRuleBuilder<Vacancy, Vacancy> ruleBuilder,
             IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider)
         {
+            
             return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
             {
                 var ukprn = vacancy.TrainingProvider.Ukprn != null ? Convert.ToInt32(vacancy.TrainingProvider.Ukprn) : (int?) null;

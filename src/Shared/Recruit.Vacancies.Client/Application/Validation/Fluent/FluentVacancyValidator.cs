@@ -925,7 +925,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private void TrainingExpiryDateValidation()
         {
             // This rule is only applicable for non-ESFA test training providers
-            When(x => x.TrainingProvider is { Ukprn: not null } && x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn && !string.IsNullOrWhiteSpace(x.ProgrammeId), () =>
+            When(x => x.TrainingProvider is
+                        {
+                            Ukprn: not null
+                        } && x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn &&
+                                  !string.IsNullOrWhiteSpace(x.ProgrammeId),
+                () =>
             {
                 RuleFor(x => x)
                     .Cascade(CascadeMode.Stop)
@@ -942,6 +947,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                       {
                           Ukprn: not null
                       } &&
+                      x.OwnerType == OwnerType.Provider &&
                       x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn &&
                       !string.IsNullOrWhiteSpace(x.ProgrammeId),
                 () =>
