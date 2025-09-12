@@ -42,14 +42,15 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application
             var vacancyReference = @event.Application.VacancyReference;
             var applicationId = @event.Application.ApplicationId;
             var candidateId = @event.Application.CandidateId;
+            var vacancyId = @event.VacancyId;
 
             try
             {
-                _logger.LogInformation($"Processing {nameof(ApplicationSubmittedEvent)} for vacancy: {{VacancyReference}} and candidate: {{CandidateId}}", vacancyReference, candidateId);
+                _logger.LogInformation($"Processing {nameof(ApplicationSubmittedEvent)} for vacancy: {{VacancyId}} and candidate: {{CandidateId}}", vacancyId, candidateId);
 
                 if (_feature.IsFeatureEnabled(FeatureNames.NotificationsMigration))
                 {
-                    await _outerApiClient.Post(new PostApplicationSubmittedEventRequest(new PostApplicationSubmittedEventData(applicationId, vacancyReference)));
+                    await _outerApiClient.Post(new PostApplicationSubmittedEventRequest(new PostApplicationSubmittedEventData(applicationId, vacancyId)));
                 }
                 else 
                 {
