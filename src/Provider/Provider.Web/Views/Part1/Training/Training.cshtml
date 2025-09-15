@@ -18,7 +18,7 @@
         </h1>
         <p class="govuk-body">
             You can choose from the standards you've added.
-            <a asp-external-controller="standards" asp-external-subdomain="roatp" asp-external-id="@Model.Ukprn">Manage your standards</a>
+            <a asp-external-controller="standards" asp-external-subdomain="roatp" asp-external-id="@Model.Ukprn" class="govuk-link govuk-link--no-visited-state">Manage your standards</a>
             to add more.
         </p>
         <form asp-route="@RouteNames.Training_Post" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
