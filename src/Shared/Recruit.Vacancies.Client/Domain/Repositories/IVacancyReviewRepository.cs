@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
 {
     public interface IVacancyReviewRepository
     {
-        Task CreateAsync(VacancyReview vacancy);
+        Task CreateAsync(VacancyReview vacancyReview);
         Task UpdateAsync(VacancyReview review);
     }
 }

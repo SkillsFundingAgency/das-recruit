@@ -185,7 +185,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                         .ToList()
                 }, User.ToVacancyUser(), ApplicationReviewStatus.Shared, null);
                 SetSharedApplicationsBannerMessageViaTempData(request.SharingMultipleApplications);
-                return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
             }
 
             return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
