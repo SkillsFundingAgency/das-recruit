@@ -344,7 +344,8 @@
 
             <a asp-route="@RouteNames.VacancyManage_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button">Return to advert</a>
         </div>
-        <form asp-show="@Model.CanChangeOutcome" asp-hide="@Model.HideRadioButtons" asp-route="@RouteNames.ApplicationReview_Post" asp-all-route-data="@Model.ApplicationRouteDictionary" asp-route-vacancySharedByProvider=@Model.IsApplicationSharedByProvider class="govuk-!-margin-top-6">
+        <form asp-show="@Model.CanChangeOutcome" asp-hide="@Model.HideRadioButtons" asp-route="@RouteNames.ApplicationReview_Post" asp-all-route-data="@Model.ApplicationRouteDictionary" class="govuk-!-margin-top-6">
+            <input type="hidden" asp-for="IsApplicationSharedByProvider"/>
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
