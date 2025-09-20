@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
         {
             vacancy.Status = VacancyStatus.Draft;
             mockUtility
-                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.FutureProspects_Get))
+                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel))
                 .ReturnsAsync(vacancy);
             mockUtility
                 .Setup(utility => utility.IsTaskListCompleted(vacancy))
@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
         {
             vacancy.Status = VacancyStatus.Referred;
             mockUtility
-                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.FutureProspects_Get))
+                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel))
                 .ReturnsAsync(vacancy);
             mockUtility
                 .Setup(utility => utility.IsTaskListCompleted(vacancy))
@@ -88,7 +88,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             vacancy.Status = VacancyStatus.Draft;
             validationResult.Errors = new List<EntityValidationError>();
             mockUtility
-                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.FutureProspects_Post))
+                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(editModel))
                 .ReturnsAsync(vacancy);
             mockRecruitVacancyClient
                 .Setup(client => client.Validate(vacancy, VacancyRuleSet.OutcomeDescription))
@@ -114,7 +114,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
         {
             vacancy.Status = VacancyStatus.Draft;
             mockUtility
-                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.FutureProspects_Post))
+                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(editModel))
                 .ReturnsAsync(vacancy);
             mockRecruitVacancyClient
                 .Setup(client => client.Validate(vacancy, VacancyRuleSet.OutcomeDescription))
