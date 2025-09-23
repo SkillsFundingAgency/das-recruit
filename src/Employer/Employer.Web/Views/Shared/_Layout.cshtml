@@ -55,21 +55,13 @@
         document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');
     </script>
     <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
-
-    @* ReSharper disable once Mvc.PartialViewNotResolved *@
-    <partial name="_Header">
-        @* ReSharper disable once Mvc.PartialViewNotResolved *@
-        <partial name="_Menu" model="@accountId">
-        </partial>
-    </partial>
-
+    <partial name="_Header" model="@accountId"></partial>
     <div class="govuk-width-container">
         @RenderSection(RazorSections.BackLink, required: false)
         <main class="govuk-main-wrapper" id="main-content" role="main">
             @RenderBody()
         </main>
     </div>
-
     @* ReSharper disable once Mvc.PartialViewNotResolved *@
     <partial name="_Footer" model="@footerModel" />
     @await RenderSectionAsync("FooterPreJS", required: false)
