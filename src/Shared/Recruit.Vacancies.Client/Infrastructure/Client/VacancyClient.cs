@@ -164,9 +164,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendCommandAsync(command);
         }
         
-        public async Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId)
+        public async Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId, string userId)
         {
-            var dashboardStats = await employerAccountProvider.GetEmployerDashboardStats(employerAccountId);
+            var dashboardStats = await employerAccountProvider.GetEmployerDashboardStats(employerAccountId, userId);
 
             return new EmployerDashboardSummary
             {
@@ -176,14 +176,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 Live = dashboardStats.LiveVacanciesCount,
                 Submitted = dashboardStats.SubmittedVacanciesCount,
                 Review = dashboardStats.ReviewVacanciesCount,
-                
                 NumberOfNewApplications = dashboardStats.NewApplicationsCount,
                 NumberOfSuccessfulApplications = dashboardStats.SuccessfulApplicationsCount,
                 NumberOfUnsuccessfulApplications = dashboardStats.UnsuccessfulApplicationsCount,
                 NumberOfSharedApplications = dashboardStats.SharedApplicationsCount,
                 NumberOfAllSharedApplications = dashboardStats.AllSharedApplicationsCount,
                 NumberClosingSoon = dashboardStats.ClosingSoonVacanciesCount,
-                NumberClosingSoonWithNoApplications = dashboardStats.ClosingSoonWithNoApplications
+                NumberClosingSoonWithNoApplications = dashboardStats.ClosingSoonWithNoApplications,
+                BlockedProviderAlert = dashboardStats.BlockedProviderAlert,
+                BlockedProviderTransferredVacanciesAlert = dashboardStats.BlockedProviderTransferredVacanciesAlert,
+                EmployerRevokedTransferredVacanciesAlert = dashboardStats.EmployerRevokedTransferredVacanciesAlert,
+                WithDrawnByQaVacanciesAlert = dashboardStats.WithDrawnByQaVacanciesAlert,
             };
         }
 
@@ -563,7 +566,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var ownerType = filteringOptions is FilteringOptions.NewSharedApplications or FilteringOptions.AllSharedApplications ? OwnerType.Provider : OwnerType.Employer;
 
-            var dashboardStats = await employerAccountProvider.GetEmployerDashboardStats(employerAccountId);
+            var dashboardStats = await employerAccountProvider.GetEmployerDashboardStats(employerAccountId, null);
 
             return filteringOptions switch
             {

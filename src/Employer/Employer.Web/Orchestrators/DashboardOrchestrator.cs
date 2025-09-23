@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Services;
+﻿using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.ViewModels.Alerts;
 using Esfa.Recruit.Employer.Web.ViewModels.Dashboard;
+using Esfa.Recruit.Vacancies.Client.Domain.Alerts;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -10,30 +9,17 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
-    public class DashboardOrchestrator
+    public class DashboardOrchestrator(
+        IEmployerVacancyClient vacancyClient,
+        IRecruitVacancyClient client,
+        IProviderRelationshipsService providerRelationshipsService)
     {
-        private readonly IEmployerVacancyClient _vacancyClient;
-        private readonly IRecruitVacancyClient _client;
-        private readonly IEmployerAlertsViewModelFactory _alertsViewModelFactory;
-        private readonly IProviderRelationshipsService _providerRelationshipsService;
-
-        public DashboardOrchestrator(
-            IEmployerVacancyClient vacancyClient,
-            IRecruitVacancyClient client,
-            IEmployerAlertsViewModelFactory alertsViewModelFactory,
-            IProviderRelationshipsService providerRelationshipsService)
-        {
-            _vacancyClient = vacancyClient;
-            _client = client;
-            _alertsViewModelFactory = alertsViewModelFactory;
-            _providerRelationshipsService = providerRelationshipsService;
-        }
-
         public async Task<DashboardViewModel> GetDashboardViewModelAsync(string employerAccountId, VacancyUser user)
         {
-            var dashboardTask = _vacancyClient.GetDashboardSummary(employerAccountId);
-            var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
-            var providerTask = _providerRelationshipsService.CheckEmployerHasPermissions(employerAccountId, OperationType.RecruitmentRequiresReview);
+            var dashboardTask = vacancyClient.GetDashboardSummary(employerAccountId, user.UserId);
+            var userDetailsTask = client.GetUsersDetailsAsync(user.UserId);
+            var providerTask = providerRelationshipsService.CheckEmployerHasPermissions(employerAccountId,
+                    OperationType.RecruitmentRequiresReview);
 
             await Task.WhenAll(dashboardTask, userDetailsTask, providerTask);
 
@@ -42,28 +28,55 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             if (userDetails == null)
             {
-                var userOuter = await _client.GetEmployerIdentifiersAsync(user.UserId, user.Email);
+                var userOuter = await client.GetEmployerIdentifiersAsync(user.UserId, user.Email);
                 user.Name = $"{userOuter.FirstName} {userOuter.LastName}";
-                await _client.UserSignedInAsync(user, UserType.Employer);
-                userDetails = await _client.GetUsersDetailsAsync(user.UserId);
+                await client.UserSignedInAsync(user, UserType.Employer);
             }
 
-            if (!dashboard.HasVacancies)
-            {
-                await _vacancyClient.SetupEmployerAsync(employerAccountId);
-            }
-            
-            var providerPermissions = providerTask.Result;
+            if (dashboard is {HasVacancies: false})
+                await vacancyClient.SetupEmployerAsync(employerAccountId);
 
+            bool providerPermissions = providerTask.Result;
 
-            var vm = new DashboardViewModel
+            var employerRevokedTransfers = CreateTransferredAlert(dashboard.EmployerRevokedTransferredVacanciesAlert, employerAccountId);
+            var blockedProviderTransferred = CreateTransferredAlert(dashboard.BlockedProviderTransferredVacanciesAlert, employerAccountId);
+
+            var blockedProvider = dashboard.BlockedProviderAlert == null
+                ? null
+                : new BlockedProviderAlertViewModel
+                {
+                    EmployerAccountId = employerAccountId,
+                    ClosedVacancies = dashboard.BlockedProviderAlert.ClosedVacancies,
+                    BlockedProviderNames = dashboard.BlockedProviderAlert.BlockedProviderNames
+                };
+
+            var withdrawn = dashboard.WithDrawnByQaVacanciesAlert == null
+                ? null
+                : new WithdrawnVacanciesAlertViewModel
+                {
+                    EmployerAccountId = employerAccountId,
+                    ClosedVacancies = dashboard.WithDrawnByQaVacanciesAlert.ClosedVacancies,
+                    Ukprn = user.Ukprn.GetValueOrDefault()
+                };
+
+            return new DashboardViewModel
             {
                 EmployerDashboardSummary = dashboard,
                 EmployerAccountId = employerAccountId,
-                Alerts = await _alertsViewModelFactory.Create(employerAccountId, userDetails),
+                Alerts = new AlertsViewModel(employerRevokedTransfers, blockedProviderTransferred, blockedProvider, withdrawn),
                 HasEmployerReviewPermission = providerPermissions
             };
-            return vm;
         }
+
+        private static EmployerTransferredVacanciesAlertViewModel CreateTransferredAlert(
+            EmployerTransferredVacanciesAlertModel alertModel, string employerAccountId) =>
+            alertModel == null
+                ? null
+                : new EmployerTransferredVacanciesAlertViewModel
+                {
+                    EmployerAccountId = employerAccountId,
+                    TransferredVacanciesCount = alertModel.TransferredVacanciesCount,
+                    TransferredVacanciesProviderNames = alertModel.TransferredVacanciesProviderNames
+                };
     }
 }

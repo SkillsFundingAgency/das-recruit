@@ -101,7 +101,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 NumberOfEmployerReviewedApplications = dashboardStats.EmployerReviewedApplicationsCount,
                 NumberOfSuccessfulApplications = dashboardStats.SuccessfulApplicationsCount,
                 NumberOfUnsuccessfulApplications = dashboardStats.UnsuccessfulApplicationsCount,
-                NumberClosingSoon = dashboardStats.ClosedVacanciesCount,
+                NumberClosingSoon = dashboardStats.ClosingSoonVacanciesCount,
                 NumberClosingSoonWithNoApplications = dashboardStats.ClosingSoonWithNoApplications,
                 TransferredVacancies = transferredVacancies
             };
