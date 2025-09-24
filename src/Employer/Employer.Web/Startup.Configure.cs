@@ -114,7 +114,6 @@ namespace Esfa.Recruit.Employer.Web
                                     "https://das-mo-frnt-end.azureedge.net",
                                     "https://das-prd-frnt-end.azureedge.net"
                                     );
-
                     //Google tag manager uses inline scripts when administering tags
                     s.UnsafeInline();
                     s.UnsafeEval();
@@ -145,6 +144,8 @@ namespace Esfa.Recruit.Employer.Web
                         "wss://*.zopim.com",
                         "https://*.rcrsv.io")
                 )
+                .WorkerSources(s=>
+                    s.Self().CustomSources("blob:"))
                 .ImageSources(s =>
                     s.Self()
                     .CustomSources("https://maps.googleapis.com",
