@@ -1,18 +1,17 @@
 ﻿using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.PasAccount;
 
 namespace Esfa.Recruit.Shared.Web.Services
 {
     public class TrainingProviderAgreementService : ITrainingProviderAgreementService
     {
         private readonly IProviderVacancyClient _client;
-        private readonly IPasAccountProvider _pasAccountProvider;
+        private readonly IGetProviderStatusClient _providerStatusClient;
 
-        public TrainingProviderAgreementService(IProviderVacancyClient client, IPasAccountProvider pasAccountProvider)
+        public TrainingProviderAgreementService(IProviderVacancyClient client, IGetProviderStatusClient providerStatusClient)
         {
             _client = client;
-            _pasAccountProvider = pasAccountProvider;
+            _providerStatusClient = providerStatusClient;
         }
 
         public async Task<bool> HasAgreementAsync(long ukprn)
@@ -26,14 +25,14 @@ namespace Esfa.Recruit.Shared.Web.Services
                 return true;
 
             //Agreement may have been signed since the projection was created. Check PAS.
-            var hasAgreement = await _pasAccountProvider.HasAgreementAsync(ukprn);
+            var providerAccountResponse = await _providerStatusClient.GetProviderStatus(ukprn);
 
-            if (hasAgreement)
+            if (providerAccountResponse.CanAccessService)
             {
                 await _client.SetupProviderAsync(ukprn);
             }
 
-            return hasAgreement;
+            return providerAccountResponse.CanAccessService;
         }
     }
 }

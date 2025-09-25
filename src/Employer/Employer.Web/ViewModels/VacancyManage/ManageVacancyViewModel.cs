@@ -1,6 +1,4 @@
-using System.Linq;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
@@ -18,11 +16,11 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool IsWithdrawn => string.IsNullOrEmpty(WithdrawnDate) == false;
         public bool IsClosedBlockedByQa { get; set; }
         public VacancyApplicationsViewModel Applications { get; internal set; }
-        public bool HasApplications => Applications.Applications.Any();
-        public int ApplicationCount => Applications?.Applications.Count() ?? 0;
-        public bool HasNoApplications => Applications.Applications == null || Applications.Applications?.Any() == false;
-        public bool ShowEmployerApplications => !Applications.VacancySharedByProvier;
-        public bool ShowSharedApplications => HasApplications && Applications.VacancySharedByProvier;
+        public bool HasApplications => TotalUnfilteredApplicationsCount > 0;
+        public bool HasNoApplications => TotalUnfilteredApplicationsCount == 0;
+        public int TotalUnfilteredApplicationsCount => Applications?.TotalUnfilteredApplicationsCount ?? 0;
+        public bool ShowEmployerApplications => !Applications.VacancySharedByProvider;
+        public bool ShowSharedApplications => HasApplications && Applications.VacancySharedByProvider;
         public bool CanShowMultipleApplicationsUnsuccessfulLink => (IsVacancyLive || IsVacancyClosed) && Applications.CanShowMultipleApplicationsUnsuccessfulLink && ShowEmployerApplications;
 
         public bool CanShowEditVacancyLink { get; internal set; }
@@ -43,8 +41,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool IsVacancyClosed => Status == VacancyStatus.Closed;
         public bool IsTransferred => string.IsNullOrWhiteSpace(TransferredProviderName) == false && string.IsNullOrWhiteSpace(TransferredOnDate) == false;
         public bool CanClone { get; internal set; }
-        public string ViewBagTitle => ShowEmployerApplications ? "Manage Advert" : "Shared applications";
+        public string ViewBagTitle => ShowEmployerApplications ? "Manage Advert" : $"{Title} shared applications";
         public string ApplicationReviewsUnsuccessfulBannerHeader { get; internal set; }
         public bool CanShowApplicationsUnsuccessfulBanner => !string.IsNullOrEmpty(ApplicationReviewsUnsuccessfulBannerHeader);
+        public ApprenticeshipTypes ApprenticeshipType { get; internal set; }
     }
 }

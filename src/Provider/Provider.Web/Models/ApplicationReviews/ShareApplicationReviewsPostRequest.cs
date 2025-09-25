@@ -9,5 +9,6 @@ namespace Esfa.Recruit.Provider.Web.Models.ApplicationReviews
     {
         public List<VacancyApplication> ApplicationReviewsToShare { get; set; }
         public bool ShareApplicationsConfirmed { get; set; }
+        public bool SharingMultipleApplications { get; set; }
     }
 }

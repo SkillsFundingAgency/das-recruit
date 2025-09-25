@@ -11,6 +11,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Esfa.Recruit.Provider.Web.Orchestrators;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 {
@@ -21,14 +22,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         private const string NewVacancyTitleRoute = "create-vacancy";
         private const string ExistingVacancyTitleRoute = "vacancies/{vacancyId:guid}/title";
         private readonly TitleOrchestrator _orchestrator;
-        private readonly ServiceParameters _serviceParameters;
+
         public IProviderVacancyClient ProviderVacancyClient { get; }
 
-        public TitleController(TitleOrchestrator orchestrator, IProviderVacancyClient providerVacancyClient, ServiceParameters serviceParameters)
+        public TitleController(TitleOrchestrator orchestrator, IProviderVacancyClient providerVacancyClient)
         {
             this.ProviderVacancyClient = providerVacancyClient;
             _orchestrator = orchestrator;
-            _serviceParameters = serviceParameters;
         }
 
         [HttpGet(NewVacancyTitleRoute, Name = RouteNames.CreateVacancy_Get)]
@@ -67,7 +67,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             }
 
             return wizard
-                ? _serviceParameters.VacancyType == VacancyType.Apprenticeship ? RedirectToRoute(RouteNames.Training_Get, new {vrm.Ukprn, vacancyId = response.Data}) :  RedirectToRoute(RouteNames.TraineeSector_Get, new {vrm.Ukprn, vacancyId = response.Data})
+                ? RedirectToRoute(RouteNames.Training_Get, new {vrm.Ukprn, vacancyId = response.Data})
                 : RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vrm.Ukprn, vacancyId = response.Data});
         }    
     }

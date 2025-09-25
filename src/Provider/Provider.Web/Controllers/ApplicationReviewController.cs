@@ -10,11 +10,9 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
@@ -23,28 +21,16 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     public class ApplicationReviewController : Controller
     {
         private readonly IApplicationReviewOrchestrator _orchestrator;
-        private readonly ServiceParameters _serviceParameters;
-        private readonly IConfiguration _configuration;
         private const string TempDateARModel = "ApplicationReviewEditModel";
 
-        public ApplicationReviewController(IApplicationReviewOrchestrator orchestrator, ServiceParameters serviceParameters, IConfiguration configuration)
+        public ApplicationReviewController(IApplicationReviewOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _serviceParameters = serviceParameters;
-            _configuration = configuration;
         }
 
         [HttpGet("", Name = RouteNames.ApplicationReview_Get)]
         public async Task<IActionResult> ApplicationReview(ApplicationReviewRouteModel rm)
         {
-            if (_serviceParameters.VacancyType == VacancyType.Traineeship 
-                && DateTime.TryParse(_configuration["TraineeshipCutOffDate"], out var traineeshipCutOffDate))
-            {
-                if (traineeshipCutOffDate != DateTime.MinValue && traineeshipCutOffDate < DateTime.UtcNow)
-                {
-                    return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
-                }
-            }
             var vm = await _orchestrator.GetApplicationReviewViewModelAsync(rm);
             var viewName = vm.IsFaaV2Application ? "ApplicationReviewV2" : "ApplicationReview";
             return View(viewName, vm);
@@ -153,17 +139,17 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
                 if (statusChangeInfo.ShouldMakeOthersUnsuccessful)
                 {
-                    TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, statusChangeInfo.CandidateName));
+                    TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSingleSuccessStatusHeader, statusChangeInfo.CandidateName));
                     return RedirectToRoute(RouteNames.ApplicationReviewsToUnsuccessful_Get, new { editModel.VacancyId, editModel.Ukprn });
                 }
 
                 switch (editModel.Outcome)
                 {
                     case ApplicationReviewStatus.Successful:
-                        TempData.Add(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, statusChangeInfo.CandidateName));
+                        TempData.Add(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSingleSuccessStatusHeader, statusChangeInfo.CandidateName));
                         break;
                     case ApplicationReviewStatus.Unsuccessful:
-                        TempData.Add(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader, statusChangeInfo.CandidateName));
+                        TempData.Add(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage, string.Format(InfoMessages.ApplicationEmployerUnsuccessfulHeader, statusChangeInfo.CandidateName));
                         break;
                     default:
                         TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, statusChangeInfo.CandidateName, editModel.Outcome.ToString().ToLower()));

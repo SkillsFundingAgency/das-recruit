@@ -21,6 +21,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public string EmployerContactPhone { get; set; }
         public string EmployerDescription { get; set; }
         public Address EmployerLocation { get; set; }
+        public List<Address> EmployerLocations { get; set; }
+        public AvailableWhere? EmployerLocationOption { get; set; }
+        public string EmployerLocationInformation { get; set; }
         public string EmployerName { get; set; }
         public string EmployerWebsiteUrl { get; set; }
         public bool IsAnonymous { get; set; }
@@ -46,11 +49,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public int? EducationLevelNumber { get; set; }
         public string AccountPublicHashedId { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
-        public int? RouteId { get; set; }
-        public string WorkExperience { get; set; }
-        public VacancyType? VacancyType { get; set; }
         public string AdditionalQuestion1 { get; set; }
         public string AdditionalQuestion2 { get; set; }
         public string AdditionalTrainingDescription { get; set; }
+        public ApprenticeshipTypes ApprenticeshipType { get; set; }
     }
 }

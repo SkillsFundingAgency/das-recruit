@@ -1,16 +1,11 @@
 ﻿using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
-using FluentAssertions;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvider
 {
     public class SelectTrainingProviderEditModelTests
     {
-        
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
+        [TestCase(null)]
+        [TestCase("")]
         public void ShouldErrorIfUkprnIsNotSpecified(string inputUkprn)
         {
             var vm = new SelectTrainingProviderEditModel {
@@ -28,7 +23,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
             result.Errors[0].ErrorMessage.Should().Be("You must provide a UKPRN");
         }
 
-        [Fact]
+        [Test]
         public void ShouldErrorIfUkprnIsInvalid()
         {
             var vm = new SelectTrainingProviderEditModel {
@@ -46,7 +41,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
             result.Errors[0].ErrorMessage.Should().Be("UKPRN is not recognised");
         }
 
-        [Fact]
+        [Test]
         public void ShouldBeValidIfUkprnSpecified()
         {
             var vm = new SelectTrainingProviderEditModel {
@@ -61,9 +56,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
             result.IsValid.Should().BeTrue();
         }
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
+        [TestCase(null)]
+        [TestCase("")]
         public void ShouldErrorIfTrainingProviderSearchIsNotSpecified(string inputUkprn)
         {
             var vm = new SelectTrainingProviderEditModel {
@@ -78,10 +72,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
             result.IsValid.Should().BeFalse();
             result.Errors.Count.Should().Be(1);
             result.Errors[0].PropertyName.Should().Be(nameof(SelectTrainingProviderEditModel.TrainingProviderSearch));
-            result.Errors[0].ErrorMessage.Should().Be("You must enter a training provider or UKPRN to continue");
+            result.Errors[0].ErrorMessage.Should().Be("Enter the name or UKPRN of a training provider who delivers the training course you’ve selected");
         }
         
-        [Fact]
+        [Test]
         public void ShouldBeValidIfTrainingProviderSearchSpecified()
         {
             var vm = new SelectTrainingProviderEditModel {

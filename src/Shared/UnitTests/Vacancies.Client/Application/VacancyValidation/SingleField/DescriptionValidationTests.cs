@@ -1,10 +1,8 @@
-using System;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
 {
     public class DescriptionValidationTests : VacancyValidationTestsBase
     {
@@ -23,13 +21,10 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         }
         
         [Theory]
-        [InlineData(null,true, "will do at work")]
-        [InlineData(null,false,"will be doing")]
-        [InlineData("",true,"will do at work")]
-        [InlineData("",false,"will be doing")]
-        public void DescriptionMustNotBeEmpty(string description,bool featureEnabled, string errorMessage)
+        [InlineData(null, "will do at work")]
+        [InlineData("", "will do at work")]
+        public void DescriptionMustNotBeEmpty(string description, string errorMessage)
         {
-            Feature.Setup(x => x.IsFeatureEnabled("FaaV2Improvements")).Returns(featureEnabled);
             var vacancy = new Vacancy 
             {
                 Description = description

@@ -50,8 +50,9 @@ namespace Esfa.Recruit.Employer.Web.Mappings.Extensions
                         QualificationType = q.QualificationType,
                         Subject = q.Subject,
                         Year = q.Year,
-                        AdditionalInformation = q.AdditionalInformation
-                    }).ToList() ?? new List<QualificationViewModel>(),
+                        AdditionalInformation = q.AdditionalInformation,
+                        QualificationOrder = q.QualificationOrder,
+                    }).OrderBy(ord => ord.QualificationOrder).ToList() ?? new List<QualificationViewModel>(),
                 Skills = r.Application.Skills ?? new List<string>(),
                 Status = r.Status,
                 Strengths = r.Application.Strengths,

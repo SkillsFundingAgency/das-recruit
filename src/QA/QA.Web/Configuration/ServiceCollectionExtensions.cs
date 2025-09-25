@@ -1,12 +1,7 @@
-using System;
 using System.Linq;
-using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Security;
-using Esfa.Recruit.QA.Web.Filters;
 using Esfa.Recruit.Shared.Web.Extensions;
 using FluentValidation;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -23,49 +18,16 @@ namespace Esfa.Recruit.Qa.Web.Configuration
 {
     public static class ServiceCollectionExtensions
     {
-        private const int SessionTimeoutMinutes = 30;
-
-        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IConfiguration config)
+        public static void AddAuthenticationService(this IServiceCollection services, IConfiguration config)
         {
-            // condition to check if the DfeSignIn is allowed.
-            bool isDfESignInAllowed = config.GetValue<bool>("UseDfESignIn");
-            if (isDfESignInAllowed)
-            {
-                // register DfeSignIn authentication services to the AspNetCore Authentication Options.
-                services.AddAndConfigureDfESignInAuthentication(
-                    config, 
-                    $"{CookieNames.QaData}",
-                    typeof(CustomServiceRole),
-                    ClientName.Qa,
-                    "/signout",
-                    "");
-            }
-            else
-            {
-                services.AddAuthentication(sharedOptions =>
-                    {
-                        sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                        sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                        sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
-                        sharedOptions.DefaultSignOutScheme = WsFederationDefaults.AuthenticationScheme;
-                    })
-                    .AddWsFederation(options =>
-                    {
-                        options.Wtrealm = authConfig.Wtrealm;
-                        options.MetadataAddress = authConfig.MetaDataAddress;
-                        options.UseTokenLifetime = false;
-                        //options.CallbackPath = "/";
-                        //options.SkipUnrecognizedRequests = true;
-                    })
-                    .AddCookie(options =>
-                    {
-                        options.Cookie.Name = CookieNames.QaData;
-                        options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
-                        options.AccessDeniedPath = RoutePaths.AccessDeniedPath;
-                        options.SlidingExpiration = true;
-                        options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);
-                    });
-            }
+            services.AddAndConfigureDfESignInAuthentication(
+                config, 
+                $"{CookieNames.QaData}",
+                typeof(CustomServiceRole),
+                ClientName.Qa,
+                "/signout",
+                "");
+            
         }
 
         public static void AddAuthorizationService(this IServiceCollection services, AuthorizationConfiguration legacyAuthorizationConfig, AuthorizationConfiguration authorizationConfig)
@@ -125,7 +87,6 @@ namespace Esfa.Recruit.Qa.Web.Configuration
                             .Add(MediaTypeHeaderValue.Parse("application/csp-report"));
                     }
 
-                    options.Filters.AddService<PlannedOutageResultFilter>();
                 }).AddNewtonsoftJson();
             services.AddValidatorsFromAssemblyContaining<Startup>();
         }

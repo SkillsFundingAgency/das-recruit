@@ -24,7 +24,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi
 
         public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
-            
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
             AddHeaders(requestMessage);
             
@@ -46,7 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi
             return default;
         }
 
-        public async Task Post(IPostApiRequest request)
+        public async Task Post(IPostApiRequest request, bool ensureSuccessStatusCode = true)
         {
             var stringContent = new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json");
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl)
@@ -55,7 +54,35 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi
             };
             AddHeaders(requestMessage);
             var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
+            if (ensureSuccessStatusCode)
+            {
+                response.EnsureSuccessStatusCode();    
+            }
+        }
+
+        public async Task<TResponse> Post<TResponse>(IPostApiRequest request)
+        {
+            var stringContent = new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl)
+            {
+                Content = stringContent,
+            };
+            AddHeaders(requestMessage);
+            var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
+            
+            if (response.StatusCode.Equals(HttpStatusCode.NotFound))
+            {
+                return default;
+            }
+
+            if (response.IsSuccessStatusCode)
+            {
+                string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<TResponse>(json);
+            }
+
             response.EnsureSuccessStatusCode();
+            return default;
         }
 
         private void AddHeaders(HttpRequestMessage httpRequestMessage)

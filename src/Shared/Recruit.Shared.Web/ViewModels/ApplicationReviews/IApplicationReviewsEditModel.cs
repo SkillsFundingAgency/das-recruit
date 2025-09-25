@@ -4,7 +4,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReviews
 {
     public interface IApplicationReviewsEditModel
     {
-        string CandidateFeedback { get; set; }
         public bool IsMultipleApplications { get; }
+        public string CandidateFeedback { get; }
     }
 }

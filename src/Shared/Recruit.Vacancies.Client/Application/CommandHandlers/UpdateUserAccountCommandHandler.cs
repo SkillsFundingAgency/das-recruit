@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
@@ -11,8 +12,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     public class UpdateUserAccountCommandHandler : IRequestHandler<UpdateUserAccountCommand, Unit>
     {
         private readonly IRecruitVacancyClient _client;
-        private readonly IUserRepository _userRepository;
-        public UpdateUserAccountCommandHandler(IRecruitVacancyClient client, IUserRepository userRepository)
+        private readonly IUserRepositoryRunner _userRepository;
+        public UpdateUserAccountCommandHandler(IRecruitVacancyClient client, IUserRepositoryRunner userRepository)
         {
             _userRepository = userRepository;
             _client = client;

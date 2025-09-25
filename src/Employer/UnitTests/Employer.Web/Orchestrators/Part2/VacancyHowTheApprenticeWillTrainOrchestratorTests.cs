@@ -1,22 +1,16 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.VacancyHowTheApprenticeWillTrain;
-using Esfa.Recruit.Employer.Web.ViewModels.Part2.VacancyWorkDescription;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2;
 

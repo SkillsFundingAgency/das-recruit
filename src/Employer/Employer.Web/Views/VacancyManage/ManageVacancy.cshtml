@@ -1,6 +1,4 @@
-﻿@using Microsoft.Extensions.Options
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using Esfa.Recruit.Shared.Web.TagHelpers
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Employer.Web.ViewModels.VacancyManage.ManageVacancyViewModel
 @{
     ViewBag.Vpv = "/recruitment/employer/page-manage-vacancy";
@@ -74,8 +72,13 @@
         <h1 class="govuk-heading-xl govuk-!-margin-top-6 govuk-!-margin-bottom-6" id="vacancy-header">
             Manage Advert
         </h1>
+        <govuk-tag-foundation asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-!-margin-bottom-4"/>
         <h1 class="govuk-heading-l">@Model.Title</h1>
         <p class="govuk-body-l">Advert reference: VAC@(Model.VacancyReference)</p>
+        
+        <p asp-show="@(Model.Status == VacancyStatus.Submitted)" class="govuk-body">
+            This advert has been sent to us for review. We’ll tell you within 1 working day if you need to make any edits to this advert.
+        </p>
 
         <p asp-show="@Model.IsTransferred" class="govuk-inset-text">
             This advert was created by
@@ -154,7 +157,7 @@
     <div class="govuk-grid-column-two-thirds">
         <div>
             <h2 asp-show="@Model.ShowEmployerApplications" class="govuk-heading-m">
-                Applications (@Model.ApplicationCount)
+                Applications (@Model.TotalUnfilteredApplicationsCount)
             </h2>
         </div>
         <div asp-show="@Model.IsApplyThroughFaaVacancy">
@@ -176,19 +179,23 @@
                 </div>
             </div>
 
-            <span asp-show="@Model.ShowSharedApplications" class="govuk-caption-l">@Model.Title</span>
-            <h1 asp-show="@Model.ShowSharedApplications" class="govuk-heading-l">Shared applications</h1>
-            <esfaFeatureEnabled name="@FeatureNames.MultipleApplicationsManagement">
-                <p class="govuk-body" asp-show="@Model.CanShowMultipleApplicationsUnsuccessfulLink">
-                    <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get"
-                        asp-all-route-data="@Model.RouteDictionary"
-                        class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Make multiple applications
-                        unsuccessful</a>
-                </p>
-            </esfaFeatureEnabled>
+            <govuk-tag-foundation asp-show="@(Model.ApprenticeshipType.IsFoundation() && Model.ShowSharedApplications)" class="govuk-!-margin-bottom-4"/>
+            
+            <span asp-show="@Model.ShowSharedApplications" class="govuk-caption-l">Shared applications</span>
+            <h1 asp-show="@Model.ShowSharedApplications" class="govuk-heading-l">@Model.Title</h1>
+            
+            <p class="govuk-body" asp-show="@Model.CanShowMultipleApplicationsUnsuccessfulLink">
+                <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get"
+                    asp-all-route-data="@Model.RouteDictionary"
+                    class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Make multiple applications
+                    unsuccessful</a>
+            </p>
             <p asp-show="@Model.ShowSharedApplications" class="govuk-body govuk-!-margin-bottom-4 govuk-!-margin-top-4">
                 Each application is anonymised. If you decide to interview the applicant, you will be able to see their
                 name and contact information.</p>
+            <h2 asp-show="@Model.ShowSharedApplications" class="govuk-heading-m">
+                Applications (@Model.TotalUnfilteredApplicationsCount)
+            </h2>
         </div>
         <p class="govuk-body govuk-hint">
             <label asp-show="@Model.IsDisabilityConfident" class="govuk-label govuk-inset-text">You are signed up to the
@@ -201,10 +208,11 @@
 </div>
 
 <div asp-show="@Model.IsApplyThroughFaaVacancy">
-    <partial asp-show="@Model.ShowEmployerApplications" name="@PartialNames.VacancyApplicationsTable"
-        for="Applications" />
+    <div asp-show="@Model.ShowEmployerApplications">
+        <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable"
+                 for="Applications" />
+        <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">No applications for this apprenticeship have been received.</p>
+    </div>
     <partial asp-show="@Model.ShowSharedApplications" name="@PartialNames.VacancySharedApplicationsTable"
         for="Applications" />
-    <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">Candidate applications for this
-        apprenticeship will appear here.</p>
 </div>

@@ -13,7 +13,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
@@ -21,12 +20,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
     public class QaVacancyClient : IQaVacancyClient
     {
         private readonly IQueryStoreReader _queryStoreReader;
-        private readonly IReferenceDataReader _referenceDataReader;
-        private readonly IVacancyReviewRepository _vacancyReviewRepository;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
-        private readonly IApprenticeshipRouteProvider _apprenticeshipRouteProvider;
+        private readonly IQualificationsProvider _qualificationsProvider;
         private readonly IMessaging _messaging;
         private readonly INextVacancyReviewService _nextVacancyReviewService;
         private readonly IReportService _reportService;
@@ -35,8 +32,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public QaVacancyClient(
                     IQueryStoreReader queryStoreReader,
-                    IReferenceDataReader referenceDataReader,
-                    IVacancyReviewRepository vacancyReviewRepository,
                     IVacancyReviewQuery vacancyReviewQuery,
                     IVacancyRepository vacancyRepository,
                     IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
@@ -44,18 +39,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     INextVacancyReviewService nextVacancyReviewService,
                     IReportRepository reportRepository,
                     IReportService reportService, 
-                    IApprenticeshipRouteProvider apprenticeshipRouteProvider)
+                    IQualificationsProvider qualificationsProvider)
         {
             _queryStoreReader = queryStoreReader;
-            _referenceDataReader = referenceDataReader;
-            _vacancyReviewRepository = vacancyReviewRepository;
             _vacancyReviewQuery = vacancyReviewQuery;
             _vacancyRepository = vacancyRepository;
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
             _messaging = messaging;
             _nextVacancyReviewService = nextVacancyReviewService;
             _reportService = reportService;
-            _apprenticeshipRouteProvider = apprenticeshipRouteProvider;
+            _qualificationsProvider = qualificationsProvider;
             _reportRepository = reportRepository;
         }
 
@@ -69,14 +62,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(programmeId);
         }
         
-        public Task<IApprenticeshipRoute> GetRoute(int? routeId)
-        {
-            return _apprenticeshipRouteProvider.GetApprenticeshipRouteAsync(routeId.GetValueOrDefault());
-        }
 
-        public Task<Qualifications> GetCandidateQualificationsAsync()
+        public async Task<Qualifications> GetCandidateQualificationsAsync()
         {
-            return _referenceDataReader.GetReferenceData<Qualifications>();
+            var qualification = await _qualificationsProvider.GetQualificationsAsync();
+            return new Qualifications
+            {
+                QualificationTypes = qualification.ToList()
+            };
         }
 
         public async Task<QaDashboard> GetDashboardAsync()
@@ -85,7 +78,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return dashboard;
         }
 
-        public async Task<VacancyReview> GetSearchResultAsync(string searchTerm)
+        public async Task<Domain.Entities.VacancyReview> GetSearchResultAsync(string searchTerm)
         {
             if (TryGetVacancyReference(searchTerm, out var vacancyReference) == false) return null;
 
@@ -118,7 +111,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return result.Success;
         }
 
-        public Task<List<VacancyReview>> GetVacancyReviewsInProgressAsync()
+        public Task<List<Domain.Entities.VacancyReview>> GetVacancyReviewsInProgressAsync()
         {
             return _vacancyReviewQuery.GetVacancyReviewsInProgressAsync(_nextVacancyReviewService.GetExpiredAssignationDateTime());
         }
@@ -128,9 +121,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _vacancyRepository.GetVacancyAsync(vacancyReference);
         }
 
-        public Task<VacancyReview> GetVacancyReviewAsync(Guid reviewId)
+        public Task<Domain.Entities.VacancyReview> GetVacancyReviewAsync(Guid reviewId)
         {
-            return _vacancyReviewRepository.GetAsync(reviewId);
+            return _vacancyReviewQuery.GetAsync(reviewId);
         }
 
         public Task AssignNextVacancyReviewAsync(VacancyUser user)
@@ -160,12 +153,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _vacancyReviewQuery.GetApprovedFirstTimeCountAsync(submittedByUserId);
         }
 
-        public Task<List<VacancyReview>> GetAssignedVacancyReviewsForUserAsync(string userId)
+        public Task<List<Domain.Entities.VacancyReview>> GetAssignedVacancyReviewsForUserAsync(string userId)
         {
             return _vacancyReviewQuery.GetAssignedForUserAsync(userId, _nextVacancyReviewService.GetExpiredAssignationDateTime());
         }
 
-        public bool VacancyReviewCanBeAssigned(VacancyReview review)
+        public bool VacancyReviewCanBeAssigned(Domain.Entities.VacancyReview review)
         {
             return VacancyReviewCanBeAssigned(review.Status, review.ReviewedDate);
         }
@@ -180,12 +173,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(new UnassignVacancyReviewCommand { ReviewId = reviewId });
         }
 
-        public Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
+        public Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
         {
             return _vacancyReviewQuery.GetCurrentReferredVacancyReviewAsync(vacancyReference);
         }
 
-        public async Task<List<VacancyReview>> GetVacancyReviewHistoryAsync(long vacancyReference)
+        public async Task<List<Domain.Entities.VacancyReview>> GetVacancyReviewHistoryAsync(long vacancyReference)
         {
             var allVacancyReviews = await _vacancyReviewQuery.GetForVacancyAsync(vacancyReference);
 

@@ -24,8 +24,10 @@ namespace SFA.DAS.Recruit.Api.Models
         public string EmployerDescription { get ; set ; }
         public string TrainingDescription { get ; set ; }
         public string AdditionalTrainingDescription { get ; set ; }
-        
         public CreateVacancyAddress Address { get; set; }
+        public List<CreateVacancyAddress> Addresses { get; set; }
+        public AvailableWhere? EmployerLocationOption { get; set; }
+        public string EmployerLocationInformation { get; set; }
         public CreateVacancyWage Wage { get; set; }
         public List<string> Skills { get ; set ; }
         public EmployerNameOption EmployerNameOption { get ; set ; }
@@ -39,6 +41,7 @@ namespace SFA.DAS.Recruit.Api.Models
         public AccountType? AccountType { get; set; }
         public string AdditionalQuestion1 { get; set; }
         public string AdditionalQuestion2 { get; set; }
+        public ApprenticeshipTypes? ApprenticeshipType { get; set; } = ApprenticeshipTypes.Standard;
     }
 
     
@@ -91,8 +94,9 @@ namespace SFA.DAS.Recruit.Api.Models
     {
         FixedWage,
         NationalMinimumWageForApprentices,
-        NationalMinimumWage,        
-        Unspecified
+        NationalMinimumWage,   
+        Unspecified,
+        CompetitiveSalary,
     }
     
     public enum DurationUnit

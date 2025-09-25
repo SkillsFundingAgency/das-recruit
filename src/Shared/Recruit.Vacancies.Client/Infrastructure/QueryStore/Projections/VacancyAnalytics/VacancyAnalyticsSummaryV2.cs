@@ -8,7 +8,7 @@ public class VacancyAnalyticsSummaryV2 : QueryProjectionBase
     public VacancyAnalyticsSummaryV2() : base(QueryViewType.VacancyAnalyticsSummaryV2.TypeName)
     {
     }
-    public long VacancyReference { get; set; }
+    public string VacancyReference { get; set; }
     public List<VacancyAnalytics> VacancyAnalytics { get; set; }
 }
 

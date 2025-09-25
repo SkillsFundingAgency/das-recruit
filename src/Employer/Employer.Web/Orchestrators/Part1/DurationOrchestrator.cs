@@ -21,7 +21,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IUtility _utility;
 
-        public DurationOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<DurationOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
+        public DurationOrchestrator(IEmployerVacancyClient client,
+            IRecruitVacancyClient vacancyClient,
+            ILogger<DurationOrchestrator> logger,
+            IReviewSummaryService reviewSummaryService,
+            IUtility utility) : base(logger)
         {
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
@@ -44,7 +48,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 WeeklyHours = $"{vacancy.Wage?.WeeklyHours:0.##}",
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 TrainingTitle = training?.Title,
-                TrainingDurationMonths = training?.Duration ?? 0
+                TrainingDurationMonths = training?.Duration ?? 0,
+                VacancyTitle = vacancy.Title,
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

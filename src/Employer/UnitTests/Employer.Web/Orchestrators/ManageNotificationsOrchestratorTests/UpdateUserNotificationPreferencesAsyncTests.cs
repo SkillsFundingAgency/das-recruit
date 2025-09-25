@@ -1,15 +1,11 @@
 using System.Linq;
-using System.Threading.Tasks;
 using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Moq;
-using Xunit;
 
 namespace UnitTests.Employer.Web.Orchestrators.ManageNotificationsOrchestratorTests
 {
@@ -19,11 +15,11 @@ namespace UnitTests.Employer.Web.Orchestrators.ManageNotificationsOrchestratorTe
         private readonly Mock<IConfiguration> _iConfigurationMock = new Mock<IConfiguration>();
         public const string EmployerAccountId = "EmployerAccountId";
 
-        [Fact]
+        [Test]
         public async Task GiveAllTheTypesAreUnselectedAndPersistedPreferencesAreEmpty_ThenReturnValidationError()
         {
             var emptyPreferences = new UserNotificationPreferences() { NotificationTypes = NotificationTypes.None };
-            _recruitVacancyClientMock.Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>())).ReturnsAsync(emptyPreferences);
+            _recruitVacancyClientMock.Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>(),It.IsAny<string>())).ReturnsAsync(emptyPreferences);
             var sut = GetSut();
             var result =await sut.UpdateUserNotificationPreferencesAsync(new ManageNotificationsEditModel(), new VacancyUser());
             result.Errors.HasErrors.Should().BeTrue();

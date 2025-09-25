@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<bool> HasNoVacancies(string employerAccountId)
         {
-            var vacancyCount = await _employerVacancyClient.GetVacancyCount(employerAccountId, VacancyType.Apprenticeship, null, null);
+            var vacancyCount = await _employerVacancyClient.GetVacancyCount(employerAccountId, null, null);
             return vacancyCount == 0;
         }
 

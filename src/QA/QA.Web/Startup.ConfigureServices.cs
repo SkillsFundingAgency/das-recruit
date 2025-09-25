@@ -7,7 +7,6 @@ using Esfa.Recruit.Qa.Web.Orchestrators;
 using Esfa.Recruit.Qa.Web.Orchestrators.Reports;
 using Esfa.Recruit.Qa.Web.Security;
 using Esfa.Recruit.QA.Web.Configuration;
-using Esfa.Recruit.QA.Web.Filters;
 using Esfa.Recruit.QA.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
@@ -16,7 +15,6 @@ using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -33,12 +31,9 @@ namespace Esfa.Recruit.Qa.Web
     {
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly AuthenticationConfiguration _authenticationConfig;
         private readonly AuthorizationConfiguration _legacyAuthorizationConfig;
         private readonly AuthorizationConfiguration _authorizationConfig;
-        private readonly ExternalLinksConfiguration _externalLinks;
         private readonly DfEOidcConfiguration _dfEOidcConfig;
-        private readonly bool _isDfESignInAllowed = false;
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger<Startup> _logger;
 
@@ -48,7 +43,7 @@ namespace Esfa.Recruit.Qa.Web
                 .AddConfiguration(configuration)
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddEnvironmentVariables();
-                
+
 #if DEBUG
             configBuilder
                 .AddJsonFile("appsettings.json", optional:true)
@@ -66,12 +61,11 @@ namespace Esfa.Recruit.Qa.Web
 
             _configuration =  configBuilder.Build();
             _hostingEnvironment = env;
-            _authenticationConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
+            _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
             _legacyAuthorizationConfig = _configuration.GetSection("LegacyAuthorization").Get<AuthorizationConfiguration>();
             _authorizationConfig = _configuration.GetSection("Authorization").Get<AuthorizationConfiguration>();
-            _externalLinks = _configuration.GetSection("ExternalLinks").Get<ExternalLinksConfiguration>();
+            _configuration.GetSection("ExternalLinks").Get<ExternalLinksConfiguration>();
             _dfEOidcConfig = _configuration.GetSection("DfEOidcConfiguration").Get<DfEOidcConfiguration>(); // read the configuration from SFA.DAS.Provider.DfeSignIn
-            _isDfESignInAllowed = _configuration.GetValue<bool>("UseDfESignIn"); // read the UseDfESignIn property from SFA.DAS.Recruit.QA configuration.
             _loggerFactory = loggerFactory;
             _logger = logger;
         }
@@ -101,7 +95,7 @@ namespace Esfa.Recruit.Qa.Web
                 }
             );
 
-            services.AddAuthenticationService(_authenticationConfig, _configuration);
+            services.AddAuthenticationService(_configuration);
             services.AddAuthorizationService(_legacyAuthorizationConfig, _authorizationConfig);
 
             services.AddRecruitStorageClient(_configuration);
@@ -121,16 +115,6 @@ namespace Esfa.Recruit.Qa.Web
             services.AddTransient<ReviewFieldIndicatorMapper>();
 
             services.AddScoped<IRuleMessageTemplateRunner, RuleMessageTemplateRunner>();
-
-            services.AddScoped<PlannedOutageResultFilter>();
-
-            services.AddSingleton(x =>
-            {
-                var svc = x.GetService<IConfigurationReader>();
-                return svc.GetAsync<QaRecruitSystemConfiguration>("QaRecruitSystem").Result;
-            });
-
-            services.AddSingleton(new ServiceParameters("Apprenticeship"));
             
             services.Configure<RazorViewEngineOptions>(o =>
             {
@@ -150,8 +134,7 @@ namespace Esfa.Recruit.Qa.Web
                 var serviceProvider = services.BuildServiceProvider();
                 var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
                 collectionChecker?.EnsureCollectionsExist();
-                var storageTableChecker = (QueryStoreTableChecker)serviceProvider.GetService(typeof(QueryStoreTableChecker));
-                storageTableChecker?.EnsureQueryStoreTableExist();
+                collectionChecker?.CreateIndexes().Wait();
             }
             catch (Exception ex)
             {

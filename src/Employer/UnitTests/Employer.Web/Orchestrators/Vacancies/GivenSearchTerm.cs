@@ -1,15 +1,10 @@
-using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
-using FluentAssertions;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.Vacancies
 {
@@ -30,8 +25,7 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.Vacancies
             new VacancySummary{Title="brown dog", LegalEntityName="Black & Brown Ltd", VacancyReference=2000000105, Status = VacancyStatus.Referred}
         };
 
-        [Theory]
-        [InlineData("Closed", "lazy")]
+        [TestCase("Closed", "lazy")]
         public async Task ThenReturnResults(string status, string searchTerm)
         {
             var sut = GetSut(searchTerm, 1, status); 
@@ -41,7 +35,7 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.Vacancies
             
         }
 
-        [Fact]
+        [Test]
         public async Task ThenReturnNoResults()
         {
             var sut = GetSut("fox", 1, "Live"); 

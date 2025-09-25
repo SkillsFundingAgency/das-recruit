@@ -19,8 +19,6 @@ using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Newtonsoft.Json;
 using Esfa.Recruit.Provider.Web.Models;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Microsoft.Extensions.Configuration;
 using ApplicationReviewViewModel = Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
@@ -50,7 +48,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             }));
             var httpContext = new DefaultHttpContext();
             var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
-            _controller = new ApplicationReviewController(_orchestrator.Object, new ServiceParameters("Apprenticeships"), Mock.Of<IConfiguration>())
+            _controller = new ApplicationReviewController(_orchestrator.Object)
             {
                 TempData = tempData
             };
@@ -291,7 +289,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
             Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
             Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage), Is.True);
-            Assert.That(string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, _candidateName), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewSuccessStatusInfoMessage]));
+            Assert.That(string.Format(InfoMessages.ApplicationReviewSingleSuccessStatusHeader, _candidateName), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewSuccessStatusInfoMessage]));
         }
 
         [Test]
@@ -320,7 +318,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
             Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
             Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage), Is.True);
-            Assert.That(string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader, _candidateName), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage]));
+            Assert.That(string.Format(InfoMessages.ApplicationEmployerUnsuccessfulHeader, _candidateName), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage]));
         }
 
         [Test]
@@ -349,7 +347,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
             Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
             Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage), Is.True);
-            Assert.That(string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, _candidateName), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewStatusInfoMessage]));
+            Assert.That(string.Format(InfoMessages.ApplicationReviewSingleSuccessStatusHeader, _candidateName), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewStatusInfoMessage]));
         }
 
         [Test]

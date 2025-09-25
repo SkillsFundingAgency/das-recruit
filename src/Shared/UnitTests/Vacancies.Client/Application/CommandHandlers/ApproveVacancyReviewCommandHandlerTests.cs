@@ -16,6 +16,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -28,7 +29,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
     {
         private readonly Guid _existingReviewId;
         private readonly Fixture _autoFixture = new Fixture();
-        private readonly Mock<IVacancyReviewRepository> _mockVacancyReviewRepository;
+        private readonly Mock<IVacancyReviewRepositoryRunner> _mockVacancyReviewRepository;
+        private readonly Mock<IVacancyReviewQuery> _mockVacancyReviewQuery;
         private readonly Mock<IVacancyRepository> _mockVacancyRepository;
         private readonly Mock<ITimeProvider> _mockTimeProvider;
         private readonly Mock<IMessaging> _mockMessaging;
@@ -41,7 +43,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
         public ApproveVacancyReviewCommandHandlerTests()
         {
             _existingReviewId = Guid.NewGuid();
-            _mockVacancyReviewRepository = new Mock<IVacancyReviewRepository>();
+            _mockVacancyReviewRepository = new Mock<IVacancyReviewRepositoryRunner>();
             _mockVacancyRepository = new Mock<IVacancyRepository>();
 
             _mockMessaging = new Mock<IMessaging>();
@@ -53,10 +55,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             _mockBlockedOrganisationQuery = new Mock<IBlockedOrganisationQuery>();
 
             _mockCommunicationQueueService = new Mock<ICommunicationQueueService>();
+            _mockVacancyReviewQuery = new Mock<IVacancyReviewQuery>();
 
             _sut = new ApproveVacancyReviewCommandHandler(Mock.Of<ILogger<ApproveVacancyReviewCommandHandler>>(), _mockVacancyReviewRepository.Object,
-                                                        _mockVacancyRepository.Object, _mockMessaging.Object, mockValidator, _mockTimeProvider.Object, 
-                                                        _mockBlockedOrganisationQuery.Object, _mockCommunicationQueueService.Object);
+                                                        _mockVacancyReviewQuery.Object, _mockVacancyRepository.Object, _mockMessaging.Object, mockValidator, 
+                                                        _mockTimeProvider.Object, _mockBlockedOrganisationQuery.Object, _mockCommunicationQueueService.Object);
         }
 
         [Theory]
@@ -65,7 +68,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
         [InlineData(ReviewStatus.PendingReview)]
         public async Task GivenApprovedVacancyReviewCommand_AndVacancyReviewIsNotUnderReview_ThenDoNotProcessApprovingReview(ReviewStatus reviewStatus)
         {
-            _mockVacancyReviewRepository.Setup(x => x.GetAsync(_existingReviewId)).ReturnsAsync(new VacancyReview { Status = reviewStatus});
+            _mockVacancyReviewQuery.Setup(x => x.GetAsync(_existingReviewId)).ReturnsAsync(new VacancyReview { Status = reviewStatus});
 
             var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>(), new List<Guid>(), new List<ManualQaFieldEditIndicator>());
 
@@ -91,7 +94,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
 
             _mockVacancyRepository.Setup(x => x.GetVacancyAsync(existingVacancy.VacancyReference.Value)).ReturnsAsync(existingVacancy);
 
-            _mockVacancyReviewRepository.Setup(x => x.GetAsync(_existingReviewId)).ReturnsAsync(new VacancyReview
+            _mockVacancyReviewQuery.Setup(x => x.GetAsync(_existingReviewId)).ReturnsAsync(new VacancyReview
             {
                 Id = _existingReviewId,
                 CreatedDate = _mockTimeProvider.Object.Now.AddHours(-5),
@@ -123,7 +126,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
 
             _mockVacancyRepository.Setup(x => x.GetVacancyAsync(existingVacancy.VacancyReference.Value)).ReturnsAsync(existingVacancy);
 
-            _mockVacancyReviewRepository.Setup(x => x.GetAsync(_existingReviewId)).ReturnsAsync(new VacancyReview
+            _mockVacancyReviewQuery.Setup(x => x.GetAsync(_existingReviewId)).ReturnsAsync(new VacancyReview
             {
                 Id = _existingReviewId,
                 CreatedDate = _mockTimeProvider.Object.Now.AddHours(-5),

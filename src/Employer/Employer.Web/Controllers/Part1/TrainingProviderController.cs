@@ -7,152 +7,163 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
+using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Orchestrators;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Esfa.Recruit.Employer.Web.Controllers.Part1
+namespace Esfa.Recruit.Employer.Web.Controllers.Part1;
+
+[Route(RoutePaths.AccountVacancyRoutePath)]
+public class TrainingProviderController(TrainingProviderOrchestrator orchestrator) : Controller
 {
-    [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class TrainingProviderController : Controller
+    private const string InvalidSearchTerm = "Enter the name or UKPRN of a training provider who delivers the training course you’ve selected";
+
+    [HttpGet("select-training-provider", Name = RouteNames.TrainingProvider_Select_Get)]
+    public async Task<IActionResult> SelectTrainingProvider(VacancyRouteModel vrm, [FromQuery] string wizard = "true", [FromQuery] string clear = "", [FromQuery] long? ukprn = null)
     {
-        private readonly TrainingProviderOrchestrator _orchestrator;
-        private readonly IFeature _feature;
-        private const string InvalidSearchTerm = "Enter the name or UKPRN of a training provider who is registered to deliver apprenticeship training";
+        var vm = await orchestrator.GetSelectTrainingProviderViewModelAsync(vrm, ukprn);
+        vm.PageInfo.SetWizard(wizard);
 
-        public TrainingProviderController(TrainingProviderOrchestrator orchestrator, IFeature feature)
+        if (vm.TrainingProviders?.Any() is not true)
         {
-            _orchestrator = orchestrator;
-            _feature = feature;
+            return View(ViewNames.NoAvailableProviders, new NoAvailableProvidersViewModel
+            {
+                CourseTitle = vm.Programme.Name,
+                EmployerAccountId = vm.EmployerAccountId,
+                IsWizard = vm.PageInfo.IsWizard,
+                ProgrammeId = vm.Programme.Id,
+                VacancyId = vm.VacancyId,
+                VacancyTitle = vm.Title,
+            });
         }
 
-        [HttpGet("select-training-provider", Name = RouteNames.TrainingProvider_Select_Get)]
-        public async Task<IActionResult> SelectTrainingProvider(VacancyRouteModel vrm, [FromQuery] string wizard = "true", [FromQuery] string clear = "", [FromQuery] long? ukprn = null)
+        if (string.IsNullOrWhiteSpace(clear) == false)
         {
-           var vm = await _orchestrator.GetSelectTrainingProviderViewModelAsync(vrm, ukprn);
-           vm.PageInfo.SetWizard(wizard);
-
-           if (string.IsNullOrWhiteSpace(clear) == false)
-           {
-               vm.Ukprn = string.Empty;
-               vm.TrainingProviderSearch = string.Empty;
-               vm.IsTrainingProviderSelected = true;
-           }
+            vm.Ukprn = string.Empty;
+            vm.TrainingProviderSearch = string.Empty;
+            vm.IsTrainingProviderSelected = true;
+        }
            
-           vm.BackLinkRoute = GetBackLinkRoute(vrm.VacancyId);
-           return View(vm);
-        }
+        vm.BackLinkRoute = GetBackLinkRoute(vrm.VacancyId);
+        return View(vm);
+    }
 
-        private string GetBackLinkRoute(Guid vacancyId)
-        {
-            var referredUkprn = Convert.ToString(TempData.Peek(TempDataKeys.ReferredUkprn + vacancyId));
-            var referredProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredProgrammeId + vacancyId));
-            if (!string.IsNullOrWhiteSpace(referredUkprn) || !string.IsNullOrWhiteSpace(referredProgrammeId))
-                return RouteNames.Title_Get;
-            return RouteNames.Training_Get;
-        }
+    private string GetBackLinkRoute(Guid vacancyId)
+    {
+        var referredUkprn = Convert.ToString(TempData.Peek(TempDataKeys.ReferredUkprn + vacancyId));
+        var referredProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredProgrammeId + vacancyId));
+        if (!string.IsNullOrWhiteSpace(referredUkprn) || !string.IsNullOrWhiteSpace(referredProgrammeId))
+            return RouteNames.Title_Get;
+        return RouteNames.Training_Get;
+    }
 
-        [HttpPost("select-training-provider", Name = RouteNames.TrainingProvider_Select_Post)]
-        public async Task<IActionResult> SelectTrainingProvider(SelectTrainingProviderEditModel m, [FromQuery] bool wizard)
+    [HttpPost("select-training-provider", Name = RouteNames.TrainingProvider_Select_Post)]
+    public async Task<IActionResult> SelectTrainingProvider(SelectTrainingProviderEditModel m, [FromQuery] bool wizard)
+    {
+        if (ModelState.IsValid)
         {
-            if (ModelState.IsValid)
+            var response = await orchestrator.PostSelectTrainingProviderAsync(m, User.ToVacancyUser());
+            if (response.Success)
             {
-                var response = await _orchestrator.PostSelectTrainingProviderAsync(m, User.ToVacancyUser());
-
-                if (response.Success)
-                {
-                    return response.Data.FoundTrainingProviderUkprn.HasValue
-                        ? RedirectToRoute(RouteNames.TrainingProvider_Confirm_Get, new { ukprn = response.Data.FoundTrainingProviderUkprn.Value, wizard, m.VacancyId, m.EmployerAccountId })
-                        : GetRedirectToNextPage(wizard, m);
-                }
-
-                AddTrainingProviderErrorsToModelState(m.SelectionType, m.Ukprn, response, ModelState);
+                return response.Data.FoundTrainingProviderUkprn.HasValue
+                    ? RedirectToRoute(RouteNames.TrainingProvider_Confirm_Get, new { ukprn = response.Data.FoundTrainingProviderUkprn.Value, wizard, m.VacancyId, m.EmployerAccountId })
+                    : GetRedirectToNextPage(wizard, m);
             }
 
-            var vm = await _orchestrator.GetSelectTrainingProviderViewModelAsync(m);
-            vm.PageInfo.SetWizard(wizard);
-            return View(vm);
+            AddTrainingProviderErrorsToModelState(m.SelectionType, m.Ukprn, response, ModelState);
         }
 
-        [HttpGet("confirm-training-provider", Name = RouteNames.TrainingProvider_Confirm_Get)]
-        public async Task<IActionResult> ConfirmTrainingProvider(VacancyRouteModel vrm, [FromQuery] string ukprn, [FromQuery] string wizard)
-        {
-            var provider = await _orchestrator.GetProviderAsync(ukprn);
-            
-            if(provider == null)
-                return RedirectToRoute(RouteNames.TrainingProvider_Select_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
-            
-            var vm = await _orchestrator.GetConfirmViewModelAsync(vrm, provider.Ukprn);
-            vm.PageInfo.SetWizard(wizard);
+        var vm = await orchestrator.GetSelectTrainingProviderViewModelAsync(m);
+        vm.PageInfo.SetWizard(wizard);
+        return View(vm);
+    }
 
-            return View(vm);
-        }
+    [HttpGet("confirm-training-provider", Name = RouteNames.TrainingProvider_Confirm_Get)]
+    public async Task<IActionResult> ConfirmTrainingProvider(VacancyRouteModel vrm, [FromQuery] string ukprn, [FromQuery] string wizard)
+    {
+        var provider = await orchestrator.GetProviderAsync(ukprn);
+            
+        if(provider == null)
+            return RedirectToRoute(RouteNames.TrainingProvider_Select_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
+            
+        var vm = await orchestrator.GetConfirmViewModelAsync(vrm, provider.Ukprn);
+        vm.PageInfo.SetWizard(wizard);
 
-        [HttpPost("confirm-training-provider", Name = RouteNames.TrainingProvider_Confirm_Post)]
-        public async Task<IActionResult> ConfirmTrainingProvider(ConfirmTrainingProviderEditModel m, [FromQuery] bool wizard)
+        return View(vm);
+    }
+
+    [HttpPost("confirm-training-provider", Name = RouteNames.TrainingProvider_Confirm_Post)]
+    public async Task<IActionResult> ConfirmTrainingProvider(
+        [FromServices] IRecruitVacancyClient vacancyClient,
+        [FromServices] ITaskListValidator taskListValidator,
+        ConfirmTrainingProviderEditModel m,
+        [FromQuery] bool wizard)
+    {
+        if (ModelState.IsValid)
         {
-            if (ModelState.IsValid)
+            var response = await orchestrator.PostConfirmEditModelAsync(m, User.ToVacancyUser());
+            if (response.Success)
             {
-                var response = await _orchestrator.PostConfirmEditModelAsync(m, User.ToVacancyUser());
-
-                if(response.Success)
-                    return GetRedirectToNextPage(wizard, m);
+                var vacancy = await vacancyClient.GetVacancyAsync(m.VacancyId);
+                bool isTaskListCompleted = await taskListValidator.IsCompleteAsync(vacancy, EmployerTaskListSectionFlags.All);
+                return GetRedirectToNextPage(!isTaskListCompleted, m);
+            }
                 
-                AddTrainingProviderErrorsToModelState(TrainingProviderSelectionType.Ukprn, m.Ukprn, response, ModelState);
-            }
-
-            var vm = await _orchestrator.GetSelectTrainingProviderViewModelAsync(m);
-            vm.PageInfo.SetWizard(wizard);
-            return View(ViewNames.SelectTrainingProvider, vm);
-        }
-        
-        private IActionResult GetRedirectToNextPage(bool wizard, VacancyRouteModel vrm)
-        {
-            if (wizard)
-            {
-                return RedirectToRoute(RouteNames.ShortDescription_Get, new { wizard, vrm.VacancyId, vrm.EmployerAccountId});
-            }
-
-            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { vrm.VacancyId, vrm.EmployerAccountId});
+            AddTrainingProviderErrorsToModelState(TrainingProviderSelectionType.Ukprn, m.Ukprn, response, ModelState);
         }
 
-        public void AddTrainingProviderErrorsToModelState(TrainingProviderSelectionType selectionType, string ukprn, OrchestratorResponse response, ModelStateDictionary modelState)
-        {
-            string[] providerNotFoundErrorCodes = { ErrorCodes.TrainingProviderUkprnNotEmpty, ErrorCodes.TrainingProviderMustExist };
+        var vm = await orchestrator.GetSelectTrainingProviderViewModelAsync(m);
+        vm.PageInfo.SetWizard(wizard);
+        return View(ViewNames.SelectTrainingProvider, vm);
+    }
 
-            if (!response.Success && response.Errors?.Errors != null)
+    private IActionResult GetRedirectToNextPage(bool wizard, VacancyRouteModel vrm)
+    {
+        if (wizard)
+        {
+            return RedirectToRoute(RouteNames.ShortDescription_Get, new { wizard, vrm.VacancyId, vrm.EmployerAccountId});
+        }
+
+        return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { vrm.VacancyId, vrm.EmployerAccountId});
+    }
+
+    public void AddTrainingProviderErrorsToModelState(TrainingProviderSelectionType selectionType, string ukprn, OrchestratorResponse response, ModelStateDictionary modelState)
+    {
+        string[] providerNotFoundErrorCodes = { ErrorCodes.TrainingProviderUkprnNotEmpty, ErrorCodes.TrainingProviderMustExist };
+
+        if (!response.Success && response.Errors?.Errors != null)
+        {
+            foreach (var error in response.Errors.Errors)
             {
-                foreach (var error in response.Errors.Errors)
+                if (providerNotFoundErrorCodes.Contains(error.ErrorCode))
                 {
-                    if (providerNotFoundErrorCodes.Contains(error.ErrorCode))
-                    {
-                        AddProviderNotFoundErrorToModelState();
-                        continue;
-                    }
-                    
-                    if (error.ErrorCode is ErrorCodes.TrainingProviderMustNotBeBlocked)
-                    {
-                        AddProviderBlockedErrorToModelState(selectionType, error);
-                        continue;
-                    }
-                    
-                    modelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                    AddProviderNotFoundErrorToModelState();
+                    continue;
                 }
+                    
+                if (error.ErrorCode is ErrorCodes.TrainingProviderMustNotBeBlocked)
+                {
+                    AddProviderBlockedErrorToModelState(selectionType, error);
+                    continue;
+                }
+                    
+                modelState.AddModelError(error.PropertyName, error.ErrorMessage);
             }
         }
+    }
 
-        private void AddProviderNotFoundErrorToModelState()
-        {
-            ModelState.AddModelError(nameof(SelectTrainingProviderEditModel.TrainingProviderSearch), InvalidSearchTerm);
-        }
+    private void AddProviderNotFoundErrorToModelState()
+    {
+        ModelState.AddModelError(nameof(SelectTrainingProviderEditModel.TrainingProviderSearch), InvalidSearchTerm);
+    }
 
-        private void AddProviderBlockedErrorToModelState(TrainingProviderSelectionType selectionType, EntityValidationError error)
-        {
-            var errorKey = selectionType == TrainingProviderSelectionType.Ukprn ? nameof(SelectTrainingProviderEditModel.Ukprn) : nameof(SelectTrainingProviderEditModel.TrainingProviderSearch);
+    private void AddProviderBlockedErrorToModelState(TrainingProviderSelectionType selectionType, EntityValidationError error)
+    {
+        string errorKey = selectionType == TrainingProviderSelectionType.Ukprn ? nameof(SelectTrainingProviderEditModel.Ukprn) : nameof(SelectTrainingProviderEditModel.TrainingProviderSearch);
 
-            ModelState.AddModelError(errorKey, error.ErrorMessage);
-        }
+        ModelState.AddModelError(errorKey, error.ErrorMessage);
     }
 }

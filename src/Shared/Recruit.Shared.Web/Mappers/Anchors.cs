@@ -8,6 +8,7 @@
         public const string AboutEmployerSection = "aboutEmployer";
         public const string ApplicationProcessSection = "applicationProcess";
         public const string TrainingProviderSection = "trainingProvider";
+        public const string AdditionalQuestionsSection = "additionalQuestions";
         public const string TitleSection = "title";
         public const string NumberOfPositionsSection = "numberofpositions";
         public const string ShortDescriptionSection = "shortDescription";
@@ -43,8 +44,6 @@
         public const string ApplicationMethod = "ApplicationMethod";
         public const string ApplicationUrl = "ApplicationUrl";
         public const string ApplicationInstructions = "ApplicationInstructions";
-        public const string WorkExperience = "WorkExperience";
-        public const string TraineeSector = "TraineeSector";
         public const string AdditionalQuestion1 = nameof(AdditionalQuestion1);
         public const string AdditionalQuestion2 = nameof(AdditionalQuestion2);
 

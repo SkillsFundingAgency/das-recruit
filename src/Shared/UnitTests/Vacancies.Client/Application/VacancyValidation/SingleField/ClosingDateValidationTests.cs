@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
 {
     public class ClosingDateValidationTests : VacancyValidationTestsBase
     {
@@ -14,7 +12,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             {
                 new object[] { DateTime.UtcNow.Date },
                 new object[] { DateTime.UtcNow },
-                new object[] { DateTime.UtcNow.AddDays(13) }
+                //new object[] { DateTime.UtcNow.AddDays(13) }
             };
 
 

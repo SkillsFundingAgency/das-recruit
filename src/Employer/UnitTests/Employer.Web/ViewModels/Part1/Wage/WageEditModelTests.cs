@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
-using Xunit;
 using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ValidationMessages.WageValidationMessages;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Wage
 {
     public class WageEditModelTests
     {
-        [Theory]
-        [InlineData("aa", ErrMsg.TypeOfMoney.FixedWageYearlyAmount)]
-        [InlineData("$15,000.01", ErrMsg.TypeOfMoney.FixedWageYearlyAmount)]
-        [InlineData("15,000.0135", ErrMsg.TypeOfMoney.FixedWageYearlyAmount)]
+        [TestCase("aa", ErrMsg.TypeOfMoney.FixedWageYearlyAmount)]
+        [TestCase("$15,000.01", ErrMsg.TypeOfMoney.FixedWageYearlyAmount)]
+        [TestCase("15,000.0135", ErrMsg.TypeOfMoney.FixedWageYearlyAmount)]
         public void FixedWage_ShouldErrorIfInvalid(string fixedWageYearlyAmount, string expectedErrorMessage)
         {
             var m = new WageEditModel

@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity;
 using Esfa.Recruit.Provider.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -21,19 +20,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class LegalEntityController : EmployerControllerBase
     {
         private readonly LegalEntityOrchestrator _orchestrator;
-        private readonly IFeature _feature;
-        private readonly ServiceParameters _serviceParameters;
 
         public LegalEntityController(
             LegalEntityOrchestrator orchestrator, 
-            IWebHostEnvironment hostingEnvironment, 
-            IFeature feature,
-            ServiceParameters serviceParameters)
+            IWebHostEnvironment hostingEnvironment)
             : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
-            _serviceParameters = serviceParameters;
         }
 
         [HttpGet("legal-entity", Name = RouteNames.LegalEntity_Get)]
@@ -57,18 +50,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             if (vm.HasOnlyOneOrganisation)
             {
-                if (!_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
-                    return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard, vrm.Ukprn, vrm.VacancyId});
-                
                 var model = new LegalEntityEditModel
                 {
                     SelectedOrganisationId = vm.Organisations.FirstOrDefault()?.Id
                 };
                 await _orchestrator.SetAccountLegalEntityPublicId(vrm,model, User.ToVacancyUser());
 
-                return RedirectToRoute(_serviceParameters.VacancyType == VacancyType.Traineeship 
-                    ? RouteNames.TraineeSector_Get 
-                    : RouteNames.Training_Get, new {Wizard = wizard, vrm.Ukprn, vrm.VacancyId});
+                return RedirectToRoute(RouteNames.Training_Get, new {Wizard = wizard, vrm.Ukprn, vrm.VacancyId});
             }
 
             vm.Pager.OtherRouteValues.Add(nameof(wizard), wizard);
@@ -112,18 +100,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 VacancyId = m.VacancyId
             }, m, HttpContext.User.ToVacancyUser());
 
-            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            if (!vm.IsTaskListCompleted)
             {
-                if (!vm.IsTaskListCompleted)
-                {
-                    return RedirectToRoute(_serviceParameters.VacancyType == VacancyType.Traineeship 
-                        ? RouteNames.TraineeSector_Get 
-                        : RouteNames.Training_Get, new {Wizard = wizard, m.Ukprn, m.VacancyId});
-                }
-                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.Ukprn, m.VacancyId});
+                return RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard, m.Ukprn, m.VacancyId });
             }
-            
-            return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard, m.Ukprn, m.VacancyId});
+            return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.Ukprn, m.VacancyId});
         }
 
         [HttpGet("legal-entity-cancel", Name = RouteNames.LegalEntity_Cancel)]

@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             return 1;
         });
 
-        public static IEnumerable<string> AsText(this IEnumerable<Qualification> qualifications, bool isFaaV2Enabled)
+        public static IEnumerable<string> AsText(this IEnumerable<Qualification> qualifications)
         {
             if (qualifications == null)
             {
@@ -38,13 +38,9 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             
             return qualifications.Select(q =>
             {
-                string qualificationType = $"{q.QualificationType} {q.Subject} (Grade {q.Grade}) {q.Weighting.GetDisplayName().ToLower()}";
-                if (isFaaV2Enabled)
-                {
-                    var additionalText = !string.IsNullOrEmpty(q.OtherQualificationName) ? $" ({q.OtherQualificationName})" :"";
-                    var levelText = q.Level.HasValue ? $" (Level {q.Level})":"";
-                    qualificationType = $"{q.QualificationType}{levelText}{additionalText} {q.Subject} (Grade {q.Grade}) {q.Weighting.GetDisplayName().ToLower()}";
-                }
+                var additionalText = !string.IsNullOrEmpty(q.OtherQualificationName) ? $" ({q.OtherQualificationName})" :"";
+                var levelText = q.Level.HasValue ? $" (Level {q.Level})":"";
+                string qualificationType = $"{q.QualificationType}{levelText}{additionalText} {q.Subject} (Grade {q.Grade}) {q.Weighting.GetDisplayName().ToLower()}";
                 return qualificationType;
             });
         }

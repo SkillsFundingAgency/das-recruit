@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -28,17 +27,17 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
         {
             var clientMock = new Mock<IProviderVacancyClient>();
             TimeProvider = new Mock<ITimeProvider>();
-            clientMock.Setup(c => c.GetDashboardAsync(User.Ukprn.Value, VacancyType.Apprenticeship, 1, status, searchTerm))
+            clientMock.Setup(c => c.GetDashboardAsync(User.Ukprn.Value, 1, status, searchTerm))
                 .ReturnsAsync(new ProviderDashboard {
                     Vacancies = vacancySummaries
                 });
-            clientMock.Setup(c => c.GetVacancyCount(User.Ukprn.Value, VacancyType.Apprenticeship, status, searchTerm))
+            clientMock.Setup(c => c.GetVacancyCount(User.Ukprn.Value, status, searchTerm))
                 .ReturnsAsync(vacancyCount);
             return new VacanciesOrchestrator(
                 clientMock.Object,
                 RecruitVacancyClientMock.Object,
                 ProviderAlertsViewModelFactoryMock.Object,
-                ProviderRelationshipsServiceMock.Object, new ServiceParameters(VacancyType.Apprenticeship.ToString()));
+                ProviderRelationshipsServiceMock.Object);
         }
 
         protected IEnumerable<VacancySummary> GenerateVacancySummaries(int count, string legalEntityName, string term, VacancyStatus status)
@@ -66,7 +65,8 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
                 Email = "me@home.com",
                 Name = "Keith Chegwin",
                 Ukprn = 12345678,
-                UserId = userId.ToString()
+                UserId = userId.ToString(),
+                DfEUserId = Guid.NewGuid().ToString(),
             };
             UserDetails = new User
             {
@@ -78,8 +78,9 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
 
             RecruitVacancyClientMock = new Mock<IRecruitVacancyClient>();
             RecruitVacancyClientMock
-                .Setup(x => x.GetUsersDetailsAsync(User.UserId))
+                .Setup(x => x.GetUsersDetailsByDfEUserId(User.DfEUserId))
                 .ReturnsAsync(UserDetails);
+
 
             ProviderAlertsViewModelFactoryMock = new Mock<IProviderAlertsViewModelFactory>();
             ProviderRelationshipsServiceMock = new Mock<IProviderRelationshipsService>();

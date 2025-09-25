@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
@@ -8,7 +7,6 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.Qualifications;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels.Qualifications;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,24 +18,16 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
     {
         private const string QualificationDeletedTempDataKey = "QualificationDeletedTempDataKey";
         private readonly QualificationsOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public QualificationsController(QualificationsOrchestrator orchestrator, IFeature feature)
+        public QualificationsController(QualificationsOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("qualifications", Name = RouteNames.Qualifications_Get)]
         public async Task<IActionResult> Qualifications(VacancyRouteModel vrm)
         {
             var vm = await _orchestrator.GetQualificationsViewModelAsync(vrm);
-
-            if (!_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements) && vm.Qualifications.Any() == false)
-            {
-                TempData.Remove(QualificationDeletedTempDataKey);
-                return RedirectToRoute(RouteNames.Qualification_Add_Get, new {vrm.VacancyId, vrm.Ukprn});
-            }
 
             if (TempData[QualificationDeletedTempDataKey] != null)
                 vm.InfoMessage = "Successfully removed qualification";

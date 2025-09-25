@@ -4,6 +4,7 @@ using System.Linq;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview
 {
@@ -33,6 +34,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview
         public string Support { get; set; }
         public List<TrainingCoursesViewModel> TrainingCourses { get; set; }
         public List<WorkExperienceViewModel> WorkExperiences { get; set; }
+        public ApprenticeshipTypes? ApprenticeshipType { get; set; } = ApprenticeshipTypes.Standard;
 
         public bool HasNoQualifications => Qualifications.Any() == false;
         public bool HasNoTrainingCourses => TrainingCourses.Any() == false;
@@ -73,7 +75,11 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview
         public List<WorkExperienceViewModel> Jobs { get; set; }
         public bool IsFaaV2Application { get; set; }
         public bool HasNoJobs => Jobs.Any() == false;
-        
+        public bool IsFoundation { get; set; }
+        public string CandidateAppliedLocations { get; set; }
+        public bool CanShowCandidateAppliedLocations => !string.IsNullOrEmpty(CandidateAppliedLocations);
+        public List<string> AppliedLocations => CandidateAppliedLocations.SplitCitiesToList();
+
         public List<QualificationTypeDisplay> QualificationTypes
         {
             get
@@ -146,8 +152,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview
                         Subject = x.Subject.Contains('|') ? x.Subject.Split('|')[1] : x.Subject,
                         Grade = x.Grade,
                         AdditionalInformation = x.AdditionalInformation,
-                        IsPredicted = x.IsPredicted
-                    }).ToList()
+                        IsPredicted = x.IsPredicted,
+                        QualificationOrder = x.QualificationOrder
+                    }).OrderBy(ord => ord.QualificationOrder).ToList()
             };
 
             return result;

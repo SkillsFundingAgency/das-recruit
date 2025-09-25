@@ -150,16 +150,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
 
         public async Task<string> GetApplicationReviewsRecursiveAsync(string queryJson)
         {
+            var programmes = (await _programmeProvider.GetApprenticeshipProgrammesAsync(true)).ToList();
             var pageNumber = 1;
             var results = new List<BsonDocument>();
-            var currentResults = await GetCurrentPageOfResults(pageNumber, queryJson);
+            var currentResults = await GetCurrentPageOfResults(pageNumber, queryJson, programmes);
             results.AddRange(currentResults);
             
             while (currentResults.Any())
             {
                 pageNumber++;
 
-                currentResults = await GetCurrentPageOfResults(pageNumber, queryJson);
+                currentResults = await GetCurrentPageOfResults(pageNumber, queryJson,programmes);
                 
                 results.AddRange(currentResults);    
             }
@@ -171,31 +172,32 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             return JsonConvert.SerializeObject(dotNetFriendlyResults);
         }
 
-        private async Task<List<BsonDocument>> GetCurrentPageOfResults(int pageNumber, string queryJson)
+        private async Task<List<BsonDocument>> GetCurrentPageOfResults(int pageNumber, string queryJson, List<IApprenticeshipProgramme> programmes)
         {
             var queryBson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(queryJson);
             queryBson.Insert(queryBson.Count, new BsonDocument {{"$skip", (pageNumber-1) * 500}});
             queryBson.Insert(queryBson.Count, new BsonDocument {{"$limit",500}});
             var pipelineDefinition = queryBson.Values.Select(p => p.ToBsonDocument()).ToArray();
             List<BsonDocument> currentResults =
-                await RetryPolicy.Execute(_ =>
+                await RetryPolicy.ExecuteAsync(_ =>
                         _collection.Aggregate<BsonDocument>(pipelineDefinition).ToListAsync(),
                     new Context(nameof(GetApplicationReviewsAsync)));
-            await ProcessResultsAsync(currentResults);
+            await ProcessResultsAsync(currentResults, programmes);
 
             return currentResults;
         }
 
-        private async Task ProcessResultsAsync(List<BsonDocument> results)
+        private async Task ProcessResultsAsync(List<BsonDocument> results, List<IApprenticeshipProgramme> programmes)
         {
+            
             foreach (var result in results)
             {
-                await SetProgrammeAsync(result);
+                await SetProgrammeAsync(result, programmes);
                 SetDurations(result);
             }
         }
 
-        private async Task SetProgrammeAsync(BsonDocument result)
+        private async Task SetProgrammeAsync(BsonDocument result, List<IApprenticeshipProgramme> programmes)
         {
             if (result[Column.ProgrammeId].IsBsonNull)
             {
@@ -209,7 +211,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             
             var programmeId = result[Column.ProgrammeId].AsString;
             
-            var programme = await _programmeProvider.GetApprenticeshipProgrammeAsync(programmeId);
+            var programme = programmes.FirstOrDefault(c=>c.Id == programmeId);
 
             var programmeValue = programme != null ? $"{programme.Id} {programme.Title}" : programmeId;
             

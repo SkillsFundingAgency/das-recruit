@@ -31,7 +31,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.Qualifications
         };
 
         public string BackRoute { get; set; }
-        public bool IsFaaV2Enabled { get; set; }
 
         public class Qualification
         {

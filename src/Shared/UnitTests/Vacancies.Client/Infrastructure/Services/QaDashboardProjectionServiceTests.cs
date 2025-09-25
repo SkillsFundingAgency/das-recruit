@@ -69,7 +69,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                     SubmissionCount = 1
                 }
             };
-            vacancyReviewQuery.Setup(x => x.GetActiveAsync<VacancyReviewSummary>()).ReturnsAsync(returnedVacancies);
+            vacancyReviewQuery.Setup(x => x.GetActiveAsync()).ReturnsAsync(returnedVacancies);
             
             await projectionService.RebuildQaDashboardAsync();
             

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -11,12 +10,8 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part2.FutureProspects;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part2
 {

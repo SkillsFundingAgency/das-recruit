@@ -106,7 +106,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
                 if (statusInfo.ShouldMakeOthersUnsuccessful) 
                 {
-                    TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, statusInfo.CandidateName));
+                    TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSingleSuccessStatusHeader, statusInfo.CandidateName));
                     return RedirectToRoute(RouteNames.ApplicationReviewsToUnsuccessful_Get, new { editModel.VacancyId, editModel.EmployerAccountId });
                 }
 

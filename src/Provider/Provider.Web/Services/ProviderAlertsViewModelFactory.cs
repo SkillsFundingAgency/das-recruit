@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
@@ -14,21 +13,18 @@ namespace Esfa.Recruit.Provider.Web.Services
     {
         private readonly AlertViewModelService _alertViewModelService;
         private readonly IProviderVacancyClient _providerVacancyClient;
-        private readonly ServiceParameters _serviceParameters;
 
-        public ProviderAlertsViewModelFactory(AlertViewModelService alertViewModelService, IProviderVacancyClient providerVacancyClient, ServiceParameters serviceParameters)
+        public ProviderAlertsViewModelFactory(AlertViewModelService alertViewModelService, IProviderVacancyClient providerVacancyClient)
         {
             _alertViewModelService = alertViewModelService;
             _providerVacancyClient = providerVacancyClient;
-            _serviceParameters = serviceParameters;
         }
         public async Task<AlertsViewModel> Create(User user)
         {
             if (user?.Ukprn == null)
                 throw new ArgumentNullException(nameof(user));
 
-            var vacancies = await _providerVacancyClient.GetDashboardAsync(user.Ukprn.Value,
-                _serviceParameters.VacancyType.GetValueOrDefault(), 1, FilteringOptions.Closed, null);
+            var vacancies = await _providerVacancyClient.GetDashboardAsync(user.Ukprn.Value, 1, FilteringOptions.Closed, null);
             
             var transferredVacanciesAlert = _alertViewModelService.GetProviderTransferredVacanciesAlert(
                 vacancies.TransferredVacancies,

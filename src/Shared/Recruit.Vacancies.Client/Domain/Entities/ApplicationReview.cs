@@ -8,6 +8,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public Guid CandidateId { get; set; }
         public long VacancyReference { get; set; }
         public ApplicationReviewStatus Status { get; set; }
+        public ApplicationReviewStatus? TemporaryReviewStatus { get; set; } 
         public DateTime CreatedDate { get; set; }
         public DateTime SubmittedDate { get; set; }
         public Application Application { get; set; }
@@ -25,5 +26,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public DateTime? ReviewedDate { get; set; }
         public bool? HasEverBeenEmployerInterviewing { get; set; }
         public string VacancyTitle { get; set; }
+        public DateTime? MigrationDate { get; set; }
     }
 }

@@ -8,7 +8,6 @@ using Esfa.Recruit.Provider.Web.Controllers.Part1;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentAssertions;
@@ -29,8 +28,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             VacancyRouteModel vacancyRouteModel,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
-            var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>(),
-                new ServiceParameters("Apprenticeship"));
+            var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>());
             controller.ModelState.AddModelError("HasConfirmedEmployer","Error");
             
             editModel.HasConfirmedEmployer = null;
@@ -58,8 +56,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
             editModel.VacancyId = null;
-            var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>(),
-                new ServiceParameters("Apprenticeship"));
+            var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>());
             editModel.HasConfirmedEmployer = false;
 
             var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel);
@@ -75,8 +72,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             VacancyRouteModel vacancyRouteModel,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
-            var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>(),
-                new ServiceParameters("Apprenticeship"));
+            var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>());
             editModel.HasConfirmedEmployer = false;
 
             var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel);
@@ -105,8 +101,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                     x.GetAuthorisedVacancyForEditAsync(It.Is<VacancyRouteModel>(c=>c.Ukprn.Equals(editModel.Ukprn) && c.VacancyId.Equals(editModel.VacancyId)), RouteNames.ConfirmLegalEntityEmployer_Get))
                 .ReturnsAsync(vacancy);
             utility.Setup(x => x.IsTaskListCompleted(vacancy)).Returns(false);
-            var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>(),
-                new ServiceParameters("Apprenticeship"))
+            var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>())
             {
                 ControllerContext = new ControllerContext
                 {
@@ -145,8 +140,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                     x.GetAuthorisedVacancyForEditAsync(It.Is<VacancyRouteModel>(c=>c.Ukprn.Equals(editModel.Ukprn) && c.VacancyId.Equals(editModel.VacancyId)), RouteNames.ConfirmLegalEntityEmployer_Get))
                 .ReturnsAsync(vacancy);
             utility.Setup(x => x.IsTaskListCompleted(vacancy)).Returns(true);
-            var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>(),
-                new ServiceParameters("Apprenticeship"))
+            var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>())
             {
                 ControllerContext = new ControllerContext
                 {

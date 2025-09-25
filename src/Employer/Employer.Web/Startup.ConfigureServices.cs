@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using Esfa.Recruit.Employer.Web.AppStart;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
@@ -14,8 +12,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.Employer.Shared.UI;
-using SFA.DAS.Encoding;
 using SFA.DAS.GovUK.Auth.AppStart;
+using SFA.DAS.GovUK.Auth.Employer;
+using SFA.DAS.GovUK.Auth.Models;
 using SFA.DAS.GovUK.Auth.Services;
 
 namespace Esfa.Recruit.Employer.Web
@@ -83,14 +82,15 @@ namespace Esfa.Recruit.Employer.Web
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 #endif
             
-            services.AddTransient<ICustomClaims, EmployerAccountPostAuthenticationClaimsHandler>();
-            services.AddAndConfigureGovUkAuthentication(Configuration, typeof(EmployerAccountPostAuthenticationClaimsHandler), "", "/services/SignIn-Stub");
+            services.AddAndConfigureGovUkAuthentication(Configuration, new AuthRedirects
+            {
+                SignedOutRedirectUrl = "",
+                LocalStubLoginPath = "/services/SignIn-Stub" 
+            },null, typeof(UserAccountService));
 
             services.AddAuthorizationService();
             services.AddMaMenuConfiguration(RouteNames.Logout_Get, Configuration["ResourceEnvironmentName"]);
         
-
-
             services.AddDataProtection(Configuration, HostingEnvironment, applicationName: "das-employer");
             services.AddDasEncoding(Configuration);
 
@@ -104,8 +104,7 @@ namespace Esfa.Recruit.Employer.Web
                 var serviceProvider = services.BuildServiceProvider();
                 var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
                 collectionChecker?.EnsureCollectionsExist();
-                var storageTableChecker = (QueryStoreTableChecker)serviceProvider.GetService(typeof(QueryStoreTableChecker));
-                storageTableChecker?.EnsureQueryStoreTableExist();
+                collectionChecker?.CreateIndexes().Wait();
             }
             catch (Exception ex)
             {

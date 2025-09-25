@@ -33,6 +33,7 @@ public class CandidateApplication
     public AdditionalQuestion? AdditionalQuestion2 { get; set; }
     public string WhatIsYourInterest { get; set; }
     public DateTime DateOfBirth { get; set; }
+    public DateTime? MigrationDate { get; set; }
 }
 
 public class ApplicationQualification
@@ -42,6 +43,7 @@ public class ApplicationQualification
     public string Grade { get; set; }
     public bool? IsPredicted { get; set; }
     public string AdditionalInformation { get; set; }
+    public short? QualificationOrder { get; set; }
 }
 
 public class TrainingCourse

@@ -3,8 +3,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels;
-using Esfa.Recruit.Employer.Web.ViewModels.AboutEmployer;
+using Esfa.Recruit.Employer.Web.ViewModels.Part2.AboutEmployer;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
@@ -13,130 +12,122 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
+namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2;
+
+public class AboutEmployerOrchestrator(
+    IRecruitVacancyClient vacancyClient,
+    ILogger<AboutEmployerOrchestrator> logger,
+    IReviewSummaryService reviewSummaryService,
+    IUtility utility)
+    : VacancyValidatingOrchestrator<AboutEmployerEditModel>(logger)
 {
-    public class AboutEmployerOrchestrator : VacancyValidatingOrchestrator<AboutEmployerEditModel>
+    private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerDescription | VacancyRuleSet.EmployerWebsiteUrl;
+
+    public async Task<AboutEmployerViewModel> GetAboutEmployerViewModelAsync(TaskListViewModel model)
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerDescription | VacancyRuleSet.EmployerWebsiteUrl;
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IUtility _utility;
-
-        public AboutEmployerOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<AboutEmployerOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.AboutEmployer_Get);
+        var vm = new AboutEmployerViewModel
         {
-            _vacancyClient = vacancyClient;
-            _reviewSummaryService = reviewSummaryService;
-            _utility = utility;
+            VacancyId = vacancy.Id,
+            EmployerAccountId = vacancy.EmployerAccountId,
+            Title = vacancy.Title,
+            EmployerDescription =  await vacancyClient.GetEmployerDescriptionAsync(vacancy),
+            EmployerTitle = await GetEmployerTitleAsync(vacancy),
+            EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl,
+            IsAnonymous = vacancy.IsAnonymous,
+            IsDisabilityConfident = vacancy.IsDisabilityConfident,
+            IsTaskList = model.IsTaskList,
+            IsTaskListCompleted = utility.IsTaskListCompleted(vacancy) && !model.IsTaskList,
+        };
+
+        if (vacancy.Status == VacancyStatus.Referred)
+        {
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+                ReviewFieldMappingLookups.GetAboutEmployerFieldIndicators());
         }
 
-        public async Task<AboutEmployerViewModel> GetAboutEmployerViewModelAsync(VacancyRouteModel vrm)
-        {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.AboutEmployer_Get);
+        return vm;
+    }
 
-            var vm = new AboutEmployerViewModel
-            {
-                VacancyId = vacancy.Id,
-                EmployerAccountId = vacancy.EmployerAccountId,
-                Title = vacancy.Title,
-                EmployerDescription =  await _vacancyClient.GetEmployerDescriptionAsync(vacancy),
-                EmployerTitle = await GetEmployerTitleAsync(vacancy),
-                EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl,
-                IsAnonymous = vacancy.IsAnonymous,
-                IsDisabilityConfident = vacancy.IsDisabilityConfident
-            };
+    public async Task<AboutEmployerViewModel> GetAboutEmployerViewModelAsync(AboutEmployerEditModel m)
+    {
+        var vm = await GetAboutEmployerViewModelAsync((TaskListViewModel)m);
+        vm.EmployerDescription = m.EmployerDescription;
+        vm.EmployerWebsiteUrl = m.EmployerWebsiteUrl;
+        vm.IsDisabilityConfident = m.IsDisabilityConfident;
 
-            if (vacancy.Status == VacancyStatus.Referred)
-            {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
-                    ReviewFieldMappingLookups.GetAboutEmployerFieldIndicators());
-            }
+        return vm;
+    }
 
-            vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
+    public async Task<OrchestratorResponse> PostAboutEmployerEditModelAsync(AboutEmployerEditModel m, VacancyUser user)
+    {
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.AboutEmployer_Post);
 
-            return vm;
-        }
+        SetVacancyWithEmployerReviewFieldIndicators(
+            vacancy.EmployerDescription,
+            FieldIdResolver.ToFieldId(v => v.EmployerDescription),
+            vacancy,
+            (v) => { return v.EmployerDescription = m.EmployerDescription; });
 
-        public async Task<AboutEmployerViewModel> GetAboutEmployerViewModelAsync(AboutEmployerEditModel m)
-        {
-            var vm = await GetAboutEmployerViewModelAsync((VacancyRouteModel)m);
-
-            vm.EmployerDescription = m.EmployerDescription;
-            vm.EmployerWebsiteUrl = m.EmployerWebsiteUrl;
-            vm.IsDisabilityConfident = m.IsDisabilityConfident;
-
-            return vm;
-        }
-
-        public async Task<OrchestratorResponse> PostAboutEmployerEditModelAsync(AboutEmployerEditModel m, VacancyUser user)
-        {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.AboutEmployer_Post);
-
-            SetVacancyWithEmployerReviewFieldIndicators(
-                vacancy.EmployerDescription,
-                FieldIdResolver.ToFieldId(v => v.EmployerDescription),
-                vacancy,
-                (v) => { return v.EmployerDescription = m.EmployerDescription; });
-
-            SetVacancyWithEmployerReviewFieldIndicators(
-                vacancy.EmployerWebsiteUrl,
-                FieldIdResolver.ToFieldId(v => v.EmployerWebsiteUrl),
-                vacancy,
-                (v) => { return v.EmployerWebsiteUrl = m.EmployerWebsiteUrl; });
+        SetVacancyWithEmployerReviewFieldIndicators(
+            vacancy.EmployerWebsiteUrl,
+            FieldIdResolver.ToFieldId(v => v.EmployerWebsiteUrl),
+            vacancy,
+            (v) => { return v.EmployerWebsiteUrl = m.EmployerWebsiteUrl; });
             
-            SetVacancyWithEmployerReviewFieldIndicators(
-                vacancy.DisabilityConfident,
-                FieldIdResolver.ToFieldId(v => v.DisabilityConfident),
-                vacancy,
-                (v) =>
-                {
-                    return v.DisabilityConfident = m.IsDisabilityConfident ? DisabilityConfident.Yes : DisabilityConfident.No;
-                });
-
-            return await ValidateAndExecute(
-                vacancy,
-                v => _vacancyClient.Validate(v, ValidationRules),
-                async v =>    
-                {
-                    await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
-                    await UpdateEmployerProfileAsync(vacancy, m.EmployerDescription, user);
-                }
-            );
-        }
-
-        private async Task UpdateEmployerProfileAsync(Vacancy vacancy, string employerDescription, VacancyUser user)
-        {
-            var employerProfile =
-                await _vacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
-
-            if (employerProfile == null)
+        SetVacancyWithEmployerReviewFieldIndicators(
+            vacancy.DisabilityConfident,
+            FieldIdResolver.ToFieldId(v => v.DisabilityConfident),
+            vacancy,
+            (v) =>
             {
-                throw new NullReferenceException($"No Employer Profile was found for employerAccount: {vacancy.EmployerAccountId}, " +
-                                                 $"accountLegalEntityPublicHashedId : {vacancy.AccountLegalEntityPublicHashedId}");
-            }
+                return v.DisabilityConfident = m.IsDisabilityConfident ? DisabilityConfident.Yes : DisabilityConfident.No;
+            });
 
-            if (employerProfile.AboutOrganisation != employerDescription)
+        return await ValidateAndExecute(
+            vacancy,
+            v => vacancyClient.Validate(v, ValidationRules),
+            async v =>    
             {
-                employerProfile.AboutOrganisation = employerDescription;
-                await _vacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
+                await vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+                await UpdateEmployerProfileAsync(vacancy, m.EmployerDescription, user);
             }
-        }
+        );
+    }
 
-        protected override EntityToViewModelPropertyMappings<Vacancy, AboutEmployerEditModel> DefineMappings()
+    private async Task UpdateEmployerProfileAsync(Vacancy vacancy, string employerDescription, VacancyUser user)
+    {
+        var employerProfile =
+            await vacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
+
+        if (employerProfile == null)
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, AboutEmployerEditModel>();
-
-            mappings.Add(e => e.EmployerDescription, vm => vm.EmployerDescription);
-            mappings.Add(e => e.EmployerWebsiteUrl, vm => vm.EmployerWebsiteUrl);
-
-            return mappings;
+            throw new NullReferenceException($"No Employer Profile was found for employerAccount: {vacancy.EmployerAccountId}, " +
+                                             $"accountLegalEntityPublicHashedId : {vacancy.AccountLegalEntityPublicHashedId}");
         }
 
-        private async Task<string> GetEmployerTitleAsync(Vacancy vacancy)
+        if (employerProfile.AboutOrganisation != employerDescription)
         {
-            if (vacancy.IsAnonymous)
-                return vacancy.LegalEntityName;
-
-            return await _vacancyClient.GetEmployerNameAsync(vacancy);
+            employerProfile.AboutOrganisation = employerDescription;
+            await vacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
         }
+    }
+
+    protected override EntityToViewModelPropertyMappings<Vacancy, AboutEmployerEditModel> DefineMappings()
+    {
+        var mappings = new EntityToViewModelPropertyMappings<Vacancy, AboutEmployerEditModel>();
+
+        mappings.Add(e => e.EmployerDescription, vm => vm.EmployerDescription);
+        mappings.Add(e => e.EmployerWebsiteUrl, vm => vm.EmployerWebsiteUrl);
+
+        return mappings;
+    }
+
+    private async Task<string> GetEmployerTitleAsync(Vacancy vacancy)
+    {
+        if (vacancy.IsAnonymous)
+            return vacancy.LegalEntityName;
+
+        return await vacancyClient.GetEmployerNameAsync(vacancy);
     }
 }

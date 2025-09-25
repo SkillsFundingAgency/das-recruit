@@ -1,0 +1,29 @@
+﻿@model Esfa.Recruit.Shared.Web.ViewModels.TaskList.TaskListItemViewModel
+
+@{
+    var routeValues = Model.RouteValues is null
+        ? new Dictionary<string, string>()
+        : new Dictionary<string, string>(Model.RouteValues);
+
+    if (Model.IsTaskList)
+    {
+        routeValues.Add("wizard", "true");
+    }
+}
+
+<li class="das-task-list__item">
+    @if (Model.Disabled)
+    {
+        <span class="govuk-hint">@Model.Text</span>
+    }
+    else if (Model.Editable)
+    {
+        <a class="govuk-link govuk-link--no-visited-state" asp-route="@Model.Route" asp-all-route-data="@routeValues">
+            @Model.Text
+        </a>
+    }
+    else
+    {
+        <span>@Model.Text</span>
+    }
+</li>

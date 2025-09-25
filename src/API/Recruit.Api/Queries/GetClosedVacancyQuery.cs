@@ -1,7 +1,9 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using MediatR;
 using SFA.DAS.Recruit.Api.Models;
 
@@ -22,18 +24,28 @@ namespace SFA.DAS.Recruit.Api.Queries
     {
         public async Task<GetClosedVacancyQueryResponse> Handle(GetClosedVacancyQuery request, CancellationToken cancellationToken)
         {
-            var queryResult = await queryStoreReader.GetVacancyAsync(request.VacancyReference);
-
-            if (queryResult.Status is not (VacancyStatus.Closed or VacancyStatus.Live))
+            try
             {
-                queryResult = null;
-            }
+                var queryResult = await queryStoreReader.GetVacancyAsync(request.VacancyReference);
+                if (queryResult.Status is not (VacancyStatus.Closed or VacancyStatus.Live))
+                {
+                    queryResult = null;
+                }
             
-            return new GetClosedVacancyQueryResponse
+                return new GetClosedVacancyQueryResponse
+                {
+                    Data = queryResult,
+                    ResultCode = queryResult == null ? ResponseCode.NotFound : ResponseCode.Success
+                };
+            }
+            catch (VacancyNotFoundException e)
             {
-                Data = queryResult,
-                ResultCode = queryResult == null ? ResponseCode.NotFound : ResponseCode.Success
-            };
+                return new GetClosedVacancyQueryResponse
+                {
+                    Data = null,
+                    ResultCode = ResponseCode.NotFound
+                };
+            }
         }
     }
 }

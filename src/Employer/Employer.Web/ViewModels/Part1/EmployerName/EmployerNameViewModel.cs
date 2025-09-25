@@ -2,23 +2,23 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName
+namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
+
+public class EmployerNameViewModel : TaskListViewModel
 {
-    public class EmployerNameViewModel : VacancyRouteModel
-    {
-        public string LegalEntityName { get; set; }
-        public string ExistingTradingName { get; set; } 
-        public string NewTradingName { get; set; }        
-        public string AnonymousName { get; set; }
-        public string AnonymousReason { get; set; }
-        public EmployerIdentityOption? SelectedEmployerIdentityOption { get; set; }
+    public string LegalEntityName { get; set; }
+    public string ExistingTradingName { get; set; } 
+    public string NewTradingName { get; set; }        
+    public string AnonymousName { get; set; }
+    public string AnonymousReason { get; set; }
+    public EmployerIdentityOption? SelectedEmployerIdentityOption { get; set; }
 
-        public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+    public ReviewSummaryViewModel Review { get; set; } = new();
 
-        public PartOnePageInfoViewModel PageInfo { get; set; }
-        public bool HasExistingTradingName => string.IsNullOrWhiteSpace(ExistingTradingName) == false;
+    public PartOnePageInfoViewModel PageInfo { get; set; }
+    public bool HasExistingTradingName => string.IsNullOrWhiteSpace(ExistingTradingName) == false;
 
-        public bool HasOnlyOneOrganisation { get; internal set; }
-        public bool TaskListCompleted { get ; set ; }
-    }
+    public bool HasOnlyOneOrganisation { get; internal set; }
+    public bool TaskListCompleted { get ; set ; }
+    public string VacancyTitle { get; init; }
 }

@@ -6,16 +6,12 @@
 }
 
 @section BackLink {
-    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-        <a asp-route="@RouteNames.EmployerName_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureEnabled>
+    <partial name="_TaskListBackLink" model="@(new BackLinkViewModel(Model.RouteDictionary, RouteNames.EmployerName_Get, Model.IsTaskListCompleted, Model.IsTaskList))" />
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-
         <partial name="@PartialNames.ReviewSummary" for="Review" />
 
         <h1 class="govuk-heading-xl">
@@ -23,7 +19,7 @@
             Information about @Model.EmployerTitle
         </h1>
         <p class="govuk-body">Updating the employer information will also update the employer information on any unapproved vacancies, for example. draft, pending review or rejected vacancies.</p>
-        <form asp-route="@RouteNames.AboutEmployer_Get" asp-all-route-data="@Model.RouteDictionary">
+        <form asp-route="@RouteNames.AboutEmployer_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.IsTaskList">
             <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
                 <div class="govuk-form-group" esfa-validation-marker-for="EmployerDescription">
                     <label asp-for="EmployerDescription" class="govuk-label">Tell us about the organisation</label>
@@ -37,31 +33,20 @@
                 <div asp-show="@Model.IsAnonymous" class="govuk-hint">The website will not be shown as the employer is anonymous</div>
                 <input asp-for="EmployerWebsiteUrl" class="govuk-input govuk-!-width-three-quarters" maxlength="100" />
             </div>
-            <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                <div class="govuk-form-group">
-                    <fieldset class="govuk-fieldset">
-                        <legend class="govuk-label govuk-!-font-weight-bold">Disability Confident employer (optional)</legend>
-                        <div class="govuk-checkboxes">
-                            <div class="govuk-checkboxes__item">
-                                <input asp-for="IsDisabilityConfident" class="govuk-checkboxes__input" type="checkbox" value="true">
-                                <label asp-for="IsDisabilityConfident" class="govuk-label govuk-checkboxes__label">This employer has signed up to the <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in a new window)">Disability Confident scheme (opens in a new tab)</a>.</label>
-                            </div>
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-label govuk-!-font-weight-bold">Disability Confident employer (optional)</legend>
+                    <div class="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item">
+                            <input asp-for="IsDisabilityConfident" class="govuk-checkboxes__input" type="checkbox" value="true">
+                            <label asp-for="IsDisabilityConfident" class="govuk-label govuk-checkboxes__label">This employer has signed up to the <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in a new window)">Disability Confident scheme (opens in a new tab)</a>.</label>
                         </div>
-                    </fieldset>
-                </div>
-            </esfaFeatureEnabled>
-            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                <input type="hidden" asp-for="IsDisabilityConfident"/>
-            </esfaFeatureDisabled>
+                    </div>
+                </fieldset>
+            </div>
             <div class="govuk-button-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
-                <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureEnabled>
-                <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                    <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureDisabled>
-                
+                <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
             </div>
         </form>
     </div>

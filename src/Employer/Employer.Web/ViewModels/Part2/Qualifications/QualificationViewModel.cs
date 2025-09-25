@@ -35,8 +35,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
         public bool IsTaskListCompleted { get ; set ; }
         public string PostRoute { get; set; }
         public string BackRoute { get; set; }
-        public bool IsFaaV2Enabled { get; set; }
-
         public class Qualification
         {
             public string Name { get; set; }

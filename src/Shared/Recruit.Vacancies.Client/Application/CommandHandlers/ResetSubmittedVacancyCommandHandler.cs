@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -16,13 +17,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly ILogger<ResetSubmittedVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
-        private readonly IVacancyReviewRepository _vacancyReviewRepository;
+        private readonly IVacancyReviewRepositoryRunner _vacancyReviewRepositoryRunner;
         private readonly ITimeProvider _timeProvider;
         private readonly IMessaging _messaging;
         public ResetSubmittedVacancyCommandHandler(
             IVacancyRepository vacancyRepository,
             IVacancyReviewQuery vacancyReviewQuery,
-            IVacancyReviewRepository vacancyReviewRepository,
+            IVacancyReviewRepositoryRunner vacancyReviewRepositoryRunner,
             ITimeProvider timeProvider,
             IMessaging messaging,
             ILogger<ResetSubmittedVacancyCommandHandler> logger)
@@ -30,7 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _logger = logger;
             _vacancyRepository = vacancyRepository;
             _vacancyReviewQuery = vacancyReviewQuery;
-            _vacancyReviewRepository = vacancyReviewRepository;
+            _vacancyReviewRepositoryRunner = vacancyReviewRepositoryRunner;
             _timeProvider = timeProvider;
             _messaging = messaging;
         }
@@ -82,7 +83,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             review.ManualOutcome = ManualQaOutcome.Blocked;
             review.Status = ReviewStatus.Closed;
             review.ClosedDate = _timeProvider.Now;
-            return _vacancyReviewRepository.UpdateAsync(review);
+            return _vacancyReviewRepositoryRunner.UpdateAsync(review);
         }
     }
 }

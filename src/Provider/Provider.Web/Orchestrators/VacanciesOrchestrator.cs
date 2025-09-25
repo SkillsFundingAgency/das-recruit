@@ -9,7 +9,6 @@ using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -18,52 +17,36 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
-    public class VacanciesOrchestrator
+    public class VacanciesOrchestrator(
+        IProviderVacancyClient providerVacancyClient,
+        IRecruitVacancyClient recruitVacancyClient,
+        IProviderAlertsViewModelFactory providerAlertsViewModelFactory,
+        IProviderRelationshipsService providerRelationshipsService)
     {
         private const int VacanciesPerPage = 25;
-        private readonly IProviderVacancyClient _providerVacancyClient;
-        private readonly IRecruitVacancyClient _recruitVacancyClient;
-        private readonly IProviderAlertsViewModelFactory _providerAlertsViewModelFactory;
-        private readonly IProviderRelationshipsService _providerRelationshipsService;
-        private readonly ServiceParameters _serviceParameters;
-
-        public VacanciesOrchestrator(
-            IProviderVacancyClient providerVacancyClient,
-            IRecruitVacancyClient recruitVacancyClient,
-            IProviderAlertsViewModelFactory providerAlertsViewModelFactory,
-            IProviderRelationshipsService providerRelationshipsService,
-            ServiceParameters serviceParameters)
-        {
-            _providerVacancyClient = providerVacancyClient;
-            _recruitVacancyClient = recruitVacancyClient;
-            _providerAlertsViewModelFactory = providerAlertsViewModelFactory;
-            _providerRelationshipsService = providerRelationshipsService;
-            _serviceParameters = serviceParameters;
-        }
 
         public async Task<VacanciesViewModel> GetVacanciesViewModelAsync(
             VacancyUser user, string filter, int page, string searchTerm)
         {
             var filteringOption = SanitizeFilter(filter);
-            var serviceParametersVacancyType = _serviceParameters.VacancyType.GetValueOrDefault();
-            var getDashboardTask = _providerVacancyClient.GetDashboardAsync(user.Ukprn.Value, _serviceParameters.VacancyType.GetValueOrDefault(), page, filteringOption, searchTerm);
-            var getUserDetailsTask = _recruitVacancyClient.GetUsersDetailsAsync(user.UserId);
-            var providerTask = serviceParametersVacancyType == VacancyType.Apprenticeship ? 
-                _providerRelationshipsService.CheckProviderHasPermissions(user.Ukprn.Value, OperationType.RecruitmentRequiresReview)
-                : Task.FromResult(false);
-            var providerVacancyCountTask = _providerVacancyClient.GetVacancyCount(user.Ukprn.Value, _serviceParameters.VacancyType.GetValueOrDefault(), filteringOption, searchTerm);
+            var getDashboardTask = providerVacancyClient.GetDashboardAsync(user.Ukprn!.Value, page, filteringOption, searchTerm);
+            var getUserDetailsTask = recruitVacancyClient.GetUsersDetailsByDfEUserId(user.DfEUserId) ?? recruitVacancyClient.GetUsersDetailsAsync(user.UserId);
+            var providerTask = providerRelationshipsService.CheckProviderHasPermissions(user.Ukprn.Value, OperationType.RecruitmentRequiresReview);
+            
 
-            await Task.WhenAll(getDashboardTask, getUserDetailsTask, providerTask, providerVacancyCountTask);
+            await Task.WhenAll(getDashboardTask, getUserDetailsTask, providerTask);
+            
+            long providerVacancyCountTask = getDashboardTask.Result?.TotalVacancies 
+                                            ?? await providerVacancyClient.GetVacancyCount(user.Ukprn.Value, filteringOption, searchTerm);//TODO FAI-2541 - ignore this for ones for applications
 
             var dashboard = getDashboardTask.Result;
             var userDetails = getUserDetailsTask.Result;
-            var providerPermissions = providerTask.Result;
-            var vacancyCount = providerVacancyCountTask.Result;
-            var totalItems = Convert.ToInt32(vacancyCount);
+            bool providerPermissions = providerTask.Result;
+            int totalItems = Convert.ToInt32(providerVacancyCountTask);
 
-            var alerts = _providerAlertsViewModelFactory.Create(dashboard, userDetails);
+            var alerts = providerAlertsViewModelFactory.Create(dashboard, userDetails);
 
-            var vacancies = new List<VacancySummary>(dashboard?.Vacancies ?? Array.Empty<VacancySummary>());
+            var vacancies = new List<VacancySummary>(dashboard?.Vacancies ?? []);
             
             page = SanitizePage(page, totalItems);
 

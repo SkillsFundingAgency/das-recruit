@@ -4,16 +4,12 @@
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancy-applicant-qualifications";
-    ViewBag.Title = Model.IsFaaV2Enabled ? "Add a qualification"  : "What qualifications would you like the applicant to have?";
+    ViewBag.Title = "Add a qualification";
 }
-
 
 @section BackLink {
-
     <a asp-route="@Model.BackRoute" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
- 
 }
-
 
 <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
@@ -45,32 +41,30 @@
             }
         </select>
     </div>
-    <esfaFeatureEnabled name="@FeatureNames.FaaV2Improvements">
-        <div class="app-select__panel" id="conditional-btec">
-            <div esfa-validation-marker-for="Level" class="govuk-form-group">
-                <label asp-for="OtherQualificationName" class="govuk-label">Level</label>
-                <span esfa-validation-message-for="Level" class="govuk-error-message"></span>
-                <select asp-for="Level" class="govuk-select">
-                    <option value="">Select from list</option>
-                        <!option value="1" selected="@(Model.Level.ToString() == "1")">1</!option>
-                        <!option value="2" selected="@(Model.Level.ToString() == "2")">2</!option>
-                        <!option value="3" selected="@(Model.Level.ToString() == "3")">3</!option>
-                        <!option value="4" selected="@(Model.Level.ToString() == "4")">4</!option>
-                        <!option value="5" selected="@(Model.Level.ToString() == "5")">5</!option>
-                        <!option value="6" selected="@(Model.Level.ToString() == "6")">6</!option>
-                        <!option value="7" selected="@(Model.Level.ToString() == "7")">7</!option>
-                </select>
-                </div>
-        </div>
-
-        <div class="app-select__panel" id="conditional-other">
-            <div esfa-validation-marker-for="OtherQualificationName" class="govuk-form-group">
-                <label asp-for="OtherQualificationName" class="govuk-label">What is the name of the qualification?</label>
-                <span esfa-validation-message-for="OtherQualificationName" class="govuk-error-message"></span>
-                <input asp-for="OtherQualificationName" value="@Model.OtherQualificationName" type="text" class="govuk-input govuk-input--width-20" maxlength="50">
+    <div class="app-select__panel" id="conditional-btec">
+        <div esfa-validation-marker-for="Level" class="govuk-form-group">
+            <label asp-for="OtherQualificationName" class="govuk-label">Level</label>
+            <span esfa-validation-message-for="Level" class="govuk-error-message"></span>
+            <select asp-for="Level" class="govuk-select">
+                <option value="">Select from list</option>
+                    <!option value="1" selected="@(Model.Level.ToString() == "1")">1</!option>
+                    <!option value="2" selected="@(Model.Level.ToString() == "2")">2</!option>
+                    <!option value="3" selected="@(Model.Level.ToString() == "3")">3</!option>
+                    <!option value="4" selected="@(Model.Level.ToString() == "4")">4</!option>
+                    <!option value="5" selected="@(Model.Level.ToString() == "5")">5</!option>
+                    <!option value="6" selected="@(Model.Level.ToString() == "6")">6</!option>
+                    <!option value="7" selected="@(Model.Level.ToString() == "7")">7</!option>
+            </select>
             </div>
+    </div>
+
+    <div class="app-select__panel" id="conditional-other">
+        <div esfa-validation-marker-for="OtherQualificationName" class="govuk-form-group">
+            <label asp-for="OtherQualificationName" class="govuk-label">What is the name of the qualification?</label>
+            <span esfa-validation-message-for="OtherQualificationName" class="govuk-error-message"></span>
+            <input asp-for="OtherQualificationName" value="@Model.OtherQualificationName" type="text" class="govuk-input govuk-input--width-20" maxlength="50">
         </div>
-    </esfaFeatureEnabled>
+    </div>
     <div esfa-validation-marker-for="Subject" class="govuk-form-group">
         <label asp-for="Subject" class="govuk-label">Subject</label>
         <span esfa-validation-message-for="Subject" class="govuk-error-message"></span>

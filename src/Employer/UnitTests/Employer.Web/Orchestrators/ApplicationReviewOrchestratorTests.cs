@@ -1,13 +1,9 @@
-﻿using System.Threading.Tasks;
-using AutoFixture;
-using Esfa.Recruit.Employer.Web;
+﻿using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Moq;
-using NUnit.Framework;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
 {

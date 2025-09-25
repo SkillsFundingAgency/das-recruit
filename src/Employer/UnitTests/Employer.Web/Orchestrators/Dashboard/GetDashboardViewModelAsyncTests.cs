@@ -1,8 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Orchestrators;
+﻿using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Services;
-using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Alerts;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
@@ -10,9 +7,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
-using FluentAssertions;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
 {
@@ -25,7 +19,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
         private Mock<IRecruitVacancyClient> _clientMock;
         private Mock<IEmployerVacancyClient> _vacancyClientMock;
 
-        [Fact]
+        [Test]
         public async Task WhenHasVacancies_ShouldReturnViewModelAsync()
         {
             var dashboardOrchestrator = GetSut(new EmployerDashboardSummary
@@ -49,7 +43,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
             actualDashboard.HasEmployerReviewPermission.Should().BeTrue();
         }
 
-        [Fact]
+        [Test]
         public async Task WhenHasNoVacancies_ShouldReturnViewModelAsync()
         {
             var dashboardOrchestrator = GetSut(new EmployerDashboardSummary());
@@ -63,7 +57,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
             actualDashboard.Alerts.Should().NotBeNull();
         }
 
-        [Fact]
+        [Test]
         public async Task WhenUserNotExists_ThenCreated()
         {
             var dashboardOrchestrator = GetSut(new EmployerDashboardSummary());
@@ -77,7 +71,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
                 ), UserType.Employer), Times.Once);
         }
         
-        [Fact]
+        [Test]
         public async Task WhenNoVacancies_ThenSetupEmployerEventCreated()
         {
             var dashboardOrchestrator = GetSut(new EmployerDashboardSummary());

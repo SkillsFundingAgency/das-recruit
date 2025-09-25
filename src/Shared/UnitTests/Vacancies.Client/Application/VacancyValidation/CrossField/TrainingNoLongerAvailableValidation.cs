@@ -1,14 +1,13 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.CrossField;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
-using Moq;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.CrossField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.CrossField
 {
     public class TrainingNoLongerAvailableValidation : VacancyValidationTestsBase
     {
@@ -22,7 +21,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             {
                 new TestApprenticeshipProgramme {Id = "123", LastDateStarts = DateTime.UtcNow.AddDays(12) }
             };
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null)).ReturnsAsync(programmes);
             var vacancy = new Vacancy
             {
                 ProgrammeId = "123",
@@ -45,18 +44,29 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             {
                 new TestApprenticeshipProgramme {Id = "123", LastDateStarts = DateTime.UtcNow.AddDays(7) }
             };
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null)).ReturnsAsync(programmes);
             var vacancy = new Vacancy
             {
                 ProgrammeId = "123",
-                StartDate = DateTime.UtcNow.AddDays(10)
+                StartDate = DateTime.UtcNow.AddDays(10),
+                TrainingProvider = new TrainingProvider
+                {
+                    Ukprn = 10000000
+                }
             };
-         
+
+            string dateToDisplay = programmes[0].LastDateStarts.HasValue
+                ? programmes[0].LastDateStarts.Value.AsGdsDate()
+                : programmes[0].EffectiveTo.Value.AsGdsDate();
+
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors.FirstOrDefault().ErrorMessage.Should().Be("The training course you have selected is no longer available. You can select a new course or create a new advert.");
+            result.Errors.FirstOrDefault()
+                .ErrorMessage.Should()
+                .Be(
+                    $"Start date must be on or before {dateToDisplay} as this is the last day for new starters for the training course you have selected. If you don't want to change the start date, you can change the training course");
         }
         
         [Fact]
@@ -69,18 +79,28 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             {
                 new TestApprenticeshipProgramme {Id = "123", EffectiveTo = DateTime.UtcNow.AddDays(7) }
             };
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null)).ReturnsAsync(programmes);
             var vacancy = new Vacancy
             {
                 ProgrammeId = "123",
-                StartDate = DateTime.UtcNow.AddDays(10)
+                StartDate = DateTime.UtcNow.AddDays(10),
+                TrainingProvider = new TrainingProvider
+                {
+                    Ukprn = 10000000
+                }
             };
-         
+            string dateToDisplay = programmes[0].LastDateStarts.HasValue
+                ? programmes[0].LastDateStarts.Value.AsGdsDate()
+                : programmes[0].EffectiveTo.Value.AsGdsDate();
+
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors.FirstOrDefault().ErrorMessage.Should().Be("The training course you have selected is no longer available. You can select a new course or create a new advert.");
+            result.Errors.FirstOrDefault()
+                .ErrorMessage.Should()
+                .Be(
+                    $"Start date must be on or before {dateToDisplay} as this is the last day for new starters for the training course you have selected. If you don't want to change the start date, you can change the training course");
         }
 
         [Fact]
@@ -91,20 +111,30 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             TimeProvider = mockTimeProvider.Object;
             var programmes = new List<IApprenticeshipProgramme>
             {
-                new TestApprenticeshipProgramme {Id = "1234", EffectiveTo = DateTime.UtcNow.AddDays(7) }
+                new TestApprenticeshipProgramme {Id = "123", EffectiveTo = DateTime.UtcNow.AddDays(7) }
             };
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null)).ReturnsAsync(programmes);
             var vacancy = new Vacancy
             {
                 ProgrammeId = "123",
-                StartDate = DateTime.UtcNow.AddDays(10)
+                StartDate = DateTime.UtcNow.AddDays(10),
+                TrainingProvider = new TrainingProvider
+                {
+                    Ukprn = 10000000
+                }
             };
-         
+            string dateToDisplay = programmes[0].LastDateStarts.HasValue
+                ? programmes[0].LastDateStarts.Value.AsGdsDate()
+                : programmes[0].EffectiveTo.Value.AsGdsDate();
+
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors.FirstOrDefault().ErrorMessage.Should().Be("The training course you have selected is no longer available. You can select a new course or create a new advert.");
+            result.Errors.FirstOrDefault()
+                .ErrorMessage.Should()
+                .Be(
+                    $"Start date must be on or before {dateToDisplay} as this is the last day for new starters for the training course you have selected. If you don't want to change the start date, you can change the training course");
         }
     }
 }

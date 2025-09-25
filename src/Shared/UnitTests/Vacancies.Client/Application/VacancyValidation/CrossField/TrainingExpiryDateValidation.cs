@@ -1,13 +1,11 @@
-using System;
 using System.Collections.Generic;
+using Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.CrossField;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
-using FluentAssertions;
-using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.CrossField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.CrossField
 {
     public class TrainingExpiryDateValidation : VacancyValidationTestsBase
     {
@@ -25,7 +23,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
                 new TestApprenticeshipProgramme {Id = "123", LastDateStarts = null, EffectiveTo = null}
             };
 
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null)).ReturnsAsync(programmes);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
@@ -51,7 +49,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
                 new TestApprenticeshipProgramme {Id = "123", LastDateStarts = startDate.AddDays(daysAfterStartDate)}
             };
 
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null)).ReturnsAsync(programmes);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
@@ -77,7 +75,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
                 new TestApprenticeshipProgramme {Id = "123", EffectiveTo = startDate.AddDays(daysAfterStartDate)}
             };
 
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null)).ReturnsAsync(programmes);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
@@ -94,7 +92,11 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             var vacancy = new Vacancy
             {
                 StartDate = startDate,
-                ProgrammeId = "123"
+                ProgrammeId = "123",
+                TrainingProvider = new TrainingProvider
+                {
+                    Ukprn = 10000000
+                }
             };
 
             var programmes = new List<IApprenticeshipProgramme>
@@ -102,7 +104,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
                 new TestApprenticeshipProgramme {Id = "123", EffectiveTo = effectiveTo}
             };
 
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null)).ReturnsAsync(programmes);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
@@ -111,7 +113,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors[0].PropertyName.Should().Be(nameof(Vacancy.StartDate));
             result.Errors[0].ErrorCode.Should().Be(ErrorCodes.TrainingExpiryDate);
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingExpiryDate);
-            result.Errors[0].ErrorMessage.Should().Be($"Start date must be on or before {effectiveTo.AsGdsDate()} as this is the last day for new starters for the training course you have selected. If you don’t want to change the start date, you can change the training course.");
+            result.Errors[0].ErrorMessage.Should().Be($"Start date must be on or before {effectiveTo.AsGdsDate()} as this is the last day for new starters for the training course you have selected. If you don't want to change the start date, you can change the training course");
         }
         
         [Fact]
@@ -123,7 +125,11 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             var vacancy = new Vacancy
             {
                 StartDate = startDate,
-                ProgrammeId = "123"
+                ProgrammeId = "123",
+                TrainingProvider = new TrainingProvider
+                {
+                    Ukprn = 10000000
+                }
             };
 
             var programmes = new List<IApprenticeshipProgramme>
@@ -131,7 +137,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
                 new TestApprenticeshipProgramme {Id = "123", LastDateStarts = lastDateStarts}
             };
 
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null)).ReturnsAsync(programmes);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
@@ -140,7 +146,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors[0].PropertyName.Should().Be(nameof(Vacancy.StartDate));
             result.Errors[0].ErrorCode.Should().Be(ErrorCodes.TrainingExpiryDate);
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingExpiryDate);
-            result.Errors[0].ErrorMessage.Should().Be($"Start date must be on or before {lastDateStarts.AsGdsDate()} as this is the last day for new starters for the training course you have selected. If you don’t want to change the start date, you can change the training course.");
+            result.Errors[0].ErrorMessage.Should().Be($"Start date must be on or before {lastDateStarts.AsGdsDate()} as this is the last day for new starters for the training course you have selected. If you don't want to change the start date, you can change the training course");
         }
     }
 }

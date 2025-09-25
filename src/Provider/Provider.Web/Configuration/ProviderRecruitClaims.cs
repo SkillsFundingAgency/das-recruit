@@ -6,6 +6,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         public static string DfEUserDisplayNameClaimTypeIdentifier = "http://schemas.portal.com/displayname";
         public static string IdamsUserNameClaimTypeIdentifier  ="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name";
         public static string DfEUserNameClaimTypeIdentifier  ="http://schemas.portal.com/name";
+        public static string DfEUserIdClaimTypeIdentifier  ="sub";
         public static string IdamsUserServiceTypeClaimTypeIdentifier  = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/service";
         public static string DfEUserServiceTypeClaimTypeIdentifier  = "http://schemas.portal.com/service";
         public static string IdamsUserUkprnClaimsTypeIdentifier = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/ukprn";

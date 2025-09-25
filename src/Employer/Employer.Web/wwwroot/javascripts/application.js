@@ -479,3 +479,24 @@ const selects = document.querySelectorAll("[data-select-conditional-reveal]");
 selects.forEach(function (select) {
   new SelectConditionalReveal(select);
 });
+
+const locationFilterSelect = document.getElementById("locationFilter");
+
+if (locationFilterSelect) {
+    locationFilterSelect.addEventListener("change", (e) => {
+        const locationValue = e.target.value;
+        const queryString = window.location.search;
+        const params = new URLSearchParams(queryString);
+        for (const key of [...params.keys()]) {
+            if (key.toLowerCase() === "locationfilter") {
+                params.delete(key);
+            }
+            if (key.toLowerCase() === "page") {
+                params.delete(key);
+            }
+        }
+        params.append("locationFilter", locationValue);
+        params.append("page", 1);
+        document.location.href = "?" + params.toString();
+    });
+}

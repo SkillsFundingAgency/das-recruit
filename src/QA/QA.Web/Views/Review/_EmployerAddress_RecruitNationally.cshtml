@@ -1,0 +1,21 @@
+﻿@using Esfa.Recruit.Shared.Web.Mappers
+
+@model ReviewViewModel
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div class="@Model.EmployerAddressClass" id="@FieldIdentifiers.EmployerAddress">
+            <h3 class="govuk-heading-s">Location</h3>
+            <p class="govuk-body">Nationwide</p>
+            @if (Model.ReadOnly)
+            {
+                <p class="govuk-body">@Model.EmployerLocationInformation</p>
+            }
+            else
+            {
+                <textarea class="govuk-textarea govuk-js-character-count" asp-for="@Model.EmployerLocationInformation" rows="5" data-val-length-max="500"></textarea>
+                <esfa-review-checkbox asp-for="@Model.SelectedFieldIdentifiers" asp-value="@FieldIdentifiers.EmployerAddress" asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+            }
+        </div>
+    </div>
+</div>

@@ -79,9 +79,9 @@ namespace Communication.UnitTests
         [Fact]
         public async Task GivenAggregateCommunicationRequestFor5ApplicationsSubmittedFor3Recipients_ShouldQueue3ComposeMessages()
         {
-            var recipientOne = new CommunicationUser("1", "a@a.com", "a", "person", UserParticipation.PrimaryUser);
-            var recipientTwo = new CommunicationUser("2", "b@a.com", "b", "person", UserParticipation.PrimaryUser);
-            var recipientThree = new CommunicationUser("3", "c@a.com", "c", "person", UserParticipation.PrimaryUser);
+            var recipientOne = new CommunicationUser("1", "a@a.com", "a", "person", UserParticipation.PrimaryUser, Guid.NewGuid().ToString());
+            var recipientTwo = new CommunicationUser("2", "b@a.com", "b", "person", UserParticipation.PrimaryUser, Guid.NewGuid().ToString());
+            var recipientThree = new CommunicationUser("3", "c@a.com", "c", "person", UserParticipation.PrimaryUser, Guid.NewGuid().ToString());
             var messages = Enumerable.Concat(Enumerable.Concat(Enumerable.Repeat(new CommunicationMessage() { Recipient = recipientOne }, 3),
                         Enumerable.Repeat(new CommunicationMessage() { Recipient = recipientTwo }, 3)),
                         Enumerable.Repeat(new CommunicationMessage() { Recipient = recipientThree }, 3));

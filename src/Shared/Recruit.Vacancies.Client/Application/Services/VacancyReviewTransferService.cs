@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Services
@@ -10,11 +11,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
     {
         private readonly ILogger<VacancyReviewTransferService> _logger;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
-        private readonly IVacancyReviewRepository _vacancyReviewRepository;
+        private readonly IVacancyReviewRepositoryRunner _vacancyReviewRepository;
         private readonly ITimeProvider _timeProvider;
 
         public VacancyReviewTransferService(ILogger<VacancyReviewTransferService> logger, IVacancyReviewQuery vacancyReviewQuery,
-                                            IVacancyReviewRepository vacancyReviewRepository, ITimeProvider timeProvider)
+            IVacancyReviewRepositoryRunner vacancyReviewRepository, ITimeProvider timeProvider)
         {
             _logger = logger;
             _vacancyReviewQuery = vacancyReviewQuery;

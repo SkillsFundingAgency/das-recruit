@@ -8,7 +8,6 @@ using Esfa.Recruit.Provider.Web.ViewModels.Part1.Title;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -26,16 +25,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IUtility _utility;
-        private readonly ServiceParameters _serviceParameters;
 
         public TitleOrchestrator(IProviderVacancyClient providerVacancyClient, IRecruitVacancyClient recruitVacancyClient, 
-            ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility, ServiceParameters serviceParameters) : base(logger)
+            ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
         {
             _providerVacancyClient = providerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
             _reviewSummaryService = reviewSummaryService;
             _utility = utility;
-            _serviceParameters = serviceParameters;
         }
 
         public async Task<TitleViewModel> GetTitleViewModelForNewVacancyAsync(string employerAccountId, long ukprn)
@@ -60,7 +57,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 Title = vacancy.Title,
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 Ukprn = ukprn,
-                EmployerAccountId = vacancy.EmployerAccountId
+                EmployerAccountId = vacancy.EmployerAccountId,
+                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

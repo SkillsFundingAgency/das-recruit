@@ -7,5 +7,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
     {
         Task<UserNotificationPreferences> GetAsync(string idamsUserId);
         Task UpsertAsync(UserNotificationPreferences preferences);
+        Task<UserNotificationPreferences> GetByDfeUserId(string dfeUserId);
     }
 }

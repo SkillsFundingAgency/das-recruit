@@ -18,12 +18,7 @@
         <partial name="@PartialNames.ReviewSummary" for="Review" />
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-l">@Model.Title</span>
-            <esfaFeatureEnabled name="@FeatureNames.FaaV2Improvements">
-                Extra information about pay and benefits (optional)
-            </esfaFeatureEnabled>
-            <esfaFeatureDisabled name="@FeatureNames.FaaV2Improvements">
-                Extra information about pay (optional)   
-            </esfaFeatureDisabled>
+            Extra information about pay and benefits (optional)
         </h1>
 
         <form asp-route="@RouteNames.AddExtraInformation_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
@@ -44,21 +39,19 @@
                     </div>
                 </div>
             </div>
-            <esfaFeatureEnabled name="@FeatureNames.FaaV2Improvements">
-                <div esfa-validation-marker-for="CompanyBenefitsInformation" class="govuk-form-group">
-                    <span esfa-validation-message-for="CompanyBenefitsInformation" class="govuk-error-message"></span>
-                    <label asp-for="CompanyBenefitsInformation" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">Company benefits (optional)</label>
-                    <div id="extra-info-hint" class="govuk-hint">Mention benefits the employer offers. For example, they pay for a gym membership. This will be displayed in the section about the employer</div>
-                    <div class="govuk-character-count" data-module="govuk-character-count" data-minlength="50"data-maxlength="250">
-                        <textarea asp-for="CompanyBenefitsInformation" class="govuk-textarea govuk-!-width-three-quarters govuk-js-character-count"
-                                   id="CompanyBenefitsInformation" name="CompanyBenefitsInformation" rows="5"></textarea>
-                        <div id="CompanyBenefitsInformation-info" class="govuk-hint govuk-character-count__message"
-                             aria-live="polite">
-                            You can enter up to 250 characters
-                        </div>
+            <div esfa-validation-marker-for="CompanyBenefitsInformation" class="govuk-form-group">
+                <span esfa-validation-message-for="CompanyBenefitsInformation" class="govuk-error-message"></span>
+                <label asp-for="CompanyBenefitsInformation" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">Company benefits (optional)</label>
+                <div id="extra-info-hint" class="govuk-hint">Mention benefits the employer offers. For example, they pay for a gym membership. This will be displayed in the section about the employer</div>
+                <div class="govuk-character-count" data-module="govuk-character-count" data-minlength="50"data-maxlength="250">
+                    <textarea asp-for="CompanyBenefitsInformation" class="govuk-textarea govuk-!-width-three-quarters govuk-js-character-count"
+                               id="CompanyBenefitsInformation" name="CompanyBenefitsInformation" rows="5"></textarea>
+                    <div id="CompanyBenefitsInformation-info" class="govuk-hint govuk-character-count__message"
+                         aria-live="polite">
+                        You can enter up to 250 characters
                     </div>
-                </div>    
-            </esfaFeatureEnabled>
+                </div>
+            </div>
             <div class="govuk-button-group">
                 <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
                 <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>

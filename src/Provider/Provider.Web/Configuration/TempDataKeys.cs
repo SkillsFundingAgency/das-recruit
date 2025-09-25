@@ -17,5 +17,9 @@
         public const string SharedSingleApplicationsHeader = "SharedSingleApplicationsHeader_InfoMessage";
         public const string ApplicationsToUnsuccessfulHeader = "ApplicationsToUnsuccessfulHeader_InfoMessage";
         public const string ApplicationStatusChangedHeader = "ApplicationStatusChangedHeader_InfoMessage";
+        public const string SelectedLocations = nameof(SelectedLocations);
+        public const string AddedLocation = nameof(AddedLocation);
+        public const string Postcode = nameof(Postcode);
+        public const string AddLocationReturnPath = nameof(AddLocationReturnPath);
     }
 }

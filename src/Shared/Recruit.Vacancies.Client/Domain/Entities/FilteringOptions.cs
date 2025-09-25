@@ -17,6 +17,7 @@
         Transferred,
         EmployerReviewedApplications,
         NewSharedApplications,
-        AllSharedApplications
+        AllSharedApplications,
+        Dashboard
     }
 }

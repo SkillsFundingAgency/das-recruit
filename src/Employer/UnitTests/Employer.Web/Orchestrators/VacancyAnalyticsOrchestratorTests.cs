@@ -1,15 +1,10 @@
-﻿using AutoFixture;
-using Employer.Web.Configuration;
+﻿using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
 {
@@ -18,7 +13,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
         private Fixture _fixture;
         private Mock<IRecruitVacancyClient> _vacancyClient;
         private Mock<IUtility> _utility;
-        private Mock<EmployerRecruitSystemConfiguration> _systemConfig;    
         private IVacancyAnalyticsOrchestrator _orchestrator;
         private Guid _vacancyId;
 
@@ -28,8 +22,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             _fixture = new Fixture();
             _vacancyClient = new Mock<IRecruitVacancyClient>();
             _utility = new Mock<IUtility>();
-            _systemConfig = new Mock<EmployerRecruitSystemConfiguration>();
-            _orchestrator = new VacancyAnalyticsOrchestrator(_vacancyClient.Object, _systemConfig.Object, _utility.Object);
+            _orchestrator = new VacancyAnalyticsOrchestrator(_vacancyClient.Object, _utility.Object);
             _vacancyId = Guid.NewGuid();
         }
 

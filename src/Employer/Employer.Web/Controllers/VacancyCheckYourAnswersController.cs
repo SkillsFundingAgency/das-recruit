@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -7,103 +8,101 @@ using Esfa.Recruit.Employer.Web.Middleware;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
-using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
+using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Esfa.Recruit.Employer.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers;
+
+[Route(RoutePaths.AccountVacancyRoutePath)]
+[Authorize(Policy = nameof(PolicyNames.HasEmployerOwnerOrTransactorAccount))]
+public class VacancyCheckYourAnswersController(VacancyCheckYourAnswersOrchestrator orchestrator) : Controller
 {
-    [Route(RoutePaths.AccountVacancyRoutePath)]
-    [Authorize(Policy = nameof(PolicyNames.HasEmployerOwnerOrTransactorAccount))]
-    public class VacancyCheckYourAnswersController : Controller
+    private static readonly Dictionary<string, Tuple<string, string>> ValidationMappings = new()
     {
-        private readonly VacancyTaskListOrchestrator _orchestrator;
-        private readonly bool _isFaaV2Enabled;
+        { "EmployerLocations", Tuple.Create<string, string>("EmployerAddress", null) },
+        { VacancyValidationErrorCodes.AddressCountryNotInEngland, Tuple.Create("EmployerAddress", "Location must be in England. Your apprenticeship must be in England to advertise it on this service") },
+        { $"Multiple-{VacancyValidationErrorCodes.AddressCountryNotInEngland}", Tuple.Create("EmployerAddress", "All locations must be in England. Your apprenticeship must be in England to advertise it on this service") },
+    };
 
-        public VacancyCheckYourAnswersController (VacancyTaskListOrchestrator orchestrator, IFeature feature)
-        {
-            _orchestrator = orchestrator;
-            _isFaaV2Enabled = feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements);
-        }
+    [HttpGet("check-answers", Name = RouteNames.EmployerCheckYourAnswersGet)]
+    public async Task<IActionResult> CheckYourAnswers(VacancyRouteModel vrm)
+    {
+        var viewModel = await orchestrator.GetVacancyTaskListModel(vrm);
         
-        [HttpGet("check-answers", Name = RouteNames.EmployerCheckYourAnswersGet)]
-        
-        public async Task<IActionResult> CheckYourAnswers(VacancyRouteModel vrm)
+        viewModel.CanHideValidationSummary = !viewModel.SoftValidationErrors.HasErrors;
+        ModelState.AddValidationErrorsWithMappings(viewModel.SoftValidationErrors, ValidationMappings);
+        viewModel.ValidationErrors = new ValidationSummaryViewModel
         {
-            var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm); 
-            viewModel.CanHideValidationSummary = true;
-            viewModel.SetSectionStates(viewModel, ModelState,_isFaaV2Enabled);
+            ModelState = ModelState, OrderedFieldNames = viewModel.OrderedFieldNames
+        };
+
+        if (TempData.ContainsKey(TempDataKeys.VacancyClonedInfoMessage))
+            viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyClonedInfoMessage].ToString();
             
-            if (TempData.ContainsKey(TempDataKeys.VacancyClonedInfoMessage))
-                viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyClonedInfoMessage].ToString();
-            
-            return View(viewModel);
-        }
+        return View(viewModel);
+    }
         
-        
-        [HttpPost("check-answers-review", Name = RouteNames.EmployerCheckYourAnswersPost)]
-        public async Task<IActionResult> CheckYourAnswers(SubmitReviewModel m)
+    [HttpPost("check-answers-review", Name = RouteNames.EmployerCheckYourAnswersPost)]
+    public async Task<IActionResult> CheckYourAnswers(SubmitReviewModel m)
+    {
+        if (ModelState.IsValid)
         {
-            if (ModelState.IsValid)
+            if (m.SubmitToEsfa.Value)
             {
-                if(m.SubmitToEsfa.Value)
-                {
-                    await _orchestrator.ClearRejectedVacancyReason(m, User.ToVacancyUser());
-                }
-                else
-                {
-                    await _orchestrator.UpdateRejectedVacancyReason(m, User.ToVacancyUser());
-                }
-
-                return RedirectToRoute(m.SubmitToEsfa.GetValueOrDefault()
+                await orchestrator.ClearRejectedVacancyReason(m, User.ToVacancyUser());
+            }
+            else
+            {
+                await orchestrator.UpdateRejectedVacancyReason(m, User.ToVacancyUser());
+            }
+        
+            return RedirectToRoute(m.SubmitToEsfa.GetValueOrDefault()
                     ? RouteNames.ApproveJobAdvert_Get
                     : RouteNames.RejectJobAdvert_Get, 
-                    new {m.VacancyId, m.EmployerAccountId});
-            }
-
-            var viewModel = await _orchestrator.GetVacancyTaskListModel(new VacancyRouteModel
-            {
-                VacancyId = m.VacancyId,
-                EmployerAccountId = m.EmployerAccountId
-            });
-            viewModel.SoftValidationErrors = null;
-            viewModel.SubmitToEsfa = m.SubmitToEsfa;
-            viewModel.RejectedReason = m.RejectedReason;
-            viewModel.SetSectionStates(viewModel, ModelState, _isFaaV2Enabled);
-            viewModel.ValidationErrors = new ValidationSummaryViewModel
-                {ModelState = ModelState, OrderedFieldNames = viewModel.OrderedFieldNames};
-            return View(viewModel);
+                new {m.VacancyId, m.EmployerAccountId});
         }
         
-        [HttpPost("check-answers", Name = RouteNames.EmployerCheckYourAnswersSubmitPost)]
-        public async Task<IActionResult> CheckYourAnswers(SubmitEditModel m)
+        var viewModel = await orchestrator.GetVacancyTaskListModel(new VacancyRouteModel
         {
-            var response = await _orchestrator.SubmitVacancyAsync(m, User.ToVacancyUser());
-
-            if (!response.Success)
-            {
-                response.AddErrorsToModelState(ModelState);
-            }
-
-            if (ModelState.IsValid)
-            {
-                if (response.Data.IsSubmitted)
-                    return RedirectToRoute(RouteNames.Submitted_Index_Get, new {m.VacancyId, m.EmployerAccountId});
-
-                if (response.Data.HasLegalEntityAgreement == false)
-                    return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get, new {m.VacancyId, m.EmployerAccountId});
-
-                throw new Exception("Unknown submit state");
-            }
-
-            var viewModel = await _orchestrator.GetVacancyTaskListModel(m);
-            viewModel.SoftValidationErrors = null;
-            viewModel.SetSectionStates(viewModel, ModelState, _isFaaV2Enabled);
-            viewModel.ValidationErrors = new ValidationSummaryViewModel
-                {ModelState = ModelState, OrderedFieldNames = viewModel.OrderedFieldNames};
-            return View(viewModel);
+            VacancyId = m.VacancyId,
+            EmployerAccountId = m.EmployerAccountId
+        });
+        viewModel.SoftValidationErrors = null;
+        viewModel.SubmitToEsfa = m.SubmitToEsfa;
+        viewModel.RejectedReason = m.RejectedReason;
+        viewModel.ValidationErrors = new ValidationSummaryViewModel
+            {ModelState = ModelState, OrderedFieldNames = viewModel.OrderedFieldNames};
+        return View(viewModel);
+    }
+        
+    [HttpPost("check-answers", Name = RouteNames.EmployerCheckYourAnswersSubmitPost)]
+    public async Task<IActionResult> CheckYourAnswers(SubmitEditModel m)
+    {
+        var response = await orchestrator.SubmitVacancyAsync(m, User.ToVacancyUser());
+        
+        if (!response.Success)
+        {
+            ModelState.AddValidationErrorsWithMappings(response.Errors, ValidationMappings);
         }
+        
+        if (ModelState.IsValid)
+        {
+            if (response.Data.IsSubmitted)
+                return RedirectToRoute(RouteNames.Submitted_Index_Get, new {m.VacancyId, m.EmployerAccountId});
+        
+            if (response.Data.HasLegalEntityAgreement == false)
+                return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get, new {m.VacancyId, m.EmployerAccountId});
+        
+            throw new Exception("Unknown submit state");
+        }
+        
+        var viewModel = await orchestrator.GetVacancyTaskListModel(m);
+        viewModel.SoftValidationErrors = null;
+        viewModel.ValidationErrors = new ValidationSummaryViewModel
+            {ModelState = ModelState, OrderedFieldNames = viewModel.OrderedFieldNames};
+        return View(viewModel);
     }
 }

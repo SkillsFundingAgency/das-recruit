@@ -43,10 +43,9 @@ namespace SFA.DAS.Recruit.Api.Queries
             long totalVacancies;
             if (isRequestingProviderOwnedVacancies)
             {
-                var providerVacanciesTask = _providerVacancyClient.GetDashboardAsync(request.Ukprn.Value,
-                    VacancyType.Apprenticeship, request.PageNo, FilteringOptions.All, null);
+                var providerVacanciesTask = _providerVacancyClient.GetDashboardAsync(request.Ukprn.Value, request.PageNo, FilteringOptions.All, null);
                 var totalVacanciesTask = _providerVacancyClient.GetVacancyCount(request.Ukprn.Value,
-                    VacancyType.Apprenticeship, FilteringOptions.All, null);
+                     FilteringOptions.All, null);
 
                 await Task.WhenAll(providerVacanciesTask, totalVacanciesTask);
 
@@ -57,7 +56,7 @@ namespace SFA.DAS.Recruit.Api.Queries
             {
                 var employerVacanciesTask = _employerVacancyClient.GetDashboardAsync(request.EmployerAccountId,
                     request.PageNo, FilteringOptions.All, null);
-                var totalVacanciesTask = _employerVacancyClient.GetVacancyCount(request.EmployerAccountId, VacancyType.Apprenticeship, FilteringOptions.All, null);
+                var totalVacanciesTask = _employerVacancyClient.GetVacancyCount(request.EmployerAccountId, FilteringOptions.All, null);
 
                 await Task.WhenAll(employerVacanciesTask, totalVacanciesTask);
                 

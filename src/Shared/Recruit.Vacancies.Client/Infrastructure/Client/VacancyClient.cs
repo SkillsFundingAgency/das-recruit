@@ -18,92 +18,44 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employ
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
-    public partial class VacancyClient : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
+    public partial class VacancyClient(
+        ILogger<VacancyClient> logger,
+        IVacancyRepository repository,
+        IVacancyQuery vacancyQuery,
+        IQueryStoreReader reader,
+        IMessaging messaging,
+        IEntityValidator<Vacancy, VacancyRuleSet> validator,
+        IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
+        IEmployerAccountProvider employerAccountProvider,
+        IVacancyReviewQuery vacancyReviewQuery,
+        ICandidateSkillsProvider candidateSkillsProvider,
+        IVacancyService vacancyService,
+        IEmployerProfileRepository employerProfileRepository,
+        IUserRepository userRepository,
+        IUserRepositoryRunner userWriteRepository,
+        IQualificationsProvider qualificationsProvider,
+        IEmployerService employerService,
+        IReportRepository reportRepository,
+        IReportService reportService,
+        IUserNotificationPreferencesRepository userNotificationPreferencesRepository,
+        AbstractValidator<UserNotificationPreferences> userNotificationPreferencesValidator,
+        AbstractValidator<Qualification> qualificationValidator,
+        IVacancySummariesProvider vacancySummariesQuery,
+        ITimeProvider timeProvider,
+        ITrainingProviderService trainingProviderService,
+        IApplicationReviewRepository applicationReviewRepository,
+        ISqlDbRepository sqlDbRepository)
+        : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
-        private readonly ILogger<VacancyClient> _logger;
-        private readonly IMessaging _messaging;
-        private readonly IQueryStoreReader _reader;
-        private readonly IVacancyRepository _repository;
-        private readonly IVacancyQuery _vacancyQuery;
-        private readonly IEntityValidator<Vacancy, VacancyRuleSet> _validator;
-        private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
-        private readonly IEmployerAccountProvider _employerAccountProvider;
-        private readonly IApplicationReviewRepository _applicationReviewRepository;
-        private readonly IVacancyReviewQuery _vacancyReviewQuery;
-        private readonly ICandidateSkillsProvider _candidateSkillsProvider;
-        private readonly IVacancyService _vacancyService;
-        private readonly IEmployerProfileRepository _employerProfileRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly IQualificationsProvider _qualificationsProvider;
-        private readonly IEmployerService _employerService;
-        private readonly IReportRepository _reportRepository;
-        private readonly IReportService _reportService;
-        private readonly IUserNotificationPreferencesRepository _userNotificationPreferencesRepository;
-        private readonly AbstractValidator<UserNotificationPreferences> _userNotificationPreferencesValidator;
-        private readonly AbstractValidator<Qualification> _qualificationValidator;
-        private readonly IApprenticeshipRouteProvider _apprenticeshipRouteProvider;
-        private readonly IVacancySummariesProvider _vacancySummariesQuery;
-        private readonly ITimeProvider _timeProvider;
-
-        public VacancyClient(
-            ILogger<VacancyClient> logger,
-            IVacancyRepository repository,
-            IVacancyQuery vacancyQuery,
-            IQueryStoreReader reader,
-            IMessaging messaging,
-            IEntityValidator<Vacancy, VacancyRuleSet> validator,
-            IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
-            IEmployerAccountProvider employerAccountProvider,
-            IApplicationReviewRepository applicationReviewRepository,
-            IVacancyReviewQuery vacancyReviewQuery,
-            ICandidateSkillsProvider candidateSkillsProvider,
-            IVacancyService vacancyService,
-            IEmployerProfileRepository employerProfileRepository,
-            IUserRepository userRepository,
-            IQualificationsProvider qualificationsProvider,
-            IEmployerService employerService,
-            IReportRepository reportRepository,
-            IReportService reportService,
-            IUserNotificationPreferencesRepository userNotificationPreferencesRepository,
-            AbstractValidator<UserNotificationPreferences> userNotificationPreferencesValidator,
-            AbstractValidator<Qualification> qualificationValidator,
-            IApprenticeshipRouteProvider apprenticeshipRouteProvider, 
-            IVacancySummariesProvider vacancySummariesQuery, 
-            ITimeProvider timeProvider)
-        {
-            _logger = logger;
-            _repository = repository;
-            _vacancyQuery = vacancyQuery;
-            _reader = reader;
-            _messaging = messaging;
-            _validator = validator;
-            _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
-            _employerAccountProvider = employerAccountProvider;
-            _applicationReviewRepository = applicationReviewRepository;
-            _vacancyReviewQuery = vacancyReviewQuery;
-            _candidateSkillsProvider = candidateSkillsProvider;
-            _vacancyService = vacancyService;
-            _employerProfileRepository = employerProfileRepository;
-            _userRepository = userRepository;
-            _qualificationsProvider = qualificationsProvider;
-            _employerService = employerService;
-            _reportRepository = reportRepository;
-            _reportService = reportService;
-            _userNotificationPreferencesRepository = userNotificationPreferencesRepository;
-            _userNotificationPreferencesValidator = userNotificationPreferencesValidator;
-            _qualificationValidator = qualificationValidator;
-            _apprenticeshipRouteProvider = apprenticeshipRouteProvider;
-            _vacancySummariesQuery = vacancySummariesQuery;
-            _timeProvider = timeProvider;
-        }
-
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
         {
             var command = new UpdateDraftVacancyCommand
@@ -112,29 +64,29 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 User = user
             };
 
-            return _messaging.SendCommandAsync(command);
+            return messaging.SendCommandAsync(command);
         }
 
         public Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user, LiveUpdateKind updateKind)
         {
             var command = new UpdateLiveVacancyCommand(vacancy, user, updateKind);
 
-            return _messaging.SendCommandAsync(command);
+            return messaging.SendCommandAsync(command);
         }
 
         public Task<Vacancy> GetVacancyAsync(Guid vacancyId)
         {
-            return _repository.GetVacancyAsync(vacancyId);
+            return repository.GetVacancyAsync(vacancyId);
         }
 
         public Task<string> GetEmployerNameAsync(Vacancy vacancy)
         {
-            return _employerService.GetEmployerNameAsync(vacancy);
+            return employerService.GetEmployerNameAsync(vacancy);
         }
 
         public Task<string> GetEmployerDescriptionAsync(Vacancy vacancy)
         {
-            return _employerService.GetEmployerDescriptionAsync(vacancy);
+            return employerService.GetEmployerDescriptionAsync(vacancy);
         }
 
         public async Task<Guid> CreateVacancyAsync(string title, string employerAccountId, VacancyUser user, TrainingProvider provider = null, string programmeId = null)
@@ -156,7 +108,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             if (programmeId != null)
                 command.ProgrammeId = programmeId;
 
-            await _messaging.SendCommandAsync(command);
+            await messaging.SendCommandAsync(command);
 
             return vacancyId;
         }
@@ -176,7 +128,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 TrainingProvider = provider
             };
             
-            await _messaging.SendCommandAsync(command);
+            await messaging.SendCommandAsync(command);
             
             await AssignVacancyNumber(id);
         }
@@ -189,7 +141,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             var command = new CloneVacancyCommand(vacancyId, newVacancyId, user, sourceOrigin, startDate, closingDate);
 
-            await _messaging.SendCommandAsync(command);
+            await messaging.SendCommandAsync(command);
 
             await AssignVacancyNumber(newVacancyId);
 
@@ -209,33 +161,31 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 User = user
             };
 
-            return _messaging.SendCommandAsync(command);
+            return messaging.SendCommandAsync(command);
         }
         
         public async Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId)
         {
-            var dashboardValue = await  _vacancySummariesQuery.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId, VacancyType.Apprenticeship);
+            var dashboardValue = await vacancySummariesQuery.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId);
+            var dashboardStats = await employerAccountProvider.GetEmployerDashboardStats(employerAccountId);
             
             var dashboard = dashboardValue.VacancyStatusDashboard;
-            var dashboardApplications = dashboardValue.VacancyApplicationsDashboard;
-            var dashboardSharedApplications = dashboardValue.VacancySharedApplicationsDashboard;
 
             return new EmployerDashboardSummary
             {
-                Closed = dashboard.FirstOrDefault(c=>c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
-                Draft = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Draft)?.StatusCount ?? 0,
-                Review = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Review)?.StatusCount ?? 0,
-                Referred = (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
-                Live = dashboard.Where(c=>c.Status == VacancyStatus.Live).Sum(c=>c.StatusCount),
-                Submitted = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
-                NumberOfNewApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfNewApplications),
-                NumberOfSuccessfulApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live).Sum(x=>x.NoOfSuccessfulApplications) 
-                                                 + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfSuccessfulApplications),
-                NumberOfUnsuccessfulApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live).Sum(x=>x.NoOfUnsuccessfulApplications) 
-                                                   + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfUnsuccessfulApplications),
-                NumberOfSharedApplications = dashboardSharedApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfSharedApplications),
-                NumberOfAllSharedApplications = dashboardSharedApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfAllSharedApplications),
-                NumberClosingSoon =dashboard.FirstOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon)?.StatusCount ?? 0,
+                Closed = dashboard.FirstOrDefault(c => c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
+                Draft = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Draft)?.StatusCount ?? 0,
+                Referred = (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
+                Live = dashboard.Where(c => c.Status == VacancyStatus.Live).Sum(c => c.StatusCount),
+                Submitted = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
+                Review = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Review)?.StatusCount ?? 0,
+                
+                NumberOfNewApplications = dashboardStats.NewApplicationsCount,
+                NumberOfSuccessfulApplications = dashboardStats.SuccessfulApplicationsCount,
+                NumberOfUnsuccessfulApplications = dashboardStats.UnsuccessfulApplicationsCount,
+                NumberOfSharedApplications = dashboardStats.SharedApplicationsCount,
+                NumberOfAllSharedApplications = dashboardStats.AllSharedApplicationsCount,
+                NumberClosingSoon = dashboard.FirstOrDefault(c => c.Status == VacancyStatus.Live && c.ClosingSoon)?.StatusCount ?? 0,
                 NumberClosingSoonWithNoApplications = dashboardValue.VacanciesClosingSoonWithNoApplications
             };
         }
@@ -243,13 +193,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public async Task<EmployerDashboard> GetDashboardAsync(string employerAccountId, int page, FilteringOptions? status = null, string searchTerm = null)
         {
             var vacancySummaries =
-                await _vacancySummariesQuery.GetEmployerOwnedVacancySummariesByEmployerAccountId(employerAccountId,
-                    VacancyType.Apprenticeship, page, status, searchTerm);
+                await vacancySummariesQuery.GetEmployerOwnedVacancySummariesByEmployerAccountId(employerAccountId,
+                     page, status, searchTerm);
             return new EmployerDashboard
             {
                 Id = QueryViewType.EmployerDashboard.GetIdValue(employerAccountId),
-                Vacancies = vacancySummaries,
-                LastUpdated = _timeProvider.Now
+                Vacancies = vacancySummaries.Item1,
+                LastUpdated = timeProvider.Now,
+                TotalVacancies = vacancySummaries.totalCount
             };
         }
 
@@ -257,7 +208,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var command = new UserSignedInCommand(user, userType);
 
-            return _messaging.SendCommandAsync(command);
+            return messaging.SendCommandAsync(command);
         }
 
         public Task SetupEmployerAsync(string employerAccountId)
@@ -267,83 +218,89 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 EmployerAccountId = employerAccountId
             };
 
-            return _messaging.SendCommandAsync(command);
+            return messaging.SendCommandAsync(command);
         }
 
         public Task<EmployerEditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId)
         {
-            return _reader.GetEmployerVacancyDataAsync(employerAccountId);
+            return reader.GetEmployerVacancyDataAsync(employerAccountId);
         }
 
         public EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules)
         {
-            return _validator.Validate(vacancy, rules);
+            return validator.Validate(vacancy, rules);
         }
 
         public Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync()
         {
-            return _apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync();
-        }
-
-        public Task<IEnumerable<IApprenticeshipRoute>> GetApprenticeshipRoutes()
-        {
-            return _apprenticeshipRouteProvider.GetApprenticeshipRoutesAsync();
+            return apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync();
         }
 
         public Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId)
         {
-            return _apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(programmeId);
+            return apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(programmeId);
         }
 
         public Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email)
         {
-            return _employerAccountProvider.GetEmployerIdentifiersAsync(userId, email);
+            return employerAccountProvider.GetEmployerIdentifiersAsync(userId, email);
         }
 
         public Task<List<string>> GetCandidateSkillsAsync()
         {
-            return _candidateSkillsProvider.GetCandidateSkillsAsync();
+            return candidateSkillsProvider.GetCandidateSkillsAsync();
         }
 
         public Task<IList<string>> GetCandidateQualificationsAsync()
         {
-            return _qualificationsProvider.GetQualificationsAsync();
+            return qualificationsProvider.GetQualificationsAsync();
         }
 
-        public Task<ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId)
+        public async Task<Domain.Entities.ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId)
         {
-            return _applicationReviewRepository.GetAsync(applicationReviewId);
+            return await sqlDbRepository.GetAsync(applicationReviewId);
         }
 
         public async Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider = false)
         {
             var applicationReviews = vacancySharedByProvider
-                ? await _applicationReviewRepository.GetForSharedVacancySortedAsync(vacancyReference, sortColumn, sortOrder)
-                : await _applicationReviewRepository.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder);
-
+                    ? await sqlDbRepository.GetForSharedVacancySortedAsync(vacancyReference, sortColumn, sortOrder)
+                    : await sqlDbRepository.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder);
+            
             return applicationReviews == null
-                ? new List<VacancyApplication>()
+                ? []
                 : applicationReviews.Select(c => (VacancyApplication)c).ToList();
         }
 
         public async Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference, bool vacancySharedByProvider = false)
         {
             var applicationReviews = vacancySharedByProvider
-                ? await _applicationReviewRepository.GetForSharedVacancyAsync(vacancyReference) 
-                : await _applicationReviewRepository.GetForVacancyAsync<ApplicationReview>(vacancyReference);
+                    ? await sqlDbRepository.GetForSharedVacancyAsync(vacancyReference)
+                    : await sqlDbRepository.GetForVacancyAsync<Domain.Entities.ApplicationReview>(vacancyReference);
 
-            return applicationReviews == null 
-                ? new List<VacancyApplication>() 
-                : applicationReviews.Select(c=>(VacancyApplication)c).ToList();
+            return applicationReviews == null
+                ? []
+                : applicationReviews.Select(c => (VacancyApplication)c).ToList();
         }
 
         public async Task<List<VacancyApplication>> GetVacancyApplicationsForSelectedIdsAsync(List<Guid> applicationReviewIds)
         {
             var applicationReviews =
-                await _applicationReviewRepository.GetAllForSelectedIdsAsync<ApplicationReview>(applicationReviewIds);
+                await applicationReviewRepository.GetAllForSelectedIdsAsync<Domain.Entities.ApplicationReview>(applicationReviewIds);
 
             return applicationReviews == null
-                ? new List<VacancyApplication>()
+                ? []
+                : applicationReviews.Select(c => (VacancyApplication)c).ToList();
+        }
+
+        public async Task<List<VacancyApplication>> GetVacancyApplicationsForReferenceAndStatus(Guid vacancyId, ApplicationReviewStatus status)
+        {
+            var vacancy = await repository.GetVacancyAsync(vacancyId);
+            var applicationReviews =
+                await applicationReviewRepository.GetAllForVacancyWithTemporaryStatus(vacancy.VacancyReference!.Value!, status);
+
+            return applicationReviews == null
+                ? []
                 : applicationReviews.Select(c => (VacancyApplication)c).ToList();
         }
 
@@ -357,35 +314,54 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 User = user
             };
 
-            return _messaging.SendStatusCommandAsync(command);
+            return messaging.SendStatusCommandAsync(command);
         }
 
-        public Task SetApplicationReviewsShared(IEnumerable<VacancyApplication> applicationReviews, VacancyUser user)
+        public Task SetApplicationReviewsStatus(long vacancyReference, IEnumerable<Guid> applicationReviews, VacancyUser user, ApplicationReviewStatus? status, Guid vacancyId, ApplicationReviewStatus? applicationReviewTemporaryStatus)
         {
             var command = new ApplicationReviewsSharedCommand
             {
                 ApplicationReviews = applicationReviews,
-                User = user
+                User = user,
+                Status = status,
+                VacancyId = vacancyId,
+                TemporaryStatus = applicationReviewTemporaryStatus,
+                VacancyReference = vacancyReference
             };
 
-            return _messaging.SendCommandAsync(command);
+            return messaging.SendCommandAsync(command);
         }
 
-        public Task SetApplicationReviewsToUnsuccessful(IEnumerable<VacancyApplication> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user)
+        public Task SetApplicationReviewsPendingUnsuccessfulFeedback(VacancyUser user, ApplicationReviewStatus status, Guid vacancyId, string feedback)
         {
-            var command = new ApplicationReviewsUnsuccessfulCommand()
+            var command = new ApplicationReviewPendingUnsuccessfulFeedbackCommand
+            {
+                Feedback = feedback,
+                User = user,
+                Status = status,
+                VacancyId = vacancyId
+            };
+
+            return messaging.SendCommandAsync(command);
+        }
+
+        public Task SetApplicationReviewsToUnsuccessful(IEnumerable<Guid> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user, Guid vacancyId)
+        {
+            var command = new ApplicationReviewsUnsuccessfulCommand
             {
                 ApplicationReviews = applicationReviewsToUnsuccessful,
                 CandidateFeedback = candidateFeedback,
-                User = user
+                User = user,
+                VacancyId = vacancyId,
+                Status = ApplicationReviewStatus.Unsuccessful
             };
 
-            return _messaging.SendCommandAsync(command);
+            return messaging.SendCommandAsync(command);
         }
 
         public Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
         {
-            return _employerProfileRepository.GetAsync(employerAccountId, accountLegalEntityPublicHashedId);
+            return employerProfileRepository.GetAsync(employerAccountId, accountLegalEntityPublicHashedId);
         }
 
         public Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user)
@@ -396,7 +372,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 User = user
             };
 
-            return _messaging.SendCommandAsync(command);
+            return messaging.SendCommandAsync(command);
         }
 
         // Jobs
@@ -407,35 +383,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 VacancyId = vacancyId
             };
 
-            return _messaging.SendCommandAsync(command);
+            return messaging.SendCommandAsync(command);
         }
 
         public Task PatchTrainingProviderAsync(Guid vacancyId)
         {
             var command = new PatchVacancyTrainingProviderCommand(vacancyId);
 
-            return _messaging.SendCommandAsync(command);
-        }
-
-        public Task UpdateApprenticeshipProgrammesAsync()
-        {
-            var command = new UpdateApprenticeshipProgrammesCommand();
-
-            return _messaging.SendCommandAsync(command);
-        }
-
-        public Task UpdateApprenticeshipRouteAsync()
-        {
-            var command = new UpdateApprenticeshipRouteCommand();
-
-            return _messaging.SendCommandAsync(command);
+            return messaging.SendCommandAsync(command);
         }
 
         public Task UpdateProviders()
         {
             var command = new UpdateProvidersCommand();
 
-            return _messaging.SendCommandAsync(command);
+            return messaging.SendCommandAsync(command);
         }
 
 
@@ -443,7 +405,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var command = new UpdateBankHolidaysCommand();
 
-            return _messaging.SendCommandAsync(command);
+            return messaging.SendCommandAsync(command);
         }
 
         public async Task CreateVacancyReview(long vacancyReference)
@@ -453,50 +415,30 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 VacancyReference = vacancyReference
             };
 
-            await _messaging.SendCommandAsync(command);
+            await messaging.SendCommandAsync(command);
         }
 
         public Task CloseVacancyAsync(Guid vacancyId, VacancyUser user, ClosureReason reason)
         {
-            return _messaging.SendCommandAsync(new CloseVacancyCommand(vacancyId, user, reason));
-        }
-
-        public Task<IApprenticeshipRoute> GetRoute(int? routeId)
-        {
-            return _apprenticeshipRouteProvider.GetApprenticeshipRouteAsync(routeId.GetValueOrDefault());
+            return messaging.SendCommandAsync(new CloseVacancyCommand(vacancyId, user, reason));
         }
 
         public async Task CloseExpiredVacancies()
         {
             var command = new CloseExpiredVacanciesCommand();
 
-            await _messaging.SendCommandAsync(command);
+            await messaging.SendCommandAsync(command);
         }
 
         public async Task EnsureVacancyIsGeocodedAsync(Guid vacancyId)
         {
-            var vacancy = await _repository.GetVacancyAsync(vacancyId);
-
-            if (!string.IsNullOrEmpty(vacancy?.EmployerLocation?.Postcode) &&
-                vacancy.EmployerLocation?.HasGeocode == false)
-            {
-                await GeocodeVacancyAsync(vacancy.Id);
-            }
-        }
-
-        private async Task GeocodeVacancyAsync(Guid vacancyId)
-        {
-            var command = new GeocodeVacancyCommand()
-            {
-                VacancyId = vacancyId
-            };
-
-            await _messaging.SendCommandAsync(command);
+            var command = new GeocodeVacancyCommand { VacancyId = vacancyId };
+            await messaging.SendCommandAsync(command);
         }
 
         public Task ReferVacancyAsync(long vacancyReference)
         {
-            return _messaging.SendCommandAsync(new ReferVacancyCommand
+            return messaging.SendCommandAsync(new ReferVacancyCommand
             {
                 VacancyReference = vacancyReference
             });
@@ -504,17 +446,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId)
         {
-            return _employerAccountProvider.GetEmployerLegalEntitiesAsync(employerAccountId);
+            return employerAccountProvider.GetEmployerLegalEntitiesAsync(employerAccountId);
         }
 
         public Task CreateApplicationReviewAsync(Domain.Entities.Application application)
         {
-            return _messaging.SendCommandAsync(new CreateApplicationReviewCommand { Application = application });
+            return messaging.SendCommandAsync(new CreateApplicationReviewCommand { Application = application });
         }
 
         public Task WithdrawApplicationAsync(long vacancyReference, Guid candidateId)
         {
-            return _messaging.SendCommandAsync(new WithdrawApplicationCommand
+            return messaging.SendCommandAsync(new WithdrawApplicationCommand
             {
                 VacancyReference = vacancyReference,
                 CandidateId = candidateId
@@ -523,7 +465,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task HardDeleteApplicationReviewsForCandidate(Guid candidateId)
         {
-            return _messaging.SendCommandAsync(new DeleteApplicationReviewsCommand
+            return messaging.SendCommandAsync(new DeleteApplicationReviewsCommand
             {
                 CandidateId = candidateId
             });
@@ -531,42 +473,65 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task PerformRulesCheckAsync(Guid reviewId)
         {
-            return _vacancyService.PerformRulesCheckAsync(reviewId);
+            return vacancyService.PerformRulesCheckAsync(reviewId);
         }
 
-        public Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
+        public Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
         {
-            return _vacancyReviewQuery.GetCurrentReferredVacancyReviewAsync(vacancyReference);
+            return vacancyReviewQuery.GetCurrentReferredVacancyReviewAsync(vacancyReference);
         }
 
         public Task RefreshEmployerProfiles(string employerAccountId, IEnumerable<string> accountLegalEntityPublicHashedIds)
         {
-            return _messaging.SendCommandAsync(new RefreshEmployerProfilesCommand
+            return messaging.SendCommandAsync(new RefreshEmployerProfilesCommand
             {
                 EmployerAccountId = employerAccountId,
                 AccountLegalEntityPublicHashedIds = accountLegalEntityPublicHashedIds
             });
         }
-        public Task<User> GetUsersDetailsAsync(string userId)
+        public Task<Domain.Entities.User> GetUsersDetailsAsync(string userId)
         {
-            return _userRepository.GetAsync(userId);
+            return userRepository.GetAsync(userId);
+        }
+
+        public Task UpsertUserDetails(Domain.Entities.User user)
+        {
+            return userWriteRepository.UpsertUserAsync(user);
+        }
+        
+        public Task<Domain.Entities.User> GetUsersDetailsByDfEUserId(string dfeUserId)
+        {
+            return userRepository.GetByDfEUserId(dfeUserId);
         }
 
         public Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference)
         {
-            return _reader.GetVacancyAnalyticsSummaryAsync(vacancyReference);
+            return reader.GetVacancyAnalyticsSummaryAsync(vacancyReference);
         }
 
-        public async Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string idamsUserId)
+        public async Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string idamsUserId, string dfeUserId = null)
         {
-            var preferences = await _userNotificationPreferencesRepository.GetAsync(idamsUserId);
+            var preferences = await userNotificationPreferencesRepository.GetAsync(idamsUserId);
 
-            return preferences ?? new UserNotificationPreferences() { Id = idamsUserId };
+            if (dfeUserId != null)
+            {
+                return preferences;
+            }
+            
+            return preferences ?? new UserNotificationPreferences { Id = idamsUserId};
+        }
+        
+        public async Task<UserNotificationPreferences> GetUserNotificationPreferencesByDfEUserIdAsync(string idamsUserId, string dfeUserId = null)
+        {
+            var preferences = await userNotificationPreferencesRepository.GetByDfeUserId(dfeUserId) 
+                              ?? await GetUserNotificationPreferencesAsync(idamsUserId, dfeUserId);
+
+            return preferences ?? new UserNotificationPreferences() { Id = idamsUserId ,DfeUserId = dfeUserId};
         }
 
         public Task UpdateUserNotificationPreferencesAsync(UserNotificationPreferences preferences)
         {
-            return _messaging.SendCommandAsync(new UpdateUserNotificationPreferencesCommand
+            return messaging.SendCommandAsync(new UpdateUserNotificationPreferencesCommand
             {
                 UserNotificationPreferences = preferences
             });
@@ -574,13 +539,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public EntityValidationResult ValidateUserNotificationPreferences(UserNotificationPreferences preferences)
         {
-            var fluentResult = _userNotificationPreferencesValidator.Validate(preferences);
+            var fluentResult = userNotificationPreferencesValidator.Validate(preferences);
             return EntityValidationResult.FromFluentValidationResult(fluentResult);
         }
 
         public Task UpdateUserAccountAsync(string idamsUserId)
         {
-            return _messaging.SendCommandAsync(new UpdateUserAccountCommand
+            return messaging.SendCommandAsync(new UpdateUserAccountCommand
             {
                 IdamsUserId = idamsUserId
             });
@@ -588,19 +553,29 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task<int> GetVacancyCountForUserAsync(string userId)
         {
-            return _vacancyQuery.GetVacancyCountForUserAsync(userId);
+            return vacancyQuery.GetVacancyCountForUserAsync(userId);
         }
 
         public EntityValidationResult ValidateQualification(Qualification qualification)
         {
-            ValidationResult fluentResult = _qualificationValidator.Validate(qualification);
+            ValidationResult fluentResult = qualificationValidator.Validate(qualification);
             return EntityValidationResult.FromFluentValidationResult(fluentResult);
         }
         
-        public async Task<long> GetVacancyCount(string employerAccountId, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm)
+        public async Task<long> GetVacancyCount(string employerAccountId, FilteringOptions? filteringOptions, string searchTerm)
         {
-            var ownerType = (filteringOptions == FilteringOptions.NewSharedApplications || filteringOptions == FilteringOptions.AllSharedApplications) ? OwnerType.Provider : OwnerType.Employer;
-            return await _vacancySummariesQuery.VacancyCount(null, employerAccountId, vacancyType, filteringOptions, searchTerm, ownerType);
+            var ownerType = filteringOptions is FilteringOptions.NewSharedApplications or FilteringOptions.AllSharedApplications ? OwnerType.Provider : OwnerType.Employer;
+
+            var dashboardStats = await employerAccountProvider.GetEmployerDashboardStats(employerAccountId);
+
+            return filteringOptions switch
+            {
+                FilteringOptions.NewApplications => dashboardStats.NewApplicationsCount,
+                FilteringOptions.AllSharedApplications => dashboardStats.AllSharedApplicationsCount,
+                FilteringOptions.EmployerReviewedApplications => dashboardStats.EmployerReviewedApplicationsCount,
+                _ => await vacancySummariesQuery.VacancyCount(null, employerAccountId, filteringOptions, searchTerm,
+                    ownerType)
+            };
         }
     }
 }

@@ -17,12 +17,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     public class DatesController : Controller
     {
         private readonly DatesOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public DatesController(DatesOrchestrator orchestrator, IFeature feature)
+        public DatesController(DatesOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
         
         [HttpGet("dates", Name = RouteNames.Dates_Get)]

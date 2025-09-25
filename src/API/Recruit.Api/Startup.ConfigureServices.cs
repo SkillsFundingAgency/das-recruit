@@ -32,19 +32,6 @@ namespace SFA.DAS.Recruit.Api
             services.Configure<RecruitConfiguration>(Configuration.GetSection("Recruit"));
             services.Configure<AzureActiveDirectoryConfiguration>(Configuration.GetSection("AzureAd"));
 
-            services.AddScoped(provider => {
-                var httpContext = provider.GetRequiredService<IHttpContextAccessor>().HttpContext;
-
-                if (httpContext.Request.RouteValues["Controller"].ToString()!.Equals("Vacancies", StringComparison.CurrentCultureIgnoreCase)
-                   && (httpContext.Request.RouteValues["Action"].ToString()!.Equals("CreateTraineeship", StringComparison.CurrentCultureIgnoreCase)
-                   || httpContext.Request.RouteValues["Action"].ToString()!.Equals("ValidateTraineeship", StringComparison.CurrentCultureIgnoreCase)))
-                {
-                    return new ServiceParameters(VacancyType.Traineeship.ToString());
-                }
-                return new ServiceParameters(VacancyType.Apprenticeship.ToString());
-            });
-
-
             var azureAdConfig = Configuration
                 .GetSection("AzureAd")
                 .Get<AzureActiveDirectoryConfiguration>();

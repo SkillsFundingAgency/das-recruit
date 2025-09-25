@@ -1,0 +1,22 @@
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.Part1.Location.AddOneLocationViewModel
+
+@{
+    var index = 0;
+    foreach (var location in Model.AvailableLocations)
+    {
+        var address = location.ToAddressString();
+        var controlId = $"selectedLocation_{index++}";
+        <div class="govuk-radios__item">
+            <input
+                id="@controlId"
+                class="govuk-radios__input"
+                name="@nameof(Model.SelectedLocation)"
+                value="@address"
+                type="radio"
+                checked="@(Model.SelectedLocation == address)">
+            <label for="@controlId" class="govuk-label govuk-radios__label">
+                <address value="@location" flat="true" />
+            </label>
+        </div>
+    }
+}

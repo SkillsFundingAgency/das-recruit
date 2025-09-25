@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Validations
 {
-    public class ApplicationReviewsToUnsuccessfulRouteModelValidator : AbstractValidator<ApplicationReviewsToUnsuccessfulRouteModel>
+    public class ApplicationReviewsToUnsuccessfulRouteModelValidator : AbstractValidator<ApplicationReviewsToUnsuccessfulRequest>
     {
         public ApplicationReviewsToUnsuccessfulRouteModelValidator()
         {

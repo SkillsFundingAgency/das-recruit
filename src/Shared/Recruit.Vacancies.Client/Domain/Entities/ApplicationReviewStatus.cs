@@ -9,6 +9,9 @@
         InReview,
         Interviewing,
         EmployerInterviewing,
-        EmployerUnsuccessful
+        EmployerUnsuccessful,
+        PendingShared,
+        PendingToMakeUnsuccessful,
+        AllShared //Used for outer api call
     }
 }

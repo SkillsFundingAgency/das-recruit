@@ -478,3 +478,17 @@ mce-tinymce {
 .app-preserve-line-breaks {
     white-space: pre-line;
 }
+
+.sign-out {
+    padding-left: 0 !important;
+}
+
+.float-right {
+    float: right;
+}
+
+.das-hyperlink-wrapper {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}

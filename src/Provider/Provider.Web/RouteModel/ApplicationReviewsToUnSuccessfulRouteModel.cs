@@ -4,13 +4,8 @@ using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReviews;
 
 namespace Esfa.Recruit.Provider.Web.RouteModel
 {
-    public class ApplicationReviewsToUnsuccessfulRouteModel : VacancyRouteModel, IApplicationReviewsEditModel
+    public class ApplicationReviewsToUnsuccessfulRouteModel : VacancyRouteModel
     {
-        public List<Guid> ApplicationsToUnsuccessful { get; set; }
-        public string CandidateFeedback { get; set; }
-        public virtual bool IsMultipleApplications
-        {
-            get => ApplicationsToUnsuccessful != null && ApplicationsToUnsuccessful.Count > 1;
-        }
+        public bool IsMultipleApplications { get; set; }
     }
 }

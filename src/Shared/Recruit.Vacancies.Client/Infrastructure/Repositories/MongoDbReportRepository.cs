@@ -15,7 +15,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
     {
         private const string OwnerTypeFieldName = "owner.ownerType";
         private const string OwnerUkprnFieldName = "owner.ukprn";
-        private const string ParametersVacancyTypeFieldName = "parameters.VacancyType";
 
         public MongoDbReportRepository(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details) 
             : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Reports, details)
@@ -25,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public Task CreateAsync(Report report)
         {
             var collection = GetCollection<Report>();
-            return RetryPolicy.Execute(_ => 
+            return RetryPolicy.ExecuteAsync(_ => 
                 collection.InsertOneAsync(report), 
                 new Context(nameof(CreateAsync)));
         }
@@ -34,21 +33,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filter = Builders<Report>.Filter.Eq(v => v.Id, report.Id);
             var collection = GetCollection<Report>();
-            await RetryPolicy.Execute(_ =>
+            await RetryPolicy.ExecuteAsync(_ =>
                     collection.ReplaceOneAsync(filter, report),
                 new Context(nameof(UpdateAsync)));
         }
 
-        public async Task<List<T>> GetReportsForProviderAsync<T>(long ukprn, VacancyType vacancyType)
+        public async Task<List<T>> GetReportsForProviderAsync<T>(long ukprn)
         {
             var builder = Builders<T>.Filter;
             var filter = builder.Eq(OwnerTypeFieldName, ReportOwnerType.Provider.ToString()) &
-                         builder.Eq(ParametersVacancyTypeFieldName, vacancyType.ToString()) &
                          builder.Eq(OwnerUkprnFieldName, ukprn);
 
             var collection = GetCollection<T>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                     collection.Find(filter)
                         .Project<T>(GetProjection<T>())
                         .ToListAsync(),
@@ -64,7 +62,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var collection = GetCollection<T>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                     collection.Find(filter)
                         .Project<T>(GetProjection<T>())
                         .ToListAsync(),
@@ -78,7 +76,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<Report>.Filter.Eq(r => r.Id, reportId);
             var collection = GetCollection<Report>();
 
-            var result = await RetryPolicy.Execute(async _ =>
+            var result = await RetryPolicy.ExecuteAsync(async _ =>
                     await collection.Find(filter).SingleOrDefaultAsync(),
                 new Context(nameof(GetReportAsync)));
 
@@ -90,7 +88,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<Report>.Filter.Lt(r => r.RequestedOn, requestedOn);
             var collection = GetCollection<Report>();
 
-            var result = await RetryPolicy.Execute(async _ =>
+            var result = await RetryPolicy.ExecuteAsync(async _ =>
                     await collection.DeleteManyAsync(filter),
                 new Context(nameof(GetReportAsync)));
 
@@ -103,7 +101,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var update = new UpdateDefinitionBuilder<Report>().Inc(r => r.DownloadCount, 1);
             var collection = GetCollection<Report>();
 
-            return RetryPolicy.Execute(async _ =>
+            return RetryPolicy.ExecuteAsync(async _ =>
                 await collection.FindOneAndUpdateAsync(filter, update),
             new Context(nameof(IncrementReportDownloadCountAsync)));
         }

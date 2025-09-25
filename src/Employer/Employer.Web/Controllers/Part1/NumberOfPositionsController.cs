@@ -6,28 +6,18 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.NumberOfPositions;
-using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class NumberOfPositionsController : Controller
+    public class NumberOfPositionsController(NumberOfPositionsOrchestrator orchestrator) : Controller
     {
-       private readonly NumberOfPositionsOrchestrator _orchestrator;
-       private readonly IFeature _feature;
-
-       public NumberOfPositionsController(NumberOfPositionsOrchestrator orchestrator, IFeature feature)
-       {
-           _orchestrator = orchestrator;
-           _feature = feature;
-       }
-        
         [HttpGet("number-of-positions", Name = RouteNames.NumberOfPositions_Get)]
         public async Task<IActionResult> NumberOfPositions(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
-            var vm = await _orchestrator.GetNumberOfPositionsViewModelAsync(vrm);
+            var vm = await orchestrator.GetNumberOfPositionsViewModelAsync(vrm);
             vm.PageInfo.SetWizard(wizard);
             vm.BackLinkRoute = GetBackLink(vrm.VacancyId);
             return View(vm);
@@ -45,22 +35,22 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpPost("number-of-positions", Name = RouteNames.NumberOfPositions_Post)]
         public async Task<IActionResult> NumberOfPositions(NumberOfPositionsEditModel m, [FromQuery] bool wizard)
         {
-            var response = await _orchestrator.PostNumberOfPositionsEditModelAsync(m, User.ToVacancyUser());
+            var response = await orchestrator.PostNumberOfPositionsEditModelAsync(m, User.ToVacancyUser());
 
             if (!response.Success)
             {
                 response.AddErrorsToModelState(ModelState);
             }
 
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetNumberOfPositionsViewModelAsync(m);
+                var vm = await orchestrator.GetNumberOfPositionsViewModelAsync(m);
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
-            
+
             return wizard 
-                ? RedirectToRoute(RouteNames.Location_Get, new {m.VacancyId, m.EmployerAccountId, wizard}) 
+                ? RedirectToRoute(RouteNames.MultipleLocations_Get, new {m.VacancyId, m.EmployerAccountId, wizard})
                 : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId});
         }
     }

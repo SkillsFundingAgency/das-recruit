@@ -5,34 +5,24 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders;
 using Microsoft.Extensions.Logging;
-using Polly;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
 {
-    public class TrainingProviderService : ITrainingProviderService
+    public class TrainingProviderService(
+        ILogger<TrainingProviderService> logger,
+        IReferenceDataReader referenceDataReader,
+        ICache cache,
+        ITimeProvider timeProvider,
+        IOuterApiClient outerApiClient)
+        : ITrainingProviderService
     {
-        private readonly ILogger<TrainingProviderService> _logger;
-        private readonly IReferenceDataReader _referenceDataReader;
-        private readonly ICache _cache;
-        private readonly ITimeProvider _timeProvider;
-        private readonly IOuterApiClient _outerApiClient;
-
-
-        public TrainingProviderService(ILogger<TrainingProviderService> logger, IReferenceDataReader referenceDataReader, ICache cache, ITimeProvider timeProvider, IOuterApiClient outerApiClient)
-        {
-            _logger = logger;
-            _referenceDataReader = referenceDataReader;
-            _cache = cache;
-            _timeProvider = timeProvider;
-            _outerApiClient = outerApiClient;
-        }
-
         public async Task<Domain.Entities.TrainingProvider> GetProviderAsync(long ukprn)
         {
             if (ukprn == EsfaTestTrainingProvider.Ukprn)
@@ -46,7 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, $"Failed to retrieve provider information for UKPRN: {ukprn}");
+                logger.LogWarning(ex, $"Failed to retrieve provider information for UKPRN: {ukprn}");
                 return null;
             }
         }
@@ -60,21 +50,82 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
         /// <inheritdoc />
         public async Task<GetProviderResponseItem> GetProviderDetails(long ukprn)
         {
-            _logger.LogTrace("Getting Provider Details from Outer Api");
+            logger.LogTrace("Getting Provider Details from Outer Api");
 
-            var retryPolicy = GetApiRetryPolicy();
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-            var result = await retryPolicy.Execute(context => _outerApiClient.Get<GetProviderResponseItem>(new GetProviderRequest(ukprn)), new Dictionary<string, object>() { { "apiCall", "Providers" } });
+            var result = await retryPolicy.Execute(context => outerApiClient.Get<GetProviderResponseItem>(new GetProviderRequest(ukprn)), new Dictionary<string, object>() { { "apiCall", "Providers" } });
 
             return result;
         }
 
+        public async Task<GetApplicationReviewStatsResponse> GetProviderDashboardApplicationReviewStats(long ukprn, List<long> vacancyReferences)
+        {
+            logger.LogTrace("Getting Provider Application Review Stats from Outer Api");
+
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
+
+            return await retryPolicy.Execute(_ => outerApiClient.Post<GetApplicationReviewStatsResponse>(
+                    new GetProviderApplicationReviewsCountApiRequest(ukprn,
+                        vacancyReferences)),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Providers"
+                    }
+                });
+        }
+
+        public async Task<GetDashboardCountApiResponse> GetProviderDashboardStats(long ukprn)
+        {
+            logger.LogTrace("Getting Provider Dashboard Stats from Outer Api");
+
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
+
+            return await retryPolicy.Execute(_ => outerApiClient.Get<GetDashboardCountApiResponse>(
+                    new GetProviderDashboardCountApiRequest(ukprn)),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Providers"
+                    }
+                });
+        }
+
+        public async Task<GetVacanciesDashboardResponse> GetProviderDashboardVacanciesByApplicationReviewStatuses(
+            long ukprn,
+            List<ApplicationReviewStatus> applicationReviewStatusList,
+            int pageNumber = 1,
+            int pageSize = 25)
+        {
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
+
+            return await retryPolicy.Execute(_ => outerApiClient.Get<GetVacanciesDashboardResponse>(
+                    new GetProviderDashboardVacanciesApiRequest(ukprn, pageNumber, pageSize, applicationReviewStatusList)),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Providers"
+                    }
+                });
+        }
+
+        public async Task<IEnumerable<TrainingProviderSummary>> GetCourseProviders(int programmeId)
+        {
+            var result = await outerApiClient.Get<GetCourseProvidersResponse>(new GetCourseProvidersRequest(programmeId));
+            return result.Providers?.Select(x => new TrainingProviderSummary
+            {
+                ProviderName = x.Name,
+                Ukprn = x.Ukprn
+            }) ?? [];
+        }
+
         private Task<TrainingProviders> GetProviders()
         {
-            return _cache.CacheAsideAsync(
+            return cache.CacheAsideAsync(
                 CacheKeys.TrainingProviders,
-                _timeProvider.NextDay6am,
-                ()=>_referenceDataReader.GetReferenceData<TrainingProviders>());
+                timeProvider.NextDay6am,
+                ()=>referenceDataReader.GetReferenceData<TrainingProviders>());
         }
 
         private Domain.Entities.TrainingProvider GetEsfaTestTrainingProvider()
@@ -92,20 +143,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
                     Postcode = EsfaTestTrainingProvider.Postcode
                 }
             };
-        }
-
-        private Polly.Retry.RetryPolicy GetApiRetryPolicy()
-        {
-            return Policy
-                .Handle<Exception>()
-                .WaitAndRetry(new[]
-                {
-                    TimeSpan.FromSeconds(1),
-                    TimeSpan.FromSeconds(2),
-                    TimeSpan.FromSeconds(4)
-                }, (exception, timeSpan, retryCount, context) => {
-                    _logger.LogWarning($"Error connecting to Outer Api for {context["apiCall"]}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");
-                });
         }
     }
 }

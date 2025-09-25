@@ -16,12 +16,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class EmployerController : Controller
     {
         private readonly EmployerOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public EmployerController(EmployerOrchestrator orchestrator, IFeature feature)
+        public EmployerController(EmployerOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("employer", Name = RouteNames.Employer_Get)]
@@ -45,12 +43,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 return View(vm);
             }
 
-            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
-            {
-                return RedirectToRoute(RouteNames.ProviderTaskListCreateGet, new {employerAccountId = model.SelectedEmployerId, vacancyRouteModel.Ukprn});
-            }
-            
-            return RedirectToRoute(RouteNames.CreateVacancy_Get, new {employerAccountId = model.SelectedEmployerId, vacancyRouteModel.Ukprn});
+            return RedirectToRoute(RouteNames.ProviderTaskListCreateGet, new {employerAccountId = model.SelectedEmployerId, vacancyRouteModel.Ukprn});
         }
     }
 }

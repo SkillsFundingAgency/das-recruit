@@ -1,10 +1,8 @@
-using System;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
 {
     public class TrainingDescriptionValidationTests : VacancyValidationTestsBase
     {
@@ -22,25 +20,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors.Should().HaveCount(0);
         }
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public void TrainingDescriptionMustNotBeEmpty(string trainingDescription)
-        {
-            var vacancy = new Vacancy 
-            {
-                TrainingDescription = trainingDescription
-            };
-
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingDescription);
-
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingDescription));
-            result.Errors[0].ErrorCode.Should().Be("54");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingDescription);
-        }
-
         [Fact]
         public void TrainingDescriptionMustNotBeLongerThanMaxLength()
         {
@@ -54,7 +33,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
             result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingDescription));
-            result.Errors[0].ErrorCode.Should().Be("7");
+            result.Errors[0].ErrorCode.Should().Be("321");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingDescription);
         }
 
@@ -80,7 +59,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
                 result.HasErrors.Should().BeTrue();
                 result.Errors.Should().HaveCount(1);
                 result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingDescription));
-                result.Errors[0].ErrorCode.Should().Be("6");
+                result.Errors[0].ErrorCode.Should().Be("346");
                 result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingDescription);
             }
         }
@@ -101,7 +80,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.HasErrors.Should().BeTrue();
             result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingDescription));
             result.Errors.Count.Should().Be(1);
-            result.Errors[0].ErrorCode.Should().Be("610");
+            result.Errors[0].ErrorCode.Should().Be("322");
         }
 
         [Theory]

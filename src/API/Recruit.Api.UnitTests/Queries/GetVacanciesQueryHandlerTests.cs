@@ -5,14 +5,10 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
 using SFA.DAS.Recruit.Api.Mappers;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Api.Queries;
-using SFA.DAS.Recruit.Api.Services;
-using Xunit;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Queries
 {
@@ -24,11 +20,12 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
         private const long UnmatchedUkprn = 11110000;
         private const long EmployerVacancyCount = 45;
         private const long ProviderVacancyCount = 55;
-        private readonly GetVacanciesQueryHandler _sut;
-        private readonly Mock<IEmployerVacancyClient> _employerVacancyClient;
-        private readonly Mock<IProviderVacancyClient> _providerVacancyClient;
+        private GetVacanciesQueryHandler _sut;
+        private Mock<IEmployerVacancyClient> _employerVacancyClient;
+        private Mock<IProviderVacancyClient> _providerVacancyClient;
 
-        public GetVacanciesQueryHandlerTests()
+        [SetUp]
+        public void Setup()
         {
             var mockVacancySummaryMapper = new Mock<IVacancySummaryMapper>();
         
@@ -37,7 +34,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             
             var vacancySummaryFixture = new Fixture();
             var vacancySummariesEmployer = vacancySummaryFixture.Build<Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancySummary>()
-                                .CreateMany(6).ToList();
+                .CreateMany(6).ToList();
             
             var vacancySummariesProvider = vacancySummaryFixture.Build<Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancySummary>()
                 .CreateMany(8).ToList();
@@ -47,22 +44,22 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             {
                 Vacancies = vacancySummariesEmployer
             });
-            _employerVacancyClient.Setup(x => x.GetVacancyCount(ValidEmployerAccountId, VacancyType.Apprenticeship, FilteringOptions.All, null))
+            _employerVacancyClient.Setup(x => x.GetVacancyCount(ValidEmployerAccountId, FilteringOptions.All, null))
                 .ReturnsAsync(EmployerVacancyCount);
 
             _providerVacancyClient.Setup(
-                x => x.GetDashboardAsync(ValidUkprn, VacancyType.Apprenticeship, 1, FilteringOptions.All, null)).ReturnsAsync(
+                x => x.GetDashboardAsync(ValidUkprn, 1, FilteringOptions.All, null)).ReturnsAsync(
                 new Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider.ProviderDashboard
                 {
                     Vacancies = vacancySummariesProvider
                 });
-            _providerVacancyClient.Setup(x => x.GetVacancyCount(ValidUkprn, VacancyType.Apprenticeship, FilteringOptions.All, null))
+            _providerVacancyClient.Setup(x => x.GetVacancyCount(ValidUkprn, FilteringOptions.All, null))
                 .ReturnsAsync(ProviderVacancyCount);
 
             _sut = new GetVacanciesQueryHandler(Mock.Of<ILogger<GetVacanciesQueryHandler>>(), mockVacancySummaryMapper.Object, _providerVacancyClient.Object, _employerVacancyClient.Object);
         }
 
-        [Fact]
+        [Test]
         public async Task GivenRequestWithInvalidEmployerAccountId_ShouldSetInvalidValidationError()
         {
             var query = new GetVacanciesQuery("XX1", null, 25, 1);
@@ -70,7 +67,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             result.ResultCode.Should().Be(ResponseCode.InvalidRequest);
         }
 
-        [Fact]
+        [Test]
         public async Task GivenRequestWithInvalidUkprn_ShouldSetInvalidValidationError()
         {
             const long NineDigitInvalidUkprn = 111111111;
@@ -79,7 +76,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             result.ResultCode.Should().Be(ResponseCode.InvalidRequest);
         }
 
-        [Fact]
+        [Test]
         public async Task GivenRequestWithEmployerAccountIdOnly_ShouldCallToRetrieveEmployerDashboard()
         {
             var query = new GetVacanciesQuery(ValidEmployerAccountId, null, 25, 1);
@@ -88,11 +85,11 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             
             _employerVacancyClient.Verify(qsr => qsr.GetDashboardAsync(ValidEmployerAccountId, 1, FilteringOptions.All, null), Times.Once);
             _providerVacancyClient.Verify(
-                qsr => qsr.GetDashboardAsync(It.IsAny<long>(), It.IsAny<VacancyType>(), It.IsAny<int>(),
+                qsr => qsr.GetDashboardAsync(It.IsAny<long>(), It.IsAny<int>(),
                     It.IsAny<FilteringOptions>(), It.IsAny<string>()), Times.Never);
         }
 
-        [Fact]
+        [Test]
         public async Task GivenRequestWithUnmatchedEmployerAccountIdOnly_ShouldReturnNotFoundResponse()
         {
             var query = new GetVacanciesQuery(UnmatchedEmployerAccountId, null, 25, 1);
@@ -102,7 +99,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             result.ResultCode.Should().Be(ResponseCode.NotFound);
         }
 
-        [Fact]
+        [Test]
         public async Task GivenRequestWithEmployerAccountIdOnly_ShouldReturnVacanciesSummaryWithFourteenVacancies()
         {
             var query = new GetVacanciesQuery(ValidEmployerAccountId, null, 25, 1);
@@ -112,7 +109,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             dataResult.TotalResults.Should().Be(Convert.ToInt32(EmployerVacancyCount));
         }
 
-        [Fact]
+        [Test]
         public async Task GivenRequestWithEmployerAccountIdAndPageSizeTen_ShouldReturnVacanciesSummaryWithTenVacancies()
         {
             var query = new GetVacanciesQuery(ValidEmployerAccountId, null, 25, 1);
@@ -125,7 +122,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             dataResult.TotalPages.Should().Be(2);
         }
 
-        [Fact]
+        [Test]
         public async Task GivenRequestWithEmployerAccountIdAndUkprn_ShouldCallToRetrieveProviderDashboard()
         {
             var query = new GetVacanciesQuery(ValidEmployerAccountId, ValidUkprn, 25, 1);
@@ -133,7 +130,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             await _sut.Handle(query, CancellationToken.None);
             
             _employerVacancyClient.Verify(qsr => qsr.GetDashboardAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<FilteringOptions>(), It.IsAny<string>()), Times.Never);
-            _providerVacancyClient.Verify(qsr => qsr.GetDashboardAsync(ValidUkprn, VacancyType.Apprenticeship, 1, FilteringOptions.All, null), Times.Once);
+            _providerVacancyClient.Verify(qsr => qsr.GetDashboardAsync(ValidUkprn, 1, FilteringOptions.All, null), Times.Once);
         }
     }
 }
