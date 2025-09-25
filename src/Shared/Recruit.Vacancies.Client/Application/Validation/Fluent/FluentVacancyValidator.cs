@@ -1,4 +1,5 @@
 using System;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
@@ -339,7 +340,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.ProgrammeId)
                 .NotEmpty()
-                    .WithMessage($"You must select {VacancyContext} training")
+                    .WithMessage($"Enter a valid training course")
                     .WithErrorCode("25")
                     .WithState(_ => VacancyRuleSet.TrainingProgramme)
                 .RunCondition(VacancyRuleSet.TrainingProgramme);
@@ -891,14 +892,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateTrainingProviderDeliverTrainingCourse()
         {
-            When(x => x.TrainingProvider != null, () =>
-            {
-                RuleFor(x => x)
-                    .TrainingProviderMustBeDeliverTheTrainingCourse(_trainingProviderService, _apprenticeshipProgrammesProvider)
-                    .RunCondition(VacancyRuleSet.TrainingProviderDeliverCourse);
-            });
+            When(x => x.TrainingProvider != null &&
+                      x.OwnerType == OwnerType.Employer &&
+                      x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn,
+                () =>
+                {
+                    RuleFor(x => x)
+                        .TrainingProviderMustBeDeliverTheTrainingCourse(_trainingProviderService, _apprenticeshipProgrammesProvider)
+                        .RunCondition(VacancyRuleSet.TrainingProviderDeliverCourse);
+                });
         }
-
         private void ValidateStartDateClosingDate()
         {
             When(x => x.StartDate.HasValue && x.ClosingDate.HasValue, () =>
@@ -921,12 +924,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void TrainingExpiryDateValidation()
         {
-            When(x => !string.IsNullOrWhiteSpace(x.ProgrammeId), () =>
+            // This rule is only applicable for non-ESFA test training providers
+            When(x => x.TrainingProvider is
+                        {
+                            Ukprn: not null
+                        } && x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn &&
+                                  !string.IsNullOrWhiteSpace(x.ProgrammeId),
+                () =>
             {
                 RuleFor(x => x)
                     .Cascade(CascadeMode.Stop)
                     .TrainingMustExist(_apprenticeshipProgrammesProvider)
-                    .TrainingMustBeActiveForCurrentDate(_apprenticeshipProgrammesProvider, _timeProvider)
                     .TrainingMustBeActiveForStartDate(_apprenticeshipProgrammesProvider)
                 .RunCondition(VacancyRuleSet.TrainingExpiryDate);
             });
@@ -934,7 +942,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateTrainingCourse()
         {
-            When(x => !string.IsNullOrWhiteSpace(x.ProgrammeId), () =>
+            // This rule is only applied when the training provider is not the ESFA test training provider
+            When(x => x.TrainingProvider is
+                      {
+                          Ukprn: not null
+                      } &&
+                      x.OwnerType == OwnerType.Provider &&
+                      x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn &&
+                      !string.IsNullOrWhiteSpace(x.ProgrammeId),
+                () =>
             {
                 RuleFor(x => x)
                     .Cascade(CascadeMode.Stop)

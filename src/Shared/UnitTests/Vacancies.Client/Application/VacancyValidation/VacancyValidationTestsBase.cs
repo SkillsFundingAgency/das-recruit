@@ -33,18 +33,25 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         {
             MockMinimumWageService = new Mock<IMinimumWageProvider>();
             MockApprenticeshipProgrammeProvider = new Mock<IApprenticeshipProgrammeProvider>();
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("123"))
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("123", null))
                 .ReturnsAsync(new ApprenticeshipProgramme
                 {
-                    IsActive = true
+                    IsActive = true,
+                    Id = "123",
                 });
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("000"))
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("123", 10000000))
+                .ReturnsAsync(new ApprenticeshipProgramme
+                {
+                    IsActive = true,
+                    Id = "123",
+                });
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("000", null))
                 .ReturnsAsync(new ApprenticeshipProgramme
                 {
                     Id = "abc",
                     IsActive = false
                 });
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false))
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null))
                 .ReturnsAsync(new List<ApprenticeshipProgramme>
                 {
                     new()
@@ -64,6 +71,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             MockProfanityListProvider = new TestProfanityListProvider();
             MockProviderRelationshipsService = new Mock<IProviderRelationshipsService>();
             MockTrainingProviderService = new Mock<ITrainingProviderService>();
+            MockTrainingProviderService.Setup(x => x.GetCourseProviders(123)).ReturnsAsync(new List<TrainingProviderSummary>()
+            {
+                new()
+                {
+                    Ukprn = 10000000,
+                }
+            });
             TimeProvider = new CurrentUtcTimeProvider();
             Feature = new Mock<IFeature>();
         }

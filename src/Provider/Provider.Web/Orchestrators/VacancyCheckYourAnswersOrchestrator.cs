@@ -9,7 +9,6 @@ using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -39,7 +38,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>(logger)
     {
         private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
-        private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage | VacancyRuleSet.TrainingExpiryDate;
+        private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage |
+                                                           VacancyRuleSet.TrainingExpiryDate |
+                                                           VacancyRuleSet.TrainingProgramme |
+                                                           VacancyRuleSet.TrainingProviderDeliverCourse;
 
         public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel routeModel)
         {
@@ -118,7 +120,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             await Task.WhenAll(hasLegalEntityAgreementTask, hasProviderAgreementTask);
 
-            var hasProviderReviewPermission = await providerRelationshipsService.HasProviderGotEmployersPermissionAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
+            var hasProviderReviewPermission = await providerRelationshipsService.HasProviderGotEmployersPermissionAsync(
+                vacancy.TrainingProvider.Ukprn.Value,
+                vacancy.EmployerAccountId,
+                vacancy.AccountLegalEntityPublicHashedId,
+                OperationType.RecruitmentRequiresReview);
 
             var response = new SubmitVacancyResponse
             {

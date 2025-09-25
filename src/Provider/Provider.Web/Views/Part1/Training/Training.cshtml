@@ -1,13 +1,8 @@
-@using Esfa.Recruit.Shared.Web.Mappers
-@using Microsoft.Extensions.Options
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.Training.TrainingViewModel
-@inject IOptions<ExternalLinksConfiguration> externalLinks;
-
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-training";
     ViewBag.Title = "What training course will the apprentice take?";
 }
-
 @section BackLink {
     <a asp-route="@Model.PageBackLink"  asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
@@ -21,9 +16,12 @@
             <span class="govuk-caption-xl">@Model.Title</span>
             What training course will the apprentice take?
         </h1>
+        <p class="govuk-body">
+            You can choose from the standards you've added.
+            <a asp-external-controller="standards" asp-external-subdomain="roatp" asp-external-id="@Model.Ukprn" class="govuk-link govuk-link--no-visited-state">Manage your standards</a>
+            to add more.
+        </p>
         <form asp-route="@RouteNames.Training_Post" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
-
-
             <div esfa-validation-marker-for="SelectedProgrammeId" class="govuk-form-group">
                 <label asp-for="SelectedProgrammeId" class="govuk-label govuk-label-s">
                     <span class="govuk-hint">Enter apprenticeship training title</span>
@@ -42,12 +40,10 @@
                     <a asp-route="@RouteNames.Training_Get" asp-route-clear="true" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link govuk-link--no-visited-state">Clear search</a>
                 </p>
             </div>
-
             <div class="govuk-button-group">
                 <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and Continue</button>
                 <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
             </div>
-
         </form>
     </div>
 </div>
