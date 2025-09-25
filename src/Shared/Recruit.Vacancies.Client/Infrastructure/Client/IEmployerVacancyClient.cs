@@ -23,6 +23,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         Task CreateEmployerApiVacancy(Guid id, string title, string employerAccountId, VacancyUser user, TrainingProvider provider, string programmeId);
         Task<long> GetVacancyCount(string employerAccountId, FilteringOptions? filteringOptions, string searchTerm);
-        Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId);
+        Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId, string userId);
     }
 }

@@ -164,29 +164,29 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendCommandAsync(command);
         }
         
-        public async Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId)
+        public async Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId, string userId)
         {
-            var dashboardValue = await vacancySummariesQuery.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId);
-            var dashboardStats = await employerAccountProvider.GetEmployerDashboardStats(employerAccountId);
-            
-            var dashboard = dashboardValue.VacancyStatusDashboard;
+            var dashboardStats = await employerAccountProvider.GetEmployerDashboardStats(employerAccountId, userId);
 
             return new EmployerDashboardSummary
             {
-                Closed = dashboard.FirstOrDefault(c => c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
-                Draft = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Draft)?.StatusCount ?? 0,
-                Referred = (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
-                Live = dashboard.Where(c => c.Status == VacancyStatus.Live).Sum(c => c.StatusCount),
-                Submitted = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
-                Review = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Review)?.StatusCount ?? 0,
-                
+                Closed = dashboardStats.ClosedVacanciesCount,
+                Draft = dashboardStats.DraftVacanciesCount,
+                Referred = dashboardStats.ReferredVacanciesCount,
+                Live = dashboardStats.LiveVacanciesCount,
+                Submitted = dashboardStats.SubmittedVacanciesCount,
+                Review = dashboardStats.ReviewVacanciesCount,
                 NumberOfNewApplications = dashboardStats.NewApplicationsCount,
                 NumberOfSuccessfulApplications = dashboardStats.SuccessfulApplicationsCount,
                 NumberOfUnsuccessfulApplications = dashboardStats.UnsuccessfulApplicationsCount,
                 NumberOfSharedApplications = dashboardStats.SharedApplicationsCount,
                 NumberOfAllSharedApplications = dashboardStats.AllSharedApplicationsCount,
-                NumberClosingSoon = dashboard.FirstOrDefault(c => c.Status == VacancyStatus.Live && c.ClosingSoon)?.StatusCount ?? 0,
-                NumberClosingSoonWithNoApplications = dashboardValue.VacanciesClosingSoonWithNoApplications
+                NumberClosingSoon = dashboardStats.ClosingSoonVacanciesCount,
+                NumberClosingSoonWithNoApplications = dashboardStats.ClosingSoonWithNoApplications,
+                BlockedProviderAlert = dashboardStats.BlockedProviderAlert,
+                BlockedProviderTransferredVacanciesAlert = dashboardStats.BlockedProviderTransferredVacanciesAlert,
+                EmployerRevokedTransferredVacanciesAlert = dashboardStats.EmployerRevokedTransferredVacanciesAlert,
+                WithDrawnByQaVacanciesAlert = dashboardStats.WithDrawnByQaVacanciesAlert,
             };
         }
 
@@ -566,7 +566,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var ownerType = filteringOptions is FilteringOptions.NewSharedApplications or FilteringOptions.AllSharedApplications ? OwnerType.Provider : OwnerType.Employer;
 
-            var dashboardStats = await employerAccountProvider.GetEmployerDashboardStats(employerAccountId);
+            var dashboardStats = await employerAccountProvider.GetEmployerDashboardStats(employerAccountId, null);
 
             return filteringOptions switch
             {

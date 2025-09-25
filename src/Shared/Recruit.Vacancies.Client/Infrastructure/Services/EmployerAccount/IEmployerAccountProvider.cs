@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
         Task<IEnumerable<AccountLegalEntity>> GetLegalEntitiesConnectedToAccountAsync(string hashedAccountId);
         Task<GetApplicationReviewStatsResponse> GetEmployerDashboardApplicationReviewStats(string hashedAccountId,
             List<long> vacancyReferences, string applicationSharedFilteringStatus);
-        Task<GetDashboardCountApiResponse> GetEmployerDashboardStats(string hashedAccountId);
+        Task<GetEmployerDashboardApiResponse> GetEmployerDashboardStats(string hashedAccountId, string userId);
         Task<GetAllAccountLegalEntitiesApiResponse> GetAllLegalEntitiesConnectedToAccountAsync(
             List<string> hashedAccountIds,
             string searchTerm,

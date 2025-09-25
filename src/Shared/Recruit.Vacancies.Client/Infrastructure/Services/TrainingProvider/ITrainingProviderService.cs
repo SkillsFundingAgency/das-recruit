@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
         /// </summary>
         /// <param name="ukprn"></param>
         /// <returns></returns>
-        Task<GetDashboardCountApiResponse> GetProviderDashboardStats(long ukprn);
+        Task<GetProviderDashboardApiResponse> GetProviderDashboardStats(long ukprn);
         
         
         /// <summary>
