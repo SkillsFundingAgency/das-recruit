@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.ApplicationProcess;
@@ -37,7 +36,7 @@ public class ApplicationProcessOrchestrator : VacancyValidatingOrchestrator<Appl
 
     public async Task<ApplicationProcessViewModel> GetApplicationProcessViewModelAsync(TaskListViewModel model)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.ApplicationProcess_Get);
+        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(model);
 
         var vm = new ApplicationProcessViewModel
         {
@@ -72,7 +71,7 @@ public class ApplicationProcessOrchestrator : VacancyValidatingOrchestrator<Appl
 
     public async Task<OrchestratorResponse> PostApplicationProcessEditModelAsync(ApplicationProcessEditModel m, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.ApplicationProcess_Post);
+        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m);
 
         SetVacancyWithEmployerReviewFieldIndicators(
             vacancy.ApplicationMethod,

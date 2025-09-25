@@ -25,7 +25,7 @@ public class AboutEmployerOrchestrator(
 
     public async Task<AboutEmployerViewModel> GetAboutEmployerViewModelAsync(TaskListViewModel model)
     {
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.AboutEmployer_Get);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model);
         var vm = new AboutEmployerViewModel
         {
             VacancyId = vacancy.Id,
@@ -61,7 +61,7 @@ public class AboutEmployerOrchestrator(
 
     public async Task<OrchestratorResponse> PostAboutEmployerEditModelAsync(AboutEmployerEditModel m, VacancyUser user)
     {
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.AboutEmployer_Post);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m);
 
         SetVacancyWithEmployerReviewFieldIndicators(
             vacancy.EmployerDescription,

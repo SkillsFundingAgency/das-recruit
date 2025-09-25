@@ -62,7 +62,7 @@ public class TrainingOrchestratorTests
         var selectedProgramme = programmes.First(x => x.ApprenticeshipType == TrainingType.Foundation);
         vacancy.ApprenticeshipType = null;
         model.ProgrammeId = selectedProgramme.Id;
-        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>())).ReturnsAsync(vacancy);
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model)).ReturnsAsync(vacancy);
         vacancyClient.Setup(x => x.GetActiveApprenticeshipProgrammesAsync()).ReturnsAsync(programmes);
 
         // act

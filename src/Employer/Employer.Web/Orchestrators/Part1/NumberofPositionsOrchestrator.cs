@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<NumberOfPositionsViewModel> GetNumberOfPositionsViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.NumberOfPositions_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
 
             var vm = new NumberOfPositionsViewModel
             {
@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse<Guid>> PostNumberOfPositionsEditModelAsync(NumberOfPositionsEditModel m, VacancyUser user)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.NumberOfPositions_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m);
 
             SetVacancyWithEmployerReviewFieldIndicators(
                 vacancy.NumberOfPositions,
@@ -69,7 +69,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 vacancy,
                 (v) =>
                 {
-                    return v.NumberOfPositions = int.TryParse(m.NumberOfPositions, out var n) ? n : default(int?);
+                    return v.NumberOfPositions = int.TryParse(m.NumberOfPositions, out var n) ? n : null;
                 });
  
             return await ValidateAndExecute(

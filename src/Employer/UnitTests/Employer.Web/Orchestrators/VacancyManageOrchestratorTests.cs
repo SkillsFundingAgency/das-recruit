@@ -73,7 +73,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
                 .ReturnsAsync(vacancyApplications);
 
             // Act
-            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy, 1, 20, sortColumn, sortOrder, vacancyShared);
+            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy, 1, 20, sortColumn, sortOrder);
 
             // Assert
             Assert.That(_vacancyId, Is.EqualTo(viewModel.VacancyId));

@@ -98,7 +98,6 @@ public static class IoC
         services.AddTransient<VacanciesOrchestrator>();
         services.AddTransient<EmployerOrchestrator>();
         services.AddTransient<EmployerNameOrchestrator>();
-        services.AddTransient<LocationOrchestrator>();
         services.AddTransient<LegalEntityAgreementOrchestrator>();
         services.AddTransient<EmployerContactDetailsOrchestrator>();
         services.AddTransient<TitleOrchestrator>();

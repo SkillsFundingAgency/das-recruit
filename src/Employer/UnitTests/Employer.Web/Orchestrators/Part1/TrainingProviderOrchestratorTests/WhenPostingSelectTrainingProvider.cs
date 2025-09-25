@@ -30,7 +30,7 @@ public class WhenPostingSelectTrainingProvider
         vacancy.ProgrammeId = "100-1";
         var provider = providerSummaries.First();
         utility
-            .Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>()))
+            .Setup(x => x.GetAuthorisedVacancyForEditAsync(model))
             .ReturnsAsync(vacancy);
         trainingProviderSummaryProvider
             .Setup(x => x.FindAllAsync())
@@ -68,7 +68,7 @@ public class WhenPostingSelectTrainingProvider
         vacancy.ProgrammeId = "100";
         var provider = providerSummaries.First();
         utility
-            .Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>()))
+            .Setup(x => x.GetAuthorisedVacancyForEditAsync(model))
             .ReturnsAsync(vacancy);
         trainingProviderService
             .Setup(x => x.GetCourseProviders(100))
@@ -106,7 +106,7 @@ public class WhenPostingSelectTrainingProvider
         vacancy.ProgrammeId = "100";
         var provider = providerSummaries.First();
         utility
-            .Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>()))
+            .Setup(x => x.GetAuthorisedVacancyForEditAsync(model))
             .ReturnsAsync(vacancy);
         trainingProviderService
             .Setup(x => x.GetCourseProviders(100))

@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         
         public async Task<SkillsViewModel> GetSkillsViewModelAsync(VacancyRouteModel vrm, string[] draftSkills = null)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Skills_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
 
             var vm = new SkillsViewModel
             {
@@ -76,7 +76,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostSkillsEditModelAsync(VacancyRouteModel vrm, SkillsEditModel m, VacancyUser user)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Skills_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
 
             if (m.Skills == null)
             {
