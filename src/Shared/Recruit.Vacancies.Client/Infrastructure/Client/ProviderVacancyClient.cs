@@ -116,7 +116,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var vacancySummariesTasks = vacancySummariesQuery.GetProviderOwnedVacancySummariesByUkprnAsync(ukprn, page, status, searchTerm);
             var transferredVacanciesTasks = vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn);
-
+            
             await Task.WhenAll(vacancySummariesTasks, transferredVacanciesTasks);
 
             var vacancySummaries = vacancySummariesTasks.Result.Item1
@@ -128,11 +128,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     TransferredDate = t.TransferredDate,
                     Reason = t.Reason
                 });
-
-            foreach (var summary in vacancySummaries)
-            {
-                await UpdateWithTrainingProgrammeInfo(summary);
-            }
 
             return new ProviderDashboard
             {
@@ -210,25 +205,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task IncrementReportDownloadCountAsync(Guid reportId)
         {
             return reportRepository.IncrementReportDownloadCountAsync(reportId);
-        }
-
-        private async Task UpdateWithTrainingProgrammeInfo(VacancySummary summary)
-        {
-            if (summary.ProgrammeId != null)
-            {
-                var programme = await apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(summary.ProgrammeId);
-
-                if (programme == null)
-                {
-                    logger.LogWarning($"No training programme found for ProgrammeId: {summary.ProgrammeId}");
-                }
-                else
-                {
-                    summary.TrainingTitle = programme.Title;
-                    summary.TrainingType = programme.ApprenticeshipType;
-                    summary.TrainingLevel = programme.ApprenticeshipLevel;
-                }
-            }
         }
 
         public Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync(int ukprn)
