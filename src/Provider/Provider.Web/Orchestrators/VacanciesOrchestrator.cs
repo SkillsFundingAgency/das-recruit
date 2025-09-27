@@ -9,6 +9,7 @@ using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Shared.Web.ViewModels.Alerts;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -19,8 +20,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
     public class VacanciesOrchestrator(
         IProviderVacancyClient providerVacancyClient,
-        IRecruitVacancyClient recruitVacancyClient,
-        IProviderAlertsViewModelFactory providerAlertsViewModelFactory,
         IProviderRelationshipsService providerRelationshipsService)
     {
         private const int VacanciesPerPage = 25;
@@ -28,23 +27,16 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         public async Task<VacanciesViewModel> GetVacanciesViewModelAsync(
             VacancyUser user, string filter, int page, string searchTerm)
         {
+            long ukprn = user.Ukprn ?? 0;
             var filteringOption = SanitizeFilter(filter);
-            var getDashboardTask = providerVacancyClient.GetDashboardAsync(user.Ukprn!.Value, page, filteringOption, searchTerm);
-            var getUserDetailsTask = recruitVacancyClient.GetUsersDetailsByDfEUserId(user.DfEUserId) ?? recruitVacancyClient.GetUsersDetailsAsync(user.UserId);
-            var providerTask = providerRelationshipsService.CheckProviderHasPermissions(user.Ukprn.Value, OperationType.RecruitmentRequiresReview);
-            
+            var getDashboardTask = providerVacancyClient.GetDashboardAsync(ukprn, user.UserId, page, VacanciesPerPage, "CreatedDate", "Desc", filteringOption, searchTerm);
+            var providerTask = providerRelationshipsService.CheckProviderHasPermissions(ukprn, OperationType.RecruitmentRequiresReview);
 
-            await Task.WhenAll(getDashboardTask, getUserDetailsTask, providerTask);
-            
-            long providerVacancyCountTask = getDashboardTask.Result?.TotalVacancies 
-                                            ?? await providerVacancyClient.GetVacancyCount(user.Ukprn.Value, filteringOption, searchTerm);//TODO FAI-2541 - ignore this for ones for applications
+            await Task.WhenAll(getDashboardTask, providerTask);
 
             var dashboard = getDashboardTask.Result;
-            var userDetails = getUserDetailsTask.Result;
             bool providerPermissions = providerTask.Result;
-            int totalItems = Convert.ToInt32(providerVacancyCountTask);
-
-            var alerts = providerAlertsViewModelFactory.Create(dashboard, userDetails);
+            int totalItems = Convert.ToInt32(dashboard.TotalVacancies);
 
             var vacancies = new List<VacancySummary>(dashboard?.Vacancies ?? []);
             
@@ -65,7 +57,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                     {"filter", filteringOption.ToString()},
                     {"searchTerm", searchTerm}
                 });
-            
+
+            var alerts = new AlertsViewModel(new ProviderTransferredVacanciesAlertViewModel
+            {
+                LegalEntityNames = dashboard.ProviderTransferredVacanciesAlert.LegalEntityNames,
+                Ukprn = ukprn
+            }, new WithdrawnVacanciesAlertViewModel
+            {
+                ClosedVacancies = dashboard.WithdrawnVacanciesAlert.ClosedVacancies,
+                Ukprn = ukprn
+            }, ukprn);
+
             var vm = new VacanciesViewModel 
             {
                 Vacancies = vacanciesVm,
@@ -75,7 +77,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, totalItems, filteringOption, searchTerm, UserType.Provider),
                 Alerts = alerts,
                 HasEmployerReviewPermission = providerPermissions,
-                Ukprn = user.Ukprn.Value,
+                Ukprn = ukprn,
                 TotalVacancies = totalItems
             };
 

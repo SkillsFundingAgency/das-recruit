@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
-using FluentAssertions;
 using Xunit;
 
 namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResultHeaderTest
@@ -13,7 +11,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
         public async Task WhenThereAreNoVacancies()
         {
             var expectedMessage = "0 live vacancies with 'nurse'";
-            var sut = GetSut(new List<VacancySummary>(), FilteringOptions.Draft, "nurse", 0);
+            var sut = GetSut(new List<VacancySummary>(), FilteringOptions.Live, "nurse", 0);
             var vm = await sut.GetVacanciesViewModelAsync(User, "Live", 1, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);
         }

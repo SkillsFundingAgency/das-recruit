@@ -18,14 +18,15 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         [Test, MoqAutoData]
         public async Task Then_Maps_Statuses_To_ProviderDashboardSummary(
             long ukprn,
+            string userId,
             GetProviderDashboardApiResponse apiResponse,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
             [Frozen] Mock<ITrainingProviderService> trainingProviderService,
             VacancyClient vacancyClient)
         {
-            trainingProviderService.Setup(x => x.GetProviderDashboardStats(ukprn)).ReturnsAsync(apiResponse);
+            trainingProviderService.Setup(x => x.GetProviderDashboardStats(ukprn, userId)).ReturnsAsync(apiResponse);
 
-            var actual = await vacancyClient.GetDashboardSummary(ukprn);
+            var actual = await vacancyClient.GetDashboardSummary(ukprn, userId);
 
             actual.Closed.Should().Be(apiResponse.ClosedVacanciesCount);
             actual.Draft.Should().Be(apiResponse.DraftVacanciesCount);
@@ -48,12 +49,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                     apiResponse.LiveVacanciesCount +
                     apiResponse.SubmittedVacanciesCount);
 
-            trainingProviderService.Verify(x => x.GetProviderDashboardStats(ukprn), Times.Once);
+            trainingProviderService.Verify(x => x.GetProviderDashboardStats(ukprn, userId), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Then_Model_Values_Set_For_No_Vacancies(
             long ukprn,
+            string userId,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
             [Frozen] Mock<ITrainingProviderService> trainingProviderService,
             VacancyClient vacancyClient)
@@ -66,7 +68,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 VacancySharedApplicationsDashboard = [],
             });
 
-            trainingProviderService.Setup(x => x.GetProviderDashboardStats(ukprn)).ReturnsAsync(new GetProviderDashboardApiResponse()
+            trainingProviderService.Setup(x => x.GetProviderDashboardStats(ukprn, userId)).ReturnsAsync(new GetProviderDashboardApiResponse()
             {
                 NewApplicationsCount = 0,
                 EmployerReviewedApplicationsCount = 0,
@@ -74,7 +76,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 SuccessfulApplicationsCount = 0,
             });
 
-            var actual = await vacancyClient.GetDashboardSummary(ukprn);
+            var actual = await vacancyClient.GetDashboardSummary(ukprn, userId);
 
             actual.HasVacancies.Should().BeFalse();
             actual.HasOneVacancy.Should().BeFalse();
@@ -87,12 +89,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public async Task Then_Gets_DashboardSummary_With_TransferredVacancies(
             List<TransferInfo> transferredVacancies,
             long ukprn,
+            string userId,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
             VacancyClient vacancyClient)
         {
             vacanciesSummaryProvider.Setup(x => x.GetTransferredFromProviderAsync(ukprn)).ReturnsAsync(transferredVacancies);
 
-            var actual = await vacancyClient.GetDashboardSummary(ukprn);
+            var actual = await vacancyClient.GetDashboardSummary(ukprn, userId);
 
             actual.TransferredVacancies.Should().BeEquivalentTo(transferredVacancies.Select(t =>
                 new ProviderDashboardTransferredVacancy

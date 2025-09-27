@@ -17,6 +17,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
         private const string ValidEmployerAccountId = "MYJR4X";
         private const string UnmatchedEmployerAccountId = "MYJR55";
         private const long ValidUkprn = 10000020;
+        private const string ValidUserId = "userId";
         private const long UnmatchedUkprn = 11110000;
         private const long EmployerVacancyCount = 45;
         private const long ProviderVacancyCount = 55;
@@ -48,7 +49,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
                 .ReturnsAsync(EmployerVacancyCount);
 
             _providerVacancyClient.Setup(
-                x => x.GetDashboardAsync(ValidUkprn, 1, FilteringOptions.All, null)).ReturnsAsync(
+                x => x.GetDashboardAsync(ValidUkprn, ValidUserId, 1, 25, "", "", FilteringOptions.All, null)).ReturnsAsync(
                 new Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider.ProviderDashboard
                 {
                     Vacancies = vacancySummariesProvider
@@ -85,8 +86,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             
             _employerVacancyClient.Verify(qsr => qsr.GetDashboardAsync(ValidEmployerAccountId, 1, FilteringOptions.All, null), Times.Once);
             _providerVacancyClient.Verify(
-                qsr => qsr.GetDashboardAsync(It.IsAny<long>(), It.IsAny<int>(),
-                    It.IsAny<FilteringOptions>(), It.IsAny<string>()), Times.Never);
+                qsr => qsr.GetDashboardAsync(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<FilteringOptions>(), It.IsAny<string>()), Times.Never);
         }
 
         [Test]
@@ -130,7 +130,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             await _sut.Handle(query, CancellationToken.None);
             
             _employerVacancyClient.Verify(qsr => qsr.GetDashboardAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<FilteringOptions>(), It.IsAny<string>()), Times.Never);
-            _providerVacancyClient.Verify(qsr => qsr.GetDashboardAsync(ValidUkprn, 1, FilteringOptions.All, null), Times.Once);
+            _providerVacancyClient.Verify(qsr => qsr.GetDashboardAsync(ValidUkprn, "",1, 25, "", "", FilteringOptions.All, null), Times.Once);
         }
     }
 }
