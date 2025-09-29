@@ -28,7 +28,8 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.Vacancies
         [TestCase("Closed", "lazy")]
         public async Task ThenReturnResults(string status, string searchTerm)
         {
-            var sut = GetSut(searchTerm, 1, status); 
+            Enum.TryParse<FilteringOptions>(status, out var vacancyStatus);
+            var sut = GetSut(searchTerm, 1, vacancyStatus, 6, _testVacancies); 
             var result = await sut.GetVacanciesViewModelAsync(EmployerAccountId, status, 1, _user, searchTerm);
             result.Vacancies.Any().Should().BeTrue();
             result.Vacancies.Count.Should().Be(6);
@@ -38,24 +39,23 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.Vacancies
         [Test]
         public async Task ThenReturnNoResults()
         {
-            var sut = GetSut("fox", 1, "Live"); 
-            var result = await sut.GetVacanciesViewModelAsync(EmployerAccountId, "Live", 1, _user, "test");
+            Enum.TryParse<FilteringOptions>("Live", out var vacancyStatus);
+            var sut = GetSut("fox", 1, vacancyStatus, 0, []); 
+            var result = await sut.GetVacanciesViewModelAsync(EmployerAccountId, "Live", 1, _user, "fox");
             result.Vacancies.Any().Should().BeFalse();
         }
 
-        private VacanciesOrchestrator GetSut(string searchTerm, int page, string status)
+        private VacanciesOrchestrator GetSut(string searchTerm, int page, FilteringOptions? status, int vacanciesCount, VacancySummary[] vacancySummaries)
         {
-            Enum.TryParse<FilteringOptions>(status, out var filter);
-            
             var employerClientMock = new Mock<IEmployerVacancyClient>();
-            employerClientMock.Setup(c => c.GetDashboardAsync(EmployerAccountId, page, filter, searchTerm))
+            employerClientMock.Setup(c => c.GetDashboardAsync(EmployerAccountId, _user.UserId, page, 25, "CreatedDate", "Desc", status, searchTerm))
                 .ReturnsAsync(new EmployerDashboard {
-                    Vacancies = _testVacancies
+                    Vacancies = vacancySummaries,
+                    TotalVacancies = vacanciesCount
+
                 });
             return new VacanciesOrchestrator(
-                employerClientMock.Object,
-                _recruitVacancyClientMock.Object,
-                _employerAlertsViewModelFactoryMock.Object);
+                employerClientMock.Object);
         }
 
         public GivenSearchTerm()

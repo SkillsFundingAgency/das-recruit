@@ -1,6 +1,7 @@
 ﻿using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Alerts;
+using Esfa.Recruit.Vacancies.Client.Domain.Alerts;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -83,9 +84,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
 
         private DashboardOrchestrator GetSut(EmployerDashboardSummary dashboardSummary)
         {
-            
             _vacancyClientMock = new Mock<IEmployerVacancyClient>();
-            _vacancyClientMock.Setup(c => c.GetDashboardSummary(EmployerAccountId))
+            _vacancyClientMock.Setup(c => c.GetDashboardSummary(EmployerAccountId, UserId))
+                .ReturnsAsync(dashboardSummary);
+            _vacancyClientMock.Setup(c => c.GetDashboardSummary(EmployerAccountId, "unknown"))
                 .ReturnsAsync(dashboardSummary);
 
             var permissionServiceMock = new Mock<IProviderRelationshipsService>();
@@ -113,7 +115,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
             alertsFactoryMock.Setup(a => a.Create(EmployerAccountId, userDetails))
                 .ReturnsAsync(alertsViewModel);
 
-            var dashboardOrchestrator = new DashboardOrchestrator(_vacancyClientMock.Object, _clientMock.Object, alertsFactoryMock.Object, permissionServiceMock.Object);
+            var dashboardOrchestrator = new DashboardOrchestrator(_vacancyClientMock.Object, _clientMock.Object, permissionServiceMock.Object);
 
             return dashboardOrchestrator;
         }

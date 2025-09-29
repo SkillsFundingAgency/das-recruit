@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
-using Esfa.Recruit.Provider.Web.Services;
+using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Provider.Web.ViewModels.Dashboard;
+using Esfa.Recruit.Shared.Web.ViewModels.Alerts;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -8,49 +9,40 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
-    public class DashboardOrchestrator
+    public class DashboardOrchestrator(
+        IProviderVacancyClient vacancyClient,
+        IRecruitVacancyClient client,
+        IProviderRelationshipsService providerRelationshipsService)
     {
-        private readonly IProviderVacancyClient _vacancyClient;
-        private readonly IRecruitVacancyClient _client;
-        private readonly IProviderAlertsViewModelFactory _providerAlertsViewModelFactory;
-        private readonly IProviderRelationshipsService _providerRelationshipsService;
-
-        public DashboardOrchestrator(
-            IProviderVacancyClient vacancyClient,
-            IRecruitVacancyClient client,
-            IProviderAlertsViewModelFactory providerAlertsViewModelFactory,
-            IProviderRelationshipsService providerRelationshipsService)
-        {
-            _vacancyClient = vacancyClient;
-            _client = client;
-            _providerAlertsViewModelFactory = providerAlertsViewModelFactory;
-            _providerRelationshipsService = providerRelationshipsService;
-        }
-
         public virtual async Task<DashboardViewModel> GetDashboardViewModelAsync(VacancyUser user)
         {
-            await _client.UserSignedInAsync(user, UserType.Provider);
-            var dashboardTask = _vacancyClient.GetDashboardSummary(user.Ukprn.Value);
-            var providerTask = _providerRelationshipsService.CheckProviderHasPermissions(user.Ukprn.Value, OperationType.RecruitmentRequiresReview);
-            var usersDetailsByDfEUserIdTask = _client.GetUsersDetailsByDfEUserId(user.DfEUserId);
+            long ukprn = user.Ukprn ?? 0;
 
-            await Task.WhenAll(dashboardTask, providerTask, usersDetailsByDfEUserIdTask);
-
+            await client.UserSignedInAsync(user, UserType.Provider);
+            var dashboardTask = vacancyClient.GetDashboardSummary(ukprn, user.UserId);
+            var providerTask = providerRelationshipsService.CheckProviderHasPermissions(ukprn, OperationType.RecruitmentRequiresReview);
+            
+            await Task.WhenAll(dashboardTask, providerTask);
             
             var dashboard = dashboardTask.Result;
-            var providerPermissions = providerTask.Result;
-            var userDetails = usersDetailsByDfEUserIdTask.Result;
+            bool providerPermissions = providerTask.Result;
+            var alerts = new AlertsViewModel(new ProviderTransferredVacanciesAlertViewModel
+            {
+                LegalEntityNames = dashboard.ProviderTransferredVacanciesAlert.LegalEntityNames,
+                Ukprn = ukprn
+            }, new WithdrawnVacanciesAlertViewModel
+            {
+                ClosedVacancies = dashboard.WithdrawnVacanciesAlert.ClosedVacancies,
+                Ukprn = ukprn
+            }, ukprn);
 
-            var alerts = await _providerAlertsViewModelFactory.Create(userDetails);
-            
-            var vm = new DashboardViewModel
+            return new DashboardViewModel
             {
                 ProviderDashboardSummary = dashboard,
                 Alerts = alerts,
                 HasEmployerReviewPermission = providerPermissions,
-                Ukprn = user.Ukprn.Value
+                Ukprn = ukprn
             };
-            return vm;
         }
     }
 }
