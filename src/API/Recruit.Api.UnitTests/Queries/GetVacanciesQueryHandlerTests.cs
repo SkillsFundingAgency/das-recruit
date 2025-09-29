@@ -41,7 +41,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
                 .CreateMany(8).ToList();
             
             _employerVacancyClient.Setup(
-                x => x.GetDashboardAsync(ValidEmployerAccountId, 1, FilteringOptions.All, null)).ReturnsAsync(new Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer.EmployerDashboard
+                x => x.GetDashboardAsync(ValidEmployerAccountId, "", 1, 25, "", "", FilteringOptions.All, null)).ReturnsAsync(new Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer.EmployerDashboard
             {
                 Vacancies = vacancySummariesEmployer
             });
@@ -84,9 +84,25 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             
             await _sut.Handle(query, CancellationToken.None);
             
-            _employerVacancyClient.Verify(qsr => qsr.GetDashboardAsync(ValidEmployerAccountId, 1, FilteringOptions.All, null), Times.Once);
+            _employerVacancyClient.Verify(qsr => qsr.GetDashboardAsync(ValidEmployerAccountId,
+                    "",
+                    1,
+                    25,
+                    "",
+                    "",
+                    FilteringOptions.All,
+                    null),
+                Times.Once);
             _providerVacancyClient.Verify(
-                qsr => qsr.GetDashboardAsync(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<FilteringOptions>(), It.IsAny<string>()), Times.Never);
+                qsr => qsr.GetDashboardAsync(It.IsAny<long>(),
+                    It.IsAny<string>(),
+                    It.IsAny<int>(),
+                    It.IsAny<int>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<FilteringOptions>(),
+                    It.IsAny<string>()),
+                Times.Never);
         }
 
         [Test]
@@ -129,8 +145,24 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             
             await _sut.Handle(query, CancellationToken.None);
             
-            _employerVacancyClient.Verify(qsr => qsr.GetDashboardAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<FilteringOptions>(), It.IsAny<string>()), Times.Never);
-            _providerVacancyClient.Verify(qsr => qsr.GetDashboardAsync(ValidUkprn, "",1, 25, "", "", FilteringOptions.All, null), Times.Once);
+            _employerVacancyClient.Verify(qsr => qsr.GetDashboardAsync(ValidEmployerAccountId,
+                    "",
+                    1,
+                    25,
+                    "",
+                    "",
+                    FilteringOptions.All,
+                    null),
+                Times.Never);
+            _providerVacancyClient.Verify(qsr => qsr.GetDashboardAsync(ValidUkprn,
+                    "",
+                    1,
+                    25,
+                    "",
+                    "",
+                    FilteringOptions.All,
+                    null),
+                Times.Once);
         }
     }
 }

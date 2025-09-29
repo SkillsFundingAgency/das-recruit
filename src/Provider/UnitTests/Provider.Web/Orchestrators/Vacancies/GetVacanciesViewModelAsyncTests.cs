@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Esfa.Recruit.Provider.Web.Orchestrators;
-using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
-using FluentAssertions;
-using Moq;
 using Xunit;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
@@ -18,7 +13,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
     {
         private VacancyUser _user;
         private User _userDetails;
-        private Mock<IProviderAlertsViewModelFactory> _providerAlertsViewModelFactoryMock;
         private Mock<IRecruitVacancyClient> _recruitVacancyClientMock;
         private Mock<IProviderRelationshipsService> _providerRelationshipsServiceMock;
 
@@ -45,7 +39,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
                 .Setup(x => x.GetUsersDetailsAsync(_user.UserId))
                 .ReturnsAsync(_userDetails);
 
-            _providerAlertsViewModelFactoryMock = new Mock<IProviderAlertsViewModelFactory>();
             _providerRelationshipsServiceMock = new Mock<IProviderRelationshipsService>();
         }
 

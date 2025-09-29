@@ -77,8 +77,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var transferredVacanciesTask = vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn);
             var dashboardStatsTask = trainingProviderService.GetProviderDashboardStats(ukprn, userId);
+            var alertsTask = trainingProviderService.GetProviderAlerts(Convert.ToInt32(ukprn), userId);
 
-            await Task.WhenAll(transferredVacanciesTask, dashboardStatsTask);
+            await Task.WhenAll(transferredVacanciesTask, alertsTask, dashboardStatsTask);
+            var alerts = await alertsTask;
 
             var transferredVacancies = transferredVacanciesTask.Result.Select(t =>
                 new ProviderDashboardTransferredVacancy
@@ -103,8 +105,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 NumberOfUnsuccessfulApplications = dashboardStats.UnsuccessfulApplicationsCount,
                 NumberClosingSoon = dashboardStats.ClosingSoonVacanciesCount,
                 NumberClosingSoonWithNoApplications = dashboardStats.ClosingSoonWithNoApplications,
-                ProviderTransferredVacanciesAlert = dashboardStats.ProviderTransferredVacanciesAlert,
-                WithdrawnVacanciesAlert = dashboardStats.WithdrawnVacanciesAlert,
+                ProviderTransferredVacanciesAlert = alerts.ProviderTransferredVacanciesAlert,
+                WithdrawnVacanciesAlert = alerts.WithdrawnVacanciesAlert,
                 TransferredVacancies = transferredVacancies
             };
         }
@@ -112,12 +114,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public async Task<ProviderDashboard> GetDashboardAsync(long ukprn, string userId, int page, int pageSize, string sortColumn, string sortOrder, FilteringOptions? status = null, string searchTerm = null)
         {
             var vacancySummariesTasks =
-                trainingProviderService.GetProviderVacancies(Convert.ToInt32(ukprn), userId, page, pageSize, sortColumn, sortOrder, status ?? FilteringOptions.Dashboard, searchTerm);
+                trainingProviderService.GetProviderVacancies(Convert.ToInt32(ukprn), page, pageSize, sortColumn, sortOrder, status ?? FilteringOptions.Dashboard, searchTerm);
+            var alertsTask = trainingProviderService.GetProviderAlerts(Convert.ToInt32(ukprn), userId);
             var transferredVacanciesTasks = vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn);
 
-            await Task.WhenAll(vacancySummariesTasks, transferredVacanciesTasks);
+
+            await Task.WhenAll(vacancySummariesTasks, alertsTask, transferredVacanciesTasks);
 
             var vacancySummariesResult = await vacancySummariesTasks;
+            var alerts = await alertsTask;
 
             var vacancySummaries = vacancySummariesResult.VacancySummaries
                 .Where(c=> !c.IsTraineeship).ToList();
@@ -141,8 +146,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 TransferredVacancies = transferredVacancies,
                 LastUpdated = timeProvider.Now,
                 TotalVacancies = vacancySummariesResult.PageInfo.TotalCount,
-                WithdrawnVacanciesAlert = vacancySummariesResult.WithdrawnVacanciesAlert,
-                ProviderTransferredVacanciesAlert = vacancySummariesResult.ProviderTransferredVacanciesAlert
+                WithdrawnVacanciesAlert = alerts.WithdrawnVacanciesAlert,
+                ProviderTransferredVacanciesAlert = alerts.ProviderTransferredVacanciesAlert,
             };
         }
 

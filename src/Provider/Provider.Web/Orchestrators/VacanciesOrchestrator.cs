@@ -30,6 +30,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             long ukprn = user.Ukprn ?? 0;
             var filteringOption = SanitizeFilter(filter);
             var getDashboardTask = providerVacancyClient.GetDashboardAsync(ukprn, user.UserId, page, VacanciesPerPage, "CreatedDate", "Desc", filteringOption, searchTerm);
+
             var providerTask = providerRelationshipsService.CheckProviderHasPermissions(ukprn, OperationType.RecruitmentRequiresReview);
 
             await Task.WhenAll(getDashboardTask, providerTask);
@@ -38,7 +39,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             bool providerPermissions = providerTask.Result;
             int totalItems = Convert.ToInt32(dashboard.TotalVacancies);
 
-            var vacancies = new List<VacancySummary>(dashboard?.Vacancies ?? []);
+            var vacancies = new List<VacancySummary>(dashboard.Vacancies ?? []);
             
             page = SanitizePage(page, totalItems);
 

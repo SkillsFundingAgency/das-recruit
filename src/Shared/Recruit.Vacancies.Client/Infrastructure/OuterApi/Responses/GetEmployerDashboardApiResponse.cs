@@ -1,6 +1,4 @@
-﻿using Esfa.Recruit.Vacancies.Client.Domain.Alerts;
-
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses
+﻿namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses
 {
     public record GetEmployerDashboardApiResponse
     {
@@ -18,10 +16,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses
         public int LiveVacanciesCount { get; set; }
         public int SubmittedVacanciesCount { get; set; }
         public int ClosingSoonVacanciesCount { get; set; }
-        public int ClosingSoonWithNoApplications { get; set; }
-        public EmployerTransferredVacanciesAlertModel EmployerRevokedTransferredVacanciesAlert { get; set; } = new();
-        public EmployerTransferredVacanciesAlertModel BlockedProviderTransferredVacanciesAlert { get; set; } = new();
-        public BlockedProviderAlertModel BlockedProviderAlert { get; set; } = new();
-        public WithdrawnVacanciesAlertModel WithDrawnByQaVacanciesAlert { get; set; } = new();
+        public int ClosingSoonWithNoApplications { get; init; }
     }
 }

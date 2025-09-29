@@ -15,11 +15,14 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             string employerAccountId,
             string userId,
             GetEmployerDashboardApiResponse apiResponse,
+            GetAlertsByAccountIdApiResponse alertsResponse,
             [Frozen] Mock<IEmployerAccountProvider> employerAccountProvider,
             VacancyClient vacancyClient)
         {
-            employerAccountProvider.Setup(x => x.GetEmployerDashboardStats(employerAccountId, userId))
+            employerAccountProvider.Setup(x => x.GetEmployerDashboardStats(employerAccountId))
                 .ReturnsAsync(apiResponse);
+            employerAccountProvider.Setup(x => x.GetEmployerAlerts(employerAccountId, userId))
+                .ReturnsAsync(alertsResponse);
 
             var actual = await vacancyClient.GetDashboardSummary(employerAccountId, userId);
 
@@ -44,20 +47,22 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                     apiResponse.ReferredVacanciesCount +
                     apiResponse.LiveVacanciesCount +
                     apiResponse.SubmittedVacanciesCount);
-            actual.BlockedProviderAlert.Should().Be(apiResponse.BlockedProviderAlert);
             actual.EmployerRevokedTransferredVacanciesAlert.Should()
-                .Be(apiResponse.EmployerRevokedTransferredVacanciesAlert);
+                .BeEquivalentTo(alertsResponse.EmployerRevokedTransferredVacanciesAlert);
+            actual.BlockedProviderAlert.Should().BeEquivalentTo(alertsResponse.BlockedProviderAlert);
+            actual.WithDrawnByQaVacanciesAlert.Should()
+                .BeEquivalentTo(alertsResponse.WithDrawnByQaVacanciesAlert);
             actual.BlockedProviderTransferredVacanciesAlert.Should()
-                .Be(apiResponse.BlockedProviderTransferredVacanciesAlert);
-            actual.WithDrawnByQaVacanciesAlert.Should().Be(apiResponse.WithDrawnByQaVacanciesAlert);
+                .BeEquivalentTo(alertsResponse.BlockedProviderTransferredVacanciesAlert);
 
-            employerAccountProvider.Verify(x => x.GetEmployerDashboardStats(employerAccountId, userId), Times.Once);
+            employerAccountProvider.Verify(x => x.GetEmployerDashboardStats(employerAccountId), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Then_Model_Values_Set_For_No_Vacancies(
             string employerAccountId,
             string userId,
+            GetAlertsByAccountIdApiResponse alertsResponse,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
             [Frozen] Mock<IEmployerAccountProvider> employerAccountProvider,
             VacancyClient vacancyClient)
@@ -68,7 +73,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 VacancyStatusDashboard = [],
                 VacancySharedApplicationsDashboard = []
             });
-            employerAccountProvider.Setup(x => x.GetEmployerDashboardStats(employerAccountId, userId))
+            employerAccountProvider.Setup(x => x.GetEmployerDashboardStats(employerAccountId))
                 .ReturnsAsync(new GetEmployerDashboardApiResponse
                 {
                     NewApplicationsCount = 0,
@@ -77,6 +82,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                     SharedApplicationsCount = 0,
                     EmployerReviewedApplicationsCount = 0
                 });
+            employerAccountProvider.Setup(x => x.GetEmployerAlerts(employerAccountId, userId))
+                .ReturnsAsync(alertsResponse);
 
             var actual = await vacancyClient.GetDashboardSummary(employerAccountId, userId);
             

@@ -143,7 +143,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
         }
 
-        public async Task<GetEmployerDashboardApiResponse> GetEmployerDashboardStats(string hashedAccountId, string userId)
+        public async Task<GetEmployerDashboardApiResponse> GetEmployerDashboardStats(string hashedAccountId)
         {
             logger.LogTrace("Getting Employer Dashboard Stats from Outer Api");
 
@@ -151,7 +151,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             var retryPolicy = PollyRetryPolicy.GetPolicy();
 
             return await retryPolicy.Execute(_ => outerApiClient.Get<GetEmployerDashboardApiResponse>(
-                    new GetEmployerDashboardCountApiRequest(accountId, userId)),
+                    new GetEmployerDashboardCountApiRequest(accountId)),
                 new Dictionary<string, object>
                 {
                     {
@@ -159,6 +159,47 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
                     }
                 });
         }
+
+        public async Task<GetVacanciesByAccountIdApiResponse> GetEmployerVacancies(string hashedAccountId,
+            int page,
+            int pageSize,
+            string sortColumn,
+            string sortOrder,
+            FilteringOptions filterBy,
+            string searchTerm)
+        {
+            logger.LogTrace("Getting Employer Vacancies from Outer Api");
+            long accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
+
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
+
+            return await retryPolicy.Execute(_ => outerApiClient.Get<GetVacanciesByAccountIdApiResponse>(
+                    new GetVacanciesByAccountIdApiRequest(accountId, page, pageSize, sortColumn, sortOrder, filterBy, searchTerm)),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Employers"
+                    }
+                });
+        }
+
+        public async Task<GetAlertsByAccountIdApiResponse> GetEmployerAlerts(string hashedAccountId, string userId)
+        {
+            logger.LogTrace("Getting Employer alerts from Outer Api");
+            long accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
+
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
+
+            return await retryPolicy.Execute(_ => outerApiClient.Get<GetAlertsByAccountIdApiResponse>(
+                    new GetAlertsByAccountIdApiRequest(accountId, userId)),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Employers"
+                    }
+                });
+        }
+
         public async Task<GetVacanciesDashboardResponse> GetEmployerVacancyDashboardStats(string hashedAccountId,
             List<ApplicationReviewStatus> statuses,
             int pageNumber = 1,

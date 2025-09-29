@@ -1,6 +1,4 @@
-﻿using Esfa.Recruit.Vacancies.Client.Domain.Alerts;
-
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses
+﻿namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses
 {
     public record GetProviderDashboardApiResponse
     {
@@ -19,7 +17,5 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses
         public int SubmittedVacanciesCount { get; init; }
         public int ClosingSoonVacanciesCount { get; init; }
         public int ClosingSoonWithNoApplications { get; init; }
-        public ProviderTransferredVacanciesAlertModel ProviderTransferredVacanciesAlert { get; set; } = new();
-        public WithdrawnVacanciesAlertModel WithdrawnVacanciesAlert { get; set; } = new();
     }
 }

@@ -52,8 +52,7 @@ namespace SFA.DAS.Recruit.Api.Queries
             }
             else
             {
-                var employerVacanciesTask = _employerVacancyClient.GetDashboardAsync(request.EmployerAccountId,
-                    request.PageNo, FilteringOptions.All, null);
+                var employerVacanciesTask = _employerVacancyClient.GetDashboardAsync(request.EmployerAccountId, "", request.PageNo, 25, "", "", FilteringOptions.All, null);
                 var totalVacanciesTask = _employerVacancyClient.GetVacancyCount(request.EmployerAccountId, FilteringOptions.All, null);
 
                 await Task.WhenAll(employerVacanciesTask, totalVacanciesTask);

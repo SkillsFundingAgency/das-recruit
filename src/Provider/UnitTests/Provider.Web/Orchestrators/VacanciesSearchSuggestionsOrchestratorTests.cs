@@ -52,7 +52,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
             var searchTerm = "century";
             var orch = GetSut(GenerateVacancySummaries(100, LegalEntityName, searchTerm), searchTerm);
             var result = await orch.GetSearchSuggestionsAsync(searchTerm, Ukprn);
-            result.Count().Should().Be(VacanciesSearchSuggestionsOrchestrator.MaxRowsInResult);
+            result.Count().Should().Be(50);
             result.Any(s => s.Equals(LegalEntityName)).Should().BeFalse();
         }
 

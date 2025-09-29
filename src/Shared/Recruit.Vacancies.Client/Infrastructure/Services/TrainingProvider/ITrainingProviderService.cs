@@ -48,7 +48,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
         ///  Contract to get all the vacancies by given filter options.
         /// </summary>
         /// <param name="ukprn"></param>
-        /// <param name="userId"></param>
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <param name="sortColumn"></param>
@@ -56,7 +55,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
         /// <param name="filterBy"></param>
         /// <param name="searchTerm"></param>
         /// <returns></returns>
-        Task<GetVacanciesByUkprnApiResponse> GetProviderVacancies(int ukprn, string userId, int page, int pageSize,
+        Task<GetVacanciesByUkprnApiResponse> GetProviderVacancies(int ukprn, int page, int pageSize,
             string sortColumn, string sortOrder, FilteringOptions filterBy, string searchTerm);
+
+        /// <summary>
+        /// Contract to get the alerts for a given provider ukprn.
+        /// </summary>
+        /// <param name="ukprn"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<GetAlertsByUkprnApiResponse> GetProviderAlerts(int ukprn, string userId);
     }
 }
