@@ -124,7 +124,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                     collection.Aggregate<BsonDocument>(bson).ToListAsync(),
             new Context(nameof(GetProviderApplicationsAsync)));
 
-            await ProcessResultsAsync(results);
+            var programmes = (await _programmeProvider.GetApprenticeshipProgrammesAsync(true)).ToList();
+            
+            await ProcessResultsAsync(results, programmes);
 
             _logger.LogInformation($"Report parameters ukprn:{ukprn} fromDate:{fromDate} toDate:{toDate} returned {results.Count} results");
 
@@ -139,11 +141,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             return new ReportStrategyResult(headers, data,"");
         }
 
-        private async Task ProcessResultsAsync(List<BsonDocument> results)
+        private async Task ProcessResultsAsync(List<BsonDocument> results, List<IApprenticeshipProgramme> programmes)
         {
             foreach (var result in results)
             {
-                await SetProgrammeAsync(result);
+                await SetProgrammeAsync(result,programmes);
                 
                 SetNumberOfDaysAtThisStatus(result);
                 SetVacancyReference(result);
@@ -151,7 +153,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             }
         }
 
-        private async Task SetProgrammeAsync(BsonDocument result)
+        private async Task SetProgrammeAsync(BsonDocument result, List<IApprenticeshipProgramme> programmes)
         {    
             var programmeId = result[ColumnProgramme].AsString;
             
@@ -165,7 +167,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                 result.Remove(ColumnProgramme);
                 return;
             }
-            var programme = await _programmeProvider.GetApprenticeshipProgrammeAsync(programmeId);
+            var programme = programmes.FirstOrDefault(c=>c.Id == programmeId);
 
             var programmeValue = $"{programme.Id} {programme.Title}";
             var programmeStatus = programme.IsActive ? "Active" : "Inactive";
