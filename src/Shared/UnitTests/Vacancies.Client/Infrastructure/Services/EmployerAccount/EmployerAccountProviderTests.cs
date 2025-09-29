@@ -42,7 +42,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public async Task GetEmployerDashboardStats_Should_Return_As_Expected(
             string hashedAccountId,
             long accountId,
-            string userId,
             GetEmployerDashboardApiResponse response,
             [Frozen] Mock<IEncodingService> encodingService,
             [Frozen] Mock<IOuterApiClient> outerApiClient,
@@ -51,12 +50,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             encodingService.Setup(x => x.Decode(hashedAccountId, EncodingType.AccountId))
                 .Returns(accountId);
 
-            var expectedGetUrl = new GetEmployerDashboardCountApiRequest(accountId, userId);
+            var expectedGetUrl = new GetEmployerDashboardCountApiRequest(accountId);
             outerApiClient.Setup(x => x.Get<GetEmployerDashboardApiResponse>(
                     It.Is<GetEmployerDashboardCountApiRequest>(r => r.GetUrl == expectedGetUrl.GetUrl)))
                 .ReturnsAsync(response);
 
-            var result = await employerAccountProvider.GetEmployerDashboardStats(hashedAccountId, userId);
+            var result = await employerAccountProvider.GetEmployerDashboardStats(hashedAccountId);
 
 
             result.Should().BeEquivalentTo(response);

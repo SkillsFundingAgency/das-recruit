@@ -30,8 +30,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
         /// Contract to get the dashboard stats from outer api by given ukprn number.
         /// </summary>
         /// <param name="ukprn"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-        Task<GetProviderDashboardApiResponse> GetProviderDashboardStats(long ukprn);
+        Task<GetProviderDashboardApiResponse> GetProviderDashboardStats(long ukprn, string userId);
         
         
         /// <summary>
@@ -42,5 +43,27 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
             List<ApplicationReviewStatus> vacancyReferences, int pageNumber, int pageSize);
 
         Task<IEnumerable<TrainingProviderSummary>> GetCourseProviders(int programmeId);
+
+        /// <summary>
+        ///  Contract to get all the vacancies by given filter options.
+        /// </summary>
+        /// <param name="ukprn"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="sortColumn"></param>
+        /// <param name="sortOrder"></param>
+        /// <param name="filterBy"></param>
+        /// <param name="searchTerm"></param>
+        /// <returns></returns>
+        Task<GetVacanciesByUkprnApiResponse> GetProviderVacancies(int ukprn, int page, int pageSize,
+            string sortColumn, string sortOrder, FilteringOptions filterBy, string searchTerm);
+
+        /// <summary>
+        /// Contract to get the alerts for a given provider ukprn.
+        /// </summary>
+        /// <param name="ukprn"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<GetAlertsByUkprnApiResponse> GetProviderAlerts(int ukprn, string userId);
     }
 }

@@ -54,7 +54,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
 
             var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-            var result = await retryPolicy.Execute(context => outerApiClient.Get<GetProviderResponseItem>(new GetProviderRequest(ukprn)), new Dictionary<string, object>() { { "apiCall", "Providers" } });
+            var result = await retryPolicy.Execute(_ =>
+                    outerApiClient.Get<GetProviderResponseItem>(new GetProviderRequest(ukprn)),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Providers"
+                    }
+                });
 
             return result;
         }
@@ -76,14 +83,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
                 });
         }
 
-        public async Task<GetProviderDashboardApiResponse> GetProviderDashboardStats(long ukprn)
+        public async Task<GetProviderDashboardApiResponse> GetProviderDashboardStats(long ukprn, string userId)
         {
             logger.LogTrace("Getting Provider Dashboard Stats from Outer Api");
 
             var retryPolicy = PollyRetryPolicy.GetPolicy();
 
             return await retryPolicy.Execute(_ => outerApiClient.Get<GetProviderDashboardApiResponse>(
-                    new GetProviderDashboardCountApiRequest(ukprn)),
+                    new GetProviderDashboardCountApiRequest(ukprn, userId)),
                 new Dictionary<string, object>
                 {
                     {
@@ -91,6 +98,29 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
                     }
                 });
         }
+
+        public async Task<GetVacanciesByUkprnApiResponse> GetProviderVacancies(int ukprn,
+            int page,
+            int pageSize,
+            string sortColumn,
+            string sortOrder,
+            FilteringOptions filterBy,
+            string searchTerm)
+        {
+            logger.LogTrace("Getting Provider Vacancies from Outer Api");
+
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
+
+            return await retryPolicy.Execute(_ => outerApiClient.Get<GetVacanciesByUkprnApiResponse>(
+                    new GetVacanciesByUkprnApiRequest(ukprn, page, pageSize, sortColumn, sortOrder, filterBy, searchTerm)),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Providers"
+                    }
+                });
+        }
+
 
         public async Task<GetVacanciesDashboardResponse> GetProviderDashboardVacanciesByApplicationReviewStatuses(
             long ukprn,
@@ -118,6 +148,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
                 ProviderName = x.Name,
                 Ukprn = x.Ukprn
             }) ?? [];
+        }
+
+        public async Task<GetAlertsByUkprnApiResponse> GetProviderAlerts(int ukprn, string userId)
+        {
+            logger.LogTrace("Getting Provider alerts from Outer Api");
+
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
+
+            return await retryPolicy.Execute(_ => outerApiClient.Get<GetAlertsByUkprnApiResponse>(
+                    new GetAlertsByUkprnApiRequest(ukprn, userId)),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Providers"
+                    }
+                });
         }
 
         private Task<TrainingProviders> GetProviders()

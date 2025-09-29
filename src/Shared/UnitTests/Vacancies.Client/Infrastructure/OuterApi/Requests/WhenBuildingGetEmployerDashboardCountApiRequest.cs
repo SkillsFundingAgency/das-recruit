@@ -9,11 +9,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
     {
         [Test, AutoData]
         public void Then_It_Is_Correctly_Constructed(
-            long accountId, string userId)
+            long accountId)
         {
-            var actual = new GetEmployerDashboardCountApiRequest(accountId, userId);
+            var actual = new GetEmployerDashboardCountApiRequest(accountId);
 
-            actual.GetUrl.Should().Be($"employerAccounts/{accountId}/dashboard?userId={userId}");
+            actual.GetUrl.Should().Be($"employerAccounts/{accountId}/dashboard");
         }
     }
 }
