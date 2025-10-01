@@ -3,6 +3,6 @@
 public static class FeatureNames
 {
     public const string FoundationApprenticeships = nameof(FoundationApprenticeships);
-    public const string MultipleLocations = nameof(MultipleLocations);
     public const string MongoMigrationEmployerProfiles = nameof(MongoMigrationEmployerProfiles);
+    public const string NotificationsMigration = nameof(NotificationsMigration);
 }

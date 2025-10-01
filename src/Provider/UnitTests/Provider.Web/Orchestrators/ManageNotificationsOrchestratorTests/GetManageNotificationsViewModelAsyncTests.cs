@@ -1,10 +1,8 @@
-using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
+using MediatR;
 using Microsoft.Extensions.Logging;
-using Moq;
 using Xunit;
 
 namespace Esfa.Recruit.UnitTests.Proivder.Web.Orchestrators.ManageNotificationsOrchestratorTests
@@ -56,7 +54,7 @@ namespace Esfa.Recruit.UnitTests.Proivder.Web.Orchestrators.ManageNotificationsO
         private ManageNotificationsOrchestrator GetSut()
         {
             var _loggerMock = new Mock<ILogger<ManageNotificationsOrchestrator>>();
-            return new ManageNotificationsOrchestrator(_loggerMock.Object, _recruitVacancyClientMock.Object);
+            return new ManageNotificationsOrchestrator(_loggerMock.Object, _recruitVacancyClientMock.Object, Mock.Of<IMediator>());
         }
     }
 }

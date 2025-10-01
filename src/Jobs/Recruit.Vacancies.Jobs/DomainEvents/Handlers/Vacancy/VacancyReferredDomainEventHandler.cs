@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Microsoft.Extensions.Logging;
 using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Communications;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 
 namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
 {
@@ -12,15 +13,22 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
     {
         private readonly ILogger<VacancyReferredDomainEventHandler> _logger;
         private readonly ICommunicationQueueService _queue;
+        private readonly IFeature _feature;
 
-        public VacancyReferredDomainEventHandler(ILogger<VacancyReferredDomainEventHandler> logger, ICommunicationQueueService queue) : base(logger)
+        public VacancyReferredDomainEventHandler(ILogger<VacancyReferredDomainEventHandler> logger, ICommunicationQueueService queue, IFeature feature) : base(logger)
         {
             _logger = logger;
             _queue = queue;
+            _feature = feature;
         }
 
         public async Task HandleAsync(string eventPayload)
         {
+            if (_feature.IsFeatureEnabled(FeatureNames.NotificationsMigration))
+            {
+                return;
+            }
+            
             var @event = DeserializeEvent<VacancyReferredEvent>(eventPayload);
             var communicationRequest = GetReferredVacancyCommunicationRequest(@event.VacancyReference);
 
