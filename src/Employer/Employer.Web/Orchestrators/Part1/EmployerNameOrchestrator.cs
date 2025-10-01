@@ -31,7 +31,7 @@ public class EmployerNameOrchestrator(
 
     public async Task<EmployerNameViewModel> GetEmployerNameViewModelAsync(TaskListViewModel vrm, VacancyEmployerInfoModel employerInfoModel)
     {
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Employer_Get);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm);
         var accountLegalEntityPublicHashedId = employerInfoModel?.AccountLegalEntityPublicHashedId ?? vacancy.AccountLegalEntityPublicHashedId;
         if (string.IsNullOrEmpty(accountLegalEntityPublicHashedId))
         {
@@ -76,7 +76,7 @@ public class EmployerNameOrchestrator(
         EmployerNameEditModel model, VacancyUser user)
     {
         var validationRules = VacancyRuleSet.EmployerNameOption;
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.EmployerName_Post);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model);
         vacancy.EmployerNameOption =  model.SelectedEmployerIdentityOption?.ConvertToDomainOption();
 
         SetVacancyWithEmployerReviewFieldIndicators(

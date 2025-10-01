@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
 
-            _utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId, false);
+            _utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             var vacancyAnalyticsTask = await _client.GetVacancyAnalyticsSummaryAsync(vacancy.VacancyReference.Value);
             var analyticsSummary = vacancyAnalyticsTask ?? new VacancyAnalyticsSummary();

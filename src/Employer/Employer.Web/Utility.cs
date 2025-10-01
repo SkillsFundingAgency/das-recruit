@@ -14,25 +14,25 @@ namespace Esfa.Recruit.Employer.Web;
 
 public interface IUtility
 {
-    Task<Vacancy> GetAuthorisedVacancyForEditAsync(VacancyRouteModel vrm, string routeName);
-    Task<Vacancy> GetAuthorisedVacancyAsync(VacancyRouteModel vrm, string routeName);
-    void CheckAuthorisedAccess(Vacancy vacancy, string employerAccountId, bool vacancySharedByProvider = false);
+    Task<Vacancy> GetAuthorisedVacancyForEditAsync(VacancyRouteModel vrm);
+    Task<Vacancy> GetAuthorisedVacancyAsync(VacancyRouteModel vrm);
+    void CheckAuthorisedAccess(Vacancy vacancy, string employerAccountId);
     PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy);
-    Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm, bool vacancySharedByProvider = false);
+    Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm);
     Task UpdateEmployerProfile(VacancyEmployerInfoModel employerInfoModel, EmployerProfile employerProfile, Address address, VacancyUser user);
     bool IsTaskListCompleted(Vacancy vacancy);
 }
     
 public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator taskListValidator) : IUtility
 {
-    public async Task<Vacancy> GetAuthorisedVacancyForEditAsync(VacancyRouteModel vrm, string routeName)
+    public async Task<Vacancy> GetAuthorisedVacancyForEditAsync(VacancyRouteModel vrm)
     {
-        var vacancy = await GetAuthorisedVacancyAsync(vrm, routeName);
+        var vacancy = await GetAuthorisedVacancyAsync(vrm);
         CheckCanEdit(vacancy);
         return vacancy;
     }
 
-    public async Task<Vacancy> GetAuthorisedVacancyAsync(VacancyRouteModel vrm, string routeName)
+    public async Task<Vacancy> GetAuthorisedVacancyAsync(VacancyRouteModel vrm)
     {
         var vacancy = await vacancyClient.GetVacancyAsync(vrm.VacancyId);
         CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
@@ -45,11 +45,11 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
             throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
     }
 
-    public void CheckAuthorisedAccess(Vacancy vacancy, string employerAccountId, bool vacancySharedByProvider = false)
+    public void CheckAuthorisedAccess(Vacancy vacancy, string employerAccountId)
     {
         if (!vacancy.EmployerAccountId.Equals(employerAccountId, StringComparison.OrdinalIgnoreCase))
             throw new AuthorisationException(string.Format(ExceptionMessages.VacancyUnauthorisedAccess, employerAccountId, vacancy.EmployerAccountId, vacancy.Title, vacancy.Id));
-        if (!vacancy.CanEmployerAndProviderCollabarate && vacancy.OwnerType != OwnerType.Employer && !vacancySharedByProvider)
+        if (!vacancy.CanEmployerAndProviderCollabarate && vacancy.OwnerType != OwnerType.Employer && !vacancy.CanEmployerReviewApplications)
             throw new AuthorisationException(string.Format(ExceptionMessages.UserIsNotTheOwner, OwnerType.Employer));
     }
 
@@ -79,7 +79,7 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
         };
     }
 
-    public async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm, bool vacancySharedByProvider = false)
+    public async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm)
     {
         var applicationReview = vacancyClient.GetApplicationReviewAsync(rm.ApplicationReviewId);
         var vacancy = vacancyClient.GetVacancyAsync(rm.VacancyId);
@@ -89,9 +89,16 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
         applicationReview.Result.AdditionalQuestion1 = vacancy.Result.AdditionalQuestion1;
         applicationReview.Result.AdditionalQuestion2 = vacancy.Result.AdditionalQuestion2;
         applicationReview.Result.VacancyTitle = vacancy.Result.Title;
+        var vacancySharedByProvider = applicationReview.Result.DateSharedWithEmployer != null;
         try
         {
-            CheckAuthorisedAccess(vacancy.Result, rm.EmployerAccountId, vacancySharedByProvider);
+            CheckAuthorisedAccess(vacancy.Result, rm.EmployerAccountId);
+
+            if (!vacancySharedByProvider && vacancy.Result.OwnerType != OwnerType.Employer)
+            {
+                throw new AuthorisationException(string.Format(ExceptionMessages.UserIsNotTheOwner, OwnerType.Employer));
+            }
+            
             return applicationReview.Result;
         }
         catch (Exception)

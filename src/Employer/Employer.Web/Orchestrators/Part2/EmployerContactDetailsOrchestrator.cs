@@ -24,7 +24,7 @@ public class EmployerContactDetailsOrchestrator(
 
     public async Task<EmployerContactDetailsViewModel> GetEmployerContactDetailsViewModelAsync(TaskListViewModel model)
     {
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.EmployerContactDetails_Get);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model);
         var vm = new EmployerContactDetailsViewModel
         {
             EmployerAccountId = vacancy.EmployerAccountId,
@@ -59,7 +59,7 @@ public class EmployerContactDetailsOrchestrator(
 
     public async Task<OrchestratorResponse> PostEmployerContactDetailsEditModelAsync(EmployerContactDetailsEditModel m, VacancyUser user)
     {
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.EmployerContactDetails_Post);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m);
 
         if (vacancy.EmployerContact == null)
             vacancy.EmployerContact = new ContactDetail();

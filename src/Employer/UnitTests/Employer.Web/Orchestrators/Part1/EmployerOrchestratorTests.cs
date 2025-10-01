@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
             EmployerOrchestrator orchestrator)
         {
-            utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.Employer_Get))
+            utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel))
                 .ReturnsAsync(vacancy);
             vacancyClient.Setup(x => x.Validate(vacancy, VacancyRuleSet.None))
                 .Returns(new EntityValidationResult { Errors = null });
@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
         {
             // arrange
             legalEntities.First().AccountLegalEntityPublicHashedId = vacancyEmployerInfoModel.AccountLegalEntityPublicHashedId;
-            utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.Employer_Get)).ReturnsAsync(vacancy);
+            utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel)).ReturnsAsync(vacancy);
             vacancyClient.Setup(x => x.Validate(vacancy, VacancyRuleSet.None)).Returns(new EntityValidationResult { Errors = null });
             employerVacancyClient.Setup(x => x.GetEmployerLegalEntitiesAsync(vacancyRouteModel.EmployerAccountId)).ReturnsAsync(legalEntities);
             

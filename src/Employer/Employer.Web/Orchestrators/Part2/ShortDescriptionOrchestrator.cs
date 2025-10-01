@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.ShortDescription_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
 
             var vm = new ShortDescriptionViewModel
             {
@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostShortDescriptionEditModelAsync(ShortDescriptionEditModel m, VacancyUser user)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.ShortDescription_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m);
 
             SetVacancyWithEmployerReviewFieldIndicators(
                 vacancy.ShortDescription,
@@ -81,9 +81,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         protected override EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionEditModel> DefineMappings()
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionEditModel>();
-
-            mappings.Add(e => e.ShortDescription, vm => vm.ShortDescription);
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionEditModel>
+            {
+                { e => e.ShortDescription, vm => vm.ShortDescription }
+            };
 
             return mappings;
         }

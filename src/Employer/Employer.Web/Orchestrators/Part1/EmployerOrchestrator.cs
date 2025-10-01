@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var setPage = requestedPageNo.HasValue ? requestedPageNo.Value : 1;
 
             var getEmployerDataTask = employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
-            var getVacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Employer_Get);
+            var getVacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm);
             await Task.WhenAll(getEmployerDataTask, getVacancyTask);
             var employerData = getEmployerDataTask.Result;
             var vacancy = getVacancyTask.Result;
@@ -109,7 +109,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task SetAccountLegalEntityPublicId(VacancyRouteModel vrm, VacancyEmployerInfoModel info, VacancyUser user)
         {
-            var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Employer_Get);
+            var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm);
             var legalEntitiesTask = employerVacancyClient.GetEmployerLegalEntitiesAsync(vrm.EmployerAccountId);
             await Task.WhenAll(vacancyTask, legalEntitiesTask);
 

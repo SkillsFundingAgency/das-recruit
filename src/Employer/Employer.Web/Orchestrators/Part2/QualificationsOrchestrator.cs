@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<QualificationsViewModel> GetQualificationsViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Qualifications_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
 
             var qualifications = vacancy.Qualifications ?? new List<Qualification>();
 
@@ -67,13 +67,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostAddQualificationEditModel(AddQualificationsEditModel m, VacancyUser user)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Qualifications_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m);
             return await UpdateVacancyWithAddQualifications(vacancy, m, user);
         }
 
         public async Task<QualificationViewModel> GetQualificationViewModelForAddAsync(VacancyRouteModel vrm)
         {
-            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Qualification_Add_Get);
+            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm);
             var allQualificationsTask = _vacancyClient.GetCandidateQualificationsAsync();
 
             await Task.WhenAll(vacancyTask, allQualificationsTask);
@@ -86,7 +86,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<QualificationViewModel> GetQualificationViewModelForEditAsync(VacancyRouteModel vrm, int index)
         {
-            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Qualification_Edit_Get);
+            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm);
             var allQualificationsTask = _vacancyClient.GetCandidateQualificationsAsync();
 
             await Task.WhenAll(vacancyTask, allQualificationsTask);
@@ -134,7 +134,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostQualificationEditModelForAddAsync(VacancyRouteModel vrm, QualificationEditModel m, VacancyUser user)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Qualification_Add_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
 
             if (vacancy.Qualifications == null)
                 vacancy.Qualifications = new List<Qualification>();
@@ -147,7 +147,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostQualificationEditModelForEditAsync(VacancyRouteModel vrm, QualificationEditModel m, VacancyUser user, int index)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Qualification_Edit_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
 
             var qualification = vacancy.Qualifications[index];
             var currentQualification = new Qualification
@@ -165,7 +165,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task DeleteQualificationAsync(VacancyRouteModel vrm, int index, VacancyUser user)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Qualifications_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
 
             if (vacancy.Qualifications == null)
                 return;

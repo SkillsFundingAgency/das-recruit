@@ -7,7 +7,7 @@
 }
 
 @section BackLink {
-    <a asp-route="@RouteNames.VacancyManage_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-vacancySharedByProvider="@Model.IsApplicationSharedByProvider" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-route="@RouteNames.VacancyManage_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
@@ -344,7 +344,8 @@
 
             <a asp-route="@RouteNames.VacancyManage_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button">Return to advert</a>
         </div>
-        <form asp-show="@Model.CanChangeOutcome" asp-hide="@Model.HideRadioButtons" asp-route="@RouteNames.ApplicationReview_Post" asp-all-route-data="@Model.ApplicationRouteDictionary" asp-route-vacancySharedByProvider=@Model.IsApplicationSharedByProvider class="govuk-!-margin-top-6">
+        <form asp-show="@Model.CanChangeOutcome" asp-hide="@Model.HideRadioButtons" asp-route="@RouteNames.ApplicationReview_Post" asp-all-route-data="@Model.ApplicationRouteDictionary" class="govuk-!-margin-top-6">
+            <input type="hidden" asp-for="IsApplicationSharedByProvider"/>
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
@@ -415,7 +416,7 @@
 
             <div class="govuk-button-group hide-print">
                 <button type="submit" class="govuk-button">Continue</button>
-                <a asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@Model.VacancyId" asp-route-employerAccountId="@Model.EmployerAccountId" asp-all-route-data="@Model.RouteDictionary" asp-route-vacancySharedByProvider="@Model.IsApplicationSharedByProvider" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@Model.VacancyId" asp-route-employerAccountId="@Model.EmployerAccountId" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
             </div>
         </form>
     </div>
