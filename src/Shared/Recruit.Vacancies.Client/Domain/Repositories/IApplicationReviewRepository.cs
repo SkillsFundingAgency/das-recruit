@@ -12,6 +12,10 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
         Task<List<ApplicationReview>> GetForSharedVacancyAsync(long vacancyReference);
         Task<List<ApplicationReview>> GetForVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder);
         Task<List<ApplicationReview>> GetForSharedVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder);
+        Task<ApplicationReview> GetAsync(long vacancyReference, Guid candidateId);
+        Task<List<ApplicationReview>> GetByStatusAsync(long vacancyReference, ApplicationReviewStatus status);
+        Task<List<T>> GetAllForSelectedIdsAsync<T>(List<Guid> applicationReviewIds);
+        Task<List<ApplicationReview>> GetAllForVacancyWithTemporaryStatus(long vacancyReference, ApplicationReviewStatus status);
     }
 
     public interface IMongoDbRepository : IApplicationReadRepository;
@@ -22,7 +26,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
         Task CreateAsync(ApplicationReview review);   
         Task<ApplicationReview> GetAsync(long vacancyReference, Guid candidateId);
         Task<List<ApplicationReview>> GetByStatusAsync(long vacancyReference, ApplicationReviewStatus status);
-        Task HardDelete(Guid applicationReviewId);
         Task<List<T>> GetAllForSelectedIdsAsync<T>(List<Guid> applicationReviewIds);
         Task<List<ApplicationReview>> GetAllForVacancyWithTemporaryStatus(long vacancyReference, ApplicationReviewStatus status);
     }
