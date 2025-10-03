@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Providers
     {
         Task<IEnumerable<IApprenticeshipProgramme>> GetApprenticeshipProgrammesAsync(bool includeExpired = false, int? ukprn = null);
 
-        Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId);
+        Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId, int? ukprn = null);
 
         Task<ApprenticeshipStandard> GetApprenticeshipStandardVacancyPreviewData(int programmedId);
     }

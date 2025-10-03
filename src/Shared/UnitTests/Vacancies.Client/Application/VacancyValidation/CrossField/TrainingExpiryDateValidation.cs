@@ -113,7 +113,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             result.Errors[0].PropertyName.Should().Be(nameof(Vacancy.StartDate));
             result.Errors[0].ErrorCode.Should().Be(ErrorCodes.TrainingExpiryDate);
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingExpiryDate);
-            result.Errors[0].ErrorMessage.Should().Be($"Start date must be on or before {effectiveTo.AsGdsDate()} as this is the last day for new starters for the training course you have selected. If you don’t want to change the start date, you can change the training course");
+            result.Errors[0].ErrorMessage.Should().Be($"Start date must be on or before {effectiveTo.AsGdsDate()} as this is the last day for new starters for the training course you have selected. If you don't want to change the start date, you can change the training course");
         }
         
         [Fact]
@@ -146,7 +146,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             result.Errors[0].PropertyName.Should().Be(nameof(Vacancy.StartDate));
             result.Errors[0].ErrorCode.Should().Be(ErrorCodes.TrainingExpiryDate);
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingExpiryDate);
-            result.Errors[0].ErrorMessage.Should().Be($"Start date must be on or before {lastDateStarts.AsGdsDate()} as this is the last day for new starters for the training course you have selected. If you don’t want to change the start date, you can change the training course");
+            result.Errors[0].ErrorMessage.Should().Be($"Start date must be on or before {lastDateStarts.AsGdsDate()} as this is the last day for new starters for the training course you have selected. If you don't want to change the start date, you can change the training course");
         }
     }
 }

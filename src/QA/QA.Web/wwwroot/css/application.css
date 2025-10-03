@@ -486,3 +486,9 @@ mce-tinymce {
 .float-right {
     float: right;
 }
+
+.das-hyperlink-wrapper {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}

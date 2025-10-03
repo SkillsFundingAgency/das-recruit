@@ -687,3 +687,15 @@ span.govuk-error-message:empty {
 dd.govuk-summary-list__value .faa-user-content:first-child {
     white-space: normal
 }
+
+.govuk-body.govuk-hint {
+  color: #505a5f;
+}
+
+@media (min-width: 40.0625em) {
+  .faa-summary-card {
+    .govuk-summary-list__key {
+      width: 50%;
+    }
+  }
+}

@@ -1,21 +1,22 @@
 ﻿using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.PasAccount;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
     public class ProviderAgreementOrchestrator : Controller
     {
-        private readonly IPasAccountProvider _pasAccountProvider;
+        private readonly IGetProviderStatusClient _pasAccountProvider;
 
-        public ProviderAgreementOrchestrator(IPasAccountProvider pasAccountProvider)
+        public ProviderAgreementOrchestrator(IGetProviderStatusClient pasAccountProvider)
         {
             _pasAccountProvider = pasAccountProvider;
         }
 
-        public Task<bool> HasAgreementAsync(long ukprn)
+        public async Task<bool> HasAgreementAsync(long ukprn)
         {
-            return _pasAccountProvider.HasAgreementAsync(ukprn);
+            var result = await _pasAccountProvider.GetProviderStatus(ukprn);
+            return result.CanAccessService;
         }
     }
 }

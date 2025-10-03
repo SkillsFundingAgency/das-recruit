@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.PasAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Microsoft.Extensions.Logging;
@@ -16,19 +15,19 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
         private readonly IEditVacancyInfoProjectionService _projectionService;
         private readonly IProviderRelationshipsService _providerRelationshipService;
         private readonly IEmployerVacancyClient _client;
-        private readonly IPasAccountProvider _pasAccountProvider;
+        private readonly IGetProviderStatusClient _providerStatusClient;
 
         public SetupProviderHandler(ILogger<SetupProviderHandler> logger,
             IEditVacancyInfoProjectionService projectionService,
             IProviderRelationshipsService providerRelationshipService,
             IEmployerVacancyClient client,
-            IPasAccountProvider pasAccountProvider) : base(logger)
+            IGetProviderStatusClient providerStatusClient) : base(logger)
         {
             _logger = logger;
             _projectionService = projectionService;
             _providerRelationshipService = providerRelationshipService;
             _client = client;
-            _pasAccountProvider = pasAccountProvider;
+            _providerStatusClient = providerStatusClient;
         }
 
         public async Task HandleAsync(string eventPayload)
@@ -40,9 +39,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
                 _logger.LogInformation($"Processing {nameof(SetupProviderEvent)} for Ukprn: {{Ukprn}}", eventData.Ukprn);
 
                 var employerInfosTask = _providerRelationshipService.GetLegalEntitiesForProviderAsync(eventData.Ukprn, OperationType.Recruitment);
-                var providerAgreementTask = _pasAccountProvider.HasAgreementAsync(eventData.Ukprn);
+                var providerStatus = _providerStatusClient.GetProviderStatus(eventData.Ukprn);
 
-                await Task.WhenAll(employerInfosTask, providerAgreementTask);
+                await Task.WhenAll(employerInfosTask, providerStatus);
 
                 var employerInfos = employerInfosTask.Result;
                 
@@ -51,9 +50,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
                     await _client.SetupEmployerAsync(employerInfo.EmployerAccountId);
                 }
 
-                await _projectionService.UpdateProviderVacancyDataAsync(eventData.Ukprn, employerInfos, providerAgreementTask.Result);
+                await _projectionService.UpdateProviderVacancyDataAsync(eventData.Ukprn, employerInfos, providerStatus.Result.CanAccessService);
 
-                _logger.LogInformation($"Finished Processing {nameof(SetupProviderEvent)} for Ukprn: {{Ukprn}} has agreement:{providerAgreementTask.Result}", eventData.Ukprn);
+                _logger.LogInformation($"Finished Processing {nameof(SetupProviderEvent)} for Ukprn: {{Ukprn}} has agreement:{providerStatus.Result}", eventData.Ukprn);
             }
             catch (Exception ex)
             {

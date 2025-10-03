@@ -115,7 +115,7 @@
             {
                 foreach (var qualification in Model.QualificationGroups.Where(c => c.QualificationType.Equals(qualificationType.QualificationType, StringComparison.CurrentCultureIgnoreCase)))
                 {
-                    <div class="govuk-summary-card">
+                    <div class="govuk-summary-card faa-summary-card">
                         <div class="govuk-summary-card__title-wrapper">
                             <h3 class="govuk-summary-card__title">
                                 @qualificationType.HeaderName
@@ -154,7 +154,7 @@
             <h2 class="govuk-heading-l">Training courses</h2>
             @foreach (var course in Model.TrainingCourses)
             {
-                <div class="govuk-summary-card">
+                <div class="govuk-summary-card faa-summary-card">
                     <div class="govuk-summary-card__title-wrapper">
                         <h3 class="govuk-summary-card__title">
                             @course.Title
@@ -184,7 +184,7 @@
             <h2 class="govuk-heading-l">Jobs</h2>
             @foreach (var job in Model.Jobs)
             {
-                <div class="govuk-summary-card">
+                <div class="govuk-summary-card faa-summary-card">
                     <div class="govuk-summary-card__title-wrapper">
                         <h3 class="govuk-summary-card__title">
                             @job.Employer, @job.JobTitle
@@ -222,7 +222,7 @@
             <h2 class="govuk-heading-l">Volunteering and work experience</h2>
             @foreach (var workExperience in Model.WorkExperiences)
             {
-                <div class="govuk-summary-card">
+                <div class="govuk-summary-card faa-summary-card">
                     <div class="govuk-summary-card__title-wrapper">
                         <h3 class="govuk-summary-card__title">
                             @workExperience.Employer @workExperience.JobTitle
