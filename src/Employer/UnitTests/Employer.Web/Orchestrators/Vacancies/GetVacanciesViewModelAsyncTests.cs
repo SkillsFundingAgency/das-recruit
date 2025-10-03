@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Employer.Web.Orchestrators;
-using Esfa.Recruit.Employer.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
@@ -13,6 +11,19 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
     public class GetVacanciesViewModelAsyncTests
     {
         const string EmployerAccountId = "ABCDE";
+        private const string UserId = "User-Id";
+        private VacancyUser _user;
+
+        public GetVacanciesViewModelAsyncTests()
+        {
+            _user = new VacancyUser
+            {
+                Email = "F.Sinatra@gmail.com",
+                Name = "Frank Sinatra",
+                Ukprn = 54321,
+                UserId = UserId
+            };
+        }
 
         [Test]
         public async Task WhenHaveOver25Vacancies_ShouldShowPager()
@@ -30,7 +41,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
 
             var orch = GetOrchestrator(vacancies, 2, FilteringOptions.Submitted, string.Empty, 27);
 
-            var vm = await orch.GetVacanciesViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser(), string.Empty);
+            var vm = await orch.GetVacanciesViewModelAsync(EmployerAccountId, "Submitted", 2, _user, string.Empty);
 
             vm.ShowResultsTable.Should().BeTrue();
             
@@ -55,7 +66,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
 
             var orch = GetOrchestrator(vacancies, 2, FilteringOptions.Submitted, string.Empty, 25);
 
-            var vm = await orch.GetVacanciesViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser(), string.Empty);
+            var vm = await orch.GetVacanciesViewModelAsync(EmployerAccountId, "Submitted", 2, _user, string.Empty);
 
             vm.ShowResultsTable.Should().BeTrue();
             
@@ -83,7 +94,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
 
             var orch = GetOrchestrator(vacancies, 1, filterOption, string.Empty, 3);
 
-            var vm = await orch.GetVacanciesViewModelAsync(EmployerAccountId, "NewSharedApplications", 1, new VacancyUser(), string.Empty);
+            var vm = await orch.GetVacanciesViewModelAsync(EmployerAccountId, "NewSharedApplications", 1, _user, string.Empty);
 
             vm.Vacancies.Count.Should().Be(3);
             vm.Vacancies.All(x => x.HasSharedApplications).Should().BeTrue();
@@ -128,7 +139,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
 
             var orchestrator = GetOrchestrator(vacancies, 1, filterOption, string.Empty, 3);
 
-            var vm = await orchestrator.GetVacanciesViewModelAsync(EmployerAccountId, "AllApplications", 1, new VacancyUser(), string.Empty);
+            var vm = await orchestrator.GetVacanciesViewModelAsync(EmployerAccountId, "AllApplications", 1, _user, string.Empty);
 
             vm.Vacancies.Count.Should().Be(9);
             vm.Vacancies.All(x => x.HasNewApplications).Should().BeFalse();
@@ -158,7 +169,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
 
             var orch = GetOrchestrator(vacancies, 1, filterOption, string.Empty, 3);
 
-            var vm = await orch.GetVacanciesViewModelAsync(EmployerAccountId, "NewApplications", 1, new VacancyUser(), string.Empty);
+            var vm = await orch.GetVacanciesViewModelAsync(EmployerAccountId, "NewApplications", 1, _user, string.Empty);
 
             vm.Vacancies.Count.Should().Be(3);
             vm.Vacancies.All(x => x.HasSharedApplications).Should().BeFalse();
@@ -168,25 +179,16 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
             vm.ShowNewApplicationCounts.Should().BeTrue();
         }
 
-        private VacanciesOrchestrator GetOrchestrator(List<VacancySummary> vacancies, int page, FilteringOptions status, string searchTerm, int totalVacancies )
+        private VacanciesOrchestrator GetOrchestrator(List<VacancySummary> vacancies, int page, FilteringOptions status, string searchTerm, int totalVacancies)
         {
-            var timeProviderMock = new Mock<ITimeProvider>();
-
             var clientMock = new Mock<IEmployerVacancyClient>();
-            clientMock.Setup(c => c.GetDashboardAsync(EmployerAccountId,page, status, searchTerm))
+            clientMock.Setup(c => c.GetDashboardAsync(EmployerAccountId, UserId, page, 25, "CreatedDate", "Desc", status, searchTerm))
                 .ReturnsAsync(new EmployerDashboard
                 {
-                    Vacancies = vacancies
+                    Vacancies = vacancies,
+                    TotalVacancies = totalVacancies
                 });
-            
-            var recruitClientMock = new Mock<IRecruitVacancyClient>();
-            recruitClientMock.Setup(c => c.GetUsersDetailsAsync(It.IsAny<string>())).ReturnsAsync(new User());
-            clientMock.Setup(x => x.GetVacancyCount(EmployerAccountId, status, string.Empty))
-                .ReturnsAsync(totalVacancies);
-            
-            var alertsFactoryMock = new Mock<IEmployerAlertsViewModelFactory>();
-
-            return new VacanciesOrchestrator(clientMock.Object, recruitClientMock.Object, alertsFactoryMock.Object);
+            return new VacanciesOrchestrator(clientMock.Object);
         }
     }
 }

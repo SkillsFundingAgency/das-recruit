@@ -1,3 +1,5 @@
+using Esfa.Recruit.Vacancies.Client.Domain.Alerts;
+
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer
 {
     public class EmployerDashboardSummary
@@ -19,6 +21,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Em
         public int NumberClosingSoonWithNoApplications { get; set; }
         public int NumberOfSharedApplications { get; set; }
         public int NumberOfAllSharedApplications { get; set; }
+        public EmployerTransferredVacanciesAlertModel EmployerRevokedTransferredVacanciesAlert { get; set; } = new();
+        public EmployerTransferredVacanciesAlertModel BlockedProviderTransferredVacanciesAlert { get; set; } = new();
+        public BlockedProviderAlertModel BlockedProviderAlert { get; set; } = new();
+        public WithdrawnVacanciesAlertModel WithDrawnByQaVacanciesAlert { get; set; } = new();
 
         public bool HasApplications =>
             NumberOfNewApplications + NumberOfSuccessfulApplications + NumberOfUnsuccessfulApplications > 0;
