@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             [FromQuery] bool wizard)
         {
             ModelState.ThrowIfBindingErrors();
-            var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.AddOneLocation_Get);
+            var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel);
             var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy);
             var selectedLocation = vacancy.EmployerLocations is { Count: 1 } ? vacancy.EmployerLocations[0] : null;
 
@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             AddOneLocationEditModel model,
             [FromQuery] bool wizard)
         {
-            var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddOneLocation_Post);
+            var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model);
             var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy);
             var location = allLocations.FirstOrDefault(x => x.ToAddressString() == model.SelectedLocation);
             var result = await vacancyLocationService.UpdateDraftVacancyLocations(
