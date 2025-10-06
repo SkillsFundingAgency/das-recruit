@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application
             {
                 _logger.LogInformation($"Processing {nameof(ApplicationSubmittedEvent)} for vacancy: {{VacancyReference}} and candidate: {{CandidateId}}", @event.Application.VacancyReference, @event.Application.CandidateId);
 
-                //await _client.CreateApplicationReviewAsync(@event.Application);
+                await _client.CreateApplicationReviewAsync(@event.Application);
 
                 await _communicationQueueService.AddMessageAsync(communicationRequest);
 
