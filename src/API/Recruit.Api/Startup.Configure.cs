@@ -32,7 +32,11 @@ namespace SFA.DAS.Recruit.Api
             if (env.IsDevelopment())
             {
                 var configuration = (TelemetryConfiguration)app.ApplicationServices.GetService(typeof(TelemetryConfiguration));
-                configuration.DisableTelemetry = true;
+                if (configuration != null)
+                {
+                    configuration.DisableTelemetry = true;    
+                }
+                
                 app.UseDeveloperExceptionPage();
             }
             else

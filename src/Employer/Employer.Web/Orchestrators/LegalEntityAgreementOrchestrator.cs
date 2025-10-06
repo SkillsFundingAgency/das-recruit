@@ -11,7 +11,7 @@ public class LegalEntityAgreementOrchestrator(ILegalEntityAgreementService legal
     public async Task<LegalEntityAgreementSoftStopViewModel> GetLegalEntityAgreementSoftStopViewModelAsync(
         TaskListViewModel vrm, string selectedAccountLegalEntityPublicHashedId)
     {
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.LegalEntityAgreement_SoftStop_Get);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm);
         var accountLegalEntityPublicHashedId = !string.IsNullOrEmpty(selectedAccountLegalEntityPublicHashedId) ? selectedAccountLegalEntityPublicHashedId : vacancy.AccountLegalEntityPublicHashedId;
         var legalEntity = await legalEntityAgreementService.GetLegalEntityAsync(vrm.EmployerAccountId, accountLegalEntityPublicHashedId);
         var hasLegalEntityAgreement = await legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, legalEntity);
@@ -28,7 +28,7 @@ public class LegalEntityAgreementOrchestrator(ILegalEntityAgreementService legal
 
     public async Task<LegalEntityAgreementHardStopViewModel> GetLegalEntityAgreementHardStopViewModelAsync(TaskListViewModel vrm)
     {
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.LegalEntityAgreement_HardStop_Get);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm);
         return new LegalEntityAgreementHardStopViewModel
         {
             HasLegalEntityAgreement = await legalEntityAgreementService.HasLegalEntityAgreementAsync(

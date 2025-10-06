@@ -37,10 +37,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 Name = "Jack Sparrow",
                 FriendlyId = "CASDFG3R"
             };
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
-            {
-                new Claim(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier, _applicationReviewId.ToString()),
-            }));
+            var user = new ClaimsPrincipal(new ClaimsIdentity([
+                new Claim(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier, _applicationReviewId.ToString())
+            ]));
             var httpContext = new DefaultHttpContext();
             var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
             _controller = new ApplicationReviewController(_orchestrator.Object)
@@ -57,16 +56,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         public async Task GET_ApplicationReview_ApplicationNew_CanShowRadioButtonReviewAndInterviewingTrue()
         {
             // Arrange
-            var expectedCanShowRadioButtonReview = true;
-            var expectedCanShowRadioButtonInterviewing = true;
-            var vacancySharedByProvider = false;
             var routeModel = _fixture.Build<ApplicationReviewRouteModel>()
                 .With(x => x.ApplicationReviewId, _applicationReviewId)
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.EmployerAccountId, _employerAccountId)
                 .Create();
 
-            _orchestrator.Setup(o => o.GetApplicationReviewViewModelAsync(It.Is<ApplicationReviewRouteModel>(y => y == routeModel), vacancySharedByProvider))
+            _orchestrator.Setup(o => o.GetApplicationReviewViewModelAsync(routeModel))
                 .ReturnsAsync(new ApplicationReviewViewModel 
                 {
                     ApplicationReviewId = _applicationReviewId,
@@ -76,30 +72,29 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 });
 
             // Act
-            var result = await _controller.ApplicationReview(routeModel, vacancySharedByProvider) as ViewResult;
+            var result = await _controller.ApplicationReview(routeModel) as ViewResult;
 
             // Assert
+            Assert.That(result, Is.Not.Null);
             var actual = result.Model as ApplicationReviewViewModel;
+            Assert.That(actual, Is.Not.Null);
             Assert.That(actual.VacancyId, Is.EqualTo(routeModel.VacancyId));
             Assert.That(actual.EmployerAccountId, Is.EqualTo(routeModel.EmployerAccountId));
-            Assert.That(expectedCanShowRadioButtonReview, Is.EqualTo(actual.CanShowRadioButtonReview));
-            Assert.That(expectedCanShowRadioButtonInterviewing, Is.EqualTo(actual.CanShowRadioButtonInterviewing));
+            Assert.That(actual.CanShowRadioButtonReview, Is.True);
+            Assert.That(actual.CanShowRadioButtonInterviewing, Is.True);
         }
 
         [Test]
         public async Task GET_ApplicationReview_ApplicationInReview_CanShowRadioButtonReviewFalseAndCanShowRadioButtonInterviewingTrue()
         {
             // Arrange
-            var expectedCanShowRadioButtonReview = false;
-            var expectedCanShowRadioButtonInterviewing = true;
-            var vacancySharedByProvider = false;
             var routeModel = _fixture.Build<ApplicationReviewRouteModel>()
                 .With(x => x.ApplicationReviewId, _applicationReviewId)
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.EmployerAccountId, _employerAccountId)
                 .Create();
 
-            _orchestrator.Setup(o => o.GetApplicationReviewViewModelAsync(It.Is<ApplicationReviewRouteModel>(y => y == routeModel), vacancySharedByProvider))
+            _orchestrator.Setup(o => o.GetApplicationReviewViewModelAsync(routeModel))
                 .ReturnsAsync(new ApplicationReviewViewModel
                 {
                     ApplicationReviewId = _applicationReviewId,
@@ -109,30 +104,29 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 });
 
             // Act
-            var result = await _controller.ApplicationReview(routeModel, vacancySharedByProvider) as ViewResult;
+            var result = await _controller.ApplicationReview(routeModel) as ViewResult;
 
             // Assert
+            Assert.That(result, Is.Not.Null);
             var actual = result.Model as ApplicationReviewViewModel;
+            Assert.That(actual, Is.Not.Null);
             Assert.That(actual.VacancyId, Is.EqualTo(routeModel.VacancyId));
             Assert.That(actual.EmployerAccountId, Is.EqualTo(routeModel.EmployerAccountId));
-            Assert.That(expectedCanShowRadioButtonReview, Is.EqualTo(actual.CanShowRadioButtonReview));
-            Assert.That(expectedCanShowRadioButtonInterviewing, Is.EqualTo(actual.CanShowRadioButtonInterviewing));
+            Assert.That(actual.CanShowRadioButtonReview, Is.False);
+            Assert.That(actual.CanShowRadioButtonInterviewing, Is.True);
         }
 
         [Test]
         public async Task GET_ApplicationReview_Applicationunsuccessful_CanShowRadioButtonReviewAndInterviewingFalse()
         {
             // Arrange
-            var expectedCanShowRadioButtonReview = false;
-            var expectedCanShowRadioButtonInterviewing = false;
-            var vacancySharedByProvider = false;
             var routeModel = _fixture.Build<ApplicationReviewRouteModel>()
                 .With(x => x.ApplicationReviewId, _applicationReviewId)
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.EmployerAccountId, _employerAccountId)
                 .Create();
 
-            _orchestrator.Setup(o => o.GetApplicationReviewViewModelAsync(It.Is<ApplicationReviewRouteModel>(y => y == routeModel), vacancySharedByProvider))
+            _orchestrator.Setup(o => o.GetApplicationReviewViewModelAsync(routeModel))
                 .ReturnsAsync(new ApplicationReviewViewModel
                 {
                     ApplicationReviewId = _applicationReviewId,
@@ -142,33 +136,35 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 });
 
             // Act
-            var result = await _controller.ApplicationReview(routeModel, vacancySharedByProvider) as ViewResult;
+            var result = await _controller.ApplicationReview(routeModel) as ViewResult;
 
             // Assert
+            Assert.That(result, Is.Not.Null);
             var actual = result.Model as ApplicationReviewViewModel;
+            Assert.That(actual, Is.Not.Null);
             Assert.That(actual.VacancyId, Is.EqualTo(routeModel.VacancyId));
             Assert.That(actual.EmployerAccountId, Is.EqualTo(routeModel.EmployerAccountId));
-            Assert.That(expectedCanShowRadioButtonReview, Is.EqualTo(actual.CanShowRadioButtonReview));
-            Assert.That(expectedCanShowRadioButtonInterviewing, Is.EqualTo(actual.CanShowRadioButtonInterviewing));
+            Assert.That(actual.CanShowRadioButtonReview, Is.False);
+            Assert.That(actual.CanShowRadioButtonInterviewing, Is.False);
         }
 
         [Test]
         public async Task POST_ApplicationReview_StatusEmployerInterviewing_RedirectsToVacancyManage()
         {
             // Arrange
-            var vacancySharedByProvider = true;
             var editModel = _fixture.Build<ApplicationReviewEditModel>()
                 .With(x => x.ApplicationReviewId, _applicationReviewId)
                 .With(x => x.Outcome, ApplicationReviewStatus.EmployerInterviewing)
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.EmployerAccountId, _employerAccountId)
+                .With(c=>c.IsApplicationSharedByProvider,true)
                 .Create();
 
-            _orchestrator.Setup(o => o.PostApplicationReviewEditModelAsync(It.Is<ApplicationReviewEditModel>(y => y == editModel), It.IsAny<VacancyUser>(), vacancySharedByProvider))
+            _orchestrator.Setup(o => o.PostApplicationReviewEditModelAsync( editModel, It.IsAny<VacancyUser>()))
                 .ReturnsAsync(_candidateInfo);
 
             // Act
-            var redirectResult = await _controller.ApplicationReview(editModel, vacancySharedByProvider) as RedirectToRouteResult;
+            var redirectResult = await _controller.ApplicationReview(editModel) as RedirectToRouteResult;
 
             // Assert
             Assert.That(redirectResult, Is.Not.Null);
@@ -183,19 +179,19 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         public async Task POST_ApplicationReview_StatusEmployerUnsuccessful_RedirectsToVacancyManage()
         {
             // Arrange
-            var vacancySharedByProvider = true;
             var editModel = _fixture.Build<ApplicationReviewEditModel>()
                 .With(x => x.ApplicationReviewId, _applicationReviewId)
                 .With(x => x.Outcome, ApplicationReviewStatus.EmployerUnsuccessful)
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.EmployerAccountId, _employerAccountId)
+                .With(c=>c.IsApplicationSharedByProvider,true)
                 .Create();
 
-            _orchestrator.Setup(o => o.PostApplicationReviewEditModelAsync(It.Is<ApplicationReviewEditModel>(y => y == editModel), It.IsAny<VacancyUser>(), vacancySharedByProvider))
+            _orchestrator.Setup(o => o.PostApplicationReviewEditModelAsync( editModel, It.IsAny<VacancyUser>()))
                 .ReturnsAsync(_candidateInfo);
 
             // Act
-            var redirectResult = await _controller.ApplicationReview(editModel, vacancySharedByProvider) as RedirectToRouteResult;
+            var redirectResult = await _controller.ApplicationReview(editModel) as RedirectToRouteResult;
 
             // Assert
             Assert.That(redirectResult, Is.Not.Null);
@@ -210,7 +206,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         public async Task POST_ApplicationReview_StatusUnsuccessful_RedirectsToApplicationReviewConfirmationView()
         {
             // Arrange
-            var vacancySharedByProvider = false;
             var editModel = _fixture.Build<ApplicationReviewEditModel>()
                 .With(x => x.ApplicationReviewId, _applicationReviewId)
                 .With(x => x.Outcome, ApplicationReviewStatus.Unsuccessful)
@@ -219,7 +214,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 .Create();
 
             // Act
-            var redirectResult = await _controller.ApplicationReview(editModel, vacancySharedByProvider) as RedirectToRouteResult;
+            var redirectResult = await _controller.ApplicationReview(editModel) as RedirectToRouteResult;
 
             // Assert
             Assert.That(redirectResult, Is.Not.Null);
@@ -228,25 +223,16 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             Assert.That(_employerAccountId, Is.EqualTo(redirectResult.RouteValues["EmployerAccountId"]));
         }
       
+        [Test] //This was never enabled
         public async Task POST_ApplicationReview_StatusInReview_RedirectsToVacancyManageWithCorrectTempDataMessage()
         {
             // Arrange
-            var vacancySharedByProvider = false;
             var editModel = _fixture.Build<ApplicationReviewEditModel>()
                 .With(x => x.ApplicationReviewId, _applicationReviewId)
                 .With(x => x.Outcome, ApplicationReviewStatus.InReview)
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.EmployerAccountId, _employerAccountId)
                 .With(x => x.CandidateFeedback, "feedback")
-                .Create();
-
-            var confirmationEditModel = _fixture.Build<ApplicationReviewStatusConfirmationEditModel>()
-                .With(x => x.ApplicationReviewId, editModel.ApplicationReviewId)
-                .With(x => x.Outcome, editModel.Outcome)
-                .With(x => x.VacancyId, editModel.VacancyId)
-                .With(x => x.EmployerAccountId, editModel.EmployerAccountId)
-                .With(x => x.CandidateFeedback, editModel.CandidateFeedback)
-                .With(x => x.NotifyCandidate, false)
                 .Create();
 
             _orchestrator.Setup(o => o.PostApplicationReviewConfirmationEditModelAsync(It.IsAny<ApplicationReviewStatusConfirmationEditModel>(), It.IsAny<VacancyUser>()))
@@ -257,7 +243,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 });
 
             // Act
-            var redirectResult = await _controller.ApplicationReview(editModel, vacancySharedByProvider) as RedirectToRouteResult;
+            var redirectResult = await _controller.ApplicationReview(editModel) as RedirectToRouteResult;
 
             // Assert
             Assert.That(redirectResult, Is.Not.Null);

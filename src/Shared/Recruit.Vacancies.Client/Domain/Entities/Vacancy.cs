@@ -156,7 +156,9 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         
         public bool CanReview => Status == VacancyStatus.Review && IsDeleted == false;
 
-        public bool CanEmployerAndProviderCollabarate => (Status == VacancyStatus.Review || Status == VacancyStatus.Rejected);
+        public bool CanEmployerAndProviderCollabarate => Status is VacancyStatus.Review or VacancyStatus.Rejected;
+        
+        public bool CanEmployerReviewApplications => Status is VacancyStatus.Live or VacancyStatus.Closed && OwnerType == OwnerType.Provider;
 
         public bool IsDisabilityConfident => DisabilityConfident == DisabilityConfident.Yes;
 

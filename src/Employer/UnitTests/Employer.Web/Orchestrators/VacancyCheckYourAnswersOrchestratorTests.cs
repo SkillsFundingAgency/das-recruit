@@ -47,7 +47,7 @@ public class VacancyCheckYourAnswersOrchestratorTests
             .ReturnsAsync(legalEntities);
         utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.Is<VacancyRouteModel>(
                 c => c.VacancyId.Equals(routeModel.VacancyId) &&
-                     c.EmployerAccountId.Equals(routeModel.EmployerAccountId)), RouteNames.EmployerTaskListGet))
+                     c.EmployerAccountId.Equals(routeModel.EmployerAccountId))))
             .ReturnsAsync(vacancy);
         outerApiClient.Setup(x=>x.GetApprenticeshipStandardVacancyPreviewData(standardId)).ReturnsAsync(standard);
             
@@ -130,7 +130,7 @@ public class VacancyCheckYourAnswersOrchestratorTests
             { address3.Postcode, new PostcodeData(address1.Postcode, "Northern Ireland", 2, 2) },
         };
             
-        utility.Setup(x => x.GetAuthorisedVacancyAsync(submitEditModel, It.IsAny<string>())).ReturnsAsync(vacancy);
+        utility.Setup(x => x.GetAuthorisedVacancyAsync(submitEditModel)).ReturnsAsync(vacancy);
         locationsService.Setup(x => x.GetBulkPostcodeDataAsync(It.IsAny<List<string>>())).ReturnsAsync(postcodeLookupResults);
             
         // arrange
