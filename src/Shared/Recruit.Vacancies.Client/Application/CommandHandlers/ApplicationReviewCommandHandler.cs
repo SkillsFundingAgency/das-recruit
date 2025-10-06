@@ -103,26 +103,29 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
         }
 
-        private async Task<bool> CheckForPositionsFilledAsync(ApplicationReviewStatus? status, Vacancy vacancy, long vacancyReference)
+        private async Task<bool> CheckForPositionsFilledAsync(
+            ApplicationReviewStatus? status,
+            Vacancy vacancy,
+            long vacancyReference)
         {
-            var shouldMakeOthersUnsuccessful = false;
-            if (status == ApplicationReviewStatus.Successful)
-            {
-                var successfulApplications = await sqlDbRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.Successful);
+            // Only check if a new successful application was added
+            if (status != ApplicationReviewStatus.Successful)
+                return false;
 
-                if (vacancy.NumberOfPositions <= successfulApplications.Count)
-                {
-                    var newApplications = await sqlDbRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.New);
-                    var interviewingApplications = await sqlDbRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.Interviewing);
-                    var inReviewApplications = await sqlDbRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.InReview);
-                    var employerInterviewingApplications = await sqlDbRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.EmployerInterviewing);
-                    var employerUnsuccessflApplications = await sqlDbRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.EmployerUnsuccessful);
-                    var applicationsToMakeUnsuccessful = newApplications.Count + interviewingApplications.Count + inReviewApplications.Count + employerInterviewingApplications.Count + employerUnsuccessflApplications.Count;
-                    shouldMakeOthersUnsuccessful = (applicationsToMakeUnsuccessful > 0) ? true : false;
-                }
-            }
+            var counts = await sqlDbRepository.GetApplicationReviewsCountByVacancyReferenceAsync(vacancyReference);
 
-            return shouldMakeOthersUnsuccessful;
+            // If all positions are filled
+            if (!(counts.SuccessfulApplications >= vacancy.NumberOfPositions)) return false;
+            
+            // Count any remaining applications that aren't successful
+            int remainingApplications =
+                counts.NewApplications +
+                counts.InterviewingApplications +
+                counts.InReviewApplications +
+                counts.EmployerInterviewingApplications +
+                counts.UnsuccessfulApplications;
+
+            return remainingApplications > 0;
         }
     }
 }
