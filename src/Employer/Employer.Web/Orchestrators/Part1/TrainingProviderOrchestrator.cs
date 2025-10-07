@@ -39,7 +39,7 @@ public class TrainingProviderOrchestrator(
 
     public virtual async Task<SelectTrainingProviderViewModel> GetSelectTrainingProviderViewModelAsync(VacancyRouteModel vrm, long? ukprn = null)
     {
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.TrainingProvider_Select_Get);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm);
         var programme = await vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
         var trainingProviders = int.TryParse(programme.Id, out int programmeId)
             ? (await trainingProviderService.GetCourseProviders(programmeId)).ToList()
@@ -71,7 +71,7 @@ public class TrainingProviderOrchestrator(
 
     public async Task<OrchestratorResponse<PostSelectTrainingProviderResult>> PostSelectTrainingProviderAsync(SelectTrainingProviderEditModel m, VacancyUser user)
     {
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.TrainingProvider_Select_Post);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m);
         var providerSummary = await GetProviderFromModelAsync(m, vacancy.EmployerAccountId, vacancy.ProgrammeId);
 
         TrainingProvider provider = null;
@@ -100,7 +100,7 @@ public class TrainingProviderOrchestrator(
 
     public async Task<ConfirmTrainingProviderViewModel> GetConfirmViewModelAsync(VacancyRouteModel vrm, long ukprn)
     {
-        var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.TrainingProvider_Confirm_Get);
+        var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm);
         var providerTask = trainingProviderService.GetProviderAsync(ukprn);
 
         await Task.WhenAll(vacancyTask, providerTask);
@@ -132,7 +132,7 @@ public class TrainingProviderOrchestrator(
 
     public async Task<OrchestratorResponse> PostConfirmEditModelAsync(ConfirmTrainingProviderEditModel m, VacancyUser user)
     {
-        var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.TrainingProvider_Confirm_Post);
+        var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(m);
         var providerTask = trainingProviderService.GetProviderAsync(long.Parse(m.Ukprn));
         await Task.WhenAll(vacancyTask, providerTask);
         var vacancy = vacancyTask.Result;

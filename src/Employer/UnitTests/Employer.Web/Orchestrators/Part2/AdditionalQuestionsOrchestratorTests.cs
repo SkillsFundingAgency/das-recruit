@@ -29,7 +29,7 @@ public class AdditionalQuestionsOrchestratorTests
         {
             vacancy.Status = VacancyStatus.Draft;
             mockUtility
-                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.AdditionalQuestions_Get))
+                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel))
                 .ReturnsAsync(vacancy);
             mockUtility
                 .Setup(utility => utility.IsTaskListCompleted(vacancy))
@@ -58,7 +58,7 @@ public class AdditionalQuestionsOrchestratorTests
         {
             vacancy.Status = VacancyStatus.Referred;
             mockUtility
-                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.AdditionalQuestions_Get))
+                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel))
                 .ReturnsAsync(vacancy);
             mockUtility
                 .Setup(utility => utility.IsTaskListCompleted(vacancy))
@@ -94,7 +94,7 @@ public class AdditionalQuestionsOrchestratorTests
             editModel.AdditionalQuestion1 = "How did you find the vacancy?";
             editModel.AdditionalQuestion2 = "Do you have a valid UK driving licence?";
             mockUtility
-                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.AdditionalQuestions_Post))
+                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(editModel))
                 .ReturnsAsync(vacancy);
             mockRecruitVacancyClient
                 .Setup(client => client.Validate(vacancy, VacancyRuleSet.AdditionalQuestion1 | VacancyRuleSet.AdditionalQuestion2))
@@ -126,7 +126,7 @@ public class AdditionalQuestionsOrchestratorTests
         {
             vacancy.Status = VacancyStatus.Draft;
             mockUtility
-                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.AdditionalQuestions_Post))
+                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(editModel))
                 .ReturnsAsync(vacancy);
             mockRecruitVacancyClient
                 .Setup(client => client.Validate(vacancy, VacancyRuleSet.AdditionalQuestion1 | VacancyRuleSet.AdditionalQuestion2))

@@ -26,7 +26,7 @@ public class VacancyHowWillTheApprenticeTrainOrchestratorTests
         {
             vacancy.Status = VacancyStatus.Draft;
             mockUtility
-                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.VacancyHowTheApprenticeWillTrain_Index_Get))
+                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel))
                 .ReturnsAsync(vacancy);
             mockUtility
                 .Setup(utility => utility.IsTaskListCompleted(vacancy))
@@ -55,7 +55,7 @@ public class VacancyHowWillTheApprenticeTrainOrchestratorTests
         {
             vacancy.Status = VacancyStatus.Referred;
             mockUtility
-                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.VacancyHowTheApprenticeWillTrain_Index_Get))
+                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel))
                 .ReturnsAsync(vacancy);
             mockUtility
                 .Setup(utility => utility.IsTaskListCompleted(vacancy))
@@ -90,7 +90,7 @@ public class VacancyHowWillTheApprenticeTrainOrchestratorTests
             vacancy.Status = VacancyStatus.Draft;
             validationResult.Errors = new List<EntityValidationError>();
             mockUtility
-                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.VacancyHowTheApprenticeWillTrain_Index_Post))
+                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(editModel))
                 .ReturnsAsync(vacancy);
             mockRecruitVacancyClient
                 .Setup(client => client.Validate(vacancy, VacancyRuleSet.TrainingDescription | VacancyRuleSet.AdditionalTrainingDescription))
@@ -116,7 +116,7 @@ public class VacancyHowWillTheApprenticeTrainOrchestratorTests
         {
             vacancy.Status = VacancyStatus.Draft;
             mockUtility
-                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.VacancyHowTheApprenticeWillTrain_Index_Post))
+                .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(editModel))
                 .ReturnsAsync(vacancy);
             mockRecruitVacancyClient
                 .Setup(client => client.Validate(vacancy, VacancyRuleSet.TrainingDescription | VacancyRuleSet.AdditionalTrainingDescription))
