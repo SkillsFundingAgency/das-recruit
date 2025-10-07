@@ -69,7 +69,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
         }
     }
 
-    public class ApplicationReviewService(IOuterApiClient outerApiClient, ILogger<ApplicationReviewService> logger) : IApplicationWriteRepository, ISqlDbRepository
+    public class ApplicationReviewService(
+        IOuterApiClient outerApiClient,
+        ILogger<ApplicationReviewService> logger) : IApplicationWriteRepository,
+        ISqlDbRepository
     {
         public async Task UpdateAsync(Domain.Entities.ApplicationReview applicationReview)
         {
@@ -157,19 +160,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                 : MapToDomainApplicationReview(response.ApplicationReview);
         }
 
-        public Task<Domain.Entities.ApplicationReview> GetAsync(long vacancyReference, Guid candidateId)
+        public async Task<Domain.Entities.ApplicationReview> GetAsync(long vacancyReference, Guid candidateId)
         {
-            throw new NotImplementedException();
-        }
+            var response = await outerApiClient.Get<GetApplicationReviewByVacancyReferenceAndCandidateIdApiResponse>(
+                new GetApplicationReviewsByVacancyReferenceAndCandidateIdApiRequest(vacancyReference, candidateId));
 
-        public Task<List<Domain.Entities.ApplicationReview>> GetByStatusAsync(long vacancyReference, ApplicationReviewStatus status)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task HardDelete(Guid applicationReviewId)
-        {
-            throw new NotImplementedException();
+            return response?.ApplicationReview is not { WithdrawnDate: null } // Ensure the review is not withdrawn
+                ? null
+                : MapToDomainApplicationReview(response.ApplicationReview);
         }
 
         public async Task<List<T>> GetForVacancyAsync<T>(long vacancyReference)
@@ -216,6 +214,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             return applicationReviews.ToList();
         }
 
+        public async Task<GetApplicationReviewsCountByVacancyReferenceApiResponse> GetApplicationReviewsCountByVacancyReferenceAsync(long vacancyReference)
+        {
+            return await outerApiClient.Get<GetApplicationReviewsCountByVacancyReferenceApiResponse>(
+                new GetApplicationReviewsCountByVacancyReferenceApiRequest(vacancyReference));
+        }
+
         public async Task<List<Domain.Entities.ApplicationReview>> GetForSharedVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
         {
             var response = await outerApiClient.Get<GetApplicationReviewsByVacancyReferenceApiResponse>(
@@ -233,14 +237,33 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             return sortedResult.ToList();
         }
 
-        public Task<List<T>> GetAllForSelectedIdsAsync<T>(List<Guid> applicationReviewIds)
+        public async Task<List<T>> GetAllForSelectedIdsAsync<T>(List<Guid> applicationReviewIds)
         {
-            throw new NotImplementedException();
+            var response = await outerApiClient.Post<GetApplicationReviewsByIdsApiResponse>(
+                new GetApplicationReviewsByIdsApiRequest(new GetApplicationReviewsByIdsApiRequest.GetApplicationReviewsByIdsApiRequestData
+                {
+                    ApplicationReviewIds = applicationReviewIds
+                }));
+
+            if (response?.ApplicationReviews == null || response.ApplicationReviews.Count == 0) return [];
+
+            var applicationReviews = response.ApplicationReviews
+                .Select(MapToDomainApplicationReview).ToList();
+
+            return applicationReviews.Cast<T>().ToList();
         }
 
-        public Task<List<Domain.Entities.ApplicationReview>> GetAllForVacancyWithTemporaryStatus(long vacancyReference, ApplicationReviewStatus status)
+        public async Task<List<Domain.Entities.ApplicationReview>> GetAllForVacancyWithTemporaryStatus(long vacancyReference, ApplicationReviewStatus status)
         {
-            throw new NotImplementedException();
+            var response = await outerApiClient.Get<GetApplicationReviewsByVacancyReferenceApiResponse>(
+                new GetApplicationReviewsByVacancyReferenceAndTempStatusApiRequest(vacancyReference, status));
+
+            if (response?.ApplicationReviews == null || response.ApplicationReviews.Count == 0) return [];
+
+            var applicationReviews = response.ApplicationReviews
+                .Select(MapToDomainApplicationReview).ToList();
+
+            return applicationReviews;
         }
 
         private string GetCandidateAppliedLocation(List<Responses.Address> addresses)

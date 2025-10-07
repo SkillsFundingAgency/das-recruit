@@ -1,5 +1,13 @@
+using System.Collections.Generic;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
+using Communication.Core;
 using Communication.Types;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Communication.Types.Interfaces;
+using Esfa.Recruit.Client.Application.Communications;
+using Esfa.Recruit.Vacancies.Client.Application.Communications;
+using Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins;
+using Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantResolverPlugins;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Ioc;
@@ -7,27 +15,17 @@ using Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor;
 using Esfa.Recruit.Vacancies.Jobs.Communication;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
-using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Candidate;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Employer;
+using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.LiveVacancy;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview;
-using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.LiveVacancy;
+using Esfa.Recruit.Vacancies.Jobs.Jobs;
 using Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Communication.Core;
-using Communication.Types.Interfaces;
-using Esfa.Recruit.Vacancies.Client.Application.Communications;
-using Esfa.Recruit.Client.Application.Communications;
-using Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins;
-using System.Collections.Generic;
-using Azure.Monitor.OpenTelemetry.AspNetCore;
-using SFA.DAS.Encoding;
-using Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantResolverPlugins;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Recruit.Vacancies.Client.Application.Communications.CompositeDataItemProviderPlugins;
-using Esfa.Recruit.Vacancies.Jobs.Jobs;
+using SFA.DAS.Encoding;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
@@ -84,9 +82,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<IDomainEventHandler<IEvent>, SetupProviderHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, ProviderBlockedDomainEventHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, ProviderBlockedOnLegalEntityDomainEventHandler>();
-
-            //Candidate
-            services.AddScoped<IDomainEventHandler<IEvent>, DeleteCandidateHandler>();
 
             RegisterCommunicationsService(services, configuration);
             RegisterDasEncodingService(services, configuration);

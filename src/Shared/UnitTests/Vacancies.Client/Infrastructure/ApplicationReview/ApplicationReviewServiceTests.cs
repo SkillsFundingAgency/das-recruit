@@ -1,4 +1,5 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Collections.Generic;
+using AutoFixture.NUnit3;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Requests;
@@ -326,5 +327,99 @@ internal class ApplicationReviewServiceTests
 
         // Assert
         result.Should().BeNull();
+    }
+
+    [Test, MoqAutoData]
+    public async Task GetApplicationReviewsCountByVacancyReferenceAsync_ShouldReturnExpectedResponse(
+        long vacancyReference,
+        GetApplicationReviewsCountByVacancyReferenceApiResponse apiResponse,
+        [Frozen] Mock<IOuterApiClient> mockApiClient,
+        [Greedy] ApplicationReviewService service)
+    {
+        // Arrange
+        mockApiClient
+            .Setup(c => c.Get<GetApplicationReviewsCountByVacancyReferenceApiResponse>(
+                It.Is<GetApplicationReviewsCountByVacancyReferenceApiRequest>(r => r.VacancyReference == vacancyReference)))
+            .ReturnsAsync(apiResponse);
+
+        // Act
+        var result = await service.GetApplicationReviewsCountByVacancyReferenceAsync(vacancyReference);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(apiResponse);
+
+        mockApiClient.Verify(c =>
+                c.Get<GetApplicationReviewsCountByVacancyReferenceApiResponse>(
+                    It.Is<GetApplicationReviewsCountByVacancyReferenceApiRequest>(r => r.VacancyReference == vacancyReference)),
+            Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task GetAllForVacancyWithTemporaryStatus_ShouldReturnMappedList_WhenApiReturnsData(
+        long vacancyReference,
+        ApplicationReviewStatus status,
+        GetApplicationReviewsByVacancyReferenceApiResponse apiResponse,
+        [Frozen] Mock<IOuterApiClient> mockApiClient,
+        [Greedy] ApplicationReviewService service)
+    {
+        // Arrange
+        foreach (var applicationReview in apiResponse.ApplicationReviews)
+        {
+            applicationReview.Status = status.ToString();
+            applicationReview.TemporaryReviewStatus = status.ToString();
+        }
+        mockApiClient
+            .Setup(c => c.Get<GetApplicationReviewsByVacancyReferenceApiResponse>(
+                It.Is<GetApplicationReviewsByVacancyReferenceAndTempStatusApiRequest>(r =>
+                    r.VacancyReference == vacancyReference && r.Status == status)))
+            .ReturnsAsync(apiResponse);
+
+        // Act
+        var result = await service.GetAllForVacancyWithTemporaryStatus(vacancyReference, status);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Count.Should().Be(apiResponse.ApplicationReviews.Count);
+        //result.Should().BeEquivalentTo(apiResponse.ApplicationReviews);
+
+        mockApiClient.Verify(c =>
+                c.Get<GetApplicationReviewsByVacancyReferenceApiResponse>(
+                    It.Is<GetApplicationReviewsByVacancyReferenceAndTempStatusApiRequest>(r =>
+                        r.VacancyReference == vacancyReference && r.Status == status)),
+            Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task GetAllForSelectedIdsAsync_ShouldReturnMappedList_WhenApiReturnsData(
+        List<Guid> applicationIds,
+        ApplicationReviewStatus status,
+        GetApplicationReviewsByIdsApiResponse apiResponse,
+        [Frozen] Mock<IOuterApiClient> mockApiClient,
+        [Greedy] ApplicationReviewService service)
+    {
+        // Arrange
+        foreach (var applicationReview in apiResponse.ApplicationReviews)
+        {
+            applicationReview.Status = status.ToString();
+            applicationReview.TemporaryReviewStatus = status.ToString();
+        }
+        var expectedPostUrl = new GetApplicationReviewsByIdsApiRequest(new GetApplicationReviewsByIdsApiRequest.GetApplicationReviewsByIdsApiRequestData { ApplicationReviewIds = applicationIds});
+        mockApiClient
+            .Setup(c => c.Post<GetApplicationReviewsByIdsApiResponse>(
+                It.Is<GetApplicationReviewsByIdsApiRequest>(r => r.PostUrl == expectedPostUrl.PostUrl)))
+            .ReturnsAsync(apiResponse);
+
+        // Act
+        var result = await service.GetAllForSelectedIdsAsync<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview>(applicationIds);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Count.Should().Be(apiResponse.ApplicationReviews.Count);
+        
+        mockApiClient.Verify(c =>
+                c.Post<GetApplicationReviewsByIdsApiResponse>(
+                    It.IsAny<GetApplicationReviewsByIdsApiRequest>()),
+            Times.Once);
     }
 }

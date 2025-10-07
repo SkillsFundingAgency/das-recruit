@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Logging;
@@ -322,6 +323,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                     { FieldName, 1 }
                 })
             };
+        }
+
+        public Task<GetApplicationReviewsCountByVacancyReferenceApiResponse> GetApplicationReviewsCountByVacancyReferenceAsync(long vacancyReference)
+        {
+            // MongoDB implementation not required as this method is only called in SQL implementation context
+            throw new NotImplementedException();
         }
     }
 }

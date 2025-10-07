@@ -99,8 +99,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var applicationReviewsToShare =
                 await _vacancyClient.GetVacancyApplicationsForReferenceAndStatus(request.VacancyId!.Value!,
                     ApplicationReviewStatus.PendingShared);
-            
-            if(applicationReviewsToShare.Count == 0 && request.ApplicationsToShare?.Count == 1)
+
+            if (applicationReviewsToShare.Count == 0 && request.ApplicationsToShare?.Count == 1)
                 applicationReviewsToShare.AddRange(await _vacancyClient.GetVacancyApplicationsForSelectedIdsAsync(request.ApplicationsToShare));
             
             return new ShareMultipleApplicationReviewsConfirmationViewModel
