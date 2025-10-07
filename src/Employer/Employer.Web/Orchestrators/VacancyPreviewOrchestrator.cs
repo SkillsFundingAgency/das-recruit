@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
@@ -58,7 +57,7 @@ public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, 
 
     public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
     {
-        var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Vacancy_Preview_Get);
+        var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm);
         var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
 
         await Task.WhenAll(vacancyTask, programmesTask);
@@ -95,7 +94,7 @@ public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, 
 
     public async Task<OrchestratorResponse<SubmitVacancyResponse>> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.Preview_Submit_Post);
+        var vacancy = await _utility.GetAuthorisedVacancyAsync(m);
 
         if (!vacancy.CanSubmit)
             throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForEditing, vacancy.Title));
@@ -143,7 +142,7 @@ public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, 
     }
 
 
-    private async Task<RejectVacancyResponse> RejectActionAsync(Vacancy vacancy, VacancyUser user)
+    private async Task<RejectVacancyResponse> RejectActionAsync(Vacancy vacancy)
     {
         var command = new RejectVacancyCommand { VacancyReference = (long)vacancy.VacancyReference };
 
@@ -154,7 +153,7 @@ public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, 
 
     public async Task ClearRejectedVacancyReason(SubmitReviewModel m, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.ApproveJobAdvert_Post);
+        var vacancy = await _utility.GetAuthorisedVacancyAsync(m);
 
         vacancy.EmployerRejectedReason = null;
 
@@ -163,7 +162,7 @@ public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, 
 
     public async Task UpdateRejectedVacancyReason(SubmitReviewModel m, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.ApproveJobAdvert_Post);
+        var vacancy = await _utility.GetAuthorisedVacancyAsync(m);
 
         vacancy.EmployerRejectedReason = m.RejectedReason;
 
@@ -172,7 +171,7 @@ public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, 
 
     public async Task<OrchestratorResponse<SubmitVacancyResponse>> ApproveJobAdvertAsync(ApproveJobAdvertViewModel m, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.ApproveJobAdvert_Post);
+        var vacancy = await _utility.GetAuthorisedVacancyAsync(m);
 
         if (!vacancy.CanReview)
             throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForEditing, vacancy.Title));
@@ -194,7 +193,7 @@ public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, 
 
     public async Task<OrchestratorResponse<RejectVacancyResponse>> RejectJobAdvertAsync(RejectJobAdvertViewModel vm, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyAsync(vm, RouteNames.RejectJobAdvert_Post);
+        var vacancy = await _utility.GetAuthorisedVacancyAsync(vm);
 
         if (!vacancy.CanReject)
             throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForReject, vacancy.Title));
@@ -202,7 +201,7 @@ public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, 
         return await ValidateAndExecute(
             vacancy,
             v => ValidateVacancy(v, RejectValidationRules),
-            v => RejectActionAsync(v, user)
+            v => RejectActionAsync(v)
         );
     }
 

@@ -51,7 +51,7 @@ public class EnterLocationManuallyController(IUtility utility) : Controller
         }
         
         var newAddress = model.ToDomain();
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.SelectAnAddress_Post);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model);
         await vacancyLocationService.SaveEmployerAddress(User.ToVacancyUser(), vacancy, newAddress);
         
         TempData[TempDataKeys.AddedLocation] = newAddress.ToAddressString();
@@ -63,7 +63,7 @@ public class EnterLocationManuallyController(IUtility utility) : Controller
 
     private static async Task<EnterLocationManuallyViewModel> GetEnterLocationManuallyViewModel(IUtility utility, AddLocationJourneyModel model, string routeName, Address address, string returnRoute)
     {
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, routeName);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model);
         var viewModel = new EnterLocationManuallyViewModel
         {
             ApprenticeshipTitle = vacancy.Title,

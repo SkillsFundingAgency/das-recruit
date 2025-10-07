@@ -101,7 +101,7 @@ public class DurationOrchestratorTests
             MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
             var utility = new Utility(MockRecruitVacancyClient.Object, Mock.Of<ITaskListValidator>());
                 
-            Sut = new DurationOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<DurationOrchestrator>>(), 
+            Sut = new DurationOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<DurationOrchestrator>>(), 
                 Mock.Of<IReviewSummaryService>(), utility);
         }
 
