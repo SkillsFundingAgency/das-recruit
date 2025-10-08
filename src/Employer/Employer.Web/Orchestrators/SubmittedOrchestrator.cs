@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<VacancySubmittedConfirmationViewModel> GetVacancySubmittedConfirmationViewModelAsync(VacancyRouteModel vrm, VacancyUser vacancyUser)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyAsync( vrm, RouteNames.Submitted_Index_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyAsync(vrm);
 
             if (vacancy.Status != VacancyStatus.Submitted)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotSubmittedSuccessfully, vacancy.Title));

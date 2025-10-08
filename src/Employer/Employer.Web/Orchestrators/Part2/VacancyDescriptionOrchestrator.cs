@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<VacancyDescriptionViewModel> GetVacancyDescriptionViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.VacancyDescription_Index_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
 
             var vm = new VacancyDescriptionViewModel
             {
@@ -69,7 +69,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostVacancyDescriptionEditModelAsync(VacancyDescriptionEditModel m, VacancyUser user)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.VacancyDescription_Index_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m);
 
             SetVacancyWithEmployerReviewFieldIndicators(
                 vacancy.Description,

@@ -29,7 +29,7 @@ public class VacancyHowWillTheApprenticeTrainOrchestrator : VacancyValidatingOrc
 
     public async Task<VacancyHowTheApprenticeWillTrainModel> GetVacancyDescriptionViewModelAsync(VacancyRouteModel vrm)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.VacancyHowTheApprenticeWillTrain_Index_Get);
+        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
         var vm = new VacancyHowTheApprenticeWillTrainModel
         {
             VacancyId = vacancy.Id,
@@ -54,7 +54,7 @@ public class VacancyHowWillTheApprenticeTrainOrchestrator : VacancyValidatingOrc
     
     public async Task<OrchestratorResponse> PostVacancyDescriptionEditModelAsync(VacancyHowTheApprenticeWillTrainEditModel m, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.VacancyHowTheApprenticeWillTrain_Index_Post);
+        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m);
 
         SetVacancyWithEmployerReviewFieldIndicators(
             vacancy.TrainingDescription,

@@ -29,7 +29,7 @@ public class RecruitNationallyController: Controller
     public async Task<IActionResult> RecruitNationally([FromServices] IUtility utility, [FromServices] IReviewSummaryService reviewSummaryService, VacancyRouteModel model, [FromQuery] bool wizard = true)
     {
         ModelState.ThrowIfBindingErrors();
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.RecruitNationally_Get);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model);
         var viewModel = new RecruitNationallyViewModel
         {
             ApprenticeshipTitle = vacancy.Title,
@@ -55,7 +55,7 @@ public class RecruitNationallyController: Controller
         RecruitNationallyEditModel model,
         [FromQuery] bool wizard = true)
     {
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.RecruitNationally_Post);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model);
         var result = await vacancyLocationService.UpdateDraftVacancyLocations(
             vacancy,
             User.ToVacancyUser(),
