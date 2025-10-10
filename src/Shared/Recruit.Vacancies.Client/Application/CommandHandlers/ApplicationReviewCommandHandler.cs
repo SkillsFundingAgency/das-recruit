@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 await outerApiClient.Post(new PostSharedApplicationReviewedEventApiRequest(
                     new PostSharedApplicationReviewedEventApiRequest.
-                        PostSharedApplicationReviewedEventApiRequestData(vacancy.Id, vacancy.VacancyReference!.Value)));
+                        PostSharedApplicationReviewedEventApiRequestData(applicationReview.Id)));
             }
 
             if (applicationReview.Status is not (ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful))
