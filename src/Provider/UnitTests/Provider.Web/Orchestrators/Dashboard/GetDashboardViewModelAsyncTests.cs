@@ -83,7 +83,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
             timeProviderMock.Setup(t => t.Today).Returns(_today);
 
             var vacancyClientMock = new Mock<IProviderVacancyClient>();
-            vacancyClientMock.Setup(c => c.GetDashboardSummary(Ukprn))
+            vacancyClientMock.Setup(c => c.GetDashboardSummary(Ukprn, UserId))
                 .ReturnsAsync(dashboardProjection);
 
             _permissionServiceMock = new Mock<IProviderRelationshipsService>();
@@ -103,7 +103,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
             alertsFactoryMock.Setup(a => a.Create(userDetails))
                 .ReturnsAsync(alertsViewModel);
 
-            var orch = new DashboardOrchestrator(vacancyClientMock.Object, _clientMock.Object, alertsFactoryMock.Object, _permissionServiceMock.Object);
+            var orch = new DashboardOrchestrator(vacancyClientMock.Object, _clientMock.Object, _permissionServiceMock.Object);
 
             return orch;
         }

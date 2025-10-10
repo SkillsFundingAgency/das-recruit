@@ -1,6 +1,4 @@
-﻿
-
-namespace Esfa.Recruit.Employer.Web.ViewModels.Alerts
+﻿namespace Esfa.Recruit.Employer.Web.ViewModels.Alerts
 {
     public class AlertsViewModel
     {
@@ -9,10 +7,22 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Alerts
         public BlockedProviderAlertViewModel BlockedProviderAlert { get; internal set; }
         public WithdrawnVacanciesAlertViewModel WithdrawnByQaVacanciesAlert { get; internal set; }
 
-        public bool ShowEmployerRevokedTransferredVacanciesAlert => EmployerRevokedTransferredVacanciesAlert != null;
-        public bool ShowBlockedProviderTransferredVacanciesAlert => BlockedProviderTransferredVacanciesAlert != null;
-        public bool ShowBlockedProviderAlert => BlockedProviderAlert != null;
-        public bool ShowWithdrawnByQaVacanciesAlert => WithdrawnByQaVacanciesAlert != null;
+        public bool ShowEmployerRevokedTransferredVacanciesAlert => EmployerRevokedTransferredVacanciesAlert is
+        {
+            TransferredVacanciesCount: > 0
+        };
+        public bool ShowBlockedProviderTransferredVacanciesAlert => BlockedProviderTransferredVacanciesAlert is
+        {
+            TransferredVacanciesCount: > 0
+        };
+        public bool ShowBlockedProviderAlert => BlockedProviderAlert is
+        {
+            HasMultipleBlockedProviders: true
+        };
+        public bool ShowWithdrawnByQaVacanciesAlert => WithdrawnByQaVacanciesAlert is
+        {
+            ClosedVacanciesCount: > 0
+        };
 
         public AlertsViewModel(EmployerTransferredVacanciesAlertViewModel employerRevokedTransferredVacanciesAlert,
             EmployerTransferredVacanciesAlertViewModel blockedProviderTransferredVacanciesAlert,

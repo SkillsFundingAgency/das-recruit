@@ -52,7 +52,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
             var searchTerm = "century";
             var orch = GetSut(GenerateVacancySummaries(100, LegalEntityName, searchTerm), searchTerm);
             var result = await orch.GetSearchSuggestionsAsync(searchTerm, Ukprn);
-            result.Count().Should().Be(VacanciesSearchSuggestionsOrchestrator.MaxRowsInResult);
+            result.Count().Should().Be(50);
             result.Any(s => s.Equals(LegalEntityName)).Should().BeFalse();
         }
 
@@ -64,7 +64,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
                 Vacancies = vacancies
             };
             
-            _mockClient.Setup(c => c.GetDashboardAsync(Ukprn, 1, null,searchTerm)).ReturnsAsync(dashboard);
+            _mockClient.Setup(c => c.GetDashboardAsync(Ukprn, "", 1, 25, "", "", null,searchTerm)).ReturnsAsync(dashboard);
             return new VacanciesSearchSuggestionsOrchestrator(_mockClient.Object);
         }
 

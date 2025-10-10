@@ -1,15 +1,12 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Provider.Web.Orchestrators;
-using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
-using Moq;
 
 namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResultHeaderTest
 {
@@ -18,7 +15,6 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
         protected VacancyUser User;
         protected User UserDetails;
         protected Mock<IRecruitVacancyClient> RecruitVacancyClientMock;
-        protected Mock<IProviderAlertsViewModelFactory> ProviderAlertsViewModelFactoryMock;
         private Mock<IProviderRelationshipsService> ProviderRelationshipsServiceMock;
         protected Mock<ITimeProvider> TimeProvider;
         protected const int ClosingSoonDays = 5;
@@ -27,16 +23,15 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
         {
             var clientMock = new Mock<IProviderVacancyClient>();
             TimeProvider = new Mock<ITimeProvider>();
-            clientMock.Setup(c => c.GetDashboardAsync(User.Ukprn.Value, 1, status, searchTerm))
+            clientMock.Setup(c => c.GetDashboardAsync(User.Ukprn.Value, User.UserId, 1, 25, "CreatedDate", "Desc", status, searchTerm))
                 .ReturnsAsync(new ProviderDashboard {
-                    Vacancies = vacancySummaries
+                    Vacancies = vacancySummaries,
+                    TotalVacancies = Convert.ToInt32(vacancyCount)
                 });
             clientMock.Setup(c => c.GetVacancyCount(User.Ukprn.Value, status, searchTerm))
                 .ReturnsAsync(vacancyCount);
             return new VacanciesOrchestrator(
                 clientMock.Object,
-                RecruitVacancyClientMock.Object,
-                ProviderAlertsViewModelFactoryMock.Object,
                 ProviderRelationshipsServiceMock.Object);
         }
 
@@ -82,9 +77,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
                 .ReturnsAsync(UserDetails);
 
 
-            ProviderAlertsViewModelFactoryMock = new Mock<IProviderAlertsViewModelFactory>();
             ProviderRelationshipsServiceMock = new Mock<IProviderRelationshipsService>();
         }
-
     }
 }
