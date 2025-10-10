@@ -56,7 +56,6 @@ public class ApplicationSubmittedDomainEventHandlerTests
         ApplicationSubmittedDomainEventHandler sut)
     {
         // Arrange
-        // Arrange
         var eventPayload = JsonConvert.SerializeObject(sourceEvent);
         mockCommQueue.Setup(x => x.AddMessageAsync(It.IsAny<CommunicationRequest>()))
             .Returns(Task.CompletedTask);
