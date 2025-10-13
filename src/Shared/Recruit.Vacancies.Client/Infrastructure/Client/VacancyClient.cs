@@ -197,10 +197,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<EmployerDashboard> GetDashboardAsync(string employerAccountId, string userId, int page, int pageSize, string sortColumn, string sortOrder, FilteringOptions? status = null, string searchTerm = null)
         {
-            //var vacancySummaries =
-            //    await vacancySummariesQuery.GetEmployerOwnedVacancySummariesByEmployerAccountId(employerAccountId,
-            //         page, status, searchTerm);
-
             var vacancySummariesTask =
                 employerAccountProvider.GetEmployerVacancies(employerAccountId, page, pageSize, sortColumn, sortOrder, status ?? FilteringOptions.Dashboard, searchTerm);
             var alertsTask = employerAccountProvider.GetEmployerAlerts(employerAccountId, userId);

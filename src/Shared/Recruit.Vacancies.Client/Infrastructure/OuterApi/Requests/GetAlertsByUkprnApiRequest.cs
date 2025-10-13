@@ -2,5 +2,5 @@
 
 public record GetAlertsByUkprnApiRequest(int Ukprn, string UserId) : IGetApiRequest
 {
-    public string GetUrl => $"providers/{Ukprn}/vacancies?userId={UserId}";
+    public string GetUrl => $"providers/{Ukprn}/alerts?userId={UserId}";
 }
