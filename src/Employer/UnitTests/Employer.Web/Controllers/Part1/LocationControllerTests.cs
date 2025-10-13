@@ -40,7 +40,7 @@ public class LocationControllerTests
         // arrange
         model.VacancyId = vacancy.Id;
         model.EmployerAccountId = vacancy.EmployerAccountId;
-        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddOneLocation_Get)).ReturnsAsync(vacancy);
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model)).ReturnsAsync(vacancy);
         _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
         
         // act
@@ -65,7 +65,7 @@ public class LocationControllerTests
         // arrange
         model.VacancyId = vacancy.Id;
         model.EmployerAccountId = vacancy.EmployerAccountId;
-        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddOneLocation_Get)).ReturnsAsync(vacancy);
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model)).ReturnsAsync(vacancy);
         _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
         
         // act
@@ -82,7 +82,7 @@ public class LocationControllerTests
         // arrange
         model.VacancyId = vacancy.Id;
         model.EmployerAccountId = vacancy.EmployerAccountId;
-        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddOneLocation_Get)).ReturnsAsync(vacancy);
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model)).ReturnsAsync(vacancy);
         _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
         
         const string newlyAddedAddress = "An Address";
@@ -103,7 +103,7 @@ public class LocationControllerTests
         // arrange
         model.VacancyId = vacancy.Id;
         model.EmployerAccountId = vacancy.EmployerAccountId;
-        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddOneLocation_Get)).ReturnsAsync(vacancy);
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model)).ReturnsAsync(vacancy);
         _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
         
         // act
@@ -126,7 +126,7 @@ public class LocationControllerTests
         vacancy.EmployerLocations = [address];
         model.VacancyId = vacancy.Id;
         model.EmployerAccountId = vacancy.EmployerAccountId;
-        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddOneLocation_Get)).ReturnsAsync(vacancy);
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model)).ReturnsAsync(vacancy);
         _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
         
         // act
@@ -150,7 +150,7 @@ public class LocationControllerTests
             EmployerAccountId = vacancy.EmployerAccountId,
             SelectedLocation = locations.First().ToAddressString()
         };
-        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddOneLocation_Post)).ReturnsAsync(vacancy);
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model)).ReturnsAsync(vacancy);
         _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
         _vacancyLocationService
             .Setup(x => x.UpdateDraftVacancyLocations(vacancy, It.IsAny<VacancyUser>(), AvailableWhere.OneLocation, It.IsAny<List<Address>>(), null))
@@ -174,7 +174,7 @@ public class LocationControllerTests
             EmployerAccountId = vacancy.EmployerAccountId,
             SelectedLocation = "invalid"
         };
-        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddOneLocation_Post)).ReturnsAsync(vacancy);
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model)).ReturnsAsync(vacancy);
         _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
         _vacancyLocationService
             .Setup(x => x.UpdateDraftVacancyLocations(vacancy, It.IsAny<VacancyUser>(), AvailableWhere.OneLocation, It.IsAny<List<Address>>(), null))

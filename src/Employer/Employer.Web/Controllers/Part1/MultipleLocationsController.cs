@@ -17,7 +17,6 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.FeatureManagement.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1;
 
@@ -66,7 +65,7 @@ public class MultipleLocationsController : Controller
 
     private static async Task<LocationAvailabilityViewModel> GetLocationAvailabilityViewModel(IUtility utility, IReviewSummaryService reviewSummaryService, VacancyRouteModel vacancyRouteModel, AvailableWhere? availableWhere, bool wizard)
     {
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.MultipleLocations_Get);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel);
         var viewModel = new LocationAvailabilityViewModel
         {
             ApprenticeshipTitle = vacancy.Title,
@@ -93,7 +92,7 @@ public class MultipleLocationsController : Controller
         [FromQuery] bool wizard)
     {
         ModelState.ThrowIfBindingErrors();
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddMoreThanOneLocation_Get);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model);
         var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy);
         var groupedLocations = allLocations.GroupByLastFilledAddressLine();
 
@@ -137,7 +136,7 @@ public class MultipleLocationsController : Controller
         AddMoreThanOneLocationEditModel editModel,
         [FromQuery] bool wizard)
     {
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.AddMoreThanOneLocation_Post);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(editModel);
         var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy);
         var groupedLocations = allLocations.GroupByLastFilledAddressLine();
         var locations = editModel.SelectedLocations
@@ -189,7 +188,7 @@ public class MultipleLocationsController : Controller
         [FromQuery] bool wizard)
     {
         ModelState.ThrowIfBindingErrors();
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.MultipleLocations_Get);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel);
         var viewModel = new ConfirmLocationsViewModel
         {
             ApprenticeshipTitle = vacancy.Title,

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -30,7 +31,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         public async Task<IActionResult> ManageVacancy(ManageVacancyRouteModel vrm,
             [FromQuery] string sortColumn,
             [FromQuery] string sortOrder,
-            [FromQuery] bool vacancySharedByProvider,
             [FromQuery] string locationFilter = "All",
             [FromQuery] int page = 1)
         {
@@ -39,14 +39,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
             Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
 
-            var vacancy = await orchestrator.GetVacancy(vrm, vacancySharedByProvider);
+            var vacancy = await orchestrator.GetVacancy(vrm);
 
             if (vacancy.CanEmployerEdit)
             {
                 return HandleRedirectOfEditableVacancy(vacancy);
             }
 
-            var viewModel = await orchestrator.GetManageVacancyViewModel(vacancy, page, PageSize, outputSortColumn, outputSortOrder, vacancySharedByProvider, locationFilter);
+            var viewModel = await orchestrator.GetManageVacancyViewModel(vacancy, page, PageSize, outputSortColumn, outputSortOrder,  locationFilter);
 
             if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
                 viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();
