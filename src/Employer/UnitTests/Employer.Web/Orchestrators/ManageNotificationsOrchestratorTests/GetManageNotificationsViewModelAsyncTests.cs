@@ -1,7 +1,7 @@
-using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 
@@ -73,7 +73,7 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.ManageNotificationsO
         {
             var _loggerMock = new Mock<ILogger<ManageNotificationsOrchestrator>>();
             _iConfigurationMock.Setup(x=>x["Environment"]).Returns(isProd?"Prod":"test");
-            return new ManageNotificationsOrchestrator(_loggerMock.Object, new RecruitConfiguration(EmployerAccountId), _iConfigurationMock.Object, _recruitVacancyClientMock.Object);
+            return new ManageNotificationsOrchestrator(_loggerMock.Object, _iConfigurationMock.Object, _recruitVacancyClientMock.Object, Mock.Of<IMediator>());
         }
     }
 }
