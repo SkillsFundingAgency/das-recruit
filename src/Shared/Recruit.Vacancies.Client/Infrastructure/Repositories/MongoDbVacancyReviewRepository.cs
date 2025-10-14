@@ -54,13 +54,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
-        public Task CreateAsync(Domain.Entities.VacancyReview vacancy)
+        public Task CreateAsync(Domain.Entities.VacancyReview vacancyReview)
         {
             var collection = GetCollection<Domain.Entities.VacancyReview>();
-            vacancy.MigrationDate = DateTime.UtcNow;
+            vacancyReview.MigrationDate = DateTime.UtcNow;
             
             return RetryPolicy.ExecuteAsync(_ =>
-                collection.InsertOneAsync(vacancy),
+                collection.InsertOneAsync(vacancyReview),
                 new Context(nameof(CreateAsync)));
         }
 
