@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Interfaces;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
@@ -32,7 +31,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         
         public async Task<FutureProspectsViewModel> GetViewModel(VacancyRouteModel routeModel)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(routeModel, RouteNames.FutureProspects_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(routeModel);
 
             var viewModel = new FutureProspectsViewModel
             {
@@ -55,7 +54,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostEditModel(FutureProspectsEditModel editModel, VacancyUser user)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.FutureProspects_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(editModel);
             
             SetVacancyWithEmployerReviewFieldIndicators(
                 vacancy.OutcomeDescription,

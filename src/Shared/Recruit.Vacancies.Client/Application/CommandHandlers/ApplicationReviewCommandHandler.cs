@@ -10,6 +10,7 @@ using Esfa.Recruit.Vacancies.Client.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Events;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -42,19 +43,21 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             applicationReview.StatusUpdatedDate = timeProvider.Now;
             applicationReview.StatusUpdatedBy = message.User;
 
-            if (applicationReview.Status == ApplicationReviewStatus.EmployerInterviewing || applicationReview.Status == ApplicationReviewStatus.EmployerUnsuccessful)
+            if (applicationReview.Status is ApplicationReviewStatus.EmployerInterviewing or ApplicationReviewStatus.EmployerUnsuccessful)
             {
                 applicationReview.ReviewedDate = timeProvider.Now;
             }
 
-            if (applicationReview.Status == ApplicationReviewStatus.EmployerInterviewing) 
+            switch (applicationReview.Status)
             {
-                applicationReview.HasEverBeenEmployerInterviewing = true;
-            }
-
-            if (applicationReview.Status == ApplicationReviewStatus.EmployerUnsuccessful)
-            {
-                applicationReview.EmployerFeedback = message.CandidateFeedback;
+                case ApplicationReviewStatus.EmployerInterviewing:
+                    applicationReview.HasEverBeenEmployerInterviewing = true;
+                    break;
+                case ApplicationReviewStatus.EmployerUnsuccessful:
+                    applicationReview.EmployerFeedback = message.CandidateFeedback;
+                    break;
+                default:
+                    break;
             }
 
             Validate(applicationReview);
@@ -62,13 +65,21 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await applicationReviewRepositoryRunner.UpdateAsync(applicationReview);
 
+            var vacancy = await vacancyRepository.GetVacancyAsync(applicationReview.VacancyReference);
+
+            // Notify the provider that the shared application has been reviewed by the employer.
+            if (applicationReview.Status is ApplicationReviewStatus.EmployerInterviewing or ApplicationReviewStatus.EmployerUnsuccessful)
+            {
+                await outerApiClient.Post(new PostSharedApplicationReviewedEventApiRequest(
+                    new PostSharedApplicationReviewedEventApiRequest.
+                        PostSharedApplicationReviewedEventApiRequestData(vacancy.Id, vacancy.VacancyReference!.Value)));
+            }
+
             if (applicationReview.Status is not (ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful))
             {
                 return false;
             }
 
-            var vacancy = await vacancyRepository.GetVacancyAsync(applicationReview.VacancyReference);
-            
             if (!applicationReview.Application.IsFaaV2Application)
             {
                 await messaging.PublishEvent(new ApplicationReviewedEvent
@@ -77,9 +88,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     VacancyReference = applicationReview.VacancyReference,
                     CandidateFeedback = applicationReview.CandidateFeedback,
                     CandidateId = applicationReview.CandidateId
-                });    
+                });
             }
-            
+
             await outerApiClient.Post(new PostApplicationStatusRequest(applicationReview.Application.CandidateId,
                 applicationReview.Application.ApplicationId, new PostApplicationStatus
                 {
@@ -90,8 +101,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     VacancyEmployerName = vacancy.EmployerName,
                     VacancyLocation = vacancy.GetVacancyLocation()
                 }));
-            
-            return await CheckForPositionsFilledAsync(message.Outcome,vacancy, applicationReview.VacancyReference);
+
+            return await CheckForPositionsFilledAsync(message.Outcome, vacancy, applicationReview.VacancyReference);
         }
 
         private void Validate(ApplicationReview applicationReview)
@@ -116,9 +127,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             // If all positions are filled
             if (!(counts.SuccessfulApplications >= vacancy.NumberOfPositions)) return false;
-            
+
             // Count any remaining applications that aren't successful
-            int remainingApplications =
+            var remainingApplications =
                 counts.NewApplications +
                 counts.InterviewingApplications +
                 counts.InReviewApplications +

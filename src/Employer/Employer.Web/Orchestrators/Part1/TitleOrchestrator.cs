@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<TitleViewModel> GetTitleViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Title_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
             var vm = new TitleViewModel
             {
                 VacancyId = vacancy.Id,
@@ -107,7 +107,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     });
             }
 
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(new VacancyRouteModel{EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId.Value}, RouteNames.Title_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(new VacancyRouteModel{EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId.Value});
 
             SetVacancyWithEmployerReviewFieldIndicators(
                 vacancy.Title,

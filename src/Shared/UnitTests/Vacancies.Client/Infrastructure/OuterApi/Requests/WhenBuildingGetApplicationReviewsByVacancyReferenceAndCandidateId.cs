@@ -9,6 +9,6 @@ internal class WhenBuildingGetApplicationReviewsByVacancyReferenceAndCandidateId
     public void Then_Gets_Correct_Uri(long vacancyReference, Guid candidateId)
     {
         var actual = new GetApplicationReviewsByVacancyReferenceAndCandidateIdApiRequest(vacancyReference, candidateId);
-        actual.Should().Be($"applicationReviews/{vacancyReference}/candidate/{candidateId}");
+        actual.GetUrl.Should().Be($"applicationReviews/{vacancyReference}/candidate/{candidateId}");
     }
 }
