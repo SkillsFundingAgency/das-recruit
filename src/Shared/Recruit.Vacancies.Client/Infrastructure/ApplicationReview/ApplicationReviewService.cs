@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -260,10 +261,29 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
 
             if (response?.ApplicationReviews == null || response.ApplicationReviews.Count == 0) return [];
 
+            //Clear Temporary Status for ApplicationsReviews that are not Withdrawn and have TemporaryReviewStatus = PendingShared
+            await ClearApplicationReviewsTemporaryStatus(response);
+
             var applicationReviews = response.ApplicationReviews
                 .Select(MapToDomainApplicationReview).ToList();
 
             return applicationReviews;
+        }
+
+        private async Task ClearApplicationReviewsTemporaryStatus(GetApplicationReviewsByVacancyReferenceApiResponse response)
+        {
+            var tasks = response.ApplicationReviews
+                .Where(fil => fil.WithdrawnDate == null && fil.TemporaryReviewStatus != null)
+                .Select(applicationReview =>
+                    outerApiClient.Post(new PostApplicationReviewApiRequest(applicationReview.Id,
+                        new PostApplicationReviewApiRequestData
+                        {
+                            TemporaryReviewStatus = null,
+                            CandidateFeedback = null
+                        }), false)
+                ).ToList();
+
+            await Task.WhenAll(tasks);
         }
 
         private string GetCandidateAppliedLocation(List<Responses.Address> addresses)
