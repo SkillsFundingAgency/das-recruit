@@ -168,6 +168,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpGet("share", Name = RouteNames.ApplicationReviewsToShareConfirmation_Get)]
         public async Task<IActionResult> ApplicationReviewsToShareConfirmation(ShareApplicationReviewsRequest request)
         {
+            await _orchestrator.PostApplicationReviewsStatus(new ApplicationReviewsToUpdateStatusModel
+                {
+                    VacancyId = request.VacancyId!.Value!,
+                    ApplicationReviewIds = request.ApplicationsToShare
+                }, User.ToVacancyUser(),
+                null,
+                ApplicationReviewStatus.PendingShared);
+
             var shareApplicationsConfirmationViewModel = await _orchestrator.GetApplicationReviewsToShareConfirmationViewModel(request);
             return View(shareApplicationsConfirmationViewModel);
         }
