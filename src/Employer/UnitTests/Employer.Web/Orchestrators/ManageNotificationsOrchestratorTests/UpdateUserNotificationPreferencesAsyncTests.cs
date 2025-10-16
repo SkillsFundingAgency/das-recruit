@@ -1,9 +1,9 @@
 using System.Linq;
-using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -29,10 +29,8 @@ namespace UnitTests.Employer.Web.Orchestrators.ManageNotificationsOrchestratorTe
         
         private ManageNotificationsOrchestrator GetSut()
         {
-        
-        var _loggerMock = new Mock<ILogger<ManageNotificationsOrchestrator>>();
-        
-            return new ManageNotificationsOrchestrator(_loggerMock.Object, new RecruitConfiguration(EmployerAccountId), _iConfigurationMock.Object, _recruitVacancyClientMock.Object);
+            var _loggerMock = new Mock<ILogger<ManageNotificationsOrchestrator>>();
+            return new ManageNotificationsOrchestrator(_loggerMock.Object, _iConfigurationMock.Object, _recruitVacancyClientMock.Object, Mock.Of<IMediator>());
         }
     }
 }
