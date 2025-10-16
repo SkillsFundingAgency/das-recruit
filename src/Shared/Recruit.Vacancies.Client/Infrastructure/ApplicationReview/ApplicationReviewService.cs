@@ -97,6 +97,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             string candidateFeedback = null,
             long? vacancyReference = null)
         {
+            if (vacancyReference.HasValue)
+            {
+                await ClearApplicationReviewsTemporaryStatus(vacancyReference.GetValueOrDefault());
+            }
+
             var tasks = applicationReviewIds.Select(applicationReviewId =>
                 outerApiClient.Post(new PostApplicationReviewApiRequest(applicationReviewId,
                     new PostApplicationReviewApiRequestData
@@ -260,17 +265,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
 
             if (response?.ApplicationReviews == null || response.ApplicationReviews.Count == 0) return [];
 
-            //Clear Temporary Status for ApplicationsReviews that are not Withdrawn and have TemporaryReviewStatus = PendingShared
-            await ClearApplicationReviewsTemporaryStatus(response);
-
             var applicationReviews = response.ApplicationReviews
                 .Select(MapToDomainApplicationReview).ToList();
 
             return applicationReviews;
         }
 
-        private async Task ClearApplicationReviewsTemporaryStatus(GetApplicationReviewsByVacancyReferenceApiResponse response)
+        private async Task ClearApplicationReviewsTemporaryStatus(long vacancyReference)
         {
+            var response = await outerApiClient.Get<GetApplicationReviewsByVacancyReferenceApiResponse>(
+                new GetApplicationReviewsByVacancyReferenceApiRequest(vacancyReference));
+
+            if (response?.ApplicationReviews == null || response.ApplicationReviews.Count == 0) return;
+
             var tasks = response.ApplicationReviews
                 .Where(fil => fil.WithdrawnDate == null && fil.TemporaryReviewStatus != null)
                 .Select(applicationReview =>
@@ -278,7 +285,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                         new PostApplicationReviewApiRequestData
                         {
                             TemporaryReviewStatus = null,
-                            CandidateFeedback = null
+                            CandidateFeedback = null,
                         }), false)
                 ).ToList();
 

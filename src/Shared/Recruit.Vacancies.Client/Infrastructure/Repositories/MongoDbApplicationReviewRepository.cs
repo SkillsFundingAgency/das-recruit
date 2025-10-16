@@ -130,6 +130,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             if (vacancyReference.HasValue)
             {
                 await ClearApplicationReviewsTemporaryStatus(vacancyReference.Value, user, updatedDate);
+
             }
             
             var builder = Builders<Domain.Entities.ApplicationReview>.Filter;

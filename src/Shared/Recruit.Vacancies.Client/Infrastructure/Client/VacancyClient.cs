@@ -52,7 +52,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IVacancySummariesProvider vacancySummariesQuery,
         ITimeProvider timeProvider,
         ITrainingProviderService trainingProviderService,
-        IApplicationReviewRepository applicationReviewRepository,
         ISqlDbRepository sqlDbRepository)
         : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
@@ -317,7 +316,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendStatusCommandAsync(command);
         }
 
-        public Task SetApplicationReviewsStatus(long vacancyReference, IEnumerable<Guid> applicationReviews, VacancyUser user, ApplicationReviewStatus? status, Guid vacancyId, ApplicationReviewStatus? applicationReviewTemporaryStatus)
+        public Task SetApplicationReviewsStatus(long vacancyReference,
+            IEnumerable<Guid> applicationReviews,
+            VacancyUser user,
+            ApplicationReviewStatus? status,
+            Guid vacancyId,
+            ApplicationReviewStatus? applicationReviewTemporaryStatus)
         {
             var command = new ApplicationReviewsSharedCommand
             {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.RouteModel;
@@ -76,6 +75,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var applicationsSelected =
                 await _vacancyClient.GetVacancyApplicationsForReferenceAndStatus(rm.VacancyId.GetValueOrDefault(),
                     ApplicationReviewStatus.PendingShared);
+            
             var vacancyApplications = applicationReviews.Where(fil => fil.IsNotWithdrawn).ToList();
             foreach (var application in applicationsSelected)
             {
@@ -101,7 +101,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                     ApplicationReviewStatus.PendingShared);
 
             if (applicationReviewsToShare.Count == 0 && request.ApplicationsToShare?.Count == 1)
+            {
+                var vacancy = await _vacancyClient.GetVacancyAsync(request.VacancyId!.Value);
+                await _vacancyClient.SetApplicationReviewsStatus(vacancy.VacancyReference!.GetValueOrDefault(), request.ApplicationsToShare, null, null, request.VacancyId!.Value, ApplicationReviewStatus.PendingShared);
                 applicationReviewsToShare.AddRange(await _vacancyClient.GetVacancyApplicationsForSelectedIdsAsync(request.ApplicationsToShare));
+            }
             
             return new ShareMultipleApplicationReviewsConfirmationViewModel
             {
@@ -114,7 +118,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         public async Task PostApplicationReviewsStatus(ApplicationReviewsToUpdateStatusModel request, VacancyUser user, ApplicationReviewStatus? applicationReviewStatus, ApplicationReviewStatus? applicationReviewTemporaryStatus)
         {
             var vacancy = await _vacancyClient.GetVacancyAsync(request.VacancyId);
-            await _vacancyClient.SetApplicationReviewsStatus(vacancy!.VacancyReference!.Value, request.ApplicationReviewIds, user, applicationReviewStatus, request.VacancyId,applicationReviewTemporaryStatus);
+            await _vacancyClient.SetApplicationReviewsStatus(vacancy!.VacancyReference!.Value, request.ApplicationReviewIds, user, applicationReviewStatus, request.VacancyId, applicationReviewTemporaryStatus);
         }
 
         public async Task PostApplicationReviewPendingUnsuccessfulFeedback(ApplicationReviewStatusModel request, VacancyUser user, ApplicationReviewStatus applicationReviewStatus)
