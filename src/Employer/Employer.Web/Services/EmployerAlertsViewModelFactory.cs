@@ -23,11 +23,11 @@ namespace Esfa.Recruit.Employer.Web.Services
             if (string.IsNullOrEmpty(employerAccountId))
                 throw new ArgumentNullException(nameof(employerAccountId));
 
-            var transferredVacancies = await _employerVacancyClient.GetDashboardAsync(employerAccountId, 1, FilteringOptions.Transferred, string.Empty);
+            var transferredVacancies = await _employerVacancyClient.GetDashboardAsync(employerAccountId, "", 1, 25, "", "", FilteringOptions.Transferred, null); ;
             var employerRevokedTransferredVacanciesAlert = _alertViewModelService.GetTransferredVacanciesAlert(transferredVacancies.Vacancies, TransferReason.EmployerRevokedPermission, user.TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn);
             var blockedProviderTransferredVacanciesAlert = _alertViewModelService.GetTransferredVacanciesAlert(transferredVacancies.Vacancies, TransferReason.BlockedByQa, user.TransferredVacanciesBlockedProviderAlertDismissedOn);
             
-            var closedVacancies = await _employerVacancyClient.GetDashboardAsync(employerAccountId, 1, FilteringOptions.Closed, string.Empty);
+            var closedVacancies = await _employerVacancyClient.GetDashboardAsync(employerAccountId, "", 1, 25, "", "", FilteringOptions.Closed, null);
             var blockedProviderAlert = _alertViewModelService.GetBlockedProviderVacanciesAlert(closedVacancies.Vacancies, user.ClosedVacanciesBlockedProviderAlertDismissedOn);
             var withdrawnByQaVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(closedVacancies.Vacancies, user.ClosedVacanciesWithdrawnByQaAlertDismissedOn);
 

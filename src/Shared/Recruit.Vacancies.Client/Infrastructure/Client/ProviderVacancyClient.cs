@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<long> GetVacancyCount(long ukprn, FilteringOptions? filteringOptions, string searchTerm)
         {
-            var dashboardStatsTask = await trainingProviderService.GetProviderDashboardStats(ukprn);
+            var dashboardStatsTask = await trainingProviderService.GetProviderDashboardStats(ukprn, "");
 
             switch (filteringOptions)
             {
@@ -73,15 +73,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             }
         }
 
-        public async Task<ProviderDashboardSummary> GetDashboardSummary(long ukprn)
+        public async Task<ProviderDashboardSummary> GetDashboardSummary(long ukprn, string userId)
         {
-            var dashboardTask = vacancySummariesQuery.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn);
             var transferredVacanciesTask = vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn);
-            var dashboardStatsTask = trainingProviderService.GetProviderDashboardStats(ukprn);
+            var dashboardStatsTask = trainingProviderService.GetProviderDashboardStats(ukprn, userId);
+            var alertsTask = trainingProviderService.GetProviderAlerts(Convert.ToInt32(ukprn), userId);
 
-            await Task.WhenAll(dashboardTask, transferredVacanciesTask, dashboardStatsTask);
+            await Task.WhenAll(transferredVacanciesTask, alertsTask, dashboardStatsTask);
+            var alerts = await alertsTask;
 
-            var dashboardValue = dashboardTask.Result;
             var transferredVacancies = transferredVacanciesTask.Result.Select(t =>
                 new ProviderDashboardTransferredVacancy
                 {
@@ -91,35 +91,40 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 });
             var dashboardStats = dashboardStatsTask.Result;
 
-            var dashboard = dashboardValue.VacancyStatusDashboard;
-
             return new ProviderDashboardSummary
             {
-                Closed = dashboard.FirstOrDefault(c => c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
-                Draft = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Draft)?.StatusCount ?? 0,
-                Review = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Review)?.StatusCount ?? 0,
-                Referred = (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
-                Live = dashboard.Where(c => c.Status == VacancyStatus.Live).Sum(c => c.StatusCount),
-                Submitted = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
-                
+                Closed = dashboardStats.ClosedVacanciesCount,
+                Draft = dashboardStats.DraftVacanciesCount,
+                Review = dashboardStats.ReviewVacanciesCount,
+                Referred = dashboardStats.ReferredVacanciesCount,
+                Live = dashboardStats.LiveVacanciesCount,
+                Submitted = dashboardStats.SubmittedVacanciesCount,
                 NumberOfNewApplications = dashboardStats.NewApplicationsCount,
                 NumberOfEmployerReviewedApplications = dashboardStats.EmployerReviewedApplicationsCount,
                 NumberOfSuccessfulApplications = dashboardStats.SuccessfulApplicationsCount,
                 NumberOfUnsuccessfulApplications = dashboardStats.UnsuccessfulApplicationsCount,
-                NumberClosingSoon = dashboard.FirstOrDefault(c => c.Status == VacancyStatus.Live && c.ClosingSoon)?.StatusCount ?? 0,
-                NumberClosingSoonWithNoApplications = dashboardValue.VacanciesClosingSoonWithNoApplications,
+                NumberClosingSoon = dashboardStats.ClosingSoonVacanciesCount,
+                NumberClosingSoonWithNoApplications = dashboardStats.ClosingSoonWithNoApplications,
+                ProviderTransferredVacanciesAlert = alerts.ProviderTransferredVacanciesAlert,
+                WithdrawnVacanciesAlert = alerts.WithdrawnVacanciesAlert,
                 TransferredVacancies = transferredVacancies
             };
         }
 
-        public async Task<ProviderDashboard> GetDashboardAsync(long ukprn,int page, FilteringOptions? status = null, string searchTerm = null)
+        public async Task<ProviderDashboard> GetDashboardAsync(long ukprn, string userId, int page, int pageSize, string sortColumn, string sortOrder, FilteringOptions? status = null, string searchTerm = null)
         {
-            var vacancySummariesTasks = vacancySummariesQuery.GetProviderOwnedVacancySummariesByUkprnAsync(ukprn, page, status, searchTerm);
+            var vacancySummariesTasks =
+                trainingProviderService.GetProviderVacancies(Convert.ToInt32(ukprn), page, pageSize, sortColumn, sortOrder, status ?? FilteringOptions.Dashboard, searchTerm);
+            var alertsTask = trainingProviderService.GetProviderAlerts(Convert.ToInt32(ukprn), userId);
             var transferredVacanciesTasks = vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn);
-            
-            await Task.WhenAll(vacancySummariesTasks, transferredVacanciesTasks);
 
-            var vacancySummaries = vacancySummariesTasks.Result.Item1
+
+            await Task.WhenAll(vacancySummariesTasks, alertsTask, transferredVacanciesTasks);
+
+            var vacancySummariesResult = await vacancySummariesTasks;
+            var alerts = await alertsTask;
+
+            var vacancySummaries = vacancySummariesResult.VacancySummaries
                 .Where(c=> !c.IsTraineeship).ToList();
             var transferredVacancies = transferredVacanciesTasks.Result.Select(t =>
                 new ProviderDashboardTransferredVacancy
@@ -135,7 +140,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 Vacancies = vacancySummaries,
                 TransferredVacancies = transferredVacancies,
                 LastUpdated = timeProvider.Now,
-                TotalVacancies = vacancySummariesTasks.Result.totalCount
+                TotalVacancies = vacancySummariesResult.PageInfo.TotalCount,
+                WithdrawnVacanciesAlert = alerts.WithdrawnVacanciesAlert,
+                ProviderTransferredVacanciesAlert = alerts.ProviderTransferredVacanciesAlert,
             };
         }
 
