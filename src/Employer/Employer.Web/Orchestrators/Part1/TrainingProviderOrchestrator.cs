@@ -41,9 +41,13 @@ public class TrainingProviderOrchestrator(
     {
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm);
         var programme = await vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
-        var trainingProviders = int.TryParse(programme.Id, out int programmeId)
-            ? (await trainingProviderService.GetCourseProviders(programmeId)).ToList()
-            : (await trainingProviderSummaryProvider.FindAllAsync()).ToList();
+        
+        // TODO: temporarily commented out as part of FAI-2818
+        // var trainingProviders = int.TryParse(programme.Id, out int programmeId)
+        //     ? (await trainingProviderService.GetCourseProviders(programmeId)).ToList()
+        //     : (await trainingProviderSummaryProvider.FindAllAsync()).ToList();
+        
+        var trainingProviders = (await trainingProviderSummaryProvider.FindAllAsync()).ToList();
 
         var vm = new SelectTrainingProviderViewModel
         {
@@ -174,12 +178,15 @@ public class TrainingProviderOrchestrator(
                 && model.TrainingProviderSearch.EndsWith(EsfaTestTrainingProvider.Ukprn.ToString()))
                 return await GetProviderAsync(EsfaTestTrainingProvider.Ukprn.ToString());
 
-            var trainingProviders = int.TryParse(programmeId, out int id)
-                ? (await trainingProviderService.GetCourseProviders(id)).ToList()
-                : (await trainingProviderSummaryProvider.FindAllAsync()).ToList();
+            // TODO: Temporarily commented out for FAI-2818
+            // var trainingProviders = int.TryParse(programmeId, out int id)
+            //     ? (await trainingProviderService.GetCourseProviders(id)).ToList()
+            //     : (await trainingProviderSummaryProvider.FindAllAsync()).ToList();
 
-            var matches = trainingProviders.Where(p =>
-                    FormatSuggestion(p.ProviderName, p.Ukprn).Contains(model.TrainingProviderSearch))
+            var trainingProviders = await trainingProviderSummaryProvider.FindAllAsync();
+
+            var matches = trainingProviders
+                .Where(p => FormatSuggestion(p.ProviderName, p.Ukprn).Contains(model.TrainingProviderSearch))
                 .ToList();
 
             return matches.Count == 1 ? matches.First() : null;
@@ -205,11 +212,12 @@ public class TrainingProviderOrchestrator(
     private static void SetModelUsingVacancyTrainingProvider(SelectTrainingProviderViewModel vm,
         IEnumerable<TrainingProviderSummary> trainingProviders, Vacancy vacancy)
     {
-        if (trainingProviders.SingleOrDefault(x => x.ProviderName == vacancy.TrainingProvider.Name) is null)
-        {
-            vm.ProviderDoesNotSupportCourse = true;
-            return;
-        }
+        // TODO: Temporarily commented out for FAI-2818
+        // if (trainingProviders.SingleOrDefault(x => x.ProviderName == vacancy.TrainingProvider.Name) is null)
+        // {
+        //     vm.ProviderDoesNotSupportCourse = true;
+        //     return;
+        // }
         
         vm.Ukprn = vacancy.TrainingProvider.Ukprn.ToString();
         vm.TrainingProviderSearch = FormatSuggestion(vacancy.TrainingProvider.Name, vacancy.TrainingProvider.Ukprn.Value);

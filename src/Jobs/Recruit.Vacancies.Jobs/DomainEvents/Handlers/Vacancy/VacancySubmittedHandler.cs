@@ -25,7 +25,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
                 
                 await client.CreateVacancyReview(vacancySubmittedEvent.VacancyReference);
                 await client.EnsureVacancyIsGeocodedAsync(vacancySubmittedEvent.VacancyId);
-                await outerApiClient.Post(new PostVacancySubmittedEventRequest(new PostVacancySubmittedEventData(vacancySubmittedEvent.VacancyId, vacancySubmittedEvent.VacancyReference)));
                 
                 logger.LogInformation("Finished Processing {EventName} for vacancy: {VacancyId}", EventName, vacancySubmittedEvent.VacancyId);
             }
