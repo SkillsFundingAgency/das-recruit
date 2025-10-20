@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
@@ -21,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
     public class ApplicationReviewCommandHandler(
         ILogger<ApplicationReviewCommandHandler> logger,
-        IApplicationReviewRepository applicationReviewRepository,
+        ISqlDbRepository sqlDbRepository,
         IVacancyRepository vacancyRepository,
         ITimeProvider timeProvider,
         IMessaging messaging,
@@ -32,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         public async Task<bool> Handle(ApplicationReviewStatusEditCommand message, CancellationToken cancellationToke)
         {
-            var applicationReview = await applicationReviewRepository.GetAsync(message.ApplicationReviewId);
+            var applicationReview = await sqlDbRepository.GetAsync(message.ApplicationReviewId);
 
             if (applicationReview.CanReview == false)
             {
@@ -81,7 +79,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 return false;
             }
-            
+
             if (!applicationReview.Application.IsFaaV2Application)
             {
                 await messaging.PublishEvent(new ApplicationReviewedEvent
@@ -90,9 +88,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     VacancyReference = applicationReview.VacancyReference,
                     CandidateFeedback = applicationReview.CandidateFeedback,
                     CandidateId = applicationReview.CandidateId
-                });    
+                });
             }
-            
+
             await outerApiClient.Post(new PostApplicationStatusRequest(applicationReview.Application.CandidateId,
                 applicationReview.Application.ApplicationId, new PostApplicationStatus
                 {
@@ -103,8 +101,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     VacancyEmployerName = vacancy.EmployerName,
                     VacancyLocation = vacancy.GetVacancyLocation()
                 }));
-            
-            return await CheckForPositionsFilledAsync(message.Outcome,vacancy, applicationReview.VacancyReference);
+
+            return await CheckForPositionsFilledAsync(message.Outcome, vacancy, applicationReview.VacancyReference);
         }
 
         private void Validate(ApplicationReview applicationReview)
@@ -116,26 +114,29 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
         }
 
-        private async Task<bool> CheckForPositionsFilledAsync(ApplicationReviewStatus? status, Vacancy vacancy, long vacancyReference)
+        private async Task<bool> CheckForPositionsFilledAsync(
+            ApplicationReviewStatus? status,
+            Vacancy vacancy,
+            long vacancyReference)
         {
-            var shouldMakeOthersUnsuccessful = false;
-            if (status == ApplicationReviewStatus.Successful)
-            {
-                var successfulApplications = await applicationReviewRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.Successful);
+            // Only check if a new successful application was added
+            if (status != ApplicationReviewStatus.Successful)
+                return false;
 
-                if (vacancy.NumberOfPositions <= successfulApplications.Count)
-                {
-                    var newApplications = await applicationReviewRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.New);
-                    var interviewingApplications = await applicationReviewRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.Interviewing);
-                    var inReviewApplications = await applicationReviewRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.InReview);
-                    var employerInterviewingApplications = await applicationReviewRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.EmployerInterviewing);
-                    var employerUnsuccessflApplications = await applicationReviewRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.EmployerUnsuccessful);
-                    var applicationsToMakeUnsuccessful = newApplications.Count + interviewingApplications.Count + inReviewApplications.Count + employerInterviewingApplications.Count + employerUnsuccessflApplications.Count;
-                    shouldMakeOthersUnsuccessful = (applicationsToMakeUnsuccessful > 0) ? true : false;
-                }
-            }
+            var counts = await sqlDbRepository.GetApplicationReviewsCountByVacancyReferenceAsync(vacancyReference);
 
-            return shouldMakeOthersUnsuccessful;
+            // If all positions are filled
+            if (!(counts.SuccessfulApplications >= vacancy.NumberOfPositions)) return false;
+
+            // Count any remaining applications that aren't successful
+            var remainingApplications =
+                counts.NewApplications +
+                counts.InterviewingApplications +
+                counts.InReviewApplications +
+                counts.EmployerInterviewingApplications +
+                counts.UnsuccessfulApplications;
+
+            return remainingApplications > 0;
         }
     }
 }

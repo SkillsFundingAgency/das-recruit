@@ -52,7 +52,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IVacancySummariesProvider vacancySummariesQuery,
         ITimeProvider timeProvider,
         ITrainingProviderService trainingProviderService,
-        IApplicationReviewRepository applicationReviewRepository,
         ISqlDbRepository sqlDbRepository)
         : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
@@ -286,7 +285,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public async Task<List<VacancyApplication>> GetVacancyApplicationsForSelectedIdsAsync(List<Guid> applicationReviewIds)
         {
             var applicationReviews =
-                await applicationReviewRepository.GetAllForSelectedIdsAsync<Domain.Entities.ApplicationReview>(applicationReviewIds);
+                await sqlDbRepository.GetAllForSelectedIdsAsync<Domain.Entities.ApplicationReview>(applicationReviewIds);
 
             return applicationReviews == null
                 ? []
@@ -297,7 +296,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var vacancy = await repository.GetVacancyAsync(vacancyId);
             var applicationReviews =
-                await applicationReviewRepository.GetAllForVacancyWithTemporaryStatus(vacancy.VacancyReference!.Value!, status);
+                await sqlDbRepository.GetAllForVacancyWithTemporaryStatus(vacancy.VacancyReference!.Value!, status);
 
             return applicationReviews == null
                 ? []
@@ -317,7 +316,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendStatusCommandAsync(command);
         }
 
-        public Task SetApplicationReviewsStatus(long vacancyReference, IEnumerable<Guid> applicationReviews, VacancyUser user, ApplicationReviewStatus? status, Guid vacancyId, ApplicationReviewStatus? applicationReviewTemporaryStatus)
+        public Task SetApplicationReviewsStatus(long vacancyReference,
+            IEnumerable<Guid> applicationReviews,
+            VacancyUser user,
+            ApplicationReviewStatus? status,
+            Guid vacancyId,
+            ApplicationReviewStatus? applicationReviewTemporaryStatus)
         {
             var command = new ApplicationReviewsSharedCommand
             {
@@ -451,7 +455,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task CreateApplicationReviewAsync(Domain.Entities.Application application)
         {
-            return messaging.SendCommandAsync(new CreateApplicationReviewCommand { Application = application });
+            //return messaging.SendCommandAsync(new CreateApplicationReviewCommand { Application = application });
+            return Task.CompletedTask;
         }
 
         public Task WithdrawApplicationAsync(long vacancyReference, Guid candidateId)
@@ -459,14 +464,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendCommandAsync(new WithdrawApplicationCommand
             {
                 VacancyReference = vacancyReference,
-                CandidateId = candidateId
-            });
-        }
-
-        public Task HardDeleteApplicationReviewsForCandidate(Guid candidateId)
-        {
-            return messaging.SendCommandAsync(new DeleteApplicationReviewsCommand
-            {
                 CandidateId = candidateId
             });
         }
