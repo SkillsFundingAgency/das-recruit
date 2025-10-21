@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Domain.Alerts;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider
@@ -12,6 +13,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Pr
 
         public IEnumerable<VacancySummary> Vacancies { get; set; }
         public int? TotalVacancies { get; set; } = null;
+        public ProviderTransferredVacanciesAlertModel ProviderTransferredVacanciesAlert { get; set; } = new();
+        public WithdrawnVacanciesAlertModel WithdrawnVacanciesAlert { get; set; } = new();
 
         public IEnumerable<ProviderDashboardTransferredVacancy> TransferredVacancies { get; set; }
 
