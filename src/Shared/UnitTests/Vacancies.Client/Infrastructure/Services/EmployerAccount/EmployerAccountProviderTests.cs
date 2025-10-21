@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public async Task GetEmployerDashboardStats_Should_Return_As_Expected(
             string hashedAccountId,
             long accountId,
-            GetDashboardCountApiResponse response,
+            GetEmployerDashboardApiResponse response,
             [Frozen] Mock<IEncodingService> encodingService,
             [Frozen] Mock<IOuterApiClient> outerApiClient,
             [Greedy] EmployerAccountProvider employerAccountProvider)
@@ -51,7 +51,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 .Returns(accountId);
 
             var expectedGetUrl = new GetEmployerDashboardCountApiRequest(accountId);
-            outerApiClient.Setup(x => x.Get<GetDashboardCountApiResponse>(
+            outerApiClient.Setup(x => x.Get<GetEmployerDashboardApiResponse>(
                     It.Is<GetEmployerDashboardCountApiRequest>(r => r.GetUrl == expectedGetUrl.GetUrl)))
                 .ReturnsAsync(response);
 
