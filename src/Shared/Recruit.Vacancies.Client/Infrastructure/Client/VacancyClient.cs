@@ -52,7 +52,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IVacancySummariesProvider vacancySummariesQuery,
         ITimeProvider timeProvider,
         ITrainingProviderService trainingProviderService,
-        IApplicationReviewRepository applicationReviewRepository,
         ISqlDbRepository sqlDbRepository)
         : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
@@ -164,43 +163,58 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendCommandAsync(command);
         }
         
-        public async Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId)
+        public async Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId, string userId)
         {
-            var dashboardValue = await vacancySummariesQuery.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId);
-            var dashboardStats = await employerAccountProvider.GetEmployerDashboardStats(employerAccountId);
-            
-            var dashboard = dashboardValue.VacancyStatusDashboard;
+            var dashboardStatsTask = employerAccountProvider.GetEmployerDashboardStats(employerAccountId);
+            var alertsTask = employerAccountProvider.GetEmployerAlerts(employerAccountId, userId);
+
+            await Task.WhenAll(dashboardStatsTask, alertsTask);
+            var dashboardStats = dashboardStatsTask.Result;
+            var alerts = alertsTask.Result;
 
             return new EmployerDashboardSummary
             {
-                Closed = dashboard.FirstOrDefault(c => c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
-                Draft = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Draft)?.StatusCount ?? 0,
-                Referred = (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
-                Live = dashboard.Where(c => c.Status == VacancyStatus.Live).Sum(c => c.StatusCount),
-                Submitted = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
-                Review = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Review)?.StatusCount ?? 0,
-                
+                Closed = dashboardStats.ClosedVacanciesCount,
+                Draft = dashboardStats.DraftVacanciesCount,
+                Referred = dashboardStats.ReferredVacanciesCount,
+                Live = dashboardStats.LiveVacanciesCount,
+                Submitted = dashboardStats.SubmittedVacanciesCount,
+                Review = dashboardStats.ReviewVacanciesCount,
                 NumberOfNewApplications = dashboardStats.NewApplicationsCount,
                 NumberOfSuccessfulApplications = dashboardStats.SuccessfulApplicationsCount,
                 NumberOfUnsuccessfulApplications = dashboardStats.UnsuccessfulApplicationsCount,
                 NumberOfSharedApplications = dashboardStats.SharedApplicationsCount,
                 NumberOfAllSharedApplications = dashboardStats.AllSharedApplicationsCount,
-                NumberClosingSoon = dashboard.FirstOrDefault(c => c.Status == VacancyStatus.Live && c.ClosingSoon)?.StatusCount ?? 0,
-                NumberClosingSoonWithNoApplications = dashboardValue.VacanciesClosingSoonWithNoApplications
+                NumberClosingSoon = dashboardStats.ClosingSoonVacanciesCount,
+                NumberClosingSoonWithNoApplications = dashboardStats.ClosingSoonWithNoApplications,
+                BlockedProviderAlert = alerts.BlockedProviderAlert,
+                BlockedProviderTransferredVacanciesAlert = alerts.BlockedProviderTransferredVacanciesAlert,
+                EmployerRevokedTransferredVacanciesAlert = alerts.EmployerRevokedTransferredVacanciesAlert,
+                WithDrawnByQaVacanciesAlert = alerts.WithDrawnByQaVacanciesAlert,
             };
         }
 
-        public async Task<EmployerDashboard> GetDashboardAsync(string employerAccountId, int page, FilteringOptions? status = null, string searchTerm = null)
+        public async Task<EmployerDashboard> GetDashboardAsync(string employerAccountId, string userId, int page, int pageSize, string sortColumn, string sortOrder, FilteringOptions? status = null, string searchTerm = null)
         {
-            var vacancySummaries =
-                await vacancySummariesQuery.GetEmployerOwnedVacancySummariesByEmployerAccountId(employerAccountId,
-                     page, status, searchTerm);
+            var vacancySummariesTask =
+                employerAccountProvider.GetEmployerVacancies(employerAccountId, page, pageSize, sortColumn, sortOrder, status ?? FilteringOptions.Dashboard, searchTerm);
+            var alertsTask = employerAccountProvider.GetEmployerAlerts(employerAccountId, userId);
+
+            await Task.WhenAll(vacancySummariesTask, alertsTask);
+            var vacancySummaries = vacancySummariesTask.Result;
+            var alerts = alertsTask.Result;
+
+
             return new EmployerDashboard
             {
                 Id = QueryViewType.EmployerDashboard.GetIdValue(employerAccountId),
-                Vacancies = vacancySummaries.Item1,
+                Vacancies = vacancySummaries.VacancySummaries,
                 LastUpdated = timeProvider.Now,
-                TotalVacancies = vacancySummaries.totalCount
+                TotalVacancies = vacancySummaries.PageInfo.TotalCount,
+                BlockedProviderAlert = alerts.BlockedProviderAlert,
+                BlockedProviderTransferredVacanciesAlert = alerts.BlockedProviderTransferredVacanciesAlert,
+                EmployerRevokedTransferredVacanciesAlert = alerts.EmployerRevokedTransferredVacanciesAlert,
+                WithDrawnByQaVacanciesAlert = alerts.WithDrawnByQaVacanciesAlert,
             };
         }
 
@@ -286,7 +300,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public async Task<List<VacancyApplication>> GetVacancyApplicationsForSelectedIdsAsync(List<Guid> applicationReviewIds)
         {
             var applicationReviews =
-                await applicationReviewRepository.GetAllForSelectedIdsAsync<Domain.Entities.ApplicationReview>(applicationReviewIds);
+                await sqlDbRepository.GetAllForSelectedIdsAsync<Domain.Entities.ApplicationReview>(applicationReviewIds);
 
             return applicationReviews == null
                 ? []
@@ -297,7 +311,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var vacancy = await repository.GetVacancyAsync(vacancyId);
             var applicationReviews =
-                await applicationReviewRepository.GetAllForVacancyWithTemporaryStatus(vacancy.VacancyReference!.Value!, status);
+                await sqlDbRepository.GetAllForVacancyWithTemporaryStatus(vacancy.VacancyReference!.Value!, status);
 
             return applicationReviews == null
                 ? []
@@ -317,7 +331,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendStatusCommandAsync(command);
         }
 
-        public Task SetApplicationReviewsStatus(long vacancyReference, IEnumerable<Guid> applicationReviews, VacancyUser user, ApplicationReviewStatus? status, Guid vacancyId, ApplicationReviewStatus? applicationReviewTemporaryStatus)
+        public Task SetApplicationReviewsStatus(long vacancyReference,
+            IEnumerable<Guid> applicationReviews,
+            VacancyUser user,
+            ApplicationReviewStatus? status,
+            Guid vacancyId,
+            ApplicationReviewStatus? applicationReviewTemporaryStatus)
         {
             var command = new ApplicationReviewsSharedCommand
             {
@@ -451,7 +470,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task CreateApplicationReviewAsync(Domain.Entities.Application application)
         {
-            return messaging.SendCommandAsync(new CreateApplicationReviewCommand { Application = application });
+            //return messaging.SendCommandAsync(new CreateApplicationReviewCommand { Application = application });
+            return Task.CompletedTask;
         }
 
         public Task WithdrawApplicationAsync(long vacancyReference, Guid candidateId)
@@ -459,14 +479,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendCommandAsync(new WithdrawApplicationCommand
             {
                 VacancyReference = vacancyReference,
-                CandidateId = candidateId
-            });
-        }
-
-        public Task HardDeleteApplicationReviewsForCandidate(Guid candidateId)
-        {
-            return messaging.SendCommandAsync(new DeleteApplicationReviewsCommand
-            {
                 CandidateId = candidateId
             });
         }
