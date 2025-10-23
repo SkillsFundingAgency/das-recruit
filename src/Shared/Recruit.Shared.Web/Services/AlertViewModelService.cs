@@ -71,7 +71,7 @@ namespace Esfa.Recruit.Shared.Web.Services
 
             return new WithdrawnVacanciesAlertViewModel
             {
-                ClosedVacancies = withdrawnVacancies.Select(v => $"{v.Title} (VAC{v.VacancyReference})").ToList()
+                ClosedVacancies = withdrawnVacancies.Select(v => $"{v.Title} (VAC{v.VacancyReference})").ToList(),
             };
         }
 

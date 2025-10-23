@@ -908,15 +908,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateTrainingProviderDeliverTrainingCourse()
         {
-            When(x => x.TrainingProvider != null &&
-                      x.OwnerType == OwnerType.Employer &&
-                      x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn,
-                () =>
-                {
-                    RuleFor(x => x)
-                        .TrainingProviderMustBeDeliverTheTrainingCourse(_trainingProviderService, _apprenticeshipProgrammesProvider)
-                        .RunCondition(VacancyRuleSet.TrainingProviderDeliverCourse);
-                });
+            // TODO: removed temporarily as part of FAI-2818
+            // When(x => x.TrainingProvider != null &&
+            //           x.OwnerType == OwnerType.Employer &&
+            //           x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn,
+            //     () =>
+            //     {
+            //         RuleFor(x => x)
+            //             .TrainingProviderMustBeDeliverTheTrainingCourse(_trainingProviderService, _apprenticeshipProgrammesProvider)
+            //             .RunCondition(VacancyRuleSet.TrainingProviderDeliverCourse);
+            //     });
         }
         private void ValidateStartDateClosingDate()
         {

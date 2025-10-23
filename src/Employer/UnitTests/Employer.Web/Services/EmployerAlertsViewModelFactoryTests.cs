@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -18,7 +17,15 @@ public class EmployerAlertsViewModelFactoryTests
         EmployerAlertsViewModelFactory factory)
     {
         mockEmployerVacancyClient.Setup(x =>
-            x.GetDashboardAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<FilteringOptions>(), It.IsAny<string>())).ReturnsAsync(new EmployerDashboard
+            x.GetDashboardAsync(It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<int>(),
+                It.IsAny<int>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<FilteringOptions>(),
+                It.IsAny<string>()))
+            .ReturnsAsync(new EmployerDashboard
         {
             Vacancies = new List<VacancySummary>()
         });
