@@ -2,6 +2,7 @@
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using SFA.DAS.Encoding;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -31,6 +32,7 @@ public class OuterApiVacancyClient(
 
     public async Task<long> GetNextVacancyIdAsync()
     {
-        return await apimRecruitClient.Get<long>(new GetNextVacancyReferenceRequest());
+        var response = await apimRecruitClient.Get<GetNextVacancyReferenceResponse>(new GetNextVacancyReferenceRequest());
+        return response.NextVacancyReference;
     }
 }
