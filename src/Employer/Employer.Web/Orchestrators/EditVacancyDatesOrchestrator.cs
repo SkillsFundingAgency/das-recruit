@@ -23,14 +23,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly ITimeProvider _timeProvider;
         private readonly IUtility _utility;
 
-        private readonly EntityValidationResult _proposedClosingDateMustBeNewerError = new EntityValidationResult
-        {
-            Errors = new[] 
-            { 
-                new EntityValidationError((long)VacancyRuleSet.ClosingDate, nameof(EditVacancyDatesEditModel.ClosingDate), ErrorMessages.ChangedClosingDateMustBeNewer, "201") 
-            }
-        };
-
         public EditVacancyDatesOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<EditVacancyDatesOrchestrator> logger, ITimeProvider timeProvider, IUtility utility) : base(logger)
         {
             _vacancyClient = vacancyClient;
@@ -120,10 +112,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vacancy = await GetVacancyAsync(m);
 
             var proposedClosingDate = m.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
-
-            if (proposedClosingDate < vacancy.ClosingDate)
-                return new OrchestratorResponse(_proposedClosingDateMustBeNewerError);
-
             var proposedVacancyStartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();
             
             vacancy.ClosingDate = proposedClosingDate;
