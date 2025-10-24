@@ -16,19 +16,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
 [Authorize(Policy = nameof(PolicyNames.HasEmployerOwnerOrTransactorAccount))]
-public class VacancyPreviewController : Controller
+public class VacancyPreviewController(VacancyPreviewOrchestrator orchestrator) : Controller
 {
-    private readonly VacancyPreviewOrchestrator _orchestrator;
-
-    public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
-
     [HttpGet("advert-preview", Name = RouteNames.VacancyAdvertPreview)]
     public async Task<IActionResult> AdvertPreview(VacancyRouteModel vrm, bool? submitToEfsa = null)
     {
-        var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
+        var viewModel = await orchestrator.GetVacancyPreviewViewModelAsync(vrm);
         AddSoftValidationErrorsToModelState(viewModel);
         viewModel.CanHideValidationSummary = true;
         viewModel.SubmitToEsfa = submitToEfsa;
@@ -46,11 +39,11 @@ public class VacancyPreviewController : Controller
         {
             if(m.SubmitToEsfa.Value)
             {
-                await _orchestrator.ClearRejectedVacancyReason(m, User.ToVacancyUser());
+                await orchestrator.ClearRejectedVacancyReason(m, User.ToVacancyUser());
             }
             else
             {
-                await _orchestrator.UpdateRejectedVacancyReason(m, User.ToVacancyUser());
+                await orchestrator.UpdateRejectedVacancyReason(m, User.ToVacancyUser());
             }
 
             return RedirectToRoute(m.SubmitToEsfa.GetValueOrDefault()
@@ -59,45 +52,12 @@ public class VacancyPreviewController : Controller
                 new {m.VacancyId, m.EmployerAccountId});
         }
 
-        var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
+        var viewModel = await orchestrator.GetVacancyPreviewViewModelAsync(m);
         viewModel.SoftValidationErrors = null;
         viewModel.SubmitToEsfa = m.SubmitToEsfa;
         viewModel.RejectedReason = m.RejectedReason;
 
         return View(ViewNames.VacancyPreview, viewModel);
-    }
-
-    [HttpPost("advert-preview", Name = RouteNames.Preview_Submit_Post)]
-    public async Task<IActionResult> Submit(SubmitEditModel m)
-    {
-        var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
-
-        if (!ModelState.IsValid)
-        {
-            viewModel.SoftValidationErrors = null;
-            return View("AdvertPreview", viewModel);
-        }
-
-        var response = await _orchestrator.SubmitVacancyAsync(m, User.ToVacancyUser());
-
-        if (!response.Success)
-        {
-            response.AddErrorsToModelState(ModelState);
-        }
-
-        if (ModelState.IsValid)
-        {
-            if (response.Data.IsSubmitted)
-                return RedirectToRoute(RouteNames.Submitted_Index_Get, new {m.VacancyId, m.EmployerAccountId});
-
-            if (response.Data.HasLegalEntityAgreement == false)
-                return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get, new {m.VacancyId, m.EmployerAccountId});
-
-            throw new Exception("Unknown submit state");
-        }
-        viewModel.SoftValidationErrors = null;
-
-        return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId});
     }
 
     [HttpGet("approve-advert", Name = RouteNames.ApproveJobAdvert_Get)]
@@ -116,7 +76,7 @@ public class VacancyPreviewController : Controller
 
         if (vm.ApproveJobAdvert.GetValueOrDefault())
         {
-            var response = await _orchestrator.ApproveJobAdvertAsync(vm, User.ToVacancyUser());
+            var response = await orchestrator.ApproveJobAdvertAsync(vm, User.ToVacancyUser());
             if (!response.Success)
             {
                 response.AddErrorsToModelState(ModelState);
@@ -133,10 +93,6 @@ public class VacancyPreviewController : Controller
                 throw new Exception("Unknown submit state");
             }
         }
-        else
-        {
-            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vm.VacancyId, vm.EmployerAccountId});
-        }
             
         return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vm.VacancyId, vm.EmployerAccountId});
     }
@@ -144,24 +100,23 @@ public class VacancyPreviewController : Controller
     [HttpGet("reject-advert", Name = RouteNames.RejectJobAdvert_Get)]
     public async Task<IActionResult> RejectJobAdvert(VacancyRouteModel vm)
     {
-        var viewModel = await _orchestrator.GetVacancyRejectJobAdvertAsync(vm);          
+        var viewModel = await orchestrator.GetVacancyRejectJobAdvertAsync(vm);          
 
         return View(viewModel);
     }
-
 
     [HttpPost("reject-advert", Name = RouteNames.RejectJobAdvert_Post)]
     public async Task<IActionResult> RejectJobAdvert(RejectJobAdvertViewModel vm)
     {
         if (!ModelState.IsValid)
         {
-            var viewModel = await _orchestrator.GetVacancyRejectJobAdvertAsync(vm);
+            var viewModel = await orchestrator.GetVacancyRejectJobAdvertAsync(vm);
             return View("RejectJobAdvert", viewModel);
         }
 
         if (vm.RejectJobAdvert.GetValueOrDefault())
         {                
-            var response =  await _orchestrator.RejectJobAdvertAsync(vm, User.ToVacancyUser());
+            var response =  await orchestrator.RejectJobAdvertAsync(vm, User.ToVacancyUser());
             if (!response.Success)
             {
                 response.AddErrorsToModelState(ModelState);
@@ -179,7 +134,7 @@ public class VacancyPreviewController : Controller
     [HttpGet("confirmation-advert", Name = RouteNames.JobAdvertConfirmation_Get)]
     public async Task<IActionResult> ConfirmationJobAdvert(VacancyRouteModel vrm)
     {
-        var viewModel = await _orchestrator.GetVacancyConfirmationJobAdvertAsync(vrm);
+        var viewModel = await orchestrator.GetVacancyConfirmationJobAdvertAsync(vrm);
 
         return View("ConfirmationJobAdvert", viewModel);
     }
