@@ -34,21 +34,22 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 .Select(VacancySummaryMapper.ConvertToVacancySummaryViewModel)
                 .ToList();
 
-            var alerts = new AlertsViewModel(new EmployerTransferredVacanciesAlertViewModel
-            {
-                TransferredVacanciesCount = employerDashboard.EmployerRevokedTransferredVacanciesAlert
-                        .TransferredVacanciesCount,
-                EmployerAccountId = employerAccountId,
-                TransferredVacanciesProviderNames = employerDashboard.EmployerRevokedTransferredVacanciesAlert
-                        .TransferredVacanciesProviderNames,
+            var alerts = new AlertsViewModel(
+                new EmployerTransferredVacanciesAlertViewModel
+                {
+                    TransferredVacanciesCount = employerDashboard.EmployerRevokedTransferredVacanciesAlert
+                            .TransferredVacanciesCount,
+                    EmployerAccountId = employerAccountId,
+                    TransferredVacanciesProviderNames = employerDashboard.EmployerRevokedTransferredVacanciesAlert
+                            .TransferredVacanciesProviderNames,
 
-            },
+                },
                 new EmployerTransferredVacanciesAlertViewModel
                 {
                     EmployerAccountId = employerAccountId,
-                    TransferredVacanciesCount = employerDashboard.EmployerRevokedTransferredVacanciesAlert
+                    TransferredVacanciesCount = employerDashboard.BlockedProviderTransferredVacanciesAlert
                         .TransferredVacanciesCount,
-                    TransferredVacanciesProviderNames = employerDashboard.EmployerRevokedTransferredVacanciesAlert
+                    TransferredVacanciesProviderNames = employerDashboard.BlockedProviderTransferredVacanciesAlert
                         .TransferredVacanciesProviderNames
                 },
                 new BlockedProviderAlertViewModel
