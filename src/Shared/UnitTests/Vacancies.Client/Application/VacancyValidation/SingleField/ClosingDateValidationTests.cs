@@ -25,6 +25,31 @@ public class ClosingDateValidationTests : VacancyValidationTestsBase
         public DateTime NextDay6am => Now.Date.AddDays(1).AddHours(6);
     }
 
+    private const string ErrorCode_ClosingDateTooSoon = "18";
+
+    private static void AssertInvalidForClosingDate(
+        EntityValidationResult result,
+        string expectedErrorCode = null)
+    {
+        result.HasErrors.Should().BeTrue();
+        result.Errors.Should().HaveCount(1);
+
+        var error = result.Errors[0];
+        error.PropertyName.Should().Be(nameof(Vacancy.ClosingDate));
+        error.RuleId.Should().Be((long)VacancyRuleSet.ClosingDate);
+
+        if (!string.IsNullOrEmpty(expectedErrorCode))
+        {
+            error.ErrorCode.Should().Be(expectedErrorCode);
+        }
+    }
+
+    private static void AssertValid(EntityValidationResult result)
+    {
+        result.HasErrors.Should().BeFalse();
+        result.Errors.Should().BeEmpty();
+    }
+
     [Fact]
     public void NoErrorsWhenClosingDateIsValid()
     {
@@ -67,10 +92,8 @@ public class ClosingDateValidationTests : VacancyValidationTestsBase
 
         var result = Validator.Validate(vacancy, VacancyRuleSet.ClosingDate);
 
-        result.HasErrors.Should().BeTrue();
-        result.Errors.Should().HaveCount(1);
+        AssertInvalidForClosingDate(result, expectedErrorCode: ErrorCode_ClosingDateTooSoon);
         result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.ClosingDate)}");
-        result.Errors[0].ErrorCode.Should().Be("18");
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ClosingDate);
     }
 
@@ -88,8 +111,7 @@ public class ClosingDateValidationTests : VacancyValidationTestsBase
 
         var result = Validator.Validate(vacancy, VacancyRuleSet.ClosingDate);
 
-        Assert.NotNull(result);
-        Assert.NotEmpty(result.Errors);
+        AssertInvalidForClosingDate(result, expectedErrorCode: ErrorCode_ClosingDateTooSoon);
     }
 
     [Fact]
@@ -106,8 +128,7 @@ public class ClosingDateValidationTests : VacancyValidationTestsBase
 
         var result = Validator.Validate(vacancy, VacancyRuleSet.ClosingDate);
 
-        Assert.NotNull(result);
-        Assert.Empty(result.Errors);
+        AssertValid(result);
     }
 
     [Fact]

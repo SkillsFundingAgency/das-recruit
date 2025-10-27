@@ -113,7 +113,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var vacancy = await GetCloneableAuthorisedVacancyAsync(model);
 
-            vacancy.Status = VacancyStatus.Draft;
             var newVacancyId = await _vacancyClient.CloneVacancyAsync(
                 model.VacancyId,
                 user,

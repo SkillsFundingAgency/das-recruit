@@ -318,19 +318,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithState(_ => VacancyRuleSet.ClosingDate)
                 .Must((vacancy, closingDate) =>
                 {
-                    if (!closingDate.HasValue) return false;
-
-                    var closing = closingDate.Value.Date;
+                    var closing = closingDate!.Value.Date;
                     var today = _timeProvider.Now.Date;
 
-                    if(vacancy.Status == VacancyStatus.Live && vacancy.CanExtendStartAndClosingDates)
+                    if (vacancy.CanExtendStartAndClosingDates)
                     {
                         return closing >= today;
                     }
                     return closing >= today.AddDays(7);
                 })
                 .WithMessage(vacancy =>
-                    (vacancy.Status == VacancyStatus.Live && vacancy.CanExtendStartAndClosingDates)
+                    (vacancy.CanExtendStartAndClosingDates)
                         ? "Closing date cannot be in the past."
                         : "Closing date should be at least 7 days in the future.")
                 .WithErrorCode("18")
