@@ -55,10 +55,10 @@ namespace SFA.DAS.Recruit.Api.Commands
             }
 
             // additional check to validate the given Training Provider is a Main or Employer Profile with Status not equal to "Not Currently Starting New Apprentices".
-            bool isValidTrainingProviderProfile =
-                await trainingProviderSummaryProvider.IsTrainingProviderMainOrEmployerProfile(request.VacancyUserDetails.Ukprn.Value);
+            var isValidTrainingProviderProfile =
+                await trainingProviderSummaryProvider.GetAsync(request.VacancyUserDetails.Ukprn.Value);
 
-            if (!isValidTrainingProviderProfile)
+            if (!isValidTrainingProviderProfile.IsTrainingProviderMainOrEmployerProfile)
             {
                 return new CreateVacancyCommandResponse
                 {

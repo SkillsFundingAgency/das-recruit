@@ -145,35 +145,25 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
         {
             return (IRuleBuilderInitial<TrainingProvider, TrainingProvider>)ruleBuilder.CustomAsync(async (trainingProvider, context, cancellationToken) =>
             {
-                if (trainingProvider.Ukprn.HasValue && (await trainingProviderSummaryProvider.GetAsync(trainingProvider.Ukprn.Value)) != null)
+                var trainingProviderSummary = await trainingProviderSummaryProvider.GetAsync(trainingProvider.Ukprn!.Value);
+                if (trainingProvider.Ukprn.HasValue && trainingProviderSummary == null)
                 {
-                    return;
+                    context.AddFailure(new ValidationFailure(nameof(Vacancy.TrainingProvider), "The UKPRN is not valid or the associated provider is not active")
+                    {
+                        ErrorCode = ErrorCodes.TrainingProviderMustExist,
+                        CustomState = VacancyRuleSet.TrainingProvider
+                    });
                 }
 
-                var failure = new ValidationFailure(nameof(Vacancy.TrainingProvider), "The UKPRN is not valid or the associated provider is not active")
+                if (trainingProviderSummary is not { IsTrainingProviderMainOrEmployerProfile: true })
                 {
-                    ErrorCode = ErrorCodes.TrainingProviderMustExist,
-                    CustomState = VacancyRuleSet.TrainingProvider
-                };
-                context.AddFailure(failure);
-            });
-        }
-
-        internal static IRuleBuilderInitial<TrainingProvider, TrainingProvider> TrainingProviderMustBeMainOrEmployerProfile(this IRuleBuilder<TrainingProvider, TrainingProvider> ruleBuilder, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
-        {
-            return (IRuleBuilderInitial<TrainingProvider, TrainingProvider>)ruleBuilder.CustomAsync(async (trainingProvider, context, _) =>
-            {
-                if (trainingProvider.Ukprn.HasValue && await trainingProviderSummaryProvider.IsTrainingProviderMainOrEmployerProfile(trainingProvider.Ukprn.Value))
-                {
-                    return;
+                    context.AddFailure(new ValidationFailure(nameof(Vacancy.TrainingProvider), "UKPRN of a training provider must be registered to deliver apprenticeship training")
+                    {
+                        ErrorCode = ErrorCodes.TrainingProviderMustBeMainOrEmployerProfile,
+                        CustomState = VacancyRuleSet.TrainingProvider
+                    });
                 }
-
-                var failure = new ValidationFailure(nameof(Vacancy.TrainingProvider), "UKPRN of a training provider must be registered to deliver apprenticeship training")
-                {
-                    ErrorCode = ErrorCodes.TrainingProviderMustBeMainOrEmployerProfile,
-                    CustomState = VacancyRuleSet.TrainingProvider
-                };
-                context.AddFailure(failure);
+                
             });
         }
         
