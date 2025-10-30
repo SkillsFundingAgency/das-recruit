@@ -155,7 +155,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error writing field '{field.Name}': {e.Message}");
                 csv.WriteField(string.Empty);
             }
         }
