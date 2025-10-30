@@ -62,42 +62,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             });
         }
 
-        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustExist(
-            this IRuleBuilder<Vacancy, Vacancy> ruleBuilder,
-            IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider)
+        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForCurrentDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider, ITimeProvider timeProvider)
         {
-            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
-            {
-                var programme =
-                    await apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
-
-                if (programme == null)
-                {
-                    var message = $"Training programme {vacancy.ProgrammeId} does not exist";
-                    var failure = new ValidationFailure("Training", message)
-                    {
-                        ErrorCode = ErrorCodes.TrainingNotExist,
-                        CustomState = VacancyRuleSet.TrainingProgramme,
-                        PropertyName = "Training"
-                    };
-                    context.AddFailure(failure);
-                }
-            });
-        }
-
-        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeValid(
-            this IRuleBuilder<Vacancy, Vacancy> ruleBuilder,
-            IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider)
-        {
-            
             return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
             {
-                var ukprn = vacancy.TrainingProvider.Ukprn != null ? Convert.ToInt32(vacancy.TrainingProvider.Ukprn) : (int?) null;
+                var matchingProgramme = await apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
-                var programme =
-                    await apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId, ukprn);
-
-                if (programme is null || programme.IsActive is false)
+                if (matchingProgramme is null || matchingProgramme.IsActive is false)
                 {
                     var failure = new ValidationFailure("Training", "Enter a valid training course")
                     {
@@ -107,17 +78,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                     };
                     context.AddFailure(failure);
                 }
-            });
-        }
-
-        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForCurrentDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider, ITimeProvider timeProvider)
-        {
-            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
-            {
-                var allProgrammes = await apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync();
-
-                var matchingProgramme = allProgrammes.SingleOrDefault(x => x.Id.Equals(vacancy.ProgrammeId, StringComparison.InvariantCultureIgnoreCase));
-
+                
                 if (matchingProgramme == null || (matchingProgramme.LastDateStarts != null && matchingProgramme.LastDateStarts < timeProvider.Now.Date) ||
                     (matchingProgramme.EffectiveTo != null && matchingProgramme.EffectiveTo < timeProvider.Now.Date))
                 {
@@ -131,37 +92,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 }
             });
         }
-
-        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingProviderMustBeDeliverTheTrainingCourse(
-            this IRuleBuilder<Vacancy, Vacancy> ruleBuilder,
-            ITrainingProviderService trainingProviderService,
-            IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider)
-        {
-            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
-            {
-                var programme = await apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
-
-                if (int.TryParse(programme.Id, out int programmeId))
-                {
-                    var trainingProviders = await trainingProviderService.GetCourseProviders(programmeId);
-
-                    var trainingProvider = trainingProviders.FirstOrDefault(x => x.Ukprn == vacancy.TrainingProvider?.Ukprn);
-
-                    if (trainingProvider != null || vacancy.TrainingProvider?.Ukprn == EsfaTestTrainingProvider.Ukprn)
-                    {
-                        return;
-                    }
-                }
-                
-                var failure = new ValidationFailure("Provider", "Enter the name or UKPRN of a training provider who delivers the training course you've selected")
-                {
-                    ErrorCode = ErrorCodes.TrainingProviderMustDeliverTrainingCourse,
-                    CustomState = VacancyRuleSet.TrainingProviderDeliverCourse,
-                };
-                context.AddFailure(failure);
-            });
-        }
-
+        
         internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForStartDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider)
         {
             return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
@@ -177,10 +108,20 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                     context.AddFailure(failure);
                 }
                 
-                var allProgrammes = await apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync();
+                var matchingProgramme = await apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
-                var matchingProgramme = allProgrammes.SingleOrDefault(x => x.Id.Equals(vacancy.ProgrammeId, StringComparison.InvariantCultureIgnoreCase));
-
+                if (matchingProgramme == null)
+                {
+                    var message = $"Training programme {vacancy.ProgrammeId} does not exist";
+                    var failure = new ValidationFailure("Training", message)
+                    {
+                        ErrorCode = ErrorCodes.TrainingNotExist,
+                        CustomState = VacancyRuleSet.TrainingProgramme,
+                        PropertyName = "Training"
+                    };
+                    context.AddFailure(failure);
+                }
+                
                 if (matchingProgramme != null && ((matchingProgramme.LastDateStarts != null && matchingProgramme.LastDateStarts < vacancy.StartDate) ||
                                                   (matchingProgramme.EffectiveTo !=null && matchingProgramme.EffectiveTo < vacancy.StartDate)))
                 {
@@ -204,35 +145,25 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
         {
             return (IRuleBuilderInitial<TrainingProvider, TrainingProvider>)ruleBuilder.CustomAsync(async (trainingProvider, context, cancellationToken) =>
             {
-                if (trainingProvider.Ukprn.HasValue && (await trainingProviderSummaryProvider.GetAsync(trainingProvider.Ukprn.Value)) != null)
+                var trainingProviderSummary = await trainingProviderSummaryProvider.GetAsync(trainingProvider.Ukprn!.Value);
+                if (trainingProvider.Ukprn.HasValue && trainingProviderSummary == null)
                 {
-                    return;
+                    context.AddFailure(new ValidationFailure(nameof(Vacancy.TrainingProvider), "The UKPRN is not valid or the associated provider is not active")
+                    {
+                        ErrorCode = ErrorCodes.TrainingProviderMustExist,
+                        CustomState = VacancyRuleSet.TrainingProvider
+                    });
                 }
 
-                var failure = new ValidationFailure(nameof(Vacancy.TrainingProvider), "The UKPRN is not valid or the associated provider is not active")
+                if (trainingProviderSummary is not { IsTrainingProviderMainOrEmployerProfile: true })
                 {
-                    ErrorCode = ErrorCodes.TrainingProviderMustExist,
-                    CustomState = VacancyRuleSet.TrainingProvider
-                };
-                context.AddFailure(failure);
-            });
-        }
-
-        internal static IRuleBuilderInitial<TrainingProvider, TrainingProvider> TrainingProviderMustBeMainOrEmployerProfile(this IRuleBuilder<TrainingProvider, TrainingProvider> ruleBuilder, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
-        {
-            return (IRuleBuilderInitial<TrainingProvider, TrainingProvider>)ruleBuilder.CustomAsync(async (trainingProvider, context, _) =>
-            {
-                if (trainingProvider.Ukprn.HasValue && await trainingProviderSummaryProvider.IsTrainingProviderMainOrEmployerProfile(trainingProvider.Ukprn.Value))
-                {
-                    return;
+                    context.AddFailure(new ValidationFailure(nameof(Vacancy.TrainingProvider), "UKPRN of a training provider must be registered to deliver apprenticeship training")
+                    {
+                        ErrorCode = ErrorCodes.TrainingProviderMustBeMainOrEmployerProfile,
+                        CustomState = VacancyRuleSet.TrainingProvider
+                    });
                 }
-
-                var failure = new ValidationFailure(nameof(Vacancy.TrainingProvider), "UKPRN of a training provider must be registered to deliver apprenticeship training")
-                {
-                    ErrorCode = ErrorCodes.TrainingProviderMustBeMainOrEmployerProfile,
-                    CustomState = VacancyRuleSet.TrainingProvider
-                };
-                context.AddFailure(failure);
+                
             });
         }
         

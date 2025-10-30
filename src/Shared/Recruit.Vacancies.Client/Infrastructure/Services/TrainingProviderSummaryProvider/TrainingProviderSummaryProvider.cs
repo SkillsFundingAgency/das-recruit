@@ -37,32 +37,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
             if (ukprn == EsfaTestTrainingProvider.Ukprn)
                 return new TrainingProviderSummary { Ukprn = EsfaTestTrainingProvider.Ukprn, ProviderName = EsfaTestTrainingProvider.Name };
 
-            var provider = await _trainingProviderService.GetProviderAsync(ukprn);
+            var provider = await _trainingProviderService.GetProviderDetails(ukprn);
             
             return new TrainingProviderSummary
             {
-                Ukprn = provider.Ukprn.Value,
-                ProviderName = provider.Name
+                Ukprn = provider.Ukprn,
+                ProviderName = provider.Name,
+                IsTrainingProviderMainOrEmployerProfile = (provider.ProviderTypeId.Equals((short) ProviderTypeIdentifier.MainProvider) ||
+                                                           provider.ProviderTypeId.Equals((short) ProviderTypeIdentifier.EmployerProvider)) &&
+                                                          !provider.StatusId.Equals((short) ProviderStatusType.ActiveButNotTakingOnApprentices)
             };
-        }
-
-        /// <summary>
-        /// Method to check if the given ukprn number is a valid training provider with Main or Employer Profile with Status not equal to "Not Currently Starting New Apprentices".
-        /// </summary>
-        /// <param name="ukprn">ukprn number.</param>
-        /// <returns>boolean.</returns>
-        public async Task<bool> IsTrainingProviderMainOrEmployerProfile(long ukprn)
-        {
-            if (ukprn == EsfaTestTrainingProvider.Ukprn)
-                return true;
-            
-            var provider = await _trainingProviderService.GetProviderDetails(ukprn);
-
-            // logic to filter only Training provider with Main & Employer Profiles and Status Id not equal to "Not Currently Starting New Apprentices"
-            return provider != null &&
-                   (provider.ProviderTypeId.Equals((short) ProviderTypeIdentifier.MainProvider) ||
-                    provider.ProviderTypeId.Equals((short) ProviderTypeIdentifier.EmployerProvider)) &&
-                   !provider.StatusId.Equals((short) ProviderStatusType.ActiveButNotTakingOnApprentices);
         }
     }
 }
