@@ -32,11 +32,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             }
             else
             {
-                // ✅ Write the meta + header once
                 WriteHeader(csv, rows.First, headers);
 
-                // ✅ Then only write data rows (no more headers)
-                WriteValues(csv, rows, dataTypeResolver, writeHeader: false);
+                WriteValues(csv, rows, dataTypeResolver);
             }
 
             csv.Flush();
@@ -44,43 +42,41 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             stream.Position = 0;
         }
 
-        private static CsvWriter GetCsvWriter(TextWriter streamWriter)
-            => new CsvWriter(streamWriter, CultureInfo.GetCultureInfo("en-GB"), true);
+        private static CsvWriter GetCsvWriter(TextWriter streamWriter) =>
+            new(streamWriter, CultureInfo.GetCultureInfo("en-GB"), true);
 
-        private void WriteNoResults(CsvWriter csv, IEnumerable<KeyValuePair<string, string>> headers)
+        private static void WriteNoResults(CsvWriter csv, IEnumerable<KeyValuePair<string, string>> headers)
             => WriteTotalHeader(csv, headers);
 
-        private void WriteTotalHeader(CsvWriter csv, IEnumerable<KeyValuePair<string, string>> headers)
+        private static void WriteTotalHeader(CsvWriter csv, IEnumerable<KeyValuePair<string, string>> headers)
         {
-            headers ??= Array.Empty<KeyValuePair<string, string>>();
+            headers ??= [];
 
             csv.WriteField("OFFICIAL");
             csv.NextRecord();
             csv.NextRecord();
             csv.NextRecord();
 
-            if (headers.Any())
-            {
-                foreach (var kvp in headers)
-                    csv.WriteField(kvp.Key);
-                csv.NextRecord();
+            var keyValuePairs = headers.ToList();
+            if (keyValuePairs.Count <= 0) return;
+            
+            foreach (var kvp in keyValuePairs)
+                csv.WriteField(kvp.Key);
+            csv.NextRecord();
 
-                foreach (var kvp in headers)
-                    csv.WriteField(kvp.Value);
-                csv.NextRecord();
-            }
+            foreach (var kvp in keyValuePairs)
+                csv.WriteField(kvp.Value);
+            csv.NextRecord();
         }
 
-        private void WriteHeader(
+        private static void WriteHeader(
             CsvWriter csv,
             JToken row,
             IEnumerable<KeyValuePair<string, string>> headers)
         {
-            // ✅ Write the meta-header only once per report
             WriteTotalHeader(csv, headers);
             csv.NextRecord();
 
-            // ✅ Then write property names once
             foreach (var field in row.Children<JProperty>())
             {
                 csv.WriteField(field.Name);
@@ -88,16 +84,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             csv.NextRecord();
         }
 
-        private void WriteValues(
+        private static void WriteValues(
             CsvWriter csv,
             JArray rows,
-            Func<string, ReportDataType> dataTypeResolver,
-            bool writeHeader = false)
+            Func<string, ReportDataType> dataTypeResolver)
         {
             if (rows == null || rows.Count == 0)
                 return;
 
-            // ✅ No more header calls here
             foreach (var row in rows)
             {
                 foreach (var field in ((JObject)row).Properties())
@@ -108,7 +102,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             }
         }
 
-        private void WriteField(CsvWriter csv, JProperty field, Func<string, ReportDataType> dataTypeResolver)
+        private static void WriteField(CsvWriter csv, JProperty field, Func<string, ReportDataType> dataTypeResolver)
         {
             try
             {
