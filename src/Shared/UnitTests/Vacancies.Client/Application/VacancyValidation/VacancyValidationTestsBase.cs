@@ -63,8 +63,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             MockQualificationsProvider = new Mock<IQualificationsProvider>();
             SanitizerService = new HtmlSanitizerService(new Mock<ILogger<HtmlSanitizerService>>().Object);
             MockTrainingProviderSummaryProvider = new Mock<ITrainingProviderSummaryProvider>();
-            MockTrainingProviderSummaryProvider.Setup(x => x.IsTrainingProviderMainOrEmployerProfile(10000000))
-                .ReturnsAsync(true);
+            MockTrainingProviderSummaryProvider.Setup(x => x.GetAsync(10000000))
+                .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
             MockTrainingProviderSummaryProvider.Setup(x => x.GetAsync(10000000))
                 .ReturnsAsync(new TrainingProviderSummary());
             MockBlockedOrganisationRepo = new Mock<IBlockedOrganisationQuery>();

@@ -949,7 +949,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x)
                     .Cascade(CascadeMode.Stop)
-                    .TrainingMustExist(_apprenticeshipProgrammesProvider)
                     .TrainingMustBeActiveForStartDate(_apprenticeshipProgrammesProvider)
                 .RunCondition(VacancyRuleSet.TrainingExpiryDate);
             });
@@ -969,7 +968,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x)
                     .Cascade(CascadeMode.Stop)
-                    .TrainingMustBeValid(_apprenticeshipProgrammesProvider)
                     .TrainingMustBeActiveForCurrentDate(_apprenticeshipProgrammesProvider, _timeProvider)
                     .RunCondition(VacancyRuleSet.TrainingProgramme);
             });

@@ -27,8 +27,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(tp => tp)
                     .TrainingProviderMustExistInRoatp(trainingProviderSummaryProvider)
-                    .TrainingProviderMustNotBeBlocked(blockedOrganisationRepo)
-                    .TrainingProviderMustBeMainOrEmployerProfile(trainingProviderSummaryProvider);
+                    .TrainingProviderMustNotBeBlocked(blockedOrganisationRepo);
             });
         }
     }
