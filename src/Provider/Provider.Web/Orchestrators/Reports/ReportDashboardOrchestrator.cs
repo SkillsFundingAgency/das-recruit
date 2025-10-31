@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
         : ReportOrchestratorBase(logger, vacancyClient)
     {
         private readonly IProviderVacancyClient _vacancyClient = vacancyClient;
-        private readonly bool _isReportsMigrationFeatureFlagEnabled = feature.IsFeatureEnabled(FeatureNames.ReportsMigration);
+        private readonly bool _isReportsMigrationFeatureFlagEnabled = true;// feature.IsFeatureEnabled(FeatureNames.ReportsMigration);
 
         public async Task<ReportsDashboardViewModel> GetDashboardViewModel(long ukprn)
         {

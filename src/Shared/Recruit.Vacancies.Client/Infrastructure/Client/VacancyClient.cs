@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IFeature feature)
         : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
-        private readonly bool _isReportsMigrationFeatureFlagEnabled = feature.IsFeatureEnabled(FeatureNames.ReportsMigration);
+        private readonly bool _isReportsMigrationFeatureFlagEnabled = true;// feature.IsFeatureEnabled(FeatureNames.ReportsMigration);
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
         {
