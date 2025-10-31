@@ -14,8 +14,8 @@ public abstract class CloneVacancyOrchestratorTestBase
     internal string EmployerAccountId = "AB1234";
 
     internal Guid SourceVacancyId = Guid.NewGuid();
-    internal DateTime SourceStartDate = DateTime.Now.AddDays(2);
-    internal DateTime SourceClosingDate = DateTime.Now.AddDays(1);
+    internal DateTime SourceStartDate = DateTime.Now.AddDays(14);
+    internal DateTime SourceClosingDate = DateTime.Now.AddDays(7);
     internal Vacancy SourceVacancy => new Vacancy
     {
         Id = SourceVacancyId,
