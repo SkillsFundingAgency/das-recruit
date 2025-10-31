@@ -4,5 +4,6 @@
     {
         public string ProviderName { get; set; }
         public long Ukprn { get; set; }
+        public bool IsTrainingProviderMainOrEmployerProfile { get; set; }
     }
 }
