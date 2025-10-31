@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
-using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -178,6 +176,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 Ukprn = ukprn
             };
 
+            // Reports added to both Mongo and SQL DB. Once the migration is complete we can remove the Mongo implementation.
+            // Create report record command
             await messaging.SendCommandAsync(new CreateReportCommand(
                 reportId,
                 owner,
@@ -191,32 +191,52 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 reportName)
             );
 
+            // Report generation is handled by the ProviderReportService which calls the Outer API. so that report is created both in Mongo and in SQL DB.
+            await providerReportService.CreateProviderApplicationsReportAsync(reportId, ukprn, fromDate, toDate, user,
+                reportName);
+            
             return reportId;
         }
 
-        public Task<List<ReportSummary>> GetReportsForProviderAsync(long ukprn)
+        public async Task<List<ReportSummary>> GetReportsForProviderAsync(long ukprn)
         {
-            return reportRepository.GetReportsForProviderAsync<ReportSummary>(ukprn);
+            return await reportRepository.GetReportsForProviderAsync<ReportSummary>(ukprn);
+
+            // FAI-2619 TODO: Once the migration is complete, remove the commented out code below and return the ProviderReportService call. FAI-2619
+            // Report retrieval is handled by the ProviderReportService which calls the Outer API
+            //var providerReports = await providerReportService.GetReportsForProviderAsync(ukprn);
+            //if (providerReports?.Reports == null || providerReports.Reports.Count == 0)
+            //{
+            //    return [];
+            //}
+            //return providerReports.Reports.Select(Domain.Reports.Report.ToReportSummary).ToList();
         }
 
-        public Task<Report> GetReportAsync(Guid reportId)
+        public async Task<Report> GetReportAsync(Guid reportId)
         {
-            return reportRepository.GetReportAsync(reportId);
+            if (!_isReportsMigrationFeatureFlagEnabled)
+                return await reportRepository.GetReportAsync(reportId);
+
+            // Report retrieval is handled by the ProviderReportService which calls the Outer API
+            var response = await providerReportService.GetReportAsync(reportId);
+
+            return response?.Report?.ToEntity(response.Report);
         }
 
-        public async Task WriteReportAsCsv(Stream stream, Report report)
+        public async Task WriteReportAsCsv(Stream stream, Report report) 
+            => await reportService.WriteReportAsCsv(stream, report);
+
+        public async Task WriteApplicationSummaryReportsToCsv(Stream stream, Guid reportId)
         {
-            await reportService.WriteReportAsCsv(stream, report);
+            var response = await providerReportService.GetReportDataAsync(reportId);
+
+            await reportService.WriteApplicationSummaryReportsToCsv(stream, response.Reports);
         }
 
         public Task IncrementReportDownloadCountAsync(Guid reportId)
-        {
-            return reportRepository.IncrementReportDownloadCountAsync(reportId);
-        }
+            => reportRepository.IncrementReportDownloadCountAsync(reportId);
 
         public Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync(int ukprn)
-        {
-            return apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync(ukprn: ukprn);
-        }
+            => apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync(ukprn: ukprn);
     }
 }

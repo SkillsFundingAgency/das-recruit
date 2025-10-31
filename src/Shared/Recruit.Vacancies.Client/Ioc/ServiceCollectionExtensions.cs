@@ -41,6 +41,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Report;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProviderSummaryProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
@@ -150,6 +151,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddHttpClient<IOuterApiClient, OuterApiClient>();
             services.AddTransient<IOuterApiGeocodeService, OuterApiGeocodeService>();
             services.AddTransient<ILocationsService, LocationsService>();
+            services.AddTransient<IProviderReportService, ProviderReportService>();
 
             // Projection services
             services.AddTransient<IQaDashboardProjectionService, QaDashboardProjectionService>();
