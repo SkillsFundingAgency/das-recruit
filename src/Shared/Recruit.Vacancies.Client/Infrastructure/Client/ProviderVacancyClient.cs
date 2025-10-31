@@ -176,6 +176,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 Ukprn = ukprn
             };
 
+            // Reports added to both Mongo and SQL DB. Once the migration is complete we can remove the Mongo implementation.
             // Create report record command
             await messaging.SendCommandAsync(new CreateReportCommand(
                 reportId,
@@ -199,16 +200,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<List<ReportSummary>> GetReportsForProviderAsync(long ukprn)
         {
-            if (!_isReportsMigrationFeatureFlagEnabled)
-                return await reportRepository.GetReportsForProviderAsync<ReportSummary>(ukprn);
-            
+            return await reportRepository.GetReportsForProviderAsync<ReportSummary>(ukprn);
+
+            // FAI-2619 TODO: Once the migration is complete, remove the commented out code below and return the ProviderReportService call. FAI-2619
             // Report retrieval is handled by the ProviderReportService which calls the Outer API
-            var providerReports = await providerReportService.GetReportsForProviderAsync(ukprn);
-            if (providerReports?.Reports == null || providerReports.Reports.Count == 0)
-            {
-                return [];
-            }
-            return providerReports.Reports.Select(Domain.Reports.Report.ToReportSummary).ToList();
+            //var providerReports = await providerReportService.GetReportsForProviderAsync(ukprn);
+            //if (providerReports?.Reports == null || providerReports.Reports.Count == 0)
+            //{
+            //    return [];
+            //}
+            //return providerReports.Reports.Select(Domain.Reports.Report.ToReportSummary).ToList();
         }
 
         public async Task<Report> GetReportAsync(Guid reportId)
@@ -232,11 +233,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             await reportService.WriteApplicationSummaryReportsToCsv(stream, response.Reports);
         }
 
-        public Task IncrementReportDownloadCountAsync(Guid reportId) => reportRepository.IncrementReportDownloadCountAsync(reportId);
+        public Task IncrementReportDownloadCountAsync(Guid reportId)
+            => reportRepository.IncrementReportDownloadCountAsync(reportId);
 
         public Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync(int ukprn)
-        {
-            return apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync(ukprn: ukprn);
-        }
+            => apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync(ukprn: ukprn);
     }
 }

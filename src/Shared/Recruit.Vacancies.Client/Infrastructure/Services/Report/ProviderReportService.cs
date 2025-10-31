@@ -5,12 +5,11 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Reports;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses.Reports;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Report;
 public class ProviderReportService(
-    ILogger<TrainingProviderService> logger,
+    ILogger<ProviderReportService> logger,
     IOuterApiClient outerApiClient) : IProviderReportService
 {
     public async Task<GetProviderReportsApiResponse> GetReportsForProviderAsync(long ukprn)
