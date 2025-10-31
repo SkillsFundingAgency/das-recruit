@@ -9,5 +9,5 @@ public record PostSharedApplicationReviewedEventApiRequest(
     public string PostUrl => "events/shared-application-reviewed";
     public object Data { get; set; } = Payload;
 
-    public record PostSharedApplicationReviewedEventApiRequestData(Guid VacancyId, long VacancyReference);
+    public record PostSharedApplicationReviewedEventApiRequestData(Guid ApplicationReviewId);
 }

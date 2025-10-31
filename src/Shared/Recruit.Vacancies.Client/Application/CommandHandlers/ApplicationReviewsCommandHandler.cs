@@ -11,6 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Events;
 using MediatR;
 using SFA.DAS.Encoding;
 
