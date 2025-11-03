@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProviderSummaryProvider;
 using FluentAssertions;
@@ -32,8 +33,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         {
             var ukprn = 88888888;
             var providerClientMock = new Mock<ITrainingProviderService>();
-            providerClientMock.Setup(p => p.GetProviderAsync(ukprn))
-                .ReturnsAsync(new TrainingProvider
+            providerClientMock.Setup(p => p.GetProviderDetails(ukprn))
+                .ReturnsAsync(new GetProviderResponseItem
                 {
                     Ukprn = 88888888, 
                     Name = "provider 1"

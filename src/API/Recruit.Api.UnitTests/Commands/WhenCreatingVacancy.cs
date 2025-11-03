@@ -51,8 +51,8 @@ public class WhenCreatingVacancy
         CreateVacancyCommandHandler handler)
     {
         trainingProviderSummaryProvider
-            .Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
-            .ReturnsAsync(true);
+            .Setup(x => x.GetAsync(command.VacancyUserDetails.Ukprn.Value))
+            .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
         command.ValidateOnly = false;
         command.Vacancy.OwnerType = OwnerType.Provider;
             
@@ -70,8 +70,8 @@ public class WhenCreatingVacancy
         CreateVacancyCommandHandler handler)
     {   
         trainingProviderSummaryProvider
-            .Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
-            .ReturnsAsync(true);
+            .Setup(x => x.GetAsync(command.VacancyUserDetails.Ukprn.Value))
+            .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
         command.ValidateOnly = false;
             
         await handler.Handle(command, CancellationToken.None);
@@ -89,8 +89,8 @@ public class WhenCreatingVacancy
         CreateVacancyCommandHandler handler)
     {
         trainingProviderSummaryProvider
-            .Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
-            .ReturnsAsync(true);
+            .Setup(x => x.GetAsync(command.VacancyUserDetails.Ukprn.Value))
+            .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
         command.ValidateOnly = false;
         var entityValidationResult = new EntityValidationResult{Errors = new List<EntityValidationError>{entityValidationError}};
         recruitVacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
@@ -128,8 +128,9 @@ public class WhenCreatingVacancy
         vacancy.ProgrammeId = command.Vacancy.ProgrammeId;
         trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
             .ReturnsAsync(provider);
-        trainingProviderSummaryProvider.Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
-            .ReturnsAsync(true);
+        trainingProviderSummaryProvider
+            .Setup(x => x.GetAsync(command.VacancyUserDetails.Ukprn.Value))
+            .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
         recruitVacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
             .Returns(new EntityValidationResult());
 
@@ -165,8 +166,9 @@ public class WhenCreatingVacancy
         vacancy.ProgrammeId = command.Vacancy.ProgrammeId;
         trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
             .ReturnsAsync(provider);
-        trainingProviderSummaryProvider.Setup(x =>x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
-            .ReturnsAsync(true);
+        trainingProviderSummaryProvider
+            .Setup(x => x.GetAsync(command.VacancyUserDetails.Ukprn.Value))
+            .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
         recruitVacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
             .Returns(new EntityValidationResult());
 
@@ -192,8 +194,8 @@ public class WhenCreatingVacancy
     {
         command.ValidateOnly = false;
         trainingProviderSummaryProvider
-            .Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
-            .ReturnsAsync(true);
+            .Setup(x => x.GetAsync(command.VacancyUserDetails.Ukprn.Value))
+            .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
         vacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
             .Returns(new EntityValidationResult());
         recruitVacancyClient.Setup(x => x.CreateEmployerApiVacancy(It.IsAny<Guid>(), It.IsAny<string>(),
@@ -218,8 +220,8 @@ public class WhenCreatingVacancy
         CreateVacancyCommandHandler handler)
     {
         trainingProviderSummaryProvider
-            .Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
-            .ReturnsAsync(true);
+            .Setup(x => x.GetAsync(command.VacancyUserDetails.Ukprn.Value))
+            .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
         command.ValidateOnly = false;
         command.Vacancy.OwnerType = OwnerType.Provider;
         vacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
@@ -258,8 +260,9 @@ public class WhenCreatingVacancy
         vacancy.ProgrammeId = command.Vacancy.ProgrammeId;
         trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
             .ReturnsAsync(provider);
-        trainingProviderSummaryProvider.Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
-            .ReturnsAsync(true);
+        trainingProviderSummaryProvider
+            .Setup(x => x.GetAsync(command.VacancyUserDetails.Ukprn.Value))
+            .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
         recruitVacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
             .Returns(new EntityValidationResult());
         recruitVacancyClient.Setup(x => x.GetVacancyAsync(command.Vacancy.Id)).ReturnsAsync(vacancy);
@@ -304,8 +307,9 @@ public class WhenCreatingVacancy
         vacancy.ProgrammeId = command.Vacancy.ProgrammeId;
         trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
             .ReturnsAsync(provider);
-        trainingProviderSummaryProvider.Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
-            .ReturnsAsync(true);
+        trainingProviderSummaryProvider
+            .Setup(x => x.GetAsync(command.VacancyUserDetails.Ukprn.Value))
+            .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
         recruitVacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
             .Returns(new EntityValidationResult());
         recruitVacancyClient.Setup(x => x.GetVacancyAsync(command.Vacancy.Id)).ReturnsAsync(vacancy);
@@ -361,8 +365,9 @@ public class WhenCreatingVacancy
         vacancy.ProgrammeId = command.Vacancy.ProgrammeId;
         trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
             .ReturnsAsync(provider);
-        trainingProviderSummaryProvider.Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
-            .ReturnsAsync(true);
+        trainingProviderSummaryProvider
+            .Setup(x => x.GetAsync(command.VacancyUserDetails.Ukprn.Value))
+            .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
         recruitVacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
             .Returns(new EntityValidationResult());
         recruitVacancyClient.Setup(x => x.GetVacancyAsync(command.Vacancy.Id)).ReturnsAsync(vacancy);
@@ -412,8 +417,9 @@ public class WhenCreatingVacancy
         command.ValidateOnly = false;
         trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
             .ReturnsAsync(provider);
-        trainingProviderSummaryProvider.Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
-            .ReturnsAsync(true);
+        trainingProviderSummaryProvider
+            .Setup(x => x.GetAsync(command.VacancyUserDetails.Ukprn.Value))
+            .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
         recruitVacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
             .Returns(new EntityValidationResult());
         recruitVacancyClient.Setup(x => x.GetVacancyAsync(command.Vacancy.Id)).ReturnsAsync(vacancy);
@@ -443,8 +449,9 @@ public class WhenCreatingVacancy
         command.Vacancy.EmployerNameOption = EmployerNameOption.TradingName;
         trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
             .ReturnsAsync(provider);
-        trainingProviderSummaryProvider.Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
-            .ReturnsAsync(true);
+        trainingProviderSummaryProvider
+            .Setup(x => x.GetAsync(command.VacancyUserDetails.Ukprn.Value))
+            .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
         recruitVacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
             .Returns(new EntityValidationResult());
         recruitVacancyClient.Setup(x => x.GetVacancyAsync(command.Vacancy.Id)).ReturnsAsync(vacancy);
@@ -480,8 +487,9 @@ public class WhenCreatingVacancy
         command.VacancyUserDetails.Email = string.Empty;
         trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
             .ReturnsAsync(provider);
-        trainingProviderSummaryProvider.Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
-            .ReturnsAsync(true);
+        trainingProviderSummaryProvider
+            .Setup(x => x.GetAsync(command.VacancyUserDetails.Ukprn.Value))
+            .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
         recruitVacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
             .Returns(new EntityValidationResult());
         recruitVacancyClient.Setup(x => x.GetVacancyAsync(command.Vacancy.Id)).ReturnsAsync(vacancy);
@@ -506,8 +514,9 @@ public class WhenCreatingVacancy
         command.ValidateOnly = false;
         trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
             .ReturnsAsync(provider);
-        trainingProviderSummaryProvider.Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
-            .ReturnsAsync(false);
+        trainingProviderSummaryProvider
+            .Setup(x => x.GetAsync(command.VacancyUserDetails.Ukprn.Value))
+            .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = false});
 
         var actual = await handler.Handle(command, CancellationToken.None);
 
@@ -535,8 +544,8 @@ public class WhenCreatingVacancy
             .Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
             .ReturnsAsync(provider);
         trainingProviderSummaryProvider
-            .Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
-            .ReturnsAsync(true);
+            .Setup(x => x.GetAsync(command.VacancyUserDetails.Ukprn.Value))
+            .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
         recruitVacancyClient
             .Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
             .Returns(new EntityValidationResult());
@@ -571,8 +580,8 @@ public class WhenCreatingVacancy
             .Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
             .ReturnsAsync(provider);
         trainingProviderSummaryProvider
-            .Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
-            .ReturnsAsync(true);
+            .Setup(x => x.GetAsync(command.VacancyUserDetails.Ukprn.Value))
+            .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
         recruitVacancyClient
             .Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
             .Returns(new EntityValidationResult());

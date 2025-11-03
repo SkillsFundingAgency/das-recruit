@@ -101,9 +101,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         }
 
         public bool IsNewDatesRequired(Vacancy vacancy)
-            => vacancy.ClosingDate < _timeProvider.Now.Date;
+            => vacancy.ClosingDate < _timeProvider.Now.Date.AddDays(7);
 
-        public async Task<Guid> PostCloneVacancyWithSameDates(CloneVacancyDatesQuestionEditModel model, VacancyUser user)
+        public async Task<OrchestratorResponse<Guid>> PostCloneVacancyWithSameDates(CloneVacancyDatesQuestionEditModel model, VacancyUser user)
         {
             var vacancy = await GetCloneableAuthorisedVacancyAsync(model);
 
@@ -114,13 +114,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 vacancy.StartDate.GetValueOrDefault(), 
                 vacancy.ClosingDate.GetValueOrDefault());
             
-            return newVacancyId;
+            return new OrchestratorResponse<Guid>(newVacancyId);
         }
 
         public async Task<OrchestratorResponse<Guid>> PostCloneVacancyWithNewDates(CloneVacancyWithNewDatesEditModel model, VacancyUser user)
         {
             var vacancy = await GetCloneableAuthorisedVacancyAsync(model);
 
+            vacancy.Status = VacancyStatus.Draft;
             var startDate = model.StartDate.AsDateTimeUk()?.ToUniversalTime();
             var closingDate = model.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
             vacancy.StartDate = startDate;
