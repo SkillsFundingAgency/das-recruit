@@ -735,8 +735,6 @@
         <div asp-hide="@Model.CanReview">
 
             <h2 class="govuk-heading-m">Now submit your advert</h2>
-            <p class="govuk-body">By submitting this advert you are confirming that, to the best of your knowledge, the
-                details you are providing are correct.</p>
             <div class="govuk-warning-text">
                 <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                 <strong class="govuk-warning-text__text">
@@ -745,11 +743,23 @@
                 </strong>
             </div>
             <p class="govuk-body"><a asp-route="@RouteNames.VacancyAdvertPreview"
-                    asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Preview
-                    advert before submitting</a></p>
+                                     asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Preview
+                advert before submitting</a></p>
             <form asp-route="@RouteNames.EmployerCheckYourAnswersSubmitPost" asp-all-route-data="@Model.RouteDictionary"
-                class="form-inline">
-                <input asp-for="HasUserConfirmation" value="true" type="hidden" />
+                  class="form-inline">
+                <div esfa-validation-marker-for="HasUserConfirmation" class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <span esfa-validation-message-for="HasUserConfirmation" class="govuk-error-message"></span>
+                        <div class="govuk-checkboxes">
+                            <div class="govuk-checkboxes__item">
+                                <input asp-for="HasUserConfirmation" class="govuk-checkboxes__input" type="checkbox">
+                                <label asp-for="HasUserConfirmation" class="govuk-label govuk-checkboxes__label">
+                                    To the best of my knowledge, all information I've provided is correct
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
                 <input type="submit" value="@Model.SubmitButtonText" class="govuk-button"
                     esfa-automation="submit-button" />
             </form>

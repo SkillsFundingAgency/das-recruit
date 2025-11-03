@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -28,6 +29,8 @@ public class VacancyPreviewViewModel : DisplayVacancyViewModel
             ? "Resubmit vacancy"
             : "Submit vacancy";
 
+    [Required(ErrorMessage = "You must confirm that the information is correct before submitting.")]
+    [Range(typeof(bool), "true", "true", ErrorMessage = "You must confirm that the information is correct before submitting.")]
     public bool HasUserConfirmation { get; set; }
     public int AdditionalQuestionCount { get; set; }
 
