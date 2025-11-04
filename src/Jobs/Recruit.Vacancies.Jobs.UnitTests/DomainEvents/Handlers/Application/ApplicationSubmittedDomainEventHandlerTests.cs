@@ -1,128 +1,74 @@
-using System;
 using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Events;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using SFA.DAS.Testing.AutoFixture;
 
-namespace Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers
+namespace Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers.Application;
+
+public class ApplicationSubmittedDomainEventHandlerTests
 {
-    public class ApplicationSubmittedDomainEventHandlerTests
+
+    [Test, MoqAutoData]
+    public async Task  When_NotificationsMigration_Disabled_CommunicationRequestIsSent_And_ApplicationReviewCreated(
+        ApplicationSubmittedEvent sourceEvent,
+        [Frozen] Mock<ICommunicationQueueService> mockCommQueue,
+        [Frozen] Mock<IJobsVacancyClient> mockJobsClient,
+        [Frozen] Mock<IFeature> mockFeature,
+        ApplicationSubmittedDomainEventHandler sut)
     {
-        private const long VacancyReference = 99999999;
-        private readonly Guid _vacancyId = Guid.NewGuid();
+        // Arrange
+        var eventPayload = JsonConvert.SerializeObject(sourceEvent);
+        CommunicationRequest sentRequest = null;
+        mockCommQueue.Setup(x => x.AddMessageAsync(It.IsAny<CommunicationRequest>()))
+            .Returns(Task.CompletedTask)
+            .Callback<CommunicationRequest>(cr => sentRequest = cr);
+        mockJobsClient.Setup(x => x.CreateApplicationReviewAsync(It.IsAny<Esfa.Recruit.Vacancies.Client.Domain.Entities.Application>()))
+            .Returns(Task.CompletedTask)
+            .Verifiable();
+        mockFeature.Setup(f => f.IsFeatureEnabled(It.Is<string>(s => s == FeatureNames.NotificationsMigration))).Returns(false);
 
-        [Test]
-        public async Task GivenFeatureDisabled_CommunicationRequestIsSent_And_ApplicationReviewCreated()
-        {
-            // Arrange
-            var application = new Application
-            {
-                CandidateId = Guid.NewGuid(),
-                VacancyReference = VacancyReference,
-                ApplicationId = Guid.NewGuid()
-            };
+        // Act
+        await sut.HandleAsync(eventPayload);
 
-            var sourceEvent = new ApplicationSubmittedEvent
-            {
-                Application = application,
-                VacancyId = _vacancyId
-            };
+        // Assert
+        mockCommQueue.Verify(x => x.AddMessageAsync(It.IsAny<CommunicationRequest>()), Times.Once);
+        sentRequest.Should().NotBeNull();
+        sentRequest.Entities.Should().Contain(e => e.EntityType.Equals(CommunicationConstants.EntityTypes.Vacancy) && (long)e.EntityId == sourceEvent.Application.VacancyReference);
+        mockJobsClient.Verify(x => x.CreateApplicationReviewAsync(It.IsAny<Esfa.Recruit.Vacancies.Client.Domain.Entities.Application>()), Times.Once);
+    }
 
-            var eventPayload = JsonConvert.SerializeObject(sourceEvent);
+    [Test, MoqAutoData]
+    public async Task When_NotificationsMigration_Enabled_Then_The_CommunicationRequest_Is_Not_Created(
+        ApplicationSubmittedEvent sourceEvent,
+        [Frozen] Mock<ICommunicationQueueService> mockCommQueue,
+        [Frozen] Mock<IJobsVacancyClient> mockJobsClient,
+        [Frozen] Mock<IFeature> mockFeature,
+        ApplicationSubmittedDomainEventHandler sut)
+    {
+        // Arrange
+        var eventPayload = JsonConvert.SerializeObject(sourceEvent);
+        mockCommQueue.Setup(x => x.AddMessageAsync(It.IsAny<CommunicationRequest>()))
+            .Returns(Task.CompletedTask);
+        mockJobsClient.Setup(x => x.CreateApplicationReviewAsync(It.IsAny<Esfa.Recruit.Vacancies.Client.Domain.Entities.Application>()))
+            .Returns(Task.CompletedTask)
+            .Verifiable();
+        mockFeature.Setup(f => f.IsFeatureEnabled(It.Is<string>(s => s == FeatureNames.NotificationsMigration))).Returns(true);
 
-            var mockCommQueue = new Mock<ICommunicationQueueService>();
-            CommunicationRequest sentRequest = null;
-            mockCommQueue.Setup(x => x.AddMessageAsync(It.IsAny<CommunicationRequest>()))
-                .Returns(Task.CompletedTask)
-                .Callback<CommunicationRequest>(cr => sentRequest = cr);
+        // Act
+        await sut.HandleAsync(eventPayload);
 
-            var mockJobsClient = new Mock<IJobsVacancyClient>();
-            mockJobsClient.Setup(x => x.CreateApplicationReviewAsync(It.IsAny<Application>()))
-                .Returns(Task.CompletedTask)
-                .Verifiable();
-
-            var mockOuterApiClient = new Mock<IOuterApiClient>();
-
-            var mockFeature = new Mock<IFeature>();
-            mockFeature.Setup(f => f.IsFeatureEnabled(It.Is<string>(s => s == FeatureNames.NotificationsMigration))).Returns(false);
-
-            var sut = new ApplicationSubmittedDomainEventHandler(
-                Mock.Of<ILogger<ApplicationSubmittedDomainEventHandler>>(),
-                mockJobsClient.Object,
-                mockCommQueue.Object,
-                mockOuterApiClient.Object,
-                mockFeature.Object);
-
-            // Act
-            await sut.HandleAsync(eventPayload);
-
-            // Assert
-            mockCommQueue.Verify(x => x.AddMessageAsync(It.IsAny<CommunicationRequest>()), Times.Once);
-            sentRequest.Should().NotBeNull();
-            sentRequest.Entities.Should().Contain(e => e.EntityType.Equals(CommunicationConstants.EntityTypes.Vacancy) && (long)e.EntityId == VacancyReference);
-            mockJobsClient.Verify(x => x.CreateApplicationReviewAsync(It.IsAny<Application>()), Times.Once);
-        }
-
-        [Test]
-        public async Task GivenFeatureEnabled_MockOuterApiClientIsCalledAndApplicationReviewCreated()
-        {
-            // Arrange
-            var application = new Application
-            {
-                CandidateId = Guid.NewGuid(),
-                VacancyReference = VacancyReference,
-                ApplicationId = Guid.NewGuid()
-            };
-
-            var sourceEvent = new ApplicationSubmittedEvent
-            {
-                Application = application,
-                VacancyId = _vacancyId
-            };
-
-            var eventPayload = JsonConvert.SerializeObject(sourceEvent);
-
-            var mockOuterApiClient = new Mock<IOuterApiClient>();
-            mockOuterApiClient.Setup(x => x.Post(It.IsAny<PostApplicationSubmittedEventRequest>(), true))
-                .Returns(Task.CompletedTask)
-                .Verifiable();
-
-            var mockCommQueue = new Mock<ICommunicationQueueService>();
-            // Should not be called when feature is enabled
-            mockCommQueue.Setup(x => x.AddMessageAsync(It.IsAny<CommunicationRequest>())).Returns(Task.CompletedTask);
-
-            var mockJobsClient = new Mock<IJobsVacancyClient>();
-            mockJobsClient.Setup(x => x.CreateApplicationReviewAsync(It.IsAny<Application>())).Returns(Task.CompletedTask).Verifiable();
-
-            var mockFeature = new Mock<IFeature>();
-            mockFeature.Setup(f => f.IsFeatureEnabled(It.Is<string>(s => s == FeatureNames.NotificationsMigration))).Returns(true);
-
-            var sut = new ApplicationSubmittedDomainEventHandler(
-                Mock.Of<ILogger<ApplicationSubmittedDomainEventHandler>>(),
-                mockJobsClient.Object,
-                mockCommQueue.Object,
-                mockOuterApiClient.Object,
-                mockFeature.Object);
-
-            // Act
-            await sut.HandleAsync(eventPayload);
-
-            // Assert
-            mockOuterApiClient.Verify(x => x.Post(It.IsAny<PostApplicationSubmittedEventRequest>(), true), Times.Once);
-            mockJobsClient.Verify(x => x.CreateApplicationReviewAsync(It.IsAny<Application>()), Times.Once);
-            mockCommQueue.Verify(x => x.AddMessageAsync(It.IsAny<CommunicationRequest>()), Times.Never);
-        }
+        // Assert
+        mockJobsClient.Verify(x => x.CreateApplicationReviewAsync(It.IsAny<Esfa.Recruit.Vacancies.Client.Domain.Entities.Application>()), Times.Once);
+        mockCommQueue.Verify(x => x.AddMessageAsync(It.IsAny<CommunicationRequest>()), Times.Never);
     }
 }
