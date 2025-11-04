@@ -15,15 +15,15 @@ public class AssignVacancyNumberCommandHandler(
     IMessaging messaging,
     ILogger<AssignVacancyNumberCommandHandler> logger,
     IOuterApiVacancyClient recruitOuterClient)
-    : IRequestHandler<AssignVacancyNumberCommand>
+    : IRequestHandler<AssignVacancyNumberCommand, Unit>
 {
-    public async Task Handle(AssignVacancyNumberCommand message, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(AssignVacancyNumberCommand message, CancellationToken cancellationToken)
     {
         var vacancy = await repository.GetVacancyAsync(message.VacancyId);
         if (vacancy.VacancyReference.HasValue)
         {
             logger.LogInformation("Vacancy '{VacancyId}' already has a vacancy reference ({VacancyReference}).", vacancy.Id, vacancy.VacancyReference);
-            return;
+            return Unit.Value;
         }
 
         vacancy.VacancyReference = await recruitOuterClient.GetNextVacancyIdAsync();
@@ -35,5 +35,6 @@ public class AssignVacancyNumberCommandHandler(
             EmployerAccountId = vacancy.EmployerAccountId,
             VacancyId = vacancy.Id
         });
+        return Unit.Value;
     }
 }
