@@ -1,6 +1,7 @@
 ﻿using System;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Events;
+
 public record PostApplicationSharedNotificationApiRequest(
     PostApplicationSharedNotificationApiRequest.PostApplicationSharedNotificationApiRequestData Payload)
     : IPostApiRequest

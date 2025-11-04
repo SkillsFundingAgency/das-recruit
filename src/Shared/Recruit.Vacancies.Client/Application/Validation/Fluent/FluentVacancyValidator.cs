@@ -311,13 +311,27 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private void ValidateClosingDate()
         {
             RuleFor(x => x.ClosingDate)
+                .Cascade(CascadeMode.Stop)
                 .NotNull()
                     .WithMessage("Enter an application closing date")
                     .WithErrorCode("16")
                 .WithState(_ => VacancyRuleSet.ClosingDate)
-                .GreaterThan(v => _timeProvider.Now.Date.AddDays(1).AddTicks(-1))
-                    .WithMessage("Closing date should be at least 1 day in the future.")
-                    .WithErrorCode("18")
+                .Must((vacancy, closingDate) =>
+                {
+                    var closing = closingDate!.Value.Date;
+                    var today = _timeProvider.Now.Date;
+
+                    if (vacancy.CanExtendStartAndClosingDates)
+                    {
+                        return closing >= today;
+                    }
+                    return closing >= today.AddDays(7);
+                })
+                .WithMessage(vacancy =>
+                    (vacancy.CanExtendStartAndClosingDates)
+                        ? "Closing date cannot be in the past."
+                        : "Closing date should be at least 7 days in the future.")
+                .WithErrorCode("18")
                 .WithState(_ => VacancyRuleSet.ClosingDate)
                 .RunCondition(VacancyRuleSet.ClosingDate);
         }
