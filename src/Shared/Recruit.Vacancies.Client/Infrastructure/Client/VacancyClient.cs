@@ -419,14 +419,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendCommandAsync(command);
         }
 
-
-        public Task UpdateBankHolidaysAsync()
-        {
-            var command = new UpdateBankHolidaysCommand();
-
-            return messaging.SendCommandAsync(command);
-        }
-
         public async Task CreateVacancyReview(long vacancyReference)
         {
             var command = new CreateVacancyReviewCommand

@@ -171,7 +171,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
             // Reference Data update services
             services.AddTransient<ITrainingProvidersUpdateService, TrainingProvidersUpdateService>();
-            services.AddTransient<IBankHolidayUpdateService, BankHolidayUpdateService>();
             services.AddTransient<IBankHolidayProvider, BankHolidayProvider>();
 
         }
