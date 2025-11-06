@@ -7,8 +7,6 @@ public class Event
 {
     public string Title { get; set; }
     public string Date { get; set; }
-    public string Notes { get; set; }
-    public bool Bunting { get; set; }
 
 }
 
@@ -20,10 +18,10 @@ public class Data
 
 public class BankHolidaysData
 {
-    [JsonProperty("englandAndWales")]
+    [JsonProperty("england-and-wales")]
     public Data EnglandAndWales { get; set; }
     [JsonProperty("scotland")]
     public Data Scotland { get; set; }
-    [JsonProperty("northernIreland")]
+    [JsonProperty("northern-Ireland")]
     public Data NorthernIreland { get; set; }
 }
