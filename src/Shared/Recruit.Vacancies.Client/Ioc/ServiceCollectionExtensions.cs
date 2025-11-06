@@ -34,7 +34,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Skills;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Reports;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.SequenceStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
@@ -115,7 +114,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<ITimeProvider, CurrentUtcTimeProvider>();
 
             // Application Service
-            services.AddTransient<IGenerateVacancyNumbers, MongoSequenceStore>();
             services.AddTransient<ISlaService, SlaService>();
             services.AddTransient<IVacancyService, VacancyService>();
             services.AddTransient<IVacancyTransferService, VacancyTransferService>();
