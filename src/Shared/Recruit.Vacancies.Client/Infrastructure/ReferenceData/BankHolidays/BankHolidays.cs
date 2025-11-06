@@ -20,10 +20,10 @@ public class Data
 
 public class BankHolidaysData
 {
-    [JsonProperty("england-and-wales")]
+    [JsonProperty("englandAndWales")]
     public Data EnglandAndWales { get; set; }
     [JsonProperty("scotland")]
     public Data Scotland { get; set; }
-    [JsonProperty("northern-ireland")]
+    [JsonProperty("northernIreland")]
     public Data NorthernIreland { get; set; }
 }
