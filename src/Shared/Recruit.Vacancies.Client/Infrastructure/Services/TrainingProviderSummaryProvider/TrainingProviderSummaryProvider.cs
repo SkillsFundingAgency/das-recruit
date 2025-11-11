@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
         public async Task<TrainingProviderSummary> GetAsync(long ukprn)
         {
             if (ukprn == EsfaTestTrainingProvider.Ukprn)
-                return new TrainingProviderSummary { Ukprn = EsfaTestTrainingProvider.Ukprn, ProviderName = EsfaTestTrainingProvider.Name };
+                return new TrainingProviderSummary { Ukprn = EsfaTestTrainingProvider.Ukprn, ProviderName = EsfaTestTrainingProvider.Name, IsTrainingProviderMainOrEmployerProfile = true};
 
             var provider = await _trainingProviderService.GetProviderDetails(ukprn);
             
