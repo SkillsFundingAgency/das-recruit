@@ -183,25 +183,3 @@ jobs:
             ServiceConnection: ${{ parameters.ServiceConnection }}
             AppServiceName: $(ProviderAppServiceName)
             DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/Provider.Web.Zip
-
-- deployment: DeployQAWeb
-  dependsOn:
-  - DeployInfrastructure
-  - DeployApi
-  workspace:
-    clean: all
-  pool:
-    name: DAS - Continuous Deployment Agents
-  variables:
-    QAAppServiceName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.QAAppServiceName'] ]
-    ResourceGroupName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.ResourceGroupName'] ]
-  environment: ${{ parameters.Environment }}
-  strategy:
-    runOnce:
-      deploy:
-        steps:
-        - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-          parameters:
-            ServiceConnection: ${{ parameters.ServiceConnection }}
-            AppServiceName: $(QAAppServiceName)
-            DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/QA.Web.Zip
