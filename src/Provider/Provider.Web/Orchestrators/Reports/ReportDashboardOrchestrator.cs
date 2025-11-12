@@ -3,21 +3,22 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
 {
-    public class ReportDashboardOrchestrator : ReportOrchestratorBase
+    public class ReportDashboardOrchestrator(
+        ILogger<ReportDashboardOrchestrator> logger,
+        IProviderVacancyClient vacancyClient,
+        IFeature feature)
+        : ReportOrchestratorBase(logger, vacancyClient)
     {
-        private readonly IProviderVacancyClient _vacancyClient;
+        private readonly IProviderVacancyClient _vacancyClient = vacancyClient;
 
-        public ReportDashboardOrchestrator(ILogger<ReportDashboardOrchestrator> logger, IProviderVacancyClient vacancyClient)
-        :base(logger, vacancyClient)
-        {
-            _vacancyClient = vacancyClient;
-        }
+        private readonly bool _isReportsMigrationFeatureFlagEnabled = feature.IsFeatureEnabled(FeatureNames.ReportsMigration);
 
         public async Task<ReportsDashboardViewModel> GetDashboardViewModel(long ukprn)
         {
@@ -50,12 +51,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
 
             var stream = new MemoryStream();
 
-            var writeReportTask = _vacancyClient.WriteReportAsCsv(stream, report);
+            if (_isReportsMigrationFeatureFlagEnabled)
+            {
+                await _vacancyClient.WriteApplicationSummaryReportsToCsv(stream, reportId);
+            }
+            else
+            {
+                var writeReportTask = _vacancyClient.WriteReportAsCsv(stream, report);
+                var incrementReportDownloadCountTask = _vacancyClient.IncrementReportDownloadCountAsync(report.Id);
 
-            var incrementReportDownloadCountTask = _vacancyClient.IncrementReportDownloadCountAsync(report.Id);
-
-            await Task.WhenAll(writeReportTask, incrementReportDownloadCountTask);
-
+                await Task.WhenAll(writeReportTask, incrementReportDownloadCountTask);
+            }
             return new ReportDownloadViewModel {
                 Content = stream,
                 ReportName = report.ReportName

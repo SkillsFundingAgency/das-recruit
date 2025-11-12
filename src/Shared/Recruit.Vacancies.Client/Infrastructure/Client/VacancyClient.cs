@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.Reports;
@@ -18,6 +19,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employ
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Report;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.User;
@@ -46,15 +48,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IEmployerService employerService,
         IReportRepository reportRepository,
         IReportService reportService,
+        IProviderReportService providerReportService,
         IUserNotificationPreferencesRepository userNotificationPreferencesRepository,
         AbstractValidator<UserNotificationPreferences> userNotificationPreferencesValidator,
         AbstractValidator<Qualification> qualificationValidator,
         IVacancySummariesProvider vacancySummariesQuery,
         ITimeProvider timeProvider,
         ITrainingProviderService trainingProviderService,
-        ISqlDbRepository sqlDbRepository)
+        ISqlDbRepository sqlDbRepository,
+        IFeature feature)
         : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
+        private readonly bool _isReportsMigrationFeatureFlagEnabled = feature.IsFeatureEnabled(FeatureNames.ReportsMigration);
+
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
         {
             var command = new UpdateDraftVacancyCommand
