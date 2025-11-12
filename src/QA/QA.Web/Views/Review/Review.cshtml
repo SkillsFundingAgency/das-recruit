@@ -92,7 +92,7 @@
                 <div class="@Model.ShortDescriptionClass govuk-character-count" id="@FieldIdentifiers.ShortDescription" data-module="govuk-character-count" data-maxlength="350">
                     <h3 class="govuk-heading-s govuk-!-margin-top-0">Summary</h3>
 
-                    <textarea class="govuk-textarea govuk-js-character-count" asp-for="ShortDescription" rows="5"></textarea>
+                    <textarea class="govuk-textarea govuk-js-character-count html-editor" asp-for="ShortDescription" rows="5"></textarea>
                     
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@FieldIdentifiers.ShortDescription"
@@ -123,7 +123,7 @@
                                 <h3 class="govuk-heading-s">Wage</h3>
                                 <p class="govuk-body">@Model.WageText</p>
                                 <h3 class="govuk-heading-s">Information about pay (optional)</h3>
-                                <p class="govuk-body">@Model.WageInfo</p>
+                                <p class="govuk-body">@Html.Raw(Model.WageInfo)</p>
                                 
                                 <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                                       asp-value="@FieldIdentifiers.Wage"
@@ -132,7 +132,7 @@
                         </li>
                         <li>
                             <h3 class="govuk-heading-s">Company benefits (optional)</h3>
-                            <textarea class="govuk-textarea govuk-js-character-count" asp-for="CompanyBenefitsInformation" rows="5" data-val-length-max="250"></textarea>
+                            <textarea class="govuk-textarea govuk-js-character-count html-editor" asp-for="CompanyBenefitsInformation" rows="5" data-val-length-max="250"></textarea>
                             <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                                   asp-value="@FieldIdentifiers.CompanyBenefitsInformation"
                                                   asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
@@ -257,7 +257,7 @@
             <div class="govuk-grid-column-one-half" asp-hide="@(Model.ApprenticeshipType is ApprenticeshipTypes.Foundation && string.IsNullOrWhiteSpace(Model.ThingsToConsider))">
                 <div class="@Model.ThingsToConsiderClass" id="@FieldIdentifiers.ThingsToConsider">
                     <h3 class="govuk-heading-s">Other requirements (optional)</h3>
-                    <textarea class="govuk-textarea govuk-js-character-count" asp-for="ThingsToConsider" rows="5" data-val-length-max="250"></textarea>
+                    <textarea class="govuk-textarea govuk-js-character-count html-editor" asp-for="ThingsToConsider" rows="5" data-val-length-max="250"></textarea>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@FieldIdentifiers.ThingsToConsider"
@@ -308,7 +308,7 @@
                 <div class="@Model.EmployerDescriptionClass" id="@FieldIdentifiers.EmployerDescription">
                     <h3 class="govuk-heading-s">Description</h3>
 
-                    <p class="govuk-body">@Model.EmployerDescription</p>
+                    <p class="govuk-body">@Html.Raw(Model.EmployerDescription)</p>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@FieldIdentifiers.EmployerDescription"
