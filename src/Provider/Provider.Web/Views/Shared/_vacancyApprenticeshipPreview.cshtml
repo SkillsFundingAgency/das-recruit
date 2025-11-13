@@ -102,7 +102,7 @@
                     </ul>
                 </div>
                 <p>
-                    @Model.ShortDescription
+                    @Html.Raw(Model.ShortDescription)
                 </p>
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
@@ -331,7 +331,7 @@
                 @if (!string.IsNullOrEmpty(Model.ThingsToConsider))
                 {
                     <h3 class="govuk-heading-s">Other requirements</h3>
-                    <p>@Model.ThingsToConsider</p>
+                    <p>@Html.Raw(Model.ThingsToConsider)</p>
                 }
             </section>
             <section class="faa-vacancy__section" id="company">

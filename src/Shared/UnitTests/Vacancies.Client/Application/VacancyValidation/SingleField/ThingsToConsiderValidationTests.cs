@@ -41,8 +41,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         }
 
         [Theory]
-        [MemberData(nameof(TestData.BlacklistedCharacters), MemberType = typeof(TestData))]
-        public void ThingsToConsiderMustNotContainInvalidCharacters(string invalidChar)
+        [InlineData("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
+        [InlineData("<script>alert('not allowed')</script>", false)]
+        [InlineData("<p>`</p>", false)]
+        public void ThingsToConsiderMustNotContainInvalidCharacters(string invalidChar, bool expectedResult)
         {
             var vacancy = new Vacancy
             {
@@ -50,11 +52,17 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.ThingsToConsider);
-
-            result.HasErrors.Should().BeTrue();
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.ThingsToConsider));
-            result.Errors[0].ErrorCode.Should().Be("76");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ThingsToConsider);
+            if (expectedResult)
+            {
+                result.HasErrors.Should().BeFalse();
+            }
+            else
+            {
+                result.HasErrors.Should().BeTrue();
+                result.Errors[0].PropertyName.Should().Be(nameof(vacancy.ThingsToConsider));
+                result.Errors[0].ErrorCode.Should().Be("76");
+                result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ThingsToConsider);
+            }
         }
 
         [Theory]

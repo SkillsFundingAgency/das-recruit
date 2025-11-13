@@ -37,7 +37,7 @@
                         </label>
                     </h2>
                     <span esfa-validation-message-for="ThingsToConsider" class="govuk-error-message"></span>
-                    <textarea class="govuk-textarea" asp-for="ThingsToConsider" rows="5" aria-describedby="ThingsToConsider-info ThingsToConsider-hint"></textarea>
+                    <textarea class="govuk-textarea html-editor" asp-for="ThingsToConsider" rows="5" aria-describedby="ThingsToConsider-info ThingsToConsider-hint"></textarea>
                 </div>
             </div>
 
@@ -48,3 +48,11 @@
         </form>
     </div>
 </div>
+
+@section FooterJS 
+{
+    <script src="/lib/tinymce-4.9.2/tinymce.min.js" no-cdn></script>
+    <script nws-csp-add-nonce="true">
+        initializeHtmlEditors();
+    </script>
+}
