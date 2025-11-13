@@ -45,7 +45,7 @@
     <div class="govuk-grid-column-two-thirds">
         <div id="@Anchors.ShortDescription">
             <h3 class="govuk-heading-s govuk-!-margin-top-0">Summary</h3>
-            <p class="govuk-body">@Html.Raw(Model.ShortDescription)</p>
+            <div class="govuk-body">@Html.Raw(Model.ShortDescription)</div>
         </div>
     </div>
     <div class="govuk-grid-column-one-third">
@@ -67,7 +67,7 @@
                 <div id="@Anchors.YearlyWage">
                     <h3 class="govuk-heading-s">Annual wage</h3>
                     <p class="govuk-body">@Model.WageText</p>
-                    <p class="govuk-body">@Model.WageInfo</p>
+                    <div class="govuk-body">@Html.Raw(Model.WageInfo)</div>
                 </div>
             </li>
             <li>
@@ -180,7 +180,7 @@
     <div class="govuk-grid-column-two-thirds">
         <div id="@Anchors.EmployerDescription">
             <h3 class="govuk-heading-s">Description</h3>
-            <p class="govuk-body">@Html.Raw(Model.EmployerDescription)</p>
+            <div class="govuk-body">@Html.Raw(Model.EmployerDescription)</div>
         </div>
         <div id="@Anchors.EmployerName">
             <h3 class="govuk-heading-s">Employer</h3>
