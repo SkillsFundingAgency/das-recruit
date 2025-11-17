@@ -95,8 +95,30 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             clone.EmployerReviewFieldIndicators = null;
             clone.EmployerRejectedReason = null;
             clone.ProviderReviewFieldIndicators = null;
+            
+            MigrateLocations(clone);
 
             return clone;
+        }
+        
+        private static void MigrateLocations(Vacancy clone)
+        {
+            switch (clone)
+            {
+                case { EmployerLocation: not null }:
+                    clone.EmployerLocationOption = AvailableWhere.OneLocation;
+                    clone.EmployerLocations = [clone.EmployerLocation];
+                    clone.EmployerLocation = null;
+                    return;
+                case { EmployerLocationInformation: not null, EmployerLocationOption: null }:
+                    clone.EmployerLocationOption = AvailableWhere.AcrossEngland;
+                    return;
+                case { EmployerLocations.Count: > 0, EmployerLocationOption: null }:
+                    clone.EmployerLocationOption = clone.EmployerLocations.Count == 1
+                        ? AvailableWhere.OneLocation
+                        : AvailableWhere.MultipleLocations;
+                    break;
+            }
         }
     }
 }
