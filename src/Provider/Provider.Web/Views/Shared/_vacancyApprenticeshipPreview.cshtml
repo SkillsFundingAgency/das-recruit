@@ -211,9 +211,9 @@
                         }
                         case AvailableWhere.AcrossEngland:
                         {
-                            <p class="govuk-body">
-                                @Model.LocationInformation
-                            </p>
+                            <div class="govuk-body">
+                                @Html.Raw(Model.LocationInformation)
+                            </div>
                             break;
                         }
                         default:
