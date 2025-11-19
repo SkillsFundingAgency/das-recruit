@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
-        private readonly IQualificationsProvider _qualificationsProvider;
+        private readonly IReferenceDataClient _referenceDataClient;
         private readonly IMessaging _messaging;
         private readonly INextVacancyReviewService _nextVacancyReviewService;
         private readonly IReportService _reportService;
@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     INextVacancyReviewService nextVacancyReviewService,
                     IReportRepository reportRepository,
                     IReportService reportService, 
-                    IQualificationsProvider qualificationsProvider)
+                    IReferenceDataClient referenceDataClient)
         {
             _queryStoreReader = queryStoreReader;
             _vacancyReviewQuery = vacancyReviewQuery;
@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _messaging = messaging;
             _nextVacancyReviewService = nextVacancyReviewService;
             _reportService = reportService;
-            _qualificationsProvider = qualificationsProvider;
+            _referenceDataClient = referenceDataClient;
             _reportRepository = reportRepository;
         }
 
@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<Qualifications> GetCandidateQualificationsAsync()
         {
-            var qualification = await _qualificationsProvider.GetQualificationsAsync();
+            var qualification = await _referenceDataClient.GetCandidateQualificationsAsync();
             return new Qualifications
             {
                 QualificationTypes = qualification.ToList()
