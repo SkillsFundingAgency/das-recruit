@@ -9,11 +9,11 @@
             <p class="govuk-body">Nationwide</p>
             @if (Model.ReadOnly)
             {
-                <p class="govuk-body">@Model.EmployerLocationInformation</p>
+                <div class="govuk-body">@Html.Raw(Model.EmployerLocationInformation)</div>
             }
             else
             {
-                <textarea class="govuk-textarea govuk-js-character-count" asp-for="@Model.EmployerLocationInformation" rows="5" data-val-length-max="500"></textarea>
+                <textarea class="govuk-textarea govuk-js-character-count html-editor" asp-for="@Model.EmployerLocationInformation" rows="5" data-val-length-max="500"></textarea>
                 <esfa-review-checkbox asp-for="@Model.SelectedFieldIdentifiers" asp-value="@FieldIdentifiers.EmployerAddress" asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
             }
         </div>
