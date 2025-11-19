@@ -1,5 +1,4 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -7,52 +6,35 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
+namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
+
+public class AssignVacancyNumberCommandHandler(
+    IVacancyRepository repository,
+    IMessaging messaging,
+    ILogger<AssignVacancyNumberCommandHandler> logger,
+    IOuterApiVacancyClient recruitOuterClient)
+    : IRequestHandler<AssignVacancyNumberCommand, Unit>
 {
-    public class AssignVacancyNumberCommandHandler: IRequestHandler<AssignVacancyNumberCommand, Unit>
+    public async Task<Unit> Handle(AssignVacancyNumberCommand message, CancellationToken cancellationToken)
     {
-        private readonly IVacancyRepository _repository;
-        private readonly IMessaging _messaging;
-        private readonly ILogger<AssignVacancyNumberCommandHandler> _logger;
-        private readonly IGenerateVacancyNumbers _generator;
-
-        public AssignVacancyNumberCommandHandler(
-            IVacancyRepository repository,
-            IMessaging messaging,
-            ILogger<AssignVacancyNumberCommandHandler> logger, 
-            IGenerateVacancyNumbers generator)
+        var vacancy = await repository.GetVacancyAsync(message.VacancyId);
+        if (vacancy.VacancyReference.HasValue)
         {
-            _repository = repository;
-            _messaging = messaging;
-            _logger = logger;
-            _generator = generator;
-        }
-
-        public async Task<Unit> Handle(AssignVacancyNumberCommand message, CancellationToken cancellationToken)
-        {
-            var vacancy = await _repository.GetVacancyAsync(message.VacancyId);
-            
-            if (vacancy.VacancyReference.HasValue)
-            {
-                _logger.LogInformation("Vacancy: {vacancyId} already has a vacancy number: {vacancyNumber}. Will not be changed.", vacancy.Id, vacancy.VacancyReference);
-                return Unit.Value;
-            }
-
-            _logger.LogInformation("Assigning vacancy number for vacancy {vacancyId}.", message.VacancyId);
-
-            // TODO: we'll want to replace with: IOuterApiVacancyClient.GetNextVacancyIdAsync() at some point
-            vacancy.VacancyReference = await _generator.GenerateAsync();
-
-            await _repository.UpdateAsync(vacancy);
-            await _messaging.PublishEvent(new DraftVacancyUpdatedEvent
-            {
-                EmployerAccountId = vacancy.EmployerAccountId,
-                VacancyId = vacancy.Id
-            });
-
-            _logger.LogInformation("Updated Vacancy: {vacancyId} with vacancy number: {vacancyNumber}", vacancy.Id, vacancy.VacancyReference);
+            logger.LogInformation("Vacancy '{VacancyId}' already has a vacancy reference ({VacancyReference}).", vacancy.Id, vacancy.VacancyReference);
             return Unit.Value;
         }
+
+        vacancy.VacancyReference = await recruitOuterClient.GetNextVacancyIdAsync();
+
+        logger.LogInformation("Assigning reference '{VacancyReference}' to vacancy '{VacancyId}'.", vacancy.VacancyReference, message.VacancyId);
+        await repository.UpdateAsync(vacancy);
+        await messaging.PublishEvent(new DraftVacancyUpdatedEvent
+        {
+            EmployerAccountId = vacancy.EmployerAccountId,
+            VacancyId = vacancy.Id
+        });
+        return Unit.Value;
     }
 }

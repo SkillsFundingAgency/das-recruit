@@ -106,9 +106,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         }
 
         [Theory]
-        [InlineData("<")]
-        [InlineData(">")]
-        public void WageAdditionalInfoMustContainValidCharacters(string invalidCharacter)
+        [InlineData("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
+        [InlineData("<script>alert('not allowed')</script>", false)]
+        [InlineData("<p>`</p>", false)]
+        public void WageAdditionalInfoMustContainValidCharacters(string invalidCharacter, bool expectedResult)
         {
             var vacancy = new Vacancy
             {
@@ -120,12 +121,19 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
-
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WageAdditionalInformation)}");
-            result.Errors[0].ErrorCode.Should().Be("45");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
+            if (expectedResult)
+            {
+                result.HasErrors.Should().BeFalse();
+            }
+            else
+            {
+                result.HasErrors.Should().BeTrue();
+                result.Errors.Should().HaveCount(1);
+                result.Errors[0].PropertyName.Should()
+                    .Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WageAdditionalInformation)}");
+                result.Errors[0].ErrorCode.Should().Be("45");
+                result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
+            }
         }
 
         [Fact]
@@ -169,9 +177,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         }
 
         [Theory]
-        [InlineData("<")]
-        [InlineData(">")]
-        public void WageCompanyBenefitsInfoMustContainValidCharacters(string invalidCharacter)
+        [InlineData("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
+        [InlineData("<script>alert('not allowed')</script>", false)]
+        [InlineData("<p>`</p>", false)]
+        public void WageCompanyBenefitsInfoMustContainValidCharacters(string invalidCharacter,  bool expectedResult)
         {
             var vacancy = new Vacancy
             {
@@ -184,11 +193,19 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.CompanyBenefitsInformation)}");
-            result.Errors[0].ErrorCode.Should().Be("45");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
+            if (expectedResult)
+            {
+                result.HasErrors.Should().BeFalse();
+            }
+            else
+            {
+                result.HasErrors.Should().BeTrue();
+                result.Errors.Should().HaveCount(1);
+                result.Errors[0].PropertyName.Should()
+                    .Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.CompanyBenefitsInformation)}");
+                result.Errors[0].ErrorCode.Should().Be("45");
+                result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
+            }
         }
 
         [Fact]

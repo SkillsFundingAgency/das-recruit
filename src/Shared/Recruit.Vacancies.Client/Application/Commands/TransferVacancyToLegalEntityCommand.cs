@@ -7,15 +7,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
     public class TransferVacancyToLegalEntityCommand : ICommand, IRequest<Unit>
     {
-        public long VacancyReference { get; }
+        public Guid Id { get; }
         public Guid UserRef { get; }
         public string UserEmailAddress { get; }
         public string UserName { get; }
         public TransferReason TransferReason { get; }
 
-        public TransferVacancyToLegalEntityCommand(long vacancyReference, Guid userRef, string userEmailAddress, string userName, TransferReason transferReason)
+        public TransferVacancyToLegalEntityCommand(Guid id, Guid userRef, string userEmailAddress, string userName, TransferReason transferReason)
         {
-            VacancyReference = vacancyReference;
+            Id = id;
             UserRef = userRef;
             UserEmailAddress = userEmailAddress;
             UserName = userName;
