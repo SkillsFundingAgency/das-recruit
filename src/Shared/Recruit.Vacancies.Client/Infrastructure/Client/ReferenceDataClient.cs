@@ -14,19 +14,19 @@ public interface IReferenceDataClient
 
 internal class GetCandidateSkillsRequest : IGetApiRequest
 {
-    public string GetUrl => "/api/referencedata/candidate-skills";
+    public string GetUrl => "referencedata/candidate-skills";
 }
 
 internal class GetCandidateQualificationsRequest : IGetApiRequest
 {
-    public string GetUrl => "/api/referencedata/candidate-qualifications";
+    public string GetUrl => "referencedata/candidate-qualifications";
 }
 
 public class ReferenceDataClient(IOuterApiClient apimClient, ICache cache) : IReferenceDataClient
 {
     public async Task<List<string>> GetCandidateSkillsAsync()
     {
-        return await cache.CacheAsideAsync(CacheKeys.Qualifications,
+        return await cache.CacheAsideAsync(CacheKeys.Skills,
             DateTime.UtcNow.AddDays(1),
             async () => await apimClient.Get<List<string>>(new GetCandidateSkillsRequest()));
     }
