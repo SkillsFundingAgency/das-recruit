@@ -49,14 +49,13 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
         {
             var existingVacancy = GetTestEmployerOwnedVacancy();
 
-            _mockVacancyRepository.Setup(x => x.GetVacancyAsync(existingVacancy.VacancyReference.GetValueOrDefault()))
+            _mockVacancyRepository.Setup(x => x.GetVacancyAsync(existingVacancy.Id))
                                     .ReturnsAsync(existingVacancy);
 
-            var command = new TransferVacancyToLegalEntityCommand(existingVacancy.VacancyReference.Value, _existingUserGuid, UserEmailAddress, UserName, TransferReason.BlockedByQa);
+            var command = new TransferVacancyToLegalEntityCommand(existingVacancy.Id, _existingUserGuid, UserEmailAddress, UserName, TransferReason.BlockedByQa);
 
             await _sut.Handle(command, CancellationToken.None);
 
-            _mockVacancyRepository.Verify(x => x.GetVacancyAsync(It.IsAny<long>()), Times.Once);
             _mockVacancyRepository.Verify(x => x.UpdateAsync(existingVacancy), Times.Never);
             _mockMessaging.Verify(x => x.PublishEvent(It.IsAny<VacancyTransferredEvent>()), Times.Never);
         }
@@ -68,14 +67,13 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
         {
             var existingVacancy = GetTestProviderOwnedVacancy();
             existingVacancy.Status = VacancyStatus.Submitted;
-            _mockVacancyRepository.Setup(x => x.GetVacancyAsync(existingVacancy.VacancyReference.GetValueOrDefault()))
+            _mockVacancyRepository.Setup(x => x.GetVacancyAsync(existingVacancy.Id))
                                     .ReturnsAsync(existingVacancy);
 
-            var command = new TransferVacancyToLegalEntityCommand(existingVacancy.VacancyReference.GetValueOrDefault(), _existingUserGuid, UserEmailAddress, UserName, transferReason);
+            var command = new TransferVacancyToLegalEntityCommand(existingVacancy.Id, _existingUserGuid, UserEmailAddress, UserName, transferReason);
 
             await _sut.Handle(command, CancellationToken.None);
 
-            _mockVacancyRepository.Verify(x => x.GetVacancyAsync(It.IsAny<long>()), Times.Once);
             _mockVacancyReviewTransferService.Verify(x => x.CloseVacancyReview(existingVacancy.VacancyReference.Value, transferReason), Times.Once);
             _mockMessaging.Verify(x => x.PublishEvent(It.IsAny<VacancyClosedEvent>()), Times.Never);
             _mockMessaging.Verify(x => x.PublishEvent(It.IsAny<VacancyTransferredEvent>()), Times.Once);
@@ -88,14 +86,13 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
         {
             var existingVacancy = GetTestProviderOwnedVacancy();
             existingVacancy.Status = VacancyStatus.Live;
-            _mockVacancyRepository.Setup(x => x.GetVacancyAsync(existingVacancy.VacancyReference.GetValueOrDefault()))
+            _mockVacancyRepository.Setup(x => x.GetVacancyAsync(existingVacancy.Id))
                                     .ReturnsAsync(existingVacancy);
 
-            var command = new TransferVacancyToLegalEntityCommand(existingVacancy.VacancyReference.GetValueOrDefault(), _existingUserGuid, UserEmailAddress, UserName, transferReason);
+            var command = new TransferVacancyToLegalEntityCommand(existingVacancy.Id, _existingUserGuid, UserEmailAddress, UserName, transferReason);
 
             await _sut.Handle(command, CancellationToken.None);
 
-            _mockVacancyRepository.Verify(x => x.GetVacancyAsync(It.IsAny<long>()), Times.Once);
             _mockVacancyReviewTransferService.Verify(x => x.CloseVacancyReview(existingVacancy.VacancyReference.Value, transferReason), Times.Never);
             _mockMessaging.Verify(x => x.PublishEvent(It.IsAny<VacancyClosedEvent>()), Times.Once);
             _mockMessaging.Verify(x => x.PublishEvent(It.IsAny<VacancyTransferredEvent>()), Times.Once);
@@ -103,20 +100,24 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
 
         private Vacancy GetTestProviderOwnedVacancy()
         {
-            var vacancy = new Vacancy();
-            vacancy.Id = Guid.NewGuid();
-            vacancy.VacancyReference = 10000001;
-            vacancy.OwnerType = OwnerType.Provider;
-            vacancy.TrainingProvider = new TrainingProvider { Ukprn = 11111111, Name = "TestProvider" };
+            var vacancy = new Vacancy
+            {
+                Id = Guid.NewGuid(),
+                VacancyReference = 10000001,
+                OwnerType = OwnerType.Provider,
+                TrainingProvider = new TrainingProvider { Ukprn = 11111111, Name = "TestProvider" }
+            };
             return vacancy;
         }
 
         private Vacancy GetTestEmployerOwnedVacancy()
         {
-            var vacancy = new Vacancy();
-            vacancy.Id = Guid.NewGuid();
-            vacancy.VacancyReference = 10000001;
-            vacancy.OwnerType = OwnerType.Employer;
+            var vacancy = new Vacancy
+            {
+                Id = Guid.NewGuid(),
+                VacancyReference = 10000001,
+                OwnerType = OwnerType.Employer
+            };
             return vacancy;
         }
     }

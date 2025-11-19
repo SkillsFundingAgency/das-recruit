@@ -143,7 +143,7 @@
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.ShortDescription">Summary of the apprenticeship
                 </dt>
                 <dd class="app-summary-list__value">
-                    @Model.ShortDescription
+                    @Html.Raw(Model.ShortDescription)
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.ShortDescription"
                         tag-name="strong" model="@Model" />
                 </dd>
@@ -296,7 +296,7 @@
                     @if (Model.HasWageInfo)
                     {
 
-                        @:@Model.WageInfo
+                        @:@Html.Raw(Model.WageInfo)
 
                     }
 
@@ -311,7 +311,7 @@
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.CompanyBenefitsInformation">Company benefits
                     (optional)</dt>
                 <dd id="CompanyBenefitsInformation" class="app-summary-list__value">
-                    @Model.CompanyBenefitsInformation
+                    @Html.Raw(Model.CompanyBenefitsInformation)
                     <field-review-tag class="govuk-tag--orange"
                                       field-name="@FieldIdentifiers.CompanyBenefitsInformation" tag-name="strong"
                                       model="@Model"/>
@@ -472,7 +472,7 @@
                     }
                     else
                     {
-                        @Model.ThingsToConsider
+                        @Html.Raw(Model.ThingsToConsider)
                     }
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.ThingsToConsider"
                                       tag-name="strong" model="@Model"/>
@@ -510,7 +510,7 @@
                  field-review-marker="EmployerDescription">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerDescription">Employer information</dt>
                 <dd class="app-summary-list__value">
-                    @Model.EmployerDescription
+                    @Html.Raw(Model.EmployerDescription)
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerDescription"
                                       tag-name="strong" model="@Model" />
                 </dd>

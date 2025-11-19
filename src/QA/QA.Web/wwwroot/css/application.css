@@ -492,3 +492,7 @@ mce-tinymce {
     overflow-wrap: break-word;
     white-space: normal;
 }
+
+.govuk-list > ul {
+    list-style: disc;
+}
