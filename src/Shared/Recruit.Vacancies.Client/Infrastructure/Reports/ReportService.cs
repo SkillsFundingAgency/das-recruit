@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services.Reports;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Reports;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Microsoft.Extensions.Logging;
@@ -98,10 +99,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
 
         public Task WriteApplicationSummaryReportsToCsv(
             Stream stream,
-            IEnumerable<ApplicationSummaryReport> reports)
+            List<ApplicationSummaryCsvReport> reports)
         {
-            var rows = JArray.FromObject(reports);                
-            csvBuilder.WriteCsvToStream(stream, rows, null, ResolveDataType);
+            var rows = JArray.FromObject(reports);
+            var headers = new List<KeyValuePair<string, string>>
+            {
+                new("Date", timeProvider.Now.ToUkTime().ToString("dd/MM/yyyy HH:mm:ss")),
+                new("Total_Number_Of_Applications", reports.Count.ToString())
+            };
+            csvBuilder.WriteCsvToStream(stream, rows, headers, ResolveDataType);
             return Task.CompletedTask;
         }
 
