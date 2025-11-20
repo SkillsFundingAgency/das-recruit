@@ -29,8 +29,8 @@ public class VacancyPreviewViewModel : DisplayVacancyViewModel
             ? "Resubmit vacancy"
             : "Submit vacancy";
 
-    [Required(ErrorMessage = "You must confirm that the information is correct before submitting.")]
-    [Range(typeof(bool), "true", "true", ErrorMessage = "You must confirm that the information is correct before submitting.")]
+    [Required(ErrorMessage = "You must confirm that the information is correct before submitting it.")]
+    [Range(typeof(bool), "true", "true", ErrorMessage = "You must confirm that the information is correct before submitting it.")]
     public bool HasUserConfirmation { get; set; }
     public int AdditionalQuestionCount { get; set; }
 

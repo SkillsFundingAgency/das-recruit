@@ -19,8 +19,8 @@ public class VacancyPreviewViewModel : DisplayVacancyViewModel
     public ReviewSummaryViewModel Review { get; set; } = new();
     public string SubmitButtonText => Review.HasBeenReviewed ? "Resubmit advert" : "Submit advert";
 
-    [Required(ErrorMessage = "You must confirm that the information is correct before submitting.")]
-    [Range(typeof(bool), "true", "true", ErrorMessage = "You must confirm that the information is correct before submitting.")]
+    [Required(ErrorMessage = "You must confirm that the information is correct before submitting it.")]
+    [Range(typeof(bool), "true", "true", ErrorMessage = "You must confirm that the information is correct before submitting it.")]
     public bool HasUserConfirmation { get; set; }
     public int AdditionalQuestionCount { get; set; }
     public IList<string> OrderedFieldNames => new List<string>
