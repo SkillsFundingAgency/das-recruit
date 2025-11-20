@@ -156,7 +156,7 @@
                 </dt>
                 
                 <dd class="app-summary-list__value">
-                    @Model.ShortDescription
+                    @Html.Raw(Model.ShortDescription)
                     <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ShortDescription" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
@@ -304,7 +304,7 @@
                     @if (Model.HasWageInfo)
                     {
 
-                        @:@Model.WageInfo
+                        @:@Html.Raw(Model.WageInfo)
 
                     }
 
@@ -317,7 +317,7 @@
             <div class="app-summary-list__row" field-review-marker="CompanyBenefitsInformation">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.CompanyBenefitsInformation">Company benefits (optional)</dt>
                 <dd id="CompanyBenefitsInformation" class="app-summary-list__value">
-                    @Model.CompanyBenefitsInformation
+                    @Html.Raw(Model.CompanyBenefitsInformation)
                     <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.CompanyBenefitsInformation" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions"></dd>
@@ -416,7 +416,7 @@
                     }
                     else
                     {
-                        @Model.ThingsToConsider
+                        @Html.Raw(Model.ThingsToConsider)
                     }
                     <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ThingsToConsider" tag-name="strong" model="@Model"/>
 
@@ -446,7 +446,7 @@
         <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="EmployerDescription">
             <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerDescription">Employer information</dt>
             <dd class="app-summary-list__value">
-                @Model.EmployerDescription
+                @Html.Raw(Model.EmployerDescription)
                 <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.EmployerDescription" tag-name="strong" model="@Model"/>
             </dd>
             <dd class="app-summary-list__actions">

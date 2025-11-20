@@ -24,7 +24,7 @@
             <div class="govuk-form-group" esfa-validation-marker-for="EmployerDescription">
                 <label asp-for="EmployerDescription" class="govuk-label">Tell us about your organisation</label>
                 <span esfa-validation-message-for="EmployerDescription" class="govuk-error-message"></span>
-                <textarea class="govuk-textarea" asp-for="EmployerDescription" rows="5" aria-describedby="EmployerDescription-info" maxlength="4000"></textarea>
+                <textarea class="govuk-textarea html-editor" asp-for="EmployerDescription" rows="5" aria-describedby="EmployerDescription-info" maxlength="4000"></textarea>
             </div>
             <div esfa-validation-marker-for="EmployerWebsiteUrl" class="govuk-form-group">
                 <label asp-for="EmployerWebsiteUrl" class="govuk-label">Website for organisation (optional)</label>
@@ -51,3 +51,11 @@
         </form>
     </div>
 </div>
+
+@section FooterJS 
+{
+    <script src="/lib/tinymce-4.9.2/tinymce.min.js" no-cdn></script>
+    <script nws-csp-add-nonce="true">
+        initializeHtmlEditors();
+    </script>
+}
