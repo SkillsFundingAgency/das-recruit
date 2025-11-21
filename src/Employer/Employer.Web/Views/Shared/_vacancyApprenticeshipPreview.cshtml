@@ -408,15 +408,9 @@
                     </ul>
                 </div>
                 <p>Closes on @Model.ClosingDate</p>
-                @if (!string.IsNullOrWhiteSpace(Model.ApplicationUrl))
-                {
-                    <p class="govuk-body">
-                        After signing in, you’ll apply for this apprenticeship on the company's website.
-                    </p>
-                }
                 @if (!string.IsNullOrWhiteSpace(Model.ApplicationInstructions))
                 {
-                    <h3 class="govuk-heading-m">Company’s application instructions</h3>
+                    <h3 class="govuk-heading-m">How to apply for this apprenticeship</h3>
                     <p class="govuk-body">
                         @Model.ApplicationInstructions
                     </p>
