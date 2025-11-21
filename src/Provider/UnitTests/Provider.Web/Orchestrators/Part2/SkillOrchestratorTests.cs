@@ -274,6 +274,7 @@ public class SkillOrchestratorTests
         {
             MockClient = new Mock<IProviderVacancyClient>();
             MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
+            MockReferenceDataClient = new Mock<IReferenceDataClient>();
 
             User = VacancyOrchestratorTestData.GetVacancyUser();
             Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
@@ -288,12 +289,21 @@ public class SkillOrchestratorTests
         public void Setup()
         {
             MockRecruitVacancyClient.Setup(x => x.GetVacancyAsync(Vacancy.Id)).ReturnsAsync(Vacancy);
-            MockRecruitVacancyClient.Setup(x => x.GetCandidateSkillsAsync()).ReturnsAsync(GetBasicSkills());
             MockRecruitVacancyClient.Setup(x => x.Validate(Vacancy, ValidationRules)).Returns(new EntityValidationResult());
             MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
             MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
+            
+            MockReferenceDataClient
+                .Setup(x => x.GetCandidateSkillsAsync())
+                .ReturnsAsync(GetBasicSkills());
                 
-            Sut = new SkillsOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<SkillsOrchestrator>>(), Mock.Of<IReviewSummaryService>(), new Utility(MockRecruitVacancyClient.Object, Mock.Of<ITaskListValidator>()));
+            Sut = new SkillsOrchestrator(
+                MockRecruitVacancyClient.Object,
+                Mock.Of<ILogger<SkillsOrchestrator>>(),
+                Mock.Of<IReviewSummaryService>(),
+                new Utility(MockRecruitVacancyClient.Object, Mock.Of<ITaskListValidator>()),
+                MockReferenceDataClient.Object
+            );
         }
 
         public async Task<SkillsViewModel> GetSkillsViewModelAsync(VacancyRouteModel vacancyRouteModel, string[] draftSkills = null)
@@ -368,5 +378,6 @@ public class SkillOrchestratorTests
 
         public Mock<IProviderVacancyClient> MockClient { get; set; }
         public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
+        public Mock<IReferenceDataClient> MockReferenceDataClient { get; set; }
     }
 }

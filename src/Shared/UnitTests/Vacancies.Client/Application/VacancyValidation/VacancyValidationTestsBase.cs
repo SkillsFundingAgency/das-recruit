@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
@@ -19,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
     {
         protected readonly Mock<IMinimumWageProvider> MockMinimumWageService;
         protected readonly Mock<IApprenticeshipProgrammeProvider> MockApprenticeshipProgrammeProvider;
-        protected readonly Mock<IQualificationsProvider> MockQualificationsProvider;
+        protected readonly Mock<IReferenceDataClient> MockReferenceDataClient;
         protected readonly IHtmlSanitizerService SanitizerService;
         protected readonly Mock<ITrainingProviderSummaryProvider> MockTrainingProviderSummaryProvider;
         protected readonly Mock<IBlockedOrganisationQuery> MockBlockedOrganisationRepo;
@@ -60,7 +61,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                         IsActive = true
                     }
                 });
-            MockQualificationsProvider = new Mock<IQualificationsProvider>();
+            MockReferenceDataClient = new Mock<IReferenceDataClient>();
             SanitizerService = new HtmlSanitizerService(new Mock<ILogger<HtmlSanitizerService>>().Object);
             MockTrainingProviderSummaryProvider = new Mock<ITrainingProviderSummaryProvider>();
             MockTrainingProviderSummaryProvider.Setup(x => x.GetAsync(10000000))
@@ -87,7 +88,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             get
             {
                 var fluentValidator = new FluentVacancyValidator(TimeProvider, MockMinimumWageService.Object, 
-                    MockApprenticeshipProgrammeProvider.Object, MockQualificationsProvider.Object, SanitizerService, 
+                    MockApprenticeshipProgrammeProvider.Object, MockReferenceDataClient.Object, SanitizerService, 
                     MockTrainingProviderSummaryProvider.Object, MockTrainingProviderService.Object, MockBlockedOrganisationRepo.Object,
                     MockProfanityListProvider, MockProviderRelationshipsService.Object);
                 return new EntityValidator<Vacancy, VacancyRuleSet>(fluentValidator);
