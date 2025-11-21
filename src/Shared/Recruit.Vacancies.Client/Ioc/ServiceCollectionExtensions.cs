@@ -126,15 +126,12 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<ICsvBuilder, CsvBuilder>();
             services.AddTransient<IReportService, ReportService>();
             services.AddTransient<ProviderApplicationsReportStrategy>();
-            services.AddTransient<QaApplicationsReportStrategy>();
             services.AddTransient<Func<ReportType, IReportStrategy>>(serviceProvider => reportType =>
             {
                 switch (reportType)
                 {
                     case ReportType.ProviderApplications:
                         return serviceProvider.GetService<ProviderApplicationsReportStrategy>();
-                    case ReportType.QaApplications:
-                        return serviceProvider.GetService<QaApplicationsReportStrategy>();
                     default:
                         throw new Exception($"No report strategy for {reportType}");
                 }
@@ -150,7 +147,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IProviderReportService, ProviderReportService>();
 
             // Projection services
-            services.AddTransient<IQaDashboardProjectionService, QaDashboardProjectionService>();
             services.AddTransient<IEditVacancyInfoProjectionService, EditVacancyInfoProjectionService>();
             services.AddTransient<IPublishedVacancyProjectionService, PublishedVacancyProjectionService>();
             services.AddTransient<IVacancyApplicationsProjectionService, VacancyApplicationsProjectionService>();
@@ -275,7 +271,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
                 .AddTransient<IRecruitVacancyClient, VacancyClient>()
                 .AddTransient<IEmployerVacancyClient, VacancyClient>()
                 .AddTransient<IProviderVacancyClient, VacancyClient>()
-                .AddTransient<IQaVacancyClient, QaVacancyClient>()
                 .AddTransient<IJobsVacancyClient, VacancyClient>()
                 .AddTransient<IGetAddressesClient, OuterApiGetAddressesClient>()
                 .AddTransient<IGetProviderStatusClient, OuterApiGetProviderStatusClient>()
