@@ -2,7 +2,6 @@
 {
     public enum ReportOwnerType
     {
-        Provider,
-        Qa
+        Provider
     }
 }
