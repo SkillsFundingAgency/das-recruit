@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
@@ -8,32 +7,15 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Shared.Web.Services
 {
-    public class ReviewSummaryService : IReviewSummaryService
+    public class ReviewSummaryService(
+        IRecruitVacancyClient vacancyClient,
+        ReviewFieldIndicatorMapper fieldMappingsLookup)
+        : IReviewSummaryService
     {
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly ReviewFieldIndicatorMapper _fieldMappingsLookup;
-        private readonly IQaVacancyClient _qaVacancyClient;
-
-        public ReviewSummaryService(IRecruitVacancyClient vacancyClient, 
-            ReviewFieldIndicatorMapper fieldMappingsLookup, IQaVacancyClient qaVacancyClient)
-        {
-            _vacancyClient = vacancyClient;
-            _fieldMappingsLookup = fieldMappingsLookup;
-            _qaVacancyClient = qaVacancyClient;
-        }
-
         public async Task<ReviewSummaryViewModel> GetReviewSummaryViewModelAsync(long vacancyReference, 
             ReviewFieldMappingLookupsForPage reviewFieldIndicatorsForPage)
         {
-            var review = await _vacancyClient.GetCurrentReferredVacancyReviewAsync(vacancyReference);
-
-            return ConvertToReviewSummaryViewModel(reviewFieldIndicatorsForPage, review);
-        }
-
-        public async Task<ReviewSummaryViewModel> GetReviewSummaryViewModelAsync(Guid reviewId,
-            ReviewFieldMappingLookupsForPage reviewFieldIndicatorsForPage)
-        {
-            var review = await _qaVacancyClient.GetVacancyReviewAsync(reviewId);
+            var review = await vacancyClient.GetCurrentReferredVacancyReviewAsync(vacancyReference);
 
             return ConvertToReviewSummaryViewModel(reviewFieldIndicatorsForPage, review);
         }
@@ -44,7 +26,7 @@ namespace Esfa.Recruit.Shared.Web.Services
             if (review != null)
             {
                 var fieldIndicators =
-                    _fieldMappingsLookup.MapFromFieldIndicators(reviewFieldIndicatorsForPage, review).ToList();
+                    fieldMappingsLookup.MapFromFieldIndicators(reviewFieldIndicatorsForPage, review).ToList();
 
                 return new ReviewSummaryViewModel
                 {
