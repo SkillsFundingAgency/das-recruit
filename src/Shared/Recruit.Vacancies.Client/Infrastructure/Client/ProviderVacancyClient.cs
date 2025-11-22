@@ -5,9 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Reports;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
+using Report = Esfa.Recruit.Vacancies.Client.Domain.Entities.Report;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -230,7 +232,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var response = await providerReportService.GetReportDataAsync(reportId);
 
-            await reportService.WriteApplicationSummaryReportsToCsv(stream, response.Reports);
+            await reportService.WriteApplicationSummaryReportsToCsv(stream, response.Reports.Select(c=>(ApplicationSummaryCsvReport)c).ToList());
         }
 
         public Task IncrementReportDownloadCountAsync(Guid reportId)
