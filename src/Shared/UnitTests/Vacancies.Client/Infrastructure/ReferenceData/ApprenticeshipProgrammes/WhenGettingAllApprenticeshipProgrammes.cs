@@ -23,7 +23,17 @@ public class WhenGettingAllApprenticeshipProgrammes
         
         var actual = await provider.GetApprenticeshipProgrammesAsync(true);
 
-        actual.Should().BeEquivalentTo(apiResponse.TrainingProgrammes.Select(c => (ApprenticeshipProgramme)c).ToList());
+        var expected = apiResponse
+            .TrainingProgrammes
+            .Select(c => (ApprenticeshipProgramme)c)
+            .ToList();
+
+        expected.Add(GetDummyProgramme());
+
+        actual.Should().BeEquivalentTo(expected, options =>
+            options.Using<DateTime>(ctx =>
+                ctx.Subject.Date.Should().Be(ctx.Expectation.Date)
+            ).WhenTypeIs<DateTime>());
     }
 
     [Test, MoqAutoData]
@@ -46,4 +56,16 @@ public class WhenGettingAllApprenticeshipProgrammes
         actual.LastDateStarts.Should().BeAfter(DateTime.UtcNow);
         actual.EffectiveTo.Should().BeAfter(DateTime.UtcNow);
     }
+
+    private static ApprenticeshipProgramme GetDummyProgramme() =>
+        new()
+        {
+            Id = "999999",
+            Title = "To be confirmed",
+            IsActive = true,
+            ApprenticeshipType = TrainingType.Standard,
+            ApprenticeshipLevel = ApprenticeshipLevel.Unknown,
+            EffectiveTo = DateTime.UtcNow.AddYears(1),
+            LastDateStarts = DateTime.UtcNow.AddYears(1)
+        };
 }
