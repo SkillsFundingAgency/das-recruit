@@ -22,7 +22,7 @@ public static class ModelStateDictionaryExtensions
         foreach (var error in validationResult.Errors)
         {
             Tuple<string, string> mapping = null; 
-            if (!validationMappings?.TryGetValue(error.PropertyName, out mapping) ?? false)
+            if ((!validationMappings?.TryGetValue(error.PropertyName, out mapping) ?? false) && error.ErrorCode is not null)
             {
                 validationMappings.TryGetValue(error.ErrorCode, out mapping);
             }
