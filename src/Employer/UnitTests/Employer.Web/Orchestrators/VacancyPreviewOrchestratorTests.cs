@@ -55,7 +55,12 @@ public class VacancyPreviewOrchestratorTests
 
         var geocodeImageService = new Mock<IGeocodeImageService>();
         var externalLinks = new Mock<IOptions<ExternalLinksConfiguration>>();
-        var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, mockRecruitVacancyClient.Object, Mock.Of<IApprenticeshipProgrammeProvider>());
+        var mapper = new DisplayVacancyViewModelMapper(
+            geocodeImageService.Object,
+            externalLinks.Object,
+            mockRecruitVacancyClient.Object,
+            Mock.Of<IReferenceDataClient>(),
+            Mock.Of<IApprenticeshipProgrammeProvider>());
 
         var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();
         legalEntityAgreement.Setup(l => l.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId))
@@ -116,7 +121,12 @@ public class VacancyPreviewOrchestratorTests
 
         var geocodeImageService = new Mock<IGeocodeImageService>();
         var externalLinks = new Mock<IOptions<ExternalLinksConfiguration>>();
-        var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, mockRecruitVacancyClient.Object, Mock.Of<IApprenticeshipProgrammeProvider>());
+        var mapper = new DisplayVacancyViewModelMapper(
+            geocodeImageService.Object,
+            externalLinks.Object,
+            mockRecruitVacancyClient.Object,
+            Mock.Of<IReferenceDataClient>(),
+            Mock.Of<IApprenticeshipProgrammeProvider>());
         var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();            
         var utility = new Utility(mockRecruitVacancyClient.Object, Mock.Of<ITaskListValidator>());
             

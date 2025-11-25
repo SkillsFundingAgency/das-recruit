@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentValidation;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
@@ -9,26 +10,21 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     /// Unconditionally validates a <see cref="Qualification"/>.
     /// <seealso cref="VacancyQualificationsValidator"/>
     /// </summary>
-    internal class QualificationValidator : QualificationValidatorBase
-    {
-        public QualificationValidator(IQualificationsProvider qualificationsProvider, IProfanityListProvider profanityListProvider)
-            : base(qualificationsProvider,profanityListProvider)
-        {
-        }
-    }
+    internal class QualificationValidator(
+        IReferenceDataClient referenceDataClient,
+        IProfanityListProvider profanityListProvider)
+        : QualificationValidatorBase(referenceDataClient, profanityListProvider);
 
     /// <summary>
     /// Registers validation with a specific rule ID.
     /// This is used by the <see cref="FluentVacancyValidator"/> to conditionally validate every
     /// <see cref="Qualification"/> in a vacancy.
     /// </summary>
-    internal class VacancyQualificationsValidator : QualificationValidatorBase
-    {
-        public VacancyQualificationsValidator(long ruleId, IQualificationsProvider qualificationsProvider, IProfanityListProvider profanityListProvider)
-            : base(ruleId, qualificationsProvider,profanityListProvider)
-        {
-        }
-    }
+    internal class VacancyQualificationsValidator(
+        long ruleId,
+        IReferenceDataClient referenceDataClient,
+        IProfanityListProvider profanityListProvider)
+        : QualificationValidatorBase(ruleId, referenceDataClient, profanityListProvider);
 
     /// <summary>
     /// Validates a <see cref="Qualification"/>.
@@ -39,14 +35,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     {
         private readonly IList<string> _qualificationTypes;
 
-        public QualificationValidatorBase(IQualificationsProvider qualificationsProvider, IProfanityListProvider profanityListProvider)
-            : this(0, qualificationsProvider, profanityListProvider)
+        protected QualificationValidatorBase(IReferenceDataClient referenceDataClient, IProfanityListProvider profanityListProvider)
+            : this(0, referenceDataClient, profanityListProvider)
         {
         }
 
-        public QualificationValidatorBase(long ruleId, IQualificationsProvider qualificationsProvider, IProfanityListProvider profanityListProvider)
+        protected QualificationValidatorBase(long ruleId, IReferenceDataClient referenceDataClient, IProfanityListProvider profanityListProvider)
         {
-            _qualificationTypes = qualificationsProvider.GetQualificationsAsync().Result ?? new List<string>();
+            _qualificationTypes = referenceDataClient.GetCandidateQualificationsAsync().Result ?? [];
             
             RuleFor(x => x.QualificationType)
                 .Cascade(CascadeMode.Stop)

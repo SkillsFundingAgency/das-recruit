@@ -29,6 +29,7 @@ public class VacancyCheckYourAnswersOrchestratorTests
         ApprenticeshipStandard standard,
         Vacancy vacancy,
         List<LegalEntity> legalEntities,
+        Mock<IReferenceDataClient> referenceDataClient,
         [Frozen] Mock<IOptions<ExternalLinksConfiguration>> externalLinksConfiguration,
         [Frozen] Mock<IUtility> utility,
         [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
@@ -56,8 +57,12 @@ public class VacancyCheckYourAnswersOrchestratorTests
         externalLinksConfiguration.Object.Value.FindAnApprenticeshipUrl = findAnApprenticeshipUrl;
         var expectedViewModel = new VacancyPreviewViewModel();
 
-        var mapper = new DisplayVacancyViewModelMapper(Mock.Of<IGeocodeImageService>(),
-            externalLinksConfiguration.Object, recruitVacancyClient.Object, outerApiClient.Object);
+        var mapper = new DisplayVacancyViewModelMapper(
+            Mock.Of<IGeocodeImageService>(),
+            externalLinksConfiguration.Object,
+            recruitVacancyClient.Object,
+            referenceDataClient.Object,
+            outerApiClient.Object);
         await mapper.MapFromVacancyAsync(expectedViewModel, vacancy);
         
         expectedViewModel.VacancyId = routeModel.VacancyId;
