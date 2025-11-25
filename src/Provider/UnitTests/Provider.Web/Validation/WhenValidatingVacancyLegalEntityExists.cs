@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using Esfa.Recruit.Provider.Web.Validation;
+using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
@@ -46,7 +47,7 @@ public class WhenValidatingVacancyLegalEntityExists
         // assert
         result.IsValid.Should().BeFalse();
         result.Errors.Count.Should().Be(1);
-        result.Errors[0].PropertyName.Should().Be(nameof(vacancy.AccountLegalEntityPublicHashedId));
+        result.Errors[0].PropertyName.Should().Be(FieldIdentifiers.OrganisationName);
         result.Errors[0].ErrorMessage.Should().Be("Enter a valid employer name");
     }
 }
