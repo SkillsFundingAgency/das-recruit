@@ -16,12 +16,12 @@ public class WhenGettingAllApprenticeshipProgrammes
         GetTrainingProgrammesResponse apiResponse,
         [Frozen] Mock<IOuterApiClient> outerApiClient)
     {
+        // Arrange
         outerApiClient
             .Setup(x => x.Get<GetTrainingProgrammesResponse>(It.IsAny<GetTrainingProgrammesRequest>()))
             .ReturnsAsync(apiResponse);
+
         var provider = new ApprenticeshipProgrammeProvider(outerApiClient.Object);
-        
-        var actual = await provider.GetApprenticeshipProgrammesAsync(true);
 
         var expected = apiResponse
             .TrainingProgrammes
@@ -30,11 +30,24 @@ public class WhenGettingAllApprenticeshipProgrammes
 
         expected.Add(GetDummyProgramme());
 
+        // Act
+        var actual = await provider.GetApprenticeshipProgrammesAsync(true);
+
+        // Assert
         actual.Should().BeEquivalentTo(expected, options =>
-            options.Using<DateTime>(ctx =>
-                ctx.Subject.Date.Should().Be(ctx.Expectation.Date)
-            ).WhenTypeIs<DateTime>());
+            options
+                // Ignore time part for DateTime
+                .Using<DateTime>(ctx =>
+                    ctx.Subject.Date.Should().Be(ctx.Expectation.Date))
+                .WhenTypeIs<DateTime>()
+
+                // Also ignore time for nullable DateTime?
+                .Using<DateTime?>(ctx =>
+                    ctx.Subject?.Date.Should().Be(ctx.Expectation?.Date))
+                .WhenTypeIs<DateTime?>()
+        );
     }
+
 
     [Test, MoqAutoData]
     public async Task Then_If_The_ProgrammeId_Is_DummyCourses_And_Retrieved_As_Expected(
