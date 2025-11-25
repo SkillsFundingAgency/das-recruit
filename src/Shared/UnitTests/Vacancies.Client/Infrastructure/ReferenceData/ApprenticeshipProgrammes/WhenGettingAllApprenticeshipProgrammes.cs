@@ -1,6 +1,6 @@
 using System.Linq;
 using AutoFixture.NUnit3;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
@@ -60,12 +60,12 @@ public class WhenGettingAllApprenticeshipProgrammes
 
         var provider = new ApprenticeshipProgrammeProvider(outerApiClient.Object);
 
-        var actual = await provider.GetApprenticeshipProgrammeAsync("999999");
+        var actual = await provider.GetApprenticeshipProgrammeAsync(EsfaDummyTrainingProgramme.Id.ToString());
 
-        actual.Id.Should().Be("999999");
-        actual.Title.Should().Be("To be confirmed");
-        actual.ApprenticeshipType.Should().Be(TrainingType.Standard);
-        actual.ApprenticeshipLevel.Should().Be(ApprenticeshipLevel.Unknown);
+        actual.Id.Should().Be(EsfaDummyTrainingProgramme.Id.ToString());
+        actual.Title.Should().Be(EsfaDummyTrainingProgramme.Title);
+        actual.ApprenticeshipType.Should().Be(EsfaDummyTrainingProgramme.ApprenticeshipType);
+        actual.ApprenticeshipLevel.Should().Be(EsfaDummyTrainingProgramme.ApprenticeshipLevel);
         actual.LastDateStarts.Should().BeAfter(DateTime.UtcNow);
         actual.EffectiveTo.Should().BeAfter(DateTime.UtcNow);
     }
@@ -73,11 +73,11 @@ public class WhenGettingAllApprenticeshipProgrammes
     private static ApprenticeshipProgramme GetDummyProgramme() =>
         new()
         {
-            Id = "999999",
-            Title = "To be confirmed",
+            Id = EsfaDummyTrainingProgramme.Id.ToString(),
+            Title = EsfaDummyTrainingProgramme.Title,
             IsActive = true,
-            ApprenticeshipType = TrainingType.Standard,
-            ApprenticeshipLevel = ApprenticeshipLevel.Unknown,
+            ApprenticeshipType = EsfaDummyTrainingProgramme.ApprenticeshipType,
+            ApprenticeshipLevel = EsfaDummyTrainingProgramme.ApprenticeshipLevel,
             EffectiveTo = DateTime.UtcNow.AddYears(1),
             LastDateStarts = DateTime.UtcNow.AddYears(1)
         };
