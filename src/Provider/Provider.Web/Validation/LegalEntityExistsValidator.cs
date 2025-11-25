@@ -1,14 +1,14 @@
+using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentValidation;
 
 namespace Esfa.Recruit.Provider.Web.Validation;
 
-public class LegalEntityValidator: AbstractValidator<Vacancy>
+public class LegalEntityExistsValidator: AbstractValidator<Vacancy>
 {
-    public LegalEntityValidator(ILegalEntityAgreementService legalEntityAgreementService)
+    public LegalEntityExistsValidator(ILegalEntityAgreementService legalEntityAgreementService)
     {
-        // Validates that a legal entity exists in the Employer's account
         // This does not assess whether an agreement has been signed or not
         When(x => !string.IsNullOrWhiteSpace(x.AccountLegalEntityPublicHashedId), () =>
         {
@@ -17,7 +17,7 @@ public class LegalEntityValidator: AbstractValidator<Vacancy>
                 var legalEntity = await legalEntityAgreementService.GetLegalEntityAsync(context.InstanceToValidate.EmployerAccountId, value);
                 if (legalEntity is null)
                 {
-                    context.AddFailure(nameof(context.InstanceToValidate.AccountLegalEntityPublicHashedId), "Enter a valid employer name");
+                    context.AddFailure(FieldIdentifiers.OrganisationName, "Enter a valid employer name");
                 }
             });
         });

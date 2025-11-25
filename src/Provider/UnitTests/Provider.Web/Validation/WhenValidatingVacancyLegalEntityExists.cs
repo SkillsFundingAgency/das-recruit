@@ -7,14 +7,14 @@ using NUnit.Framework;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Validation;
 
-public class WhenValidatingVacancyLegalEntity
+public class WhenValidatingVacancyLegalEntityExists
 {
     [Test, MoqAutoData]
     public async Task Then_The_Legal_Entity_Is_Valid(
         Vacancy vacancy,
         LegalEntity legalEntity,
         [Frozen] Mock<ILegalEntityAgreementService> legalEntityAgreementService,
-        [Greedy] LegalEntityValidator sut)
+        [Greedy] LegalEntityExistsValidator sut)
     {
         // arrange
         legalEntityAgreementService
@@ -33,7 +33,7 @@ public class WhenValidatingVacancyLegalEntity
         Vacancy vacancy,
         LegalEntity legalEntity,
         [Frozen] Mock<ILegalEntityAgreementService> legalEntityAgreementService,
-        [Greedy] LegalEntityValidator sut)
+        [Greedy] LegalEntityExistsValidator sut)
     {
         // arrange
         legalEntityAgreementService
