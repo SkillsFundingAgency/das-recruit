@@ -36,15 +36,26 @@ namespace Esfa.Recruit.Shared.Web.Orchestrators
         protected async Task<OrchestratorResponse<T>>ValidateAndExecute<T>(TEntity entity, Func<TEntity, EntityValidationResult> validationFunc, Func<TEntity, Task<T>> action)
         {
             var validationResult = validationFunc.Invoke(entity);
-
             if (validationResult.HasErrors)
             {
                 MapValidationPropertiesToViewModel(validationResult);
                 return new OrchestratorResponse<T>(validationResult);
             }
-
-            T result = await action.Invoke(entity);
-
+            
+            var result = await action.Invoke(entity);
+            return new OrchestratorResponse<T>(result);
+        }
+        
+        protected async Task<OrchestratorResponse<T>>ValidateAndExecute<T>(TEntity entity, Func<TEntity, Task<EntityValidationResult>> validationFunc, Func<TEntity, Task<T>> action)
+        {
+            var validationResult = await validationFunc.Invoke(entity);
+            if (validationResult.HasErrors)
+            {
+                MapValidationPropertiesToViewModel(validationResult);
+                return new OrchestratorResponse<T>(validationResult);
+            }
+        
+            var result = await action.Invoke(entity);
             return new OrchestratorResponse<T>(result);
         }
 
