@@ -972,18 +972,22 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .RunCondition(VacancyRuleSet.TrainingProgramme);
             });
 
-            When(x => 
-                      x.OwnerType == OwnerType.Employer &&
-                      x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn &&
-                      !string.IsNullOrWhiteSpace(x.ProgrammeId),
+            When(x =>
+                    x.OwnerType == OwnerType.Employer &&
+                    !string.IsNullOrWhiteSpace(x.ProgrammeId),
                 () =>
                 {
                     RuleFor(x => x.ProgrammeId)
                         .Must((model, programmeId) =>
-                            !(model.TrainingProvider != null &&
-                              model.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn &&
-                              programmeId == EsfaDummyTrainingProgramme.Id.ToString()))
-                        .WithMessage("Enter the name or UKPRN of a training provider who delivers the training course you’ve selected")
+                        {
+                            // Only ESFA Test Provider is allowed to use the ESFA Test Programme
+                            var isEsfaProvider = model.TrainingProvider?.Ukprn == EsfaTestTrainingProvider.Ukprn;
+                            var isEsfaProgramme = programmeId == EsfaTestTrainingProgramme.Id.ToString();
+
+                            // VALID ONLY if BOTH match
+                            return !(isEsfaProgramme && !isEsfaProvider);
+                        })
+                        .WithMessage("Enter the name or UKPRN of a training provider who delivers the training course you've selected")
                         .WithState(_ => VacancyRuleSet.TrainingProgramme)
                         .RunCondition(VacancyRuleSet.TrainingProgramme);
                 });

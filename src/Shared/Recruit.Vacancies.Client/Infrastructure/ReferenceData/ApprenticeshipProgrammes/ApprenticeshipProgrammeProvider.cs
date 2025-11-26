@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -11,7 +12,10 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes
 {
-    public class ApprenticeshipProgrammeProvider(IOuterApiClient outerApiClient) : IApprenticeshipProgrammeProvider
+    public class ApprenticeshipProgrammeProvider(
+        IOuterApiClient outerApiClient,
+        ICache cache,
+        ITimeProvider timeProvider) : IApprenticeshipProgrammeProvider
     {
         public async Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId, int? ukprn = null)
         {
@@ -22,7 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
 
         public async Task<ApprenticeshipStandard> GetApprenticeshipStandardVacancyPreviewData(int programmedId)
         {
-            if (programmedId.Equals(EsfaDummyTrainingProgramme.Id)) return GetDummyStandard();
+            if (programmedId.Equals(EsfaTestTrainingProgramme.Id)) return GetDummyStandard();
 
             return await outerApiClient.Get<GetVacancyPreviewApiResponse>(new GetVacancyPreviewApiRequest(programmedId));
         }
@@ -37,29 +41,34 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
 
         private async Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammes(int? ukprn)
         {
-            var result = await outerApiClient.Get<GetTrainingProgrammesResponse>(new GetTrainingProgrammesRequest(ukprn));
-            var trainingProgrammes = result.TrainingProgrammes.Select(c => (ApprenticeshipProgramme) c).ToList();
-            trainingProgrammes.Add(GetDummyProgramme());
-            return new ApprenticeshipProgrammes
-            {
-                Data = trainingProgrammes
-            };
+            return await cache.CacheAsideAsync(CacheKeys.ApprenticeshipProgrammes,
+                timeProvider.NextDay6am,
+                async () =>
+                {
+                    var result = await outerApiClient.Get<GetTrainingProgrammesResponse>(new GetTrainingProgrammesRequest(ukprn));
+                    var trainingProgrammes = result.TrainingProgrammes.Select(c => (ApprenticeshipProgramme)c).ToList();
+
+                    // Add dummy programme for CSJ and other special vacancies. FAI-2869
+                    trainingProgrammes.Add(GetDummyProgramme());
+                    return new ApprenticeshipProgrammes
+                    {
+                        Data = trainingProgrammes
+                    };
+                });
         }
         
-        private bool IsStandardActive(DateTime? effectiveTo, DateTime? lastDateStarts)
-        {
-            return (!effectiveTo.HasValue || effectiveTo.Value.Date >= DateTime.UtcNow.Date)
-                   && (!lastDateStarts.HasValue || lastDateStarts.Value.Date >= DateTime.UtcNow.Date);
-        }
+        private static bool IsStandardActive(DateTime? effectiveTo, DateTime? lastDateStarts) =>
+            (!effectiveTo.HasValue || effectiveTo.Value.Date >= DateTime.UtcNow.Date)
+            && (!lastDateStarts.HasValue || lastDateStarts.Value.Date >= DateTime.UtcNow.Date);
 
         private static ApprenticeshipProgramme GetDummyProgramme() =>
             new()
             {
-                Id = EsfaDummyTrainingProgramme.Id.ToString(),
-                Title = EsfaDummyTrainingProgramme.Title,
+                Id = EsfaTestTrainingProgramme.Id.ToString(),
+                Title = EsfaTestTrainingProgramme.Title,
                 IsActive = true,
-                ApprenticeshipType = EsfaDummyTrainingProgramme.ApprenticeshipType,
-                ApprenticeshipLevel = EsfaDummyTrainingProgramme.ApprenticeshipLevel,
+                ApprenticeshipType = EsfaTestTrainingProgramme.ApprenticeshipType,
+                ApprenticeshipLevel = EsfaTestTrainingProgramme.ApprenticeshipLevel,
                 EffectiveTo = DateTime.UtcNow.AddYears(1),
                 LastDateStarts = DateTime.UtcNow.AddYears(1)
             };
@@ -67,9 +76,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
         private static ApprenticeshipStandard GetDummyStandard() =>
             new()
             {
-                Title = EsfaDummyTrainingProgramme.Title,
-                ApprenticeshipType = EsfaDummyTrainingProgramme.ApprenticeshipType,
-                ApprenticeshipLevel = EsfaDummyTrainingProgramme.ApprenticeshipLevel,
+                Title = EsfaTestTrainingProgramme.Title,
+                ApprenticeshipType = EsfaTestTrainingProgramme.ApprenticeshipType,
+                ApprenticeshipLevel = EsfaTestTrainingProgramme.ApprenticeshipLevel,
             };
     }
 }
