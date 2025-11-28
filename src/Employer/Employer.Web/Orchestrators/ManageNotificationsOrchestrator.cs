@@ -9,24 +9,22 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators;
 
 public class ManageNotificationsOrchestrator(
     ILogger<ManageNotificationsOrchestrator> logger,
-    IConfiguration configuration,
     IRecruitVacancyClient recruitVacancyClient,
     IMediator mediator)
     : EntityValidatingOrchestrator<UserNotificationPreferences, ManageNotificationsEditModel>(logger)
 {
     private const string NotificationTypesIsRequiredForTheFirstTime = "Select when you want to receive emails about your adverts and applications";
-    private readonly EntityValidationResult _notificationTypeIsRequiredForTheFirstTime = new EntityValidationResult
+    private readonly EntityValidationResult _notificationTypeIsRequiredForTheFirstTime = new()
     {
-        Errors = new[] 
-        { 
-            new EntityValidationError(1100, nameof(ManageNotificationsEditModel.HasAnySubscription), NotificationTypesIsRequiredForTheFirstTime, "1100") 
-        }
+        Errors =
+        [
+            new EntityValidationError(1100, nameof(ManageNotificationsEditModel.HasAnySubscription), NotificationTypesIsRequiredForTheFirstTime, "1100")
+        ]
     };
 
     public async Task<ManageNotificationsViewModelEx> NewGetManageNotificationsViewModelAsync(VacancyUser vacancyUser, string employerAccountId)
@@ -101,12 +99,6 @@ public class ManageNotificationsOrchestrator(
         return new OrchestratorResponse(true);
     }
 
-    public async Task<ManageNotificationsViewModel> GetManageNotificationsViewModelAsync(VacancyUser vacancyUser, string employerAccountId)
-    {
-        var preferences = await recruitVacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
-        return GetViewModelFromDomainModel(preferences, employerAccountId);
-    }
-
     public async Task<OrchestratorResponse> UpdateUserNotificationPreferencesAsync(ManageNotificationsEditModel editModel, VacancyUser vacancyUser)
     {
         var persistedPreferences = await recruitVacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
@@ -120,29 +112,14 @@ public class ManageNotificationsOrchestrator(
 
         return await ValidateAndExecute(
             preferences,
-            v => recruitVacancyClient.ValidateUserNotificationPreferences(preferences),
-            v => recruitVacancyClient.UpdateUserNotificationPreferencesAsync(preferences)
+            _ => recruitVacancyClient.ValidateUserNotificationPreferences(preferences),
+            _ => recruitVacancyClient.UpdateUserNotificationPreferencesAsync(preferences)
         );
     }
 
     public Task UnsubscribeUserNotificationsAsync(VacancyUser vacancyUser)
     {
         return UpdateUserNotificationPreferencesAsync(new ManageNotificationsEditModel(), vacancyUser);
-    }
-
-    public ManageNotificationsAcknowledgementViewModel GetAcknowledgementViewModel(ManageNotificationsEditModel editModel, VacancyUser user)
-    {
-        return new ManageNotificationsAcknowledgementViewModel
-        {
-            EmployerAccountId = editModel.EmployerAccountId,
-            IsApplicationSubmittedSelected = editModel.IsApplicationSubmittedSelected,
-            IsVacancySentForEmployerReviewSelected = editModel.IsVacancySentForEmployerReviewSelected,
-            IsVacancyClosingSoonSelected = editModel.IsVacancyClosingSoonSelected,
-            IsVacancyRejectedSelected = editModel.IsVacancyRejectedSelected,
-            IsUserSubmittedVacanciesSelected = editModel.NotificationScope.GetValueOrDefault() == NotificationScope.UserSubmittedVacancies,
-            Frequency = editModel.NotificationFrequency.ToString().ToLower(),
-            UserEmail = user.Email
-        };
     }
 
     private UserNotificationPreferences GetDomainModel(ManageNotificationsEditModel sourceModel, string idamsUserId)
@@ -161,27 +138,6 @@ public class ManageNotificationsOrchestrator(
             | (sourceModel.IsVacancySentForEmployerReviewSelected ? NotificationTypes.VacancySentForReview : NotificationTypes.None);
                         
         return targetModel;
-    }
-
-    private ManageNotificationsViewModel GetViewModelFromDomainModel(UserNotificationPreferences preferences, string employerAccountId)
-    {
-        return new ManageNotificationsViewModel
-        {
-            EmployerAccountId = employerAccountId,
-            IsVacancyRejectedSelected = (preferences.NotificationTypes & NotificationTypes.VacancyRejected) ==
-                                        NotificationTypes.VacancyRejected,
-            IsVacancyClosingSoonSelected = (preferences.NotificationTypes & NotificationTypes.VacancyClosingSoon) ==
-                                           NotificationTypes.VacancyClosingSoon,
-            IsApplicationSubmittedSelected =
-                (preferences.NotificationTypes & NotificationTypes.ApplicationSubmitted) ==
-                NotificationTypes.ApplicationSubmitted,
-            IsVacancySentForEmployerReviewSelected =
-                (preferences.NotificationTypes & NotificationTypes.VacancySentForReview) ==
-                NotificationTypes.VacancySentForReview,
-            NotificationFrequency = preferences.NotificationFrequency,
-            NotificationScope = preferences.NotificationScope,
-            EnvironmentIsProd = configuration["Environment"].Equals("Prod", StringComparison.CurrentCultureIgnoreCase)
-        };
     }
 
     protected override EntityToViewModelPropertyMappings<UserNotificationPreferences, ManageNotificationsEditModel> DefineMappings()
