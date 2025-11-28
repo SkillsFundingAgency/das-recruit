@@ -1,11 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using Communication.Types;
-using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Events;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Microsoft.Extensions.Logging;
 
@@ -34,7 +31,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application
         public async Task HandleAsync(string eventPayload)
         {
             var @event = DeserializeEvent<ApplicationSubmittedEvent>(eventPayload);
-
             var vacancyReference = @event.Application.VacancyReference;
             var candidateId = @event.Application.CandidateId;
             var vacancyId = @event.VacancyId;
@@ -42,16 +38,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application
             try
             {
                 _logger.LogInformation($"Processing {nameof(ApplicationSubmittedEvent)} for vacancy: {{VacancyId}} and candidate: {{CandidateId}}", vacancyId, candidateId);
-
-                if (!_feature.IsFeatureEnabled(FeatureNames.NotificationsMigration))
-                {
-                    var communicationRequest = GetApplicationSubmittedCommunicationRequest(vacancyReference);
-
-                    await _communicationQueueService.AddMessageAsync(communicationRequest);                    
-                }
-                
                 await _client.CreateApplicationReviewAsync(@event.Application);
-
                 _logger.LogInformation($"Finished Processing {nameof(ApplicationSubmittedEvent)} for vacancy: {{VacancyReference}} and candidate: {{CandidateId}}", vacancyReference, candidateId);
             }
             catch (Exception ex)
@@ -59,18 +46,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application
                 _logger.LogError(ex, "Unable to process {eventBody}", @event);
                 throw;
             }
-        }
-
-        private CommunicationRequest GetApplicationSubmittedCommunicationRequest(long vacancyReference)
-        {
-            var communicationRequest = new CommunicationRequest(
-                CommunicationConstants.RequestType.ApplicationSubmitted,
-                CommunicationConstants.ParticipantResolverNames.VacancyParticipantsResolverName,
-                CommunicationConstants.ServiceName);
-            communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Vacancy, vacancyReference);
-            communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipServiceUrl, vacancyReference);
-            communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipServiceUnsubscribeUrl, vacancyReference);
-            return communicationRequest;
         }
     }
 }

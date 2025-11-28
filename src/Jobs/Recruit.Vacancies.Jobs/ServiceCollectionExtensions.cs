@@ -24,7 +24,6 @@ using Esfa.Recruit.Vacancies.Jobs.Jobs;
 using Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Recruit.Vacancies.Client.Application.Communications.CompositeDataItemProviderPlugins;
 using SFA.DAS.Encoding;
 
 namespace Esfa.Recruit.Vacancies.Jobs
@@ -56,7 +55,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             // Vacancy
             services.AddScoped<IDomainEventHandler<IEvent>, DraftVacancyUpdatedHandler>();
-            services.AddScoped<IDomainEventHandler<IEvent>, VacancyReferredDomainEventHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancySubmittedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyRejectedHandler>();
@@ -127,7 +125,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceConfigDataEntityPlugin>();
             services.AddTransient<IEntityDataItemProvider, ProviderDataEntityPlugin>();
             services.AddTransient<IEntityDataItemProvider, EmployerDataEntityPlugin>();
-            services.AddTransient<ICompositeDataItemProvider, ApplicationsSubmittedCompositeDataItemPlugin>();
 
             services.Configure<CommunicationsConfiguration>(configuration.GetSection("CommunicationsConfiguration"));
         }
