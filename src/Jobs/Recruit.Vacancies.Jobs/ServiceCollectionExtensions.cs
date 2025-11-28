@@ -104,14 +104,12 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             services.AddScoped<CommunicationRequestQueueTrigger>();
 
-            string communicationStorageConnString = configuration.GetConnectionString("CommunicationsStorage");
+            var communicationStorageConnString = configuration.GetConnectionString("CommunicationsStorage");
             services.AddSingleton<IDispatchQueuePublisher>(_ => new DispatchQueuePublisher(communicationStorageConnString));
-            services.AddSingleton<IAggregateCommunicationComposeQueuePublisher>(_ => new AggregateCommunicationComposeQueuePublisher(communicationStorageConnString));
             services.AddScoped<CommunicationMessageDispatcherQueueTrigger>();
             services.AddScoped<CommunicationMessageDispatcher>();
 
             services.AddTransient<ICommunicationProcessor, CommunicationProcessor>();
-            services.AddTransient<IAggregateCommunicationProcessor, AggregateCommunicationProcessor>();
             services.AddTransient<ICommunicationService, CommunicationService>();
 
             services.AddTransient<IParticipantResolver, VacancyParticipantsResolverPlugin>();
