@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Drawing.Printing;
 using AutoFixture.NUnit3;
+using Azure;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -11,6 +13,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProvide
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
+using OpenTelemetry.Trace;
 using TrainingProvider = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders.TrainingProvider;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.Services
@@ -36,50 +39,34 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             referenceDataReader.Verify(p => p.GetReferenceData<TrainingProviders>(), Times.Never);
         }
 
-        [Test]
-        public async Task GetProviderAsync_ShouldAttemptToFindTrainingProvider()
+        [Test, MoqAutoData]
+        public async Task GetProviderAsync_ShouldAttemptToFindTrainingProvider(
+            GetProviderResponseItem response)
         {
             const long ukprn = 88888888;
 
             var loggerMock = new Mock<ILogger<TrainingProviderService>>();
-            var cache = new Mock<ICache>();
             var outerApiClient = new Mock<IOuterApiClient>();
-            var trainingProvider = new TrainingProvider
-            {
-                Ukprn = ukprn,
-                Name = "name",
-                Address = new TrainingProviderAddress
-                {
-                    AddressLine1 = "address line 1",
-                    AddressLine2  = "address line 2",
-                    AddressLine3 = "address line 3",
-                    AddressLine4 = "address line 4",
-                    Postcode = "post code"
-                }
-            };
-            var providers = new TrainingProviders
-            {
-                Data = new List<TrainingProvider>
-                {
-                    trainingProvider
-                }
-            };
-            cache.Setup(x => x.CacheAsideAsync(CacheKeys.TrainingProviders, It.IsAny<DateTime>(),
-                    It.IsAny<Func<Task<TrainingProviders>>>() ))
-                .ReturnsAsync(providers);
+            response.Ukprn = ukprn;
+            
+
+            var expectedGetUrl = new GetProviderRequest(ukprn);
+            outerApiClient.Setup(x => x.Get<GetProviderResponseItem>(
+                    It.Is<GetProviderRequest>(r => r.GetUrl == expectedGetUrl.GetUrl)))
+                .ReturnsAsync(response);
 
             var sut = new TrainingProviderService(loggerMock.Object, outerApiClient.Object);
 
             var provider = await sut.GetProviderAsync(ukprn);
 
             
-            provider.Name.Should().Be("name");
+            provider.Name.Should().Be(response.Name);
             provider.Ukprn.Should().Be(ukprn);
-            provider.Address.AddressLine1.Should().Be("address line 1");
-            provider.Address.AddressLine2.Should().Be("address line 2");
-            provider.Address.AddressLine3.Should().Be("address line 3");
-            provider.Address.AddressLine4.Should().Be("address line 4");
-            provider.Address.Postcode.Should().Be("post code");
+            provider.Address.AddressLine1.Should().Be(response.Address.Address1);
+            provider.Address.AddressLine2.Should().Be(response.Address.Address2);
+            provider.Address.AddressLine3.Should().Be(response.Address.Address3);
+            provider.Address.AddressLine4.Should().Be(response.Address.Town);
+            provider.Address.Postcode.Should().Be(response.Address.Postcode);
         }
 
         [Test, MoqAutoData]
