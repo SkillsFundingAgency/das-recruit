@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Drawing.Printing;
 using AutoFixture.NUnit3;
-using Azure;
-using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
@@ -13,8 +10,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProvide
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
-using OpenTelemetry.Trace;
-using TrainingProvider = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders.TrainingProvider;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.Services
 {
