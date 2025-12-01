@@ -4,13 +4,12 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers;
 
 [Route(RoutePaths.AccountRoutePath)]
-public class ManageNotificationsController(ManageNotificationsOrchestrator orchestrator, IFeature feature) : Controller
+public class ManageNotificationsController(ManageNotificationsOrchestrator orchestrator) : Controller
 {
     [HttpGet("notifications-manage", Name = RouteNames.ManageNotifications_Get)]
     public async Task<IActionResult> ManageNotifications([FromRoute] string employerAccountId, [FromQuery] string updated)
