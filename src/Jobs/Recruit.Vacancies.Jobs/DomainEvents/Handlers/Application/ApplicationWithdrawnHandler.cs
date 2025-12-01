@@ -20,7 +20,7 @@ public class ApplicationWithdrawnHandler(ILogger<ApplicationWithdrawnEvent> logg
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Unable to process {eventBody}", @event);
+            logger.LogError(ex, "Unable to process {EventBody}", @event);
             throw;
         }
     }

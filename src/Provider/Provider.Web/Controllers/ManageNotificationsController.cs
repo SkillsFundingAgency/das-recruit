@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Esfa.Recruit.Provider.Web.Controllers;
 
 [Route(RoutePaths.AccountRoutePath)]
-public class ManageNotificationsController(ManageNotificationsOrchestrator orchestrator, IFeature feature) : Controller
+public class ManageNotificationsController(ManageNotificationsOrchestrator orchestrator) : Controller
 {
     [HttpGet("notifications-manage", Name = RouteNames.ManageNotifications_Get)]
     public async Task<IActionResult> ManageNotifications([FromRoute] long ukprn, [FromQuery] string updated)
