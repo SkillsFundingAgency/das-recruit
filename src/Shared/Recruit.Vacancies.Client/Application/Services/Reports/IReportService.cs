@@ -12,6 +12,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services.Reports
         Task WriteReportAsCsv(Stream stream, Domain.Entities.Report report);
         Task WriteApplicationSummaryReportsToCsv(
             Stream stream,
-            IEnumerable<ApplicationSummaryReport> reports);
+            List<ApplicationSummaryCsvReport> reports);
     }
 }
