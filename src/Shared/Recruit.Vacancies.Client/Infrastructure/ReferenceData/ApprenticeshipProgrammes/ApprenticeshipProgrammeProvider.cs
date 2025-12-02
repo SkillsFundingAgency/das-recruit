@@ -17,9 +17,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
         ICache cache,
         ITimeProvider timeProvider) : IApprenticeshipProgrammeProvider
     {
-        public async Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId, int? ukprn = null)
+        public async Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId, int? ukprn = null, bool includePlaceholderProgramme = false)
         {
-            var apprenticeships = await GetApprenticeshipProgrammesAsync(true, ukprn);
+            var apprenticeships = await GetApprenticeshipProgrammesAsync(true, ukprn, includePlaceholderProgramme);
 
             return apprenticeships?.SingleOrDefault(x => x.Id == programmeId);
         }
@@ -31,15 +31,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
             return await outerApiClient.Get<GetVacancyPreviewApiResponse>(new GetVacancyPreviewApiRequest(programmedId));
         }
 
-        public async Task<IEnumerable<IApprenticeshipProgramme>> GetApprenticeshipProgrammesAsync(bool includeExpired = false, int? ukprn = null)
+        public async Task<IEnumerable<IApprenticeshipProgramme>> GetApprenticeshipProgrammesAsync(bool includeExpired = false, int? ukprn = null, bool includePlaceholderProgramme = false)
         {
-            var queryItem = await GetApprenticeshipProgrammes(ukprn);
+            var queryItem = await GetApprenticeshipProgrammes(ukprn, includePlaceholderProgramme);
             return includeExpired ?
                 queryItem.Data :
                 queryItem.Data.Where(x => x.IsActive || (x.ApprenticeshipType == TrainingType.Foundation && IsStandardActive(x.EffectiveTo, x.LastDateStarts)));
         }
 
-        private async Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammes(int? ukprn)
+        private async Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammes(int? ukprn, bool includePlaceholderProgramme = false)
         {
             return await cache.CacheAsideAsync(CacheKeys.ApprenticeshipProgrammes,
                 timeProvider.NextDay6am,
@@ -47,9 +47,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                 {
                     var result = await outerApiClient.Get<GetTrainingProgrammesResponse>(new GetTrainingProgrammesRequest(ukprn));
                     var trainingProgrammes = result.TrainingProgrammes.Select(c => (ApprenticeshipProgramme)c).ToList();
-
-                    // Add dummy programme for CSJ and other special vacancies. FAI-2869
-                    trainingProgrammes.Add(GetDummyProgramme());
+                    if (includePlaceholderProgramme)
+                    {
+                        trainingProgrammes.Add(GetDummyProgramme());
+                    }
                     return new ApprenticeshipProgrammes
                     {
                         Data = trainingProgrammes
