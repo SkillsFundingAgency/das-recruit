@@ -68,7 +68,7 @@ public class TrainingProviderOrchestrator(
             
         if (vacancy.Status == VacancyStatus.Referred)
         {
-            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.GetValueOrDefault(),
                 ReviewFieldMappingLookups.GetTrainingProviderFieldIndicators());
         }
 
@@ -119,7 +119,7 @@ public class TrainingProviderOrchestrator(
             EmployerAccountId = vrm.EmployerAccountId,
             VacancyId = vrm.VacancyId,
             Title = vacancy.Title,
-            Ukprn = provider.Ukprn.Value,
+            Ukprn = provider.Ukprn.GetValueOrDefault(),
             ProviderName = provider.Name,
             ProviderAddress = provider.Address.ToAddressString(),
             PageInfo = utility.GetPartOnePageInfo(vacancy),
@@ -149,17 +149,14 @@ public class TrainingProviderOrchestrator(
             vacancy.TrainingProvider?.Ukprn,
             FieldIdResolver.ToFieldId(v => v.TrainingProvider.Ukprn),
             vacancy,
-            (v) =>
-            {
-                return provider.Ukprn;
-            });
+            _ => provider.Ukprn);
 
         vacancy.TrainingProvider = provider;
 
         return await ValidateAndExecute(
             vacancy,
             v => vacancyClient.Validate(v, ValidationRules),
-            v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+            _ => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
         );
     }
 
@@ -222,7 +219,7 @@ public class TrainingProviderOrchestrator(
         // }
         
         vm.Ukprn = vacancy.TrainingProvider.Ukprn.ToString();
-        vm.TrainingProviderSearch = FormatSuggestion(vacancy.TrainingProvider.Name, vacancy.TrainingProvider.Ukprn.Value);
+        vm.TrainingProviderSearch = FormatSuggestion(vacancy.TrainingProvider.Name, vacancy.TrainingProvider.Ukprn.GetValueOrDefault());
         vm.IsTrainingProviderSelected = true;
     }
 
@@ -240,16 +237,11 @@ public class TrainingProviderOrchestrator(
         vm.IsTrainingProviderSelected = true;
     }
 
-    protected override EntityToViewModelPropertyMappings<Vacancy, ConfirmTrainingProviderEditModel> DefineMappings()
-    {
-        return new EntityToViewModelPropertyMappings<Vacancy, ConfirmTrainingProviderEditModel>
+    protected override EntityToViewModelPropertyMappings<Vacancy, ConfirmTrainingProviderEditModel> DefineMappings() =>
+        new()
         {
             { e => e.TrainingProvider.Ukprn, vm => vm.Ukprn }
         };
-    }
 
-    private static string FormatSuggestion(string providerName, long ukprn)
-    {
-        return $"{providerName.ToUpper()} ({ukprn})";
-    }
+    private static string FormatSuggestion(string providerName, long ukprn) => $"{providerName.ToUpper()} ({ukprn})";
 }
