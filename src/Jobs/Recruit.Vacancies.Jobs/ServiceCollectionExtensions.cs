@@ -69,7 +69,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             // Application
             services.AddScoped<IDomainEventHandler<IEvent>, ApplicationSubmittedDomainEventHandler>();
-            services.AddScoped<IDomainEventHandler<IEvent>, ApplicationWithdrawnHandler>();
 
             // Employer
             services.AddScoped<IDomainEventHandler<IEvent>, SetupEmployerHandler>();
