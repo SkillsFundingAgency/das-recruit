@@ -44,7 +44,7 @@ public class ProviderReportService(
                     Id = reportId,
                     ToDate = toDate,
                     FromDate = fromDate,
-                    OwnerType = ReportOwnerType.Provider,
+                    OwnerType = nameof(ReportOwnerType.Provider),
                     CreatedBy = user.Name,
                     Ukprn = ukprn,
                     UserId = user.UserId,
