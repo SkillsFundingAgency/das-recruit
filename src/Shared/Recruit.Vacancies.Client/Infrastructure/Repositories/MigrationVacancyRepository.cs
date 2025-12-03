@@ -37,7 +37,7 @@ public class MigrationVacancyRepository(
         catch (Exception ex)
         {
             // let's swallow exceptions until the updates are working smoothly
-            logger.LogError(ex, "Error calling the migration SQL repository to UPDATE a vacancy");
+            logger.LogError(ex, "Error calling the migration SQL repository to update vacancy {VacancyReference}", vacancy.VacancyReference);
         }
     }
 
