@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             mockTimeProvider.Setup(x => x.Now).Returns(DateTime.UtcNow.AddDays(-10));
             TimeProvider = mockTimeProvider.Object;
             var programme = new TestApprenticeshipProgramme {Id = "123", LastDateStarts = DateTime.UtcNow.AddDays(12) };
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId, null)).ReturnsAsync(programme);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId, null, false)).ReturnsAsync(programme);
             
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                     Ukprn = 10000000
                 }
             };
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId, null)).ReturnsAsync(programme);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId, null, false)).ReturnsAsync(programme);
             var dateToDisplay = programme.LastDateStarts.HasValue
                 ? programme.LastDateStarts.Value.AsGdsDate()
                 : programme.EffectiveTo.Value.AsGdsDate();
@@ -79,7 +79,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 }
             };
             var programme = new TestApprenticeshipProgramme {Id = "123", EffectiveTo = DateTime.UtcNow.AddDays(7) };
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId, null)).ReturnsAsync(programme);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId, null, false)).ReturnsAsync(programme);
             
             var dateToDisplay = programme.LastDateStarts.HasValue
                 ? programme.LastDateStarts.Value.AsGdsDate()
@@ -112,7 +112,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                     Ukprn = 10000000
                 }
             };
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId, null)).ReturnsAsync(programme);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId, null, false)).ReturnsAsync(programme);
             var dateToDisplay = programme.LastDateStarts.HasValue
                 ? programme.LastDateStarts.Value.AsGdsDate()
                 : programme.EffectiveTo.Value.AsGdsDate();

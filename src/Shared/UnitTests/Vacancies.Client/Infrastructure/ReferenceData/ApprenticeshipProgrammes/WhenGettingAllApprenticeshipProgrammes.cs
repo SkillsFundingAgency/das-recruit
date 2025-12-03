@@ -36,7 +36,7 @@ public class WhenGettingAllApprenticeshipProgrammes
         expected.Add(GetDummyProgramme());
 
         // Act
-        var actual = await provider.GetApprenticeshipProgrammesAsync(true);
+        var actual = await provider.GetApprenticeshipProgrammesAsync(true, null, includePlaceholderProgramme: true);
 
         // Assert
         actual.Should().BeEquivalentTo(expected, options =>
@@ -87,7 +87,7 @@ public class WhenGettingAllApprenticeshipProgrammes
 
         var provider = new ApprenticeshipProgrammeProvider(outerApiClient.Object, cache, mockTimeProvider.Object);
 
-        var actual = await provider.GetApprenticeshipProgrammeAsync(EsfaTestTrainingProgramme.Id.ToString());
+        var actual = await provider.GetApprenticeshipProgrammeAsync(EsfaTestTrainingProgramme.Id.ToString(), includePlaceholderProgramme: true);
 
         actual.Id.Should().Be(EsfaTestTrainingProgramme.Id.ToString());
         actual.Title.Should().Be(EsfaTestTrainingProgramme.Title);

@@ -41,21 +41,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
 
         private async Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammes(int? ukprn, bool includePlaceholderProgramme = false)
         {
-            return await cache.CacheAsideAsync(CacheKeys.ApprenticeshipProgrammes,
+            var trainingProviders = await cache.CacheAsideAsync(CacheKeys.ApprenticeshipProgrammes,
                 timeProvider.NextDay6am,
                 async () =>
                 {
                     var result = await outerApiClient.Get<GetTrainingProgrammesResponse>(new GetTrainingProgrammesRequest(ukprn));
                     var trainingProgrammes = result.TrainingProgrammes.Select(c => (ApprenticeshipProgramme)c).ToList();
-                    if (includePlaceholderProgramme)
-                    {
-                        trainingProgrammes.Add(GetDummyProgramme());
-                    }
                     return new ApprenticeshipProgrammes
                     {
                         Data = trainingProgrammes
                     };
                 });
+
+            if (includePlaceholderProgramme)
+            {
+                trainingProviders.Data.Add(GetDummyProgramme());
+            }
+
+            return trainingProviders;
         }
         
         private static bool IsStandardActive(DateTime? effectiveTo, DateTime? lastDateStarts) =>
