@@ -140,7 +140,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                     outerApiClient.Post(new PostApplicationReviewApiRequest(applicationReview.Id,
                         new PostApplicationReviewApiRequestData
                         {
-                            Status = ApplicationReviewStatus.PendingToMakeUnsuccessful.ToString(),
+                            TemporaryReviewStatus = ApplicationReviewStatus.PendingToMakeUnsuccessful.ToString(),
                             DateSharedWithEmployer = updatedDate,
                             CandidateFeedback = candidateFeedback
                         }), false)
