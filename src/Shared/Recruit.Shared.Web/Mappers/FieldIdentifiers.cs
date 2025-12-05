@@ -1,47 +1,47 @@
-﻿namespace Esfa.Recruit.Shared.Web.Mappers
+﻿namespace Esfa.Recruit.Shared.Web.Mappers;
+
+public static class FieldIdentifiers
 {
-    public static class FieldIdentifiers
-    {
-        public const string ApplicationInstructions = "ApplicationInstructions";
-        public const string ApplicationMethod = "ApplicationMethod";
-        public const string ApplicationUrl = "ApplicationUrl";
-        public const string ClosingDate = "ClosingDate";
-        public const string EmployerContact = "EmployerContact";
-        public const string EmployerName = "EmployerName";
-        public const string DisabilityConfident = "DisabilityConfident";
-        public const string EmployerAddress = nameof(EmployerAddress);
-        public const string EmployerAddress1 = "EmployerAddress1";
-        public const string EmployerAddress2 = "EmployerAddress2";
-        public const string EmployerAddress3 = "EmployerAddress3";
-        public const string EmployerAddress4 = "EmployerAddress4";
-        public const string EmployerLocations = nameof(EmployerLocations);
-        public const string EmployerLocationInformation = nameof(EmployerLocationInformation);
-        public const string EmployerDescription = "EmployerDescription";
-        public const string EmployerWebsiteUrl = "EmployerWebsiteUrl";
-        public const string ExpectedDuration = "ExpectedDuration";
-        public const string NumberOfPositions = "NumberOfPositions";
-        public const string OutcomeDescription = "OutcomeDescription";
-        public const string PossibleStartDate = "PossibleStartDate";
-        public const string Provider = "Provider";
-        public const string ProviderContact = "ProviderContact";
-        public const string HasOptedToAddQualifications = "HasOptedToAddQualifications";
-        public const string Qualifications = "Qualifications";
-        public const string ShortDescription = "ShortDescription";
-        public const string Skills = "Skills";
-        public const string ThingsToConsider = "ThingsToConsider";
-        public const string Title = "Title";
-        public const string Training = "Training";
-        public const string TrainingDescription = "TrainingDescription";
-        public const string AdditionalTrainingDescription = "AdditionalTrainingDescription";
-        public const string TrainingLevel = "TrainingLevel";
-        public const string VacancyDescription = "VacancyDescription";
-        public const string Wage = "Wage";
-        public const string WorkingWeek = "WorkingWeek";
-        public const string WageAdditionalInfo = "WageAdditionalInfo";
-        public const string WorkingWeekHours = nameof(WorkingWeekHours);
-        public const string WorkingWeekDescription = nameof(WorkingWeekDescription);
-        public const string AdditionalQuestion1 = "AdditionalQuestion1";
-        public const string AdditionalQuestion2 = "AdditionalQuestion2";
-        public const string CompanyBenefitsInformation = nameof(CompanyBenefitsInformation);
-    }
+    public const string AdditionalQuestion1 = "AdditionalQuestion1";
+    public const string AdditionalQuestion2 = "AdditionalQuestion2";
+    public const string AdditionalTrainingDescription = "AdditionalTrainingDescription";
+    public const string ApplicationInstructions = "ApplicationInstructions";
+    public const string ApplicationMethod = "ApplicationMethod";
+    public const string ApplicationUrl = "ApplicationUrl";
+    public const string ClosingDate = "ClosingDate";
+    public const string CompanyBenefitsInformation = nameof(CompanyBenefitsInformation);
+    public const string DisabilityConfident = "DisabilityConfident";
+    public const string EmployerAddress = nameof(EmployerAddress);
+    public const string EmployerAddress1 = "EmployerAddress1";
+    public const string EmployerAddress2 = "EmployerAddress2";
+    public const string EmployerAddress3 = "EmployerAddress3";
+    public const string EmployerAddress4 = "EmployerAddress4";
+    public const string EmployerContact = "EmployerContact";
+    public const string EmployerDescription = "EmployerDescription";
+    public const string EmployerLocationInformation = nameof(EmployerLocationInformation);
+    public const string EmployerLocations = nameof(EmployerLocations);
+    public const string EmployerName = "EmployerName";
+    public const string EmployerWebsiteUrl = "EmployerWebsiteUrl";
+    public const string ExpectedDuration = "ExpectedDuration";
+    public const string HasOptedToAddQualifications = "HasOptedToAddQualifications";
+    public const string NumberOfPositions = "NumberOfPositions";
+    public const string OrganisationName = nameof(OrganisationName);
+    public const string OutcomeDescription = "OutcomeDescription";
+    public const string PossibleStartDate = "PossibleStartDate";
+    public const string Provider = "Provider";
+    public const string ProviderContact = "ProviderContact";
+    public const string Qualifications = "Qualifications";
+    public const string ShortDescription = "ShortDescription";
+    public const string Skills = "Skills";
+    public const string ThingsToConsider = "ThingsToConsider";
+    public const string Title = "Title";
+    public const string Training = "Training";
+    public const string TrainingDescription = "TrainingDescription";
+    public const string TrainingLevel = "TrainingLevel";
+    public const string VacancyDescription = "VacancyDescription";
+    public const string Wage = "Wage";
+    public const string WageAdditionalInfo = "WageAdditionalInfo";
+    public const string WorkingWeek = "WorkingWeek";
+    public const string WorkingWeekDescription = nameof(WorkingWeekDescription);
+    public const string WorkingWeekHours = nameof(WorkingWeekHours);
 }
