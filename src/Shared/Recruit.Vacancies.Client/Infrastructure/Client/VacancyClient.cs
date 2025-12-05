@@ -251,14 +251,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return validator.Validate(vacancy, rules);
         }
 
-        public Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync()
+        public Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync(bool includePlaceholderProgramme = false)
         {
-            return apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync();
+            return apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync(includePlaceholderProgramme: includePlaceholderProgramme);
         }
 
-        public Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId)
+        public Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId, bool includePlaceholderProgramme = false)
         {
-            return apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(programmeId);
+            return apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(programmeId, includePlaceholderProgramme: includePlaceholderProgramme);
         }
 
         public Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email)

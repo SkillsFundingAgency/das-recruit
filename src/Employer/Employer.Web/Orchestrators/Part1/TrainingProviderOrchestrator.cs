@@ -39,7 +39,10 @@ public class TrainingProviderOrchestrator(
     public virtual async Task<SelectTrainingProviderViewModel> GetSelectTrainingProviderViewModelAsync(VacancyRouteModel vrm, long? ukprn = null)
     {
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm);
-        var programme = await vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+
+        var includePlaceholderProgramme = vacancy.EmployerAccountId.Equals(recruitConfiguration.EmployerAccountId,
+            StringComparison.CurrentCultureIgnoreCase);
+        var programme = await vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId, includePlaceholderProgramme);
         
         // TODO: temporarily commented out as part of FAI-2818
         // var trainingProviders = int.TryParse(programme.Id, out int programmeId)
