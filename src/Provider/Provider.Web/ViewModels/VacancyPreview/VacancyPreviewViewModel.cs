@@ -77,6 +77,7 @@ public class VacancyPreviewViewModel : DisplayVacancyViewModel
     public string AccountId { get; set; }
     public bool CanShowVacancyClonedStatusHeader => !string.IsNullOrEmpty(VacancyClonedInfoMessage);
     public string VacancyClonedInfoMessage { get; set; }
+    public bool ShowReviewVacancyAsEmployerHasChangedBanner { get; set; }
 }
 
 public enum VacancyPreviewSectionState
