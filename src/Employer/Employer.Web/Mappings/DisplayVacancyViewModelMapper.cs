@@ -19,6 +19,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
         IGeocodeImageService mapService,
         IOptions<ExternalLinksConfiguration> externalLinksOptions,
         IRecruitVacancyClient vacancyClient,
+        IReferenceDataClient referenceDataClient,
         IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider)
     {
         private const int MapImageWidth = 465;
@@ -45,9 +46,9 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             {
                 hasOptedToAddQualifications = vacancy.HasOptedToAddQualifications.Value;
             }
-            
 
-            var allQualifications = await vacancyClient.GetCandidateQualificationsAsync();
+
+            var allQualifications = await referenceDataClient.GetCandidateQualificationsAsync();
 
             vm.VacancyId = vacancy.Id;
             vm.EmployerAccountId = vacancy.EmployerAccountId;

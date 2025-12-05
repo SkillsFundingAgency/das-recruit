@@ -39,12 +39,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
         IEmployerAccountProvider employerAccountProvider,
         IVacancyReviewQuery vacancyReviewQuery,
-        ICandidateSkillsProvider candidateSkillsProvider,
         IVacancyService vacancyService,
         IEmployerProfileRepository employerProfileRepository,
         IUserRepository userRepository,
         IUserRepositoryRunner userWriteRepository,
-        IQualificationsProvider qualificationsProvider,
         IEmployerService employerService,
         IReportRepository reportRepository,
         IReportService reportService,
@@ -264,16 +262,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email)
         {
             return employerAccountProvider.GetEmployerIdentifiersAsync(userId, email);
-        }
-
-        public Task<List<string>> GetCandidateSkillsAsync()
-        {
-            return candidateSkillsProvider.GetCandidateSkillsAsync();
-        }
-
-        public Task<IList<string>> GetCandidateQualificationsAsync()
-        {
-            return qualificationsProvider.GetQualificationsAsync();
         }
 
         public async Task<Domain.Entities.ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId)

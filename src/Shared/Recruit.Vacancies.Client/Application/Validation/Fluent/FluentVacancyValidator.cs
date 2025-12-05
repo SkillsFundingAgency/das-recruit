@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using FluentValidation;
@@ -15,7 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     {
         private readonly ITimeProvider _timeProvider;
         private readonly IMinimumWageProvider _minimumWageService;
-        private readonly IQualificationsProvider _qualificationsProvider;
+        private readonly IReferenceDataClient _referenceDataClient;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
         private readonly IHtmlSanitizerService _htmlSanitizerService;
         private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
@@ -28,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ITimeProvider timeProvider,
             IMinimumWageProvider minimumWageService,
             IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
-            IQualificationsProvider qualificationsProvider,
+            IReferenceDataClient referenceDataClient,
             IHtmlSanitizerService htmlSanitizerService,
             ITrainingProviderSummaryProvider trainingProviderSummaryProvider,
             ITrainingProviderService trainingProviderService,
@@ -38,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;
-            _qualificationsProvider = qualificationsProvider;
+            _referenceDataClient = referenceDataClient;
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
             _htmlSanitizerService = htmlSanitizerService;
             _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
@@ -592,7 +593,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             RuleForEach(x => x.Qualifications)
                 .NotEmpty()
                 .SetValidator(new VacancyQualificationsValidator((long)VacancyRuleSet.Qualifications,
-                    _qualificationsProvider, _profanityListProvider))
+                    _referenceDataClient, _profanityListProvider))
                 .RunCondition(VacancyRuleSet.Qualifications)
                 .WithState(_ => VacancyRuleSet.Qualifications);
         }
