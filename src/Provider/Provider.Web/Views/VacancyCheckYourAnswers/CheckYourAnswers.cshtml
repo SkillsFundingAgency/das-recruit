@@ -1,4 +1,5 @@
 ﻿@using Esfa.Recruit.Shared.Web.Mappers
+@using Esfa.Recruit.Shared.Web.TagHelpers
 @using Microsoft.AspNetCore.Mvc.ModelBinding
 @model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 @{
@@ -99,6 +100,17 @@
         </div>
     </div>
 }
+
+<div asp-show="@Model.ShowReviewVacancyAsEmployerHasChangedBanner" class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">  
+        <govuk-banner type="@BannerStyle.Important">
+            <govuk-banner-heading>
+                Employer has been changed
+            </govuk-banner-heading>
+            <p class="govuk-body">You must review all sections of your vacancy as some details may need updating.</p>
+        </govuk-banner>
+    </div>
+</div>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">  

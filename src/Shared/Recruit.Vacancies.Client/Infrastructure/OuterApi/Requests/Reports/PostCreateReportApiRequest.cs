@@ -17,6 +17,6 @@ public record PostCreateReportApiRequest(PostCreateReportApiRequestData Payload)
         public required DateTime FromDate { get; init; }
         public required DateTime ToDate { get; init; }
         public long? Ukprn { get; init; }
-        public required ReportOwnerType OwnerType { get; init; }
+        public required string OwnerType { get; init; }
     }
 }
