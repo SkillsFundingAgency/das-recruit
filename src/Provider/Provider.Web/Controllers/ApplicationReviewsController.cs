@@ -115,7 +115,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(request);
+                var applicationReviewsToUnsuccessfulConfirmationViewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(request);
+                return View(applicationReviewsToUnsuccessfulConfirmationViewModel);
             }
 
             if (request.ApplicationsToUnsuccessfulConfirmed == true)

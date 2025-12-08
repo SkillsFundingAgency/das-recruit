@@ -312,6 +312,7 @@ public class QualificationsOrchestratorTests
         {
             MockClient = new Mock<IProviderVacancyClient>();
             MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
+            MockReferenceDataClient = new Mock<IReferenceDataClient>();
 
             User = VacancyOrchestratorTestData.GetVacancyUser();
             Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
@@ -336,16 +337,22 @@ public class QualificationsOrchestratorTests
         public void Setup()
         {
             MockRecruitVacancyClient.Setup(x => x.GetVacancyAsync(Vacancy.Id)).ReturnsAsync(Vacancy);
-            MockRecruitVacancyClient.Setup(x => x.GetCandidateQualificationsAsync()).ReturnsAsync(new List<string>() { "GCSE", "A-LEVEL" });
             MockRecruitVacancyClient.Setup(x => x.ValidateQualification(It.IsAny<Qualification>())).Returns(new EntityValidationResult());
-
             MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User))
                 .Callback<Vacancy, VacancyUser>((vacancy, user) => { Vacancy = vacancy; })
                 .Returns(Task.FromResult(0));
-
             MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
-            Sut = new QualificationsOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<QualificationsOrchestrator>>(), Mock.Of<IReviewSummaryService>(), new Utility(MockRecruitVacancyClient.Object, Mock.Of<ITaskListValidator>()));
+            MockReferenceDataClient
+                .Setup(x => x.GetCandidateQualificationsAsync())
+                .ReturnsAsync(["GCSE", "A-LEVEL"]);
+            
+            Sut = new QualificationsOrchestrator(
+                MockRecruitVacancyClient.Object,
+                Mock.Of<ILogger<QualificationsOrchestrator>>(),
+                Mock.Of<IReviewSummaryService>(),
+                new Utility(MockRecruitVacancyClient.Object, Mock.Of<ITaskListValidator>()),
+                MockReferenceDataClient.Object);
         }
 
         public async Task PostQualificationEditModelForAddAsync(VacancyRouteModel vacancyRouteModel, QualificationEditModel model)
@@ -404,5 +411,6 @@ public class QualificationsOrchestratorTests
 
         public Mock<IProviderVacancyClient> MockClient { get; set; }
         public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
+        public Mock<IReferenceDataClient> MockReferenceDataClient { get; set; }
     }
 }

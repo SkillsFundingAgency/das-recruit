@@ -33,6 +33,7 @@ public class VacancyCheckYourAnswersOrchestratorTests
         List<EmployerInfo> providerEditVacancyInfo,
         EmployerInfo employerInfo,
         ApprenticeshipStandard standard,
+        Mock<IReferenceDataClient> referenceDataClient,
         [Frozen] Mock<IOptions<ExternalLinksConfiguration>> externalLinksConfiguration,
         [Frozen] Mock<IUtility> utility,
         [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
@@ -66,11 +67,13 @@ public class VacancyCheckYourAnswersOrchestratorTests
         });
         externalLinksConfiguration.Object.Value.FindAnApprenticeshipUrl = findAnApprenticeshipUrl;
         var expectedViewModel = new VacancyPreviewViewModel();
-        var mapper = new DisplayVacancyViewModelMapper(Mock.Of<IGeocodeImageService>(),
+        var mapper = new DisplayVacancyViewModelMapper(
+            Mock.Of<IGeocodeImageService>(),
             externalLinksConfiguration.Object,
             recruitVacancyClient.Object,
             providerVacancyClient.Object,
-            apprenticeshipProgrammeProvider.Object);
+            apprenticeshipProgrammeProvider.Object,
+            referenceDataClient.Object);
 
         var viewModel = await orchestrator.GetVacancyTaskListModel(routeModel);
 
