@@ -75,7 +75,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 new TestApprenticeshipProgramme {Id = "123", EffectiveTo = startDate.AddDays(daysAfterStartDate)}
             };
 
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null, false)).ReturnsAsync(programmes);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null, true)).ReturnsAsync(programmes);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 

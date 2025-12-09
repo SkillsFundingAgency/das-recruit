@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.CrossField;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -23,7 +22,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             mockTimeProvider.Setup(x => x.Now).Returns(DateTime.UtcNow.AddDays(-10));
             TimeProvider = mockTimeProvider.Object;
             var programme = new TestApprenticeshipProgramme {Id = "123", LastDateStarts = DateTime.UtcNow.AddDays(12) };
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId, null, false)).ReturnsAsync(programme);
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId, null, true)).ReturnsAsync(programme);
             
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
