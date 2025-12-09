@@ -53,7 +53,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                     };
                 });
 
-            if (includePlaceholderProgramme)
+            if (!includePlaceholderProgramme) return trainingProviders;
+            
+            if (trainingProviders.Data.All(tp => tp.Id != EsfaTestTrainingProgramme.Id.ToString()))
             {
                 trainingProviders.Data.Add(GetDummyProgramme());
             }
