@@ -3,5 +3,6 @@
     public enum ReportType
     {
         ProviderApplications,
+        QaApplications
     }
 }

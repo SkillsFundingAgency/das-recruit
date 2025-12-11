@@ -29,8 +29,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipP
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BannedPhrases;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Profanities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Skills;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Reports;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
@@ -128,12 +126,15 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<ICsvBuilder, CsvBuilder>();
             services.AddTransient<IReportService, ReportService>();
             services.AddTransient<ProviderApplicationsReportStrategy>();
+            services.AddTransient<QaApplicationsReportStrategy>();
             services.AddTransient<Func<ReportType, IReportStrategy>>(serviceProvider => reportType =>
             {
                 switch (reportType)
                 {
                     case ReportType.ProviderApplications:
                         return serviceProvider.GetService<ProviderApplicationsReportStrategy>();
+                    case ReportType.QaApplications:
+                        return serviceProvider.GetService<QaApplicationsReportStrategy>();
                     default:
                         throw new Exception($"No report strategy for {reportType}");
                 }
@@ -157,8 +158,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             // Reference Data Providers
             services.AddTransient<IMinimumWageProvider, NationalMinimumWageProvider>();
             services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>();
-            services.AddTransient<IQualificationsProvider, QualificationsProvider>();
-            services.AddTransient<ICandidateSkillsProvider, CandidateSkillsProvider>();
             services.AddTransient<IProfanityListProvider, ProfanityListProvider>();
             services.AddTransient<IBannedPhrasesProvider, BannedPhrasesProvider>();
 
@@ -279,7 +278,8 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
                 .AddTransient<IGetAddressesClient, OuterApiGetAddressesClient>()
                 .AddTransient<IGetProviderStatusClient, OuterApiGetProviderStatusClient>()
                 .AddTransient<ILocationsClient, LocationsClient>()
-                .AddTransient<IOuterApiVacancyClient, OuterApiVacancyClient>();
+                .AddTransient<IOuterApiVacancyClient, OuterApiVacancyClient>()
+                .AddTransient<IReferenceDataClient, ReferenceDataClient>();
         }
 
 

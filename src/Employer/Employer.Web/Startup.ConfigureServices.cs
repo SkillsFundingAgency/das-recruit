@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Employer.Web
             configBuilder
                 .AddJsonFile("appsettings.json", optional:true)
                 .AddJsonFile("appsettings.Development.json", optional: true)
-                .AddUserSecrets(Assembly.GetExecutingAssembly());   
+                .AddUserSecrets(Assembly.GetExecutingAssembly());
 #endif   
             
             configBuilder.AddAzureTableStorage(
