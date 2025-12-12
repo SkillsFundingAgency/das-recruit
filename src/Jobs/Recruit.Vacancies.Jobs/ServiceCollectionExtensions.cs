@@ -24,7 +24,6 @@ using Esfa.Recruit.Vacancies.Jobs.Jobs;
 using Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Recruit.Vacancies.Client.Application.Communications.CompositeDataItemProviderPlugins;
 using SFA.DAS.Encoding;
 
 namespace Esfa.Recruit.Vacancies.Jobs
@@ -56,7 +55,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             // Vacancy
             services.AddScoped<IDomainEventHandler<IEvent>, DraftVacancyUpdatedHandler>();
-            services.AddScoped<IDomainEventHandler<IEvent>, VacancyReferredDomainEventHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancySubmittedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyRejectedHandler>();
@@ -71,7 +69,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             // Application
             services.AddScoped<IDomainEventHandler<IEvent>, ApplicationSubmittedDomainEventHandler>();
-            services.AddScoped<IDomainEventHandler<IEvent>, ApplicationWithdrawnHandler>();
 
             // Employer
             services.AddScoped<IDomainEventHandler<IEvent>, SetupEmployerHandler>();
@@ -106,14 +103,12 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             services.AddScoped<CommunicationRequestQueueTrigger>();
 
-            string communicationStorageConnString = configuration.GetConnectionString("CommunicationsStorage");
+            var communicationStorageConnString = configuration.GetConnectionString("CommunicationsStorage");
             services.AddSingleton<IDispatchQueuePublisher>(_ => new DispatchQueuePublisher(communicationStorageConnString));
-            services.AddSingleton<IAggregateCommunicationComposeQueuePublisher>(_ => new AggregateCommunicationComposeQueuePublisher(communicationStorageConnString));
             services.AddScoped<CommunicationMessageDispatcherQueueTrigger>();
             services.AddScoped<CommunicationMessageDispatcher>();
 
             services.AddTransient<ICommunicationProcessor, CommunicationProcessor>();
-            services.AddTransient<IAggregateCommunicationProcessor, AggregateCommunicationProcessor>();
             services.AddTransient<ICommunicationService, CommunicationService>();
 
             services.AddTransient<IParticipantResolver, VacancyParticipantsResolverPlugin>();
@@ -127,7 +122,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceConfigDataEntityPlugin>();
             services.AddTransient<IEntityDataItemProvider, ProviderDataEntityPlugin>();
             services.AddTransient<IEntityDataItemProvider, EmployerDataEntityPlugin>();
-            services.AddTransient<ICompositeDataItemProvider, ApplicationsSubmittedCompositeDataItemPlugin>();
 
             services.Configure<CommunicationsConfiguration>(configuration.GetSection("CommunicationsConfiguration"));
         }
