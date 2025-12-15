@@ -41,7 +41,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage |
                                                            VacancyRuleSet.TrainingExpiryDate |
                                                            VacancyRuleSet.TrainingProgramme |
-                                                           VacancyRuleSet.TrainingProviderDeliverCourse;
+                                                           VacancyRuleSet.TrainingProviderDeliverCourse |
+                                                           VacancyRuleSet.EmployerName;
 
         public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel routeModel)
         {

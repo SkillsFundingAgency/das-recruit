@@ -120,12 +120,12 @@
         <dl class="app-summary-list govuk-!-margin-bottom-9">
             @if (Model.AccountLegalEntityCount + Model.AccountCount > 2 )
             {
-                <div class="app-summary-list__row">
-                    <dt class="app-summary-list__key">
-                        Name of employer
-                    </dt>
+                <field-review-message field-name="@FieldIdentifiers.EmployerName" model="@Model"></field-review-message>
+                <div class="app-summary-list__row" field-review-marker="EmployerName">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerName">Name of employer</dt>
                     <dd class="app-summary-list__value">
                         @Model.OrganisationName
+                        <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.EmployerName" tag-name="strong" model="@Model" />
                     </dd>
                     <dd class="app-summary-list__actions">
                         <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ConfirmSelectedLegalEntityEmployer_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-legalentity">Change<span class="govuk-visually-hidden"> legal entity</span></a>
@@ -445,7 +445,6 @@
         <div class="app-summary-list__row" field-review-marker="EmployerName">
             <dt class="app-summary-list__key" id="aboutEmployer">Name of employer on advert</dt>
             <dd class="app-summary-list__value">
-
                 @Model.EmployerName
                 <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.EmployerName" tag-name="strong" model="@Model"/>
             </dd>

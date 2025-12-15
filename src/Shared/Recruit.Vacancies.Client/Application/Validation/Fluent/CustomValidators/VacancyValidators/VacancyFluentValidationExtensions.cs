@@ -1,13 +1,10 @@
-using System;
 using System.Linq;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using FluentValidation;
 using FluentValidation.Results;
 using SFA.DAS.VacancyServices.Wage;
@@ -203,6 +200,32 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 {
                     ErrorCode = ErrorCodes.TrainingProviderMustHaveEmployerPermission,
                     CustomState = VacancyRuleSet.TrainingProvider
+                };
+                context.AddFailure(failure);
+            });
+        }
+
+        internal static IRuleBuilderInitial<Vacancy, Vacancy> EmployerMustBeValid(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IProviderRelationshipsService providerRelationshipService)
+        {
+            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
+            {
+                if (vacancy.OwnerType != OwnerType.Provider)
+                    return;
+
+                var employers = await providerRelationshipService.GetLegalEntitiesForProviderAsync(vacancy.TrainingProvider.Ukprn.GetValueOrDefault(), OperationType.Recruitment);
+
+                if (employers
+                    .SelectMany(employer => employer.LegalEntities)
+                    .Any(employerLegalEntity => employerLegalEntity.AccountLegalEntityPublicHashedId == vacancy.AccountLegalEntityPublicHashedId))
+                {
+                    return;
+                }
+                
+                var failure = new ValidationFailure(nameof(Vacancy.EmployerName), "Enter a valid employer name")
+                {
+                    ErrorCode = ErrorCodes.EmployerNameMustBeValid,
+                    CustomState = VacancyRuleSet.EmployerName,
+                    PropertyName = nameof(vacancy.EmployerName)
                 };
                 context.AddFailure(failure);
             });
