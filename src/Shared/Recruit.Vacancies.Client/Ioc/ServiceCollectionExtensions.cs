@@ -218,7 +218,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IBlockedOrganisationRepository, MongoDbBlockedOrganisationRepository>();
 
             //Queries
-            services.AddTransient<IVacancyQuery, MongoDbVacancyRepository>();
+            services.AddTransient<IVacancyQuery, SqlVacancyQuery>(); // replaces MongoDbVacancyRepository
             services.AddTransient<IVacancyReviewQuery, MongoDbVacancyReviewRepository>();
             services.AddTransient<IApplicationReviewQuery, MongoDbApplicationReviewRepository>();
             services.AddTransient<IBlockedOrganisationQuery, MongoDbBlockedOrganisationRepository>();
