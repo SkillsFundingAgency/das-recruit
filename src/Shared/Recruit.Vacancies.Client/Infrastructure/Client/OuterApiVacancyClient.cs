@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
@@ -68,8 +69,8 @@ public class OuterApiVacancyClient(
 
     public async Task<Vacancy> GetVacancyAsync(long vacancyReference)
     {
-        var response = await apimRecruitClient.Get<DataResponse<Vacancy>>(new GetRequest($"vacancies/{vacancyReference}"));
-        return response.Data;
+        var response = await apimRecruitClient.Get<DataResponse<GetVacancyDto>>(new GetRequest($"vacancies/by/ref/{vacancyReference}"));
+        return GetVacancyDto.ToDomain(response.Data, encodingService);
     }
 
     public async Task<Vacancy> GetVacancyAsync(Guid vacancyId)
@@ -80,20 +81,24 @@ public class OuterApiVacancyClient(
     
     public async Task<IList<Vacancy>> FindClosedVacanciesAsync(IList<long> vacancyReferences)
     {
-        var response = await apimRecruitClient.Post<DataResponse<List<Vacancy>>>(new PostRequest($"{DeprecatedControllerName}/findClosedVacancies", vacancyReferences));
-        return response.Data;
+        var response = await apimRecruitClient.Post<DataResponse<List<GetVacancyDto>>>(new PostRequest($"{DeprecatedControllerName}/findClosedVacancies", vacancyReferences));
+        return response.Data?.Select(x => GetVacancyDto.ToDomain(x, encodingService)).ToList() ?? [];
     }
     
     public async Task<IEnumerable<ProviderVacancySummary>> GetVacanciesAssociatedToProviderAsync(long ukprn)
     {
-        var response = await apimRecruitClient.Get<DataResponse<List<ProviderVacancySummary>>>(new GetRequest($"{DeprecatedControllerName}/getProviderVacancies"));
-        return response.Data;
+        var queryParams = new Dictionary<string, string>
+        {
+            { "ukprn", $"{ukprn}" },
+        };
+        var url = QueryHelpers.AddQueryString($"{DeprecatedControllerName}/getProviderVacancies", queryParams);
+        var response = await apimRecruitClient.Get<DataResponse<List<ProviderVacancySummaryDto>>>(new GetRequest(url));
+        return response.Data?.Select(ProviderVacancySummaryDto.ToDomain) ?? [];
     }
-    
+
     public async Task<IEnumerable<Vacancy>> GetProviderOwnedVacanciesForLegalEntityAsync(long ukprn, string accountLegalEntityPublicHashedId)
     {
         var legalEntityId = encodingService.Decode(accountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
-        
         var queryParams = new Dictionary<string, string>
         {
             { "ukprn", $"{ukprn}" },
@@ -101,8 +106,8 @@ public class OuterApiVacancyClient(
         };
             
         var url = QueryHelpers.AddQueryString($"{DeprecatedControllerName}/getProviderOwnedVacanciesForLegalEntity", queryParams);
-        var response = await apimRecruitClient.Get<DataResponse<List<Vacancy>>>(new GetRequest(url));
-        return response.Data;
+        var response = await apimRecruitClient.Get<DataResponse<List<GetVacancyDto>>>(new GetRequest(url));
+        return response.Data?.Select(x => GetVacancyDto.ToDomain(x, encodingService)).ToList() ?? [];
     }
     
     public async Task<IEnumerable<Vacancy>> GetProviderOwnedVacanciesInReviewAsync(long ukprn, string accountLegalEntityPublicHashedId)
@@ -115,21 +120,22 @@ public class OuterApiVacancyClient(
         };
             
         var url = QueryHelpers.AddQueryString($"{DeprecatedControllerName}/getProviderOwnedVacanciesInReviewForLegalEntity", queryParams);
-        var response = await apimRecruitClient.Get<DataResponse<List<Vacancy>>>(new GetRequest(url));
-        return response.Data;
+        var response = await apimRecruitClient.Get<DataResponse<List<GetVacancyDto>>>(new GetRequest(url));
+        return response.Data?.Select(x => GetVacancyDto.ToDomain(x, encodingService)).ToList() ?? [];
     }
     
     public async Task<IEnumerable<Vacancy>> GetProviderOwnedVacanciesForEmployerWithoutAccountLegalEntityPublicHashedIdAsync(long ukprn, string employerAccountId)
     {
+        var accountId = encodingService.Decode(employerAccountId, EncodingType.AccountId);
         var queryParams = new Dictionary<string, string>
         {
             { "ukprn", $"{ukprn}" },
-            { "accountId", employerAccountId }
+            { "accountId", $"{accountId}" }
         };
             
         var url = QueryHelpers.AddQueryString($"{DeprecatedControllerName}/getProviderOwnedVacanciesForEmployerWithoutAccountLegalEntityId", queryParams);
-        var response = await apimRecruitClient.Get<DataResponse<List<Vacancy>>>(new GetRequest(url));
-        return response.Data;
+        var response = await apimRecruitClient.Get<DataResponse<List<GetVacancyDto>>>(new GetRequest(url));
+        return response.Data?.Select(x => GetVacancyDto.ToDomain(x, encodingService)).ToList() ?? [];
     }
     
     public async Task<IEnumerable<T>> GetDraftVacanciesCreatedBeforeAsync<T>(DateTime staleDate)
@@ -172,7 +178,7 @@ public class OuterApiVacancyClient(
     {
         var queryParams = new Dictionary<string, string>
         {
-            { "pointInTime", $"{pointInTime}" }
+            { "pointInTime", $"{pointInTime:yyyy-MM-ddTHH:mm:ssZ}" }
         };
             
         var url = QueryHelpers.AddQueryString($"{DeprecatedControllerName}/getVacanciesToClose", queryParams);
