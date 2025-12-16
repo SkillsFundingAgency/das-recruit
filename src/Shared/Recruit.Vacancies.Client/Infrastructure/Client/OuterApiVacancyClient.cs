@@ -48,6 +48,11 @@ public class OuterApiVacancyClient(
     IOuterApiClient apimRecruitClient): IOuterApiVacancyClient
 {
     private const string DeprecatedControllerName = "/deprecated/vacancies";
+
+    private static string EncodeDateTime(DateTime dateTime)
+    {
+        return $"{dateTime:yyyy-MM-ddTHH:mm:ssZ}";
+    }
     
     public async Task CreateAsync(Vacancy vacancy)
     {
@@ -142,7 +147,7 @@ public class OuterApiVacancyClient(
     {
         var queryParams = new Dictionary<string, string>
         {
-            { "createdDate", $"{staleDate}" }
+            { "createdDate", EncodeDateTime(staleDate) }
         };
             
         var url = QueryHelpers.AddQueryString($"{DeprecatedControllerName}/getDraftVacanciesCreatedBefore", queryParams);
@@ -154,7 +159,7 @@ public class OuterApiVacancyClient(
     {
         var queryParams = new Dictionary<string, string>
         {
-            { "submittedDate", $"{staleDate}" }
+            { "submittedDate", EncodeDateTime(staleDate) }
         };
             
         var url = QueryHelpers.AddQueryString($"{DeprecatedControllerName}/getReferredVacanciesSubmittedBefore", queryParams);
@@ -178,7 +183,7 @@ public class OuterApiVacancyClient(
     {
         var queryParams = new Dictionary<string, string>
         {
-            { "pointInTime", $"{pointInTime:yyyy-MM-ddTHH:mm:ssZ}" }
+            { "pointInTime", EncodeDateTime(pointInTime) }
         };
             
         var url = QueryHelpers.AddQueryString($"{DeprecatedControllerName}/getVacanciesToClose", queryParams);
