@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
             result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
+            result.Errors.Should().HaveCount(2);
             result.Errors[0].ErrorCode.Should().Be("27");
         }
 

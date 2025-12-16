@@ -889,20 +889,26 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateTrainingProvider()
         {
-            var trainingProviderValidator = new TrainingProviderValidator((long)VacancyRuleSet.TrainingProvider, _trainingProviderSummaryProvider, _blockedOrganisationRepo);
+            // Skip Provider validation entirely when ESFA Test Programme is chosen
+            When(x => x.TrainingProvider is not {Ukprn: EsfaTestTrainingProvider.Ukprn},
+                () =>
+            {
+                var trainingProviderValidator =
+                    new TrainingProviderValidator((long)VacancyRuleSet.TrainingProvider, _trainingProviderSummaryProvider, _blockedOrganisationRepo);
 
-            RuleFor(x => x.TrainingProvider)
-                .NotNull()
-                    .WithMessage("Enter the name or UKPRN of a training provider who delivers the training course you’ve selected")
+                RuleFor(x => x.TrainingProvider)
+                    .NotNull()
+                    .WithMessage(
+                        "Enter the name or UKPRN of a training provider who delivers the training course you've selected")
                     .WithErrorCode(ErrorCodes.TrainingProviderUkprnNotEmpty)
-                .WithState(_ => VacancyRuleSet.TrainingProvider)
-                .SetValidator(trainingProviderValidator)
-                .RunCondition(VacancyRuleSet.TrainingProvider)
-                .WithState(_ => VacancyRuleSet.TrainingProvider);
-
-            RuleFor(x => x)
-                .TrainingProviderVacancyMustHaveEmployerPermission(_providerRelationshipService)
-                .RunCondition(VacancyRuleSet.TrainingProvider);
+                    .WithState(_ => VacancyRuleSet.TrainingProvider)
+                    .SetValidator(trainingProviderValidator)
+                    .RunCondition(VacancyRuleSet.TrainingProvider)
+                    .WithState(_ => VacancyRuleSet.TrainingProvider);
+                RuleFor(x => x)
+                    .TrainingProviderVacancyMustHaveEmployerPermission(_providerRelationshipService)
+                    .RunCondition(VacancyRuleSet.TrainingProvider);
+            });
         }
 
         private void ValidateTrainingProviderDeliverTrainingCourse()
@@ -972,6 +978,26 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .TrainingMustBeActiveForCurrentDate(_apprenticeshipProgrammesProvider, _timeProvider)
                     .RunCondition(VacancyRuleSet.TrainingProgramme);
             });
+
+            When(x =>
+                    x.OwnerType == OwnerType.Employer &&
+                    !string.IsNullOrWhiteSpace(x.ProgrammeId),
+                () =>
+                {
+                    RuleFor(x => x.ProgrammeId)
+                        .Must((model, programmeId) =>
+                        {
+                            // Only ESFA Test Provider is allowed to use the ESFA Test Programme
+                            var isEsfaProvider = model.TrainingProvider?.Ukprn == EsfaTestTrainingProvider.Ukprn;
+                            var isEsfaProgramme = programmeId == EsfaTestTrainingProgramme.Id.ToString();
+
+                            // VALID ONLY if BOTH match
+                            return !(isEsfaProgramme && !isEsfaProvider);
+                        })
+                        .WithMessage("Enter the name or UKPRN of a training provider who delivers the training course you've selected")
+                        .WithState(_ => VacancyRuleSet.TrainingProgramme)
+                        .RunCondition(VacancyRuleSet.TrainingProgramme);
+                });
         }
     }
 }

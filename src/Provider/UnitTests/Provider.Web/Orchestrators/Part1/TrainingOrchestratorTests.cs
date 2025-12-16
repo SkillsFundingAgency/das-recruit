@@ -28,7 +28,7 @@ public class TrainingOrchestratorTests
         // act
         var programmes = new Fixture().CreateMany<ApprenticeshipProgramme>(10).ToList();
         programmes[5].Id = programmeId;
-        _fixture.MockRecruitVacancyClient.Setup(x => x.GetActiveApprenticeshipProgrammesAsync()).ReturnsAsync(programmes);
+        _fixture.MockRecruitVacancyClient.Setup(x => x.GetActiveApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
         _fixture
             .WithProgrammeId("this is a value")
             .Setup();
@@ -63,7 +63,7 @@ public class TrainingOrchestratorTests
         vacancy.ApprenticeshipType = null;
         model.ProgrammeId = selectedProgramme.Id;
         utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>())).ReturnsAsync(vacancy);
-        vacancyClient.Setup(x => x.GetActiveApprenticeshipProgrammesAsync()).ReturnsAsync(programmes);
+        vacancyClient.Setup(x => x.GetActiveApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
         
         // act
         await sut.PostConfirmTrainingEditModelAsync(model, user);
