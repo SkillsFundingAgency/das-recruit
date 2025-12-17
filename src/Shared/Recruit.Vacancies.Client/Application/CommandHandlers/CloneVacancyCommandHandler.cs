@@ -80,8 +80,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             clone.VacancyReference = null;
             clone.ApprovedDate = null;
             clone.ClosedDate = null;
-            clone.ClosedByUser = null;
-            clone.DeletedByUser = null;
             clone.DeletedDate = null;
             clone.LiveDate = null;
             clone.SubmittedByUser = null;

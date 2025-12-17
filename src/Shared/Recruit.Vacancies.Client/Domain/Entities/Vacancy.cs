@@ -16,7 +16,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public SourceType SourceType { get; set; }
         public long? SourceVacancyReference { get; set; }
         public DateTime? ClosedDate { get; set; }
-        public VacancyUser ClosedByUser { get; set; }
         public DateTime? CreatedDate { get; set; }
         public VacancyUser CreatedByUser { get; set; }
         public DateTime? SubmittedDate { get; set; }
