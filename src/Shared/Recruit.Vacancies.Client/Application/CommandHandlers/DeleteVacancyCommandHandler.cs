@@ -56,7 +56,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             if (message.User != null)
             {
-                vacancy.DeletedByUser = message.User;
                 vacancy.LastUpdatedByUser = message.User;
             }
 

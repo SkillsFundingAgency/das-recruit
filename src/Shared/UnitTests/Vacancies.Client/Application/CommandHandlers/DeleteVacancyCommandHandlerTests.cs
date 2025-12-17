@@ -70,13 +70,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             var vacancy = 
                 fixture.Build<Vacancy>()
                     .With(v => v.IsDeleted, false)
-                    .With(v => v.LastUpdatedByUser, user)
-                    .Without(v => v.DeletedByUser).Create();
+                    .With(v => v.LastUpdatedByUser, user).Create();
             _mockVacancyRepository.Setup(r => r.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(vacancy);
             var command = fixture.Build<DeleteVacancyCommand>().Without(v => v.User).Create();
             var sut = GetSut();
             await sut.Handle(command, new CancellationToken());
-            _mockVacancyRepository.Verify(m => m.UpdateAsync(It.Is<Vacancy>(v => v.DeletedByUser == null && v.LastUpdatedByUser == user)));
+            _mockVacancyRepository.Verify(m => m.UpdateAsync(It.Is<Vacancy>(v => v.LastUpdatedByUser == user)));
             _mockMessaging.Verify(m => m.PublishEvent(It.IsAny<VacancyDeletedEvent>()));
         }
 
@@ -94,7 +93,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             var command = fixture.Build<DeleteVacancyCommand>().With(v => v.User, deletedByUser).Create();
             var sut = GetSut();
             await sut.Handle(command, new CancellationToken());
-            _mockVacancyRepository.Verify(m => m.UpdateAsync(It.Is<Vacancy>(v => v.DeletedByUser == deletedByUser && v.LastUpdatedByUser == deletedByUser)));
+            _mockVacancyRepository.Verify(m => m.UpdateAsync(It.Is<Vacancy>(v => v.LastUpdatedByUser == deletedByUser)));
             _mockMessaging.Verify(m => m.PublishEvent(It.IsAny<VacancyDeletedEvent>()));
         }
 

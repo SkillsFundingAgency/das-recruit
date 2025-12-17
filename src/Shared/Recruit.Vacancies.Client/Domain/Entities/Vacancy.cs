@@ -25,12 +25,10 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public int ReviewCount { get; set; }
         public DateTime? ApprovedDate { get; set; }
         public DateTime? LiveDate { get; set; }
-
         public DateTime? LastUpdatedDate { get; set; }
         public VacancyUser LastUpdatedByUser { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? DeletedDate { get; set; }
-        public VacancyUser DeletedByUser { get; set; }
         public string AnonymousReason { get; set; }
         public string ApplicationInstructions { get; set; }
         public ApplicationMethod? ApplicationMethod { get; set; }
