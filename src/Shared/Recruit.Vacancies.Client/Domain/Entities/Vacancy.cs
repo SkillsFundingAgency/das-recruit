@@ -26,7 +26,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public DateTime? ApprovedDate { get; set; }
         public DateTime? LiveDate { get; set; }
         public DateTime? LastUpdatedDate { get; set; }
-        public VacancyUser LastUpdatedByUser { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? DeletedDate { get; set; }
         public string AnonymousReason { get; set; }
