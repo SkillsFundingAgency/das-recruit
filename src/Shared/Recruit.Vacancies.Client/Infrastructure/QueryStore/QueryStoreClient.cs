@@ -26,21 +26,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             _timeProvider = timeProvider;
         }
 
-        public Task<EmployerDashboard> GetEmployerDashboardAsync(string employerAccountId)
-        {
-            var key = QueryViewType.EmployerDashboard.GetIdValue(employerAccountId);
-
-            return _queryStore.GetAsync<EmployerDashboard>(QueryViewType.EmployerDashboard.TypeName, key);
-        }
-
-        public Task<ProviderDashboard> GetProviderDashboardAsync(long ukprn)
-        {
-            var key = QueryViewType.ProviderDashboard.GetIdValue(ukprn);
-            var typeName = QueryViewType.ProviderDashboard.TypeName;
-        
-            return _queryStore.GetAsync<ProviderDashboard>(typeName, key);
-        }
-
         public Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference)
         {
             var key = QueryViewType.VacancyAnalyticsSummary.GetIdValue(vacancyReference);
@@ -133,13 +118,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return providerInfo?.Employers.Where(e => employerAccountIds.Contains(e.EmployerAccountId));
         }
 
-        public Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference)
-        {
-            var key = QueryViewType.VacancyApplications.GetIdValue(vacancyReference);
-
-            return _queryStore.GetAsync<VacancyApplications>(QueryViewType.VacancyApplications.TypeName, key);
-        }
-
         public Task UpdateLiveVacancyAsync(LiveVacancy vacancy)
         {
             return _queryStore.UpsertAsync(vacancy);
@@ -155,11 +133,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             var key = QueryViewType.ClosedVacancy.GetIdValue(vacancyReference.ToString());
             return _queryStore.GetAsync<ClosedVacancy>(QueryViewType.ClosedVacancy.TypeName, key);
-        }
-
-        public async Task<IEnumerable<ClosedVacancy>> GetClosedVacancies(IList<long> vacancyReferences)
-        {
-            return await _queryStore.GetClosedVacancies(vacancyReferences);
         }
 
         public Task<long> DeleteAllLiveVacancies()
@@ -278,11 +251,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         public Task<LiveVacancy> GetLiveVacancy(long vacancyReference)
         {
             return _queryStore.GetLiveVacancy(vacancyReference);
-        }
-
-        public Task<LiveVacancy> GetLiveExpiredVacancy(long vacancyReference)
-        {
-            return _queryStore.GetLiveExpiredVacancy(vacancyReference);
         }
     }
 }

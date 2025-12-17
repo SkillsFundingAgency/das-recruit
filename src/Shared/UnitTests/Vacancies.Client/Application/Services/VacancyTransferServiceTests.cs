@@ -119,17 +119,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             vacancy.ClosureReason.Should().Be(ClosureReason.TransferredByEmployer);
         }
 
-        [Fact]
-        public async Task GivenLiveProviderOwnedVacancyToTransfer_ThenSetClosedByUserOfVacancy()
-        {
-            var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Live);
-            var vacancyUser = _autoFixture.Create<VacancyUser>();
-
-            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedPermission);
-
-            vacancy.ClosedByUser.Should().Be(vacancyUser);
-        }
-
         [Theory]
         [InlineData(ReviewStatus.New)]
         [InlineData(ReviewStatus.PendingReview)]

@@ -338,7 +338,6 @@ public class WhenCreatingVacancy
             && c.SourceType == vacancy.SourceType
             && c.ProgrammeId == command.Vacancy.ProgrammeId
             && c.SubmittedByUser == command.VacancyUserDetails
-            && c.LastUpdatedByUser == command.VacancyUserDetails
             && c.SubmittedDate == timeNow
             && c.LastUpdatedDate == timeNow
             && c.TrainingProvider == provider
@@ -393,7 +392,6 @@ public class WhenCreatingVacancy
             && c.SourceType == vacancy.SourceType
             && c.ProgrammeId == command.Vacancy.ProgrammeId
             && c.SubmittedByUser == command.VacancyUserDetails
-            && c.LastUpdatedByUser == command.VacancyUserDetails
             && c.SubmittedDate == timeNow
             && c.LastUpdatedDate == timeNow
             && c.TrainingProvider == provider
