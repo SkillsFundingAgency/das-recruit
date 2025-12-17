@@ -167,7 +167,6 @@ public class CloneVacancyCommandHandlerTests
             {nameof(Vacancy.TrainingProvider), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
             {nameof(Vacancy.Wage), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
             {nameof(Vacancy.ClosureReason), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
-            {nameof(Vacancy.ClosureExplanation), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
             {nameof(Vacancy.TransferInfo), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
             {nameof(Vacancy.AccountLegalEntityPublicHashedId), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
             {nameof(Vacancy.ApprenticeshipType), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},

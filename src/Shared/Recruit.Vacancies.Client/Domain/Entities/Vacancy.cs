@@ -85,7 +85,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public TrainingProvider TrainingProvider { get; set; }
         public Wage Wage { get; set; }
         public ClosureReason? ClosureReason { get; set; }
-        public string ClosureExplanation { get; set; }
         public TransferInfo TransferInfo { get; set; }
         public bool CanClose => Status == VacancyStatus.Live;
         public bool CanClone => (Status == VacancyStatus.Live || 
