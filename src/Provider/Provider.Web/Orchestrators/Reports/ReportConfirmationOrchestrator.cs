@@ -9,15 +9,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
 {
-    public class ReportConfirmationOrchestrator : ReportOrchestratorBase
+    public class ReportConfirmationOrchestrator(
+        ILogger<ReportConfirmationOrchestrator> logger,
+        IProviderVacancyClient client)
+        : ReportOrchestratorBase(logger, client)
     {
-        public ReportConfirmationOrchestrator(ILogger<ReportConfirmationOrchestrator> logger, IProviderVacancyClient client) : base(logger, client)
-        {
-        }
-
         public async Task<ConfirmationViewModel> GetConfirmationViewModelAsync(ReportRouteModel rrm)
         {
-            var report = await GetReportAsync(rrm.Ukprn, rrm.ReportId);
+            var report = await GetReportAsync(rrm.Ukprn, rrm.ReportId, rrm.Version);
 
             var vm = new ConfirmationViewModel 
             {

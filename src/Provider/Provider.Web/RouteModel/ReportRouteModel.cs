@@ -1,4 +1,5 @@
 ﻿using System;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Reports;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.RouteModel
@@ -10,5 +11,8 @@ namespace Esfa.Recruit.Provider.Web.RouteModel
 
         [FromRoute]
         public Guid ReportId { get; set; }
+
+        [FromRoute]
+        public ReportVersion Version { get; set; } = ReportVersion.V2;
     }
 }
