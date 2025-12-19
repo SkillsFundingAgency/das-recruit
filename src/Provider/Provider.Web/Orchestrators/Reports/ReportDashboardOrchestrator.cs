@@ -6,25 +6,30 @@ using Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Reports;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
 {
     public class ReportDashboardOrchestrator(
         ILogger<ReportDashboardOrchestrator> logger,
-        IProviderVacancyClient vacancyClient)
+        IProviderVacancyClient vacancyClient,
+        IConfiguration configuration)
         : ReportOrchestratorBase(logger, vacancyClient)
     {
         private readonly IProviderVacancyClient _vacancyClient = vacancyClient;
 
         public async Task<ReportsDashboardViewModel> GetDashboardViewModel(long ukprn)
         {
+            var reportV2MigrationDate = configuration.GetValue<DateTime>("ReportsV1CutOffDate");
+
             var reports = await _vacancyClient.GetReportsForProviderAsync(ukprn);
 
             var vm = new ReportsDashboardViewModel 
             {
                 Ukprn = ukprn,
                 ProcessingCount = reports.Count(r => r.IsProcessing),
+                ReportV2MigrationDate = reportV2MigrationDate,
                 Reports = reports
                     .OrderByDescending(r => r.RequestedOn)
                     .Select(r => new ReportRowViewModel 
@@ -35,7 +40,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
                     CreatedDate = r.RequestedOn.ToUkTime().AsGdsDateTime(),
                     CreatedBy = r.RequestedBy.Name,
                     Status = r.Status,
-                    IsProcessing = r.IsProcessing
+                    IsProcessing = r.IsProcessing,
+                    IsPreV2Migration = r.RequestedOn < reportV2MigrationDate,
                 })
             };
 
