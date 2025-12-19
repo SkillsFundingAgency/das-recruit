@@ -1,23 +1,35 @@
 ﻿@model Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard.ReportsDashboardViewModel
-
 @{
     ViewBag.Title = "Reports";
 }
-
 @section BackLink {
-    <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-back-link">Return to dashboard</a>
+    <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-back-link">Return to recruitment dashboard</a>
 }
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
+        <div asp-show="@Model.ShowNotificationBanner" class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                    Important
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <h3 class="govuk-notification-banner__heading">
+                    Reports data is changing.
+                </h3>
+                <p class="govuk-body">
+                    The data fields in your reports will change on 1 April 2026. Until then, you can download both version 1 and version 2 of the reports.
+                </p>
+                <p class="govuk-body">
+                    <a href="#" target="_blank" rel="noopener noreferrer">View the data specification (opens in new tab)</a> for details.
+                </p>
+            </div>
+        </div>
         <h1 class="govuk-heading-xl">Reports</h1>
-    
         <div asp-hide="@Model.HasReports">
             <p  class="govuk-body">You can create and download a report that gives you information on all the applications you received. You can decide what time period you would like for the report.</p>
             <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-button">Create new report</a>
         </div>
-
         <div asp-show="@Model.HasReports">
             <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-button">Create new report</a>
             <p asp-show="@Model.IsProcessingReports" class="govuk-body">
@@ -25,18 +37,17 @@
                 <a asp-route="@RouteNames.ReportDashboard_Get" asp-route-ukprn="@Model.Ukprn">Check if your report is ready to download</a>
             </p>
         </div>
-
     </div>
 </div>
-
 <div asp-show="@Model.HasReports">
     <table class="govuk-table das-table--responsive">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th class="govuk-table__header" scope="col">Report period</th>
-                <th class="govuk-table__header" scope="col">Created</th>
                 <th class="govuk-table__header" scope="col">Created by</th>
-                <th class="govuk-table__header" scope="col"><span class="govuk-visually-hidden">Action</span></th>
+                <th class="govuk-table__header" scope="col">Created</th>
+                <th class="govuk-table__header" scope="col"><span class="govuk-visually-hidden"></span></th>
+                <th class="govuk-table__header" scope="col"><span class="govuk-visually-hidden"></span></th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -47,16 +58,25 @@
                         <span class="govuk-tag govuk-tag--blue govuk-!-margin-right-1" asp-show="@report.IsNew">New</span>
                         @report.ReportName 
                     </td>
-                    <td class="govuk-table__cell" data-label="Created">
-                        @report.CreatedDate
-                    </td>
                     <td class="govuk-table__cell" data-label="Created by">
                         @report.CreatedBy
                     </td>
+                    <td class="govuk-table__cell" data-label="Created">
+                        @report.CreatedDate
+                    </td>
                     <td class="govuk-table__cell govuk-table__cell--numeric">
                         <span asp-hide="@report.CanDownload">Processing</span>
-                        <a asp-show="@report.CanDownload" asp-route="@RouteNames.ReportDashboard_DownloadCsv" asp-route-ukprn="@Model.Ukprn" asp-route-reportId="@report.ReportId" class="govuk-link">
-                            Download <span class="govuk-visually-hidden">the @report.ReportName in</span>CSV<span class="govuk-visually-hidden"> format</span>
+                        <a asp-show="@report.CanDownload" asp-route="@RouteNames.ReportDashboard_DownloadCsv" asp-route-ukprn="@Model.Ukprn" asp-route-reportId="@report.ReportId" asp-route-version="v1" class="govuk-link">
+                            <span class="govuk-!-display-block">Download</span>
+                            <span class="govuk-!-display-block">version 1</span>
+                            <span class="govuk-visually-hidden">the @report.ReportName in</span><span class="govuk-visually-hidden"> format</span>
+                        </a>
+                    </td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric">
+                        <a asp-route="@RouteNames.ReportDashboard_DownloadCsv" asp-route-ukprn="@Model.Ukprn" asp-route-reportId="@report.ReportId" asp-route-version="v2" class="govuk-link">
+                            <span class="govuk-!-display-block">Download</span>
+                            <span class="govuk-!-display-block">version 2</span>
+                            <span class="govuk-visually-hidden">the @report.ReportName in</span><span class="govuk-visually-hidden"> format</span>
                         </a>
                     </td>
                 </tr>

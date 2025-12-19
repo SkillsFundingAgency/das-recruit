@@ -9,6 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Reports;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Reports;
 using Report = Esfa.Recruit.Vacancies.Client.Domain.Entities.Report;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
@@ -214,15 +215,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             //return providerReports.Reports.Select(Domain.Reports.Report.ToReportSummary).ToList();
         }
 
-        public async Task<Report> GetReportAsync(Guid reportId)
+        public async Task<Report> GetReportAsync(Guid reportId, ReportVersion version = ReportVersion.V2)
         {
-            if (!_isReportsMigrationFeatureFlagEnabled)
-                return await reportRepository.GetReportAsync(reportId);
-
-            // Report retrieval is handled by the ProviderReportService which calls the Outer API
-            var response = await providerReportService.GetReportAsync(reportId);
-
-            return response?.Report?.ToEntity(response.Report);
+            switch (version)
+            {
+                case ReportVersion.V1:
+                    return await reportRepository.GetReportAsync(reportId);
+                case ReportVersion.V2:
+                    // Report retrieval is handled by the ProviderReportService which calls the Outer API
+                    var response = await providerReportService.GetReportAsync(reportId);
+                    return response?.Report?.ToEntity(response.Report);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(version), version, null);
+            }
         }
 
         public async Task WriteReportAsCsv(Stream stream, Report report) 

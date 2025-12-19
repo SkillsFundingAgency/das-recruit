@@ -3,22 +3,19 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Reports;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
 {
     public class ReportDashboardOrchestrator(
         ILogger<ReportDashboardOrchestrator> logger,
-        IProviderVacancyClient vacancyClient,
-        IFeature feature)
+        IProviderVacancyClient vacancyClient)
         : ReportOrchestratorBase(logger, vacancyClient)
     {
         private readonly IProviderVacancyClient _vacancyClient = vacancyClient;
-
-        private readonly bool _isReportsMigrationFeatureFlagEnabled = feature.IsFeatureEnabled(FeatureNames.ReportsMigration);
 
         public async Task<ReportsDashboardViewModel> GetDashboardViewModel(long ukprn)
         {
@@ -45,23 +42,26 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
             return vm;
         }
 
-        public async Task<ReportDownloadViewModel> GetDownloadCsvAsync(long ukprn, Guid reportId)
+        public async Task<ReportDownloadViewModel> GetDownloadCsvAsync(long ukprn, Guid reportId, ReportVersion version = ReportVersion.V2)
         {
-            var report = await GetReportAsync(ukprn, reportId);
+            var report = await GetReportAsync(ukprn, reportId, version);
 
             var stream = new MemoryStream();
 
-            if (_isReportsMigrationFeatureFlagEnabled)
+            switch (version)
             {
-                await _vacancyClient.WriteApplicationSummaryReportsToCsv(stream, reportId);
+                case ReportVersion.V1:
+                    var writeReportTask = _vacancyClient.WriteReportAsCsv(stream, report);
+                    var incrementReportDownloadCountTask = _vacancyClient.IncrementReportDownloadCountAsync(report.Id);
+                    await Task.WhenAll(writeReportTask, incrementReportDownloadCountTask);
+                    break;
+                case ReportVersion.V2:
+                    await _vacancyClient.WriteApplicationSummaryReportsToCsv(stream, reportId);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(version), version, null);
             }
-            else
-            {
-                var writeReportTask = _vacancyClient.WriteReportAsCsv(stream, report);
-                var incrementReportDownloadCountTask = _vacancyClient.IncrementReportDownloadCountAsync(report.Id);
-
-                await Task.WhenAll(writeReportTask, incrementReportDownloadCountTask);
-            }
+            
             return new ReportDownloadViewModel {
                 Content = stream,
                 ReportName = report.ReportName

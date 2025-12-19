@@ -10,13 +10,11 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard
     {
         public int ProcessingCount { get; set; }
         public IEnumerable<ReportRowViewModel> Reports { get; set; }
-
         public bool HasReports => Reports.Any();
-
         public string ProcessingCaption => $"{"report".ToQuantity(ProcessingCount)}";
-
         public bool IsProcessingReports => ProcessingCount > 0;
         public long Ukprn { get; set; }
+        public bool ShowNotificationBanner => DateTime.UtcNow < new DateTime(2026, 3, 31); // Show banner until March 31, 2026
     }
 
     public class ReportRowViewModel
@@ -28,7 +26,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard
         public int DownloadCount { get; set; }
         public bool IsProcessing { get; set; }
         public ReportStatus Status { get; set; }
-
         public bool CanDownload => Status == ReportStatus.Generated;
         public bool IsNew => DownloadCount == 0;
     }
