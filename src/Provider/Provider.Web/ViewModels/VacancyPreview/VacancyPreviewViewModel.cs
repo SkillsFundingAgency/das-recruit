@@ -33,6 +33,8 @@ public class VacancyPreviewViewModel : DisplayVacancyViewModel
 
     public IList<string> OrderedFieldNames => new List<string>
     {
+        nameof(OrganisationName),
+        nameof(Title),
         nameof(ShortDescription),
         nameof(ClosingDate),
         nameof(WorkingWeekDescription),
