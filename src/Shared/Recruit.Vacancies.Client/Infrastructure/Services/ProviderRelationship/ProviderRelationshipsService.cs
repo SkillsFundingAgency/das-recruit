@@ -14,28 +14,17 @@ using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship
 {
-    public class ProviderRelationshipsService : IProviderRelationshipsService
+    public class ProviderRelationshipsService(
+        ILogger<ProviderRelationshipsService> logger,
+        IEmployerAccountProvider employerAccountProvider,
+        HttpClient httpClient)
+        : IProviderRelationshipsService
     {
-        private readonly ILogger<ProviderRelationshipsService> _logger;
-        private readonly IEmployerAccountProvider _employerAccountProvider;
-        private readonly HttpClient _httpClient;
-
-        public ProviderRelationshipsService(
-            ILogger<ProviderRelationshipsService> logger,
-            IEmployerAccountProvider employerAccountProvider,
-            HttpClient httpClient)
-        {
-            _logger = logger;
-            _employerAccountProvider = employerAccountProvider;
-            _httpClient = httpClient;
-
-        }
-
         public async Task RevokeProviderPermissionToRecruitAsync(long ukprn, string accountLegalEntityPublicHashedId)
         {
             var stringContent = GetStringContent(ukprn, accountLegalEntityPublicHashedId);
 
-            var response = await _httpClient.PostAsync("/permissions/revoke", stringContent);
+            var response = await httpClient.PostAsync("/permissions/revoke", stringContent);
 
             if (!response.IsSuccessStatusCode || response.StatusCode != HttpStatusCode.NotModified)
             {
@@ -57,7 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             if (permittedLegalEntities.Count == 0) return false;
 
             var accountId = permittedLegalEntities[0].AccountHashedId;
-            var allLegalEntities = (await _employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(accountId)).ToList();
+            var allLegalEntities = (await employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(accountId)).ToList();
 
             bool hasPermission = permittedLegalEntities
                 .Join(allLegalEntities,
@@ -126,7 +115,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 
             try
             {
-                var response = await _httpClient.GetAsync(uri);
+                var response = await httpClient.GetAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -134,15 +123,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                     return providerPermissions;
                 }
 
-                _logger.LogError("An invalid response received when trying to get provider relationships. Status:{StatusCode} Reason:{ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
+                logger.LogError("An invalid response received when trying to get provider relationships. Status:{StatusCode} Reason:{ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, "Error trying to retrieve legal entities.");
+                logger.LogError(ex, "Error trying to retrieve legal entities.");
             }
             catch (JsonReaderException ex)
             {
-                _logger.LogError(ex, "Couldn't deserialise ProviderPermissions.");
+                logger.LogError(ex, "Couldn't deserialise ProviderPermissions.");
             }
 
             return new ProviderPermissions { AccountProviderLegalEntities = Enumerable.Empty<LegalEntityDto>() };
@@ -171,7 +160,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                     LegalEntities = new List<LegalEntity>()
                 };
 
-                var legalEntityViewModels = await _employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(permittedEmployer.Key);
+                var legalEntityViewModels = await employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(permittedEmployer.Key);
 
                 foreach (LegalEntityDto permittedLegalEntity in permittedEmployer)
                 {
