@@ -20,5 +20,6 @@
         public const string ProviderApplicationsReportRoutePath = ReportsRoutePath + "/provider-applications";
         public const string ReportRoutePath = ReportsRoutePath + "/{reportId:guid}";
         public const string ReportDownloadCsvRoutePath = ReportsRoutePath + "/{reportId:guid}/download-csv/{version}";
+        public const string ReportDataSpecificationsRoutePath = ReportsRoutePath + "/data-specifications";
     }
 }
