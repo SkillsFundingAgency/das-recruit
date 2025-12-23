@@ -43,10 +43,12 @@
                     @notificationBody
                 </p>
                 <p class="govuk-body">
-                    <!--#TODO: FAI-2913 will fill this route link -->
-                    <a href="#" 
+                    <a asp-route="@RouteNames.ReportDataSpecifications_Get"
+                       asp-route-ukprn="@Model.Ukprn"
                        target="_blank"
-                       rel="noopener noreferrer">View the data specification (opens in new tab).</a>
+                       class="govuk-link">
+                       View the data specification (opens in new tab).
+                   </a>
                     for details.
                 </p>
             </div>

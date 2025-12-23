@@ -692,6 +692,22 @@ dd.govuk-summary-list__value .faa-user-content:first-child {
   color: #505a5f;
 }
 
+.das-table--bordered-header {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #b1b4b6; /* outer table border */
+}
+
+    .das-table--bordered-header th,
+    .das-table--bordered-header td {
+        padding: 15px !important; /* extra space from left border */
+    }
+
+    .das-table--bordered-header thead th {
+        background-color: #f3f2f1; /* header background */
+        font-weight: 700;
+    }
+
 @media (min-width: 40.0625em) {
   .faa-summary-card {
     .govuk-summary-list__key {

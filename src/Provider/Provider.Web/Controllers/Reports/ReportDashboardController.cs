@@ -25,6 +25,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Reports
             return File(vm.Content, "application/octet-stream", $"{ToValidFileName(vm.ReportName)}.csv");
         }
 
+        [HttpGet]
+        [Route(RoutePaths.ReportDataSpecificationsRoutePath, Name = RouteNames.ReportDataSpecifications_Get)]
+        public IActionResult ReportDataSpecifications([FromRoute] long ukprn) => View();
+
         private static string ToValidFileName(string text) 
             => Path.GetInvalidFileNameChars().Aggregate(text, (current, c) => current.Replace(c, '-'));
     }
