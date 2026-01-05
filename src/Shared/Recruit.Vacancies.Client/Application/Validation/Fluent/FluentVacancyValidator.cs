@@ -130,13 +130,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateOrganisation()
         {
-            RuleFor(x => x.EmployerName)
-                .NotEmpty()
-                    .WithMessage((vacancy, value) => $"Select the employer name you want on your {(vacancy.OwnerType == OwnerType.Employer ? "advert" : "vacancy")}")
-                    .WithErrorCode("4")
-                    .WithState(_ => VacancyRuleSet.EmployerName)
-                .RunCondition(VacancyRuleSet.EmployerName);
-
             RuleFor(x => x.LegalEntityName)
                 .NotEmpty()
                 .WithMessage("You must select one organisation")
@@ -904,16 +897,25 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateEmployerName()
         {
-            When(x => x.OwnerType == OwnerType.Provider, () =>
+            When(x => string.IsNullOrEmpty(x.EmployerName), () =>
             {
                 RuleFor(x => x.EmployerName)
+                    .Cascade(CascadeMode.Stop)
+                    .Empty()
+                    .WithMessage((vacancy, _) =>
+                        $"Select the employer name you want on your {(vacancy.OwnerType == OwnerType.Employer ? "advert" : "vacancy")}")
+                    .WithErrorCode("4")
+                    .WithState(_ => VacancyRuleSet.EmployerName)
+                    .RunCondition(VacancyRuleSet.EmployerName);
+            });
+            
+            When(x => x.OwnerType == OwnerType.Provider, () =>
+            {
+                RuleFor(x => x)
                     .NotNull()
                     .WithMessage("Enter a valid employer name")
                     .WithErrorCode(ErrorCodes.EmployerNameMustBeValid)
                     .WithState(_ => VacancyRuleSet.EmployerName)
-                    .RunCondition(VacancyRuleSet.EmployerName);
-
-                RuleFor(x => x)
                     .EmployerMustBeValid(_providerRelationshipService)
                     .RunCondition(VacancyRuleSet.EmployerName);
             });
