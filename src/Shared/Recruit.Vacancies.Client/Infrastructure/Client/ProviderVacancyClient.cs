@@ -179,22 +179,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 Ukprn = ukprn
             };
 
-            // Reports added to both Mongo and SQL DB. Once the migration is complete we can remove the Mongo implementation.
-            // Create report record command
-            await messaging.SendCommandAsync(new CreateReportCommand(
-                reportId,
-                owner,
-                ReportType.ProviderApplications,
-                new Dictionary<string, object> {
-                    { ReportParameterName.Ukprn, ukprn},
-                    { ReportParameterName.FromDate, fromDate},
-                    { ReportParameterName.ToDate, toDate}
-                },
-                user,
-                reportName)
-            );
-
-            // Report generation is handled by the ProviderReportService which calls the Outer API. so that report is created both in Mongo and in SQL DB.
+            // Report generation is handled by the ProviderReportService which calls the Outer API. so that report is created in the SQL DB.
             await providerReportService.CreateProviderApplicationsReportAsync(reportId, ukprn, fromDate, toDate, user,
                 reportName);
             
@@ -203,45 +188,38 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<List<ReportSummary>> GetReportsForProviderAsync(long ukprn)
         {
-            return await reportRepository.GetReportsForProviderAsync<ReportSummary>(ukprn);
-
-            // FAI-2619 TODO: Once the migration is complete, remove the commented out code below and return the ProviderReportService call. FAI-2619
             // Report retrieval is handled by the ProviderReportService which calls the Outer API
-            //var providerReports = await providerReportService.GetReportsForProviderAsync(ukprn);
-            //if (providerReports?.Reports == null || providerReports.Reports.Count == 0)
-            //{
-            //    return [];
-            //}
-            //return providerReports.Reports.Select(Domain.Reports.Report.ToReportSummary).ToList();
+            var providerReports = await providerReportService.GetReportsForProviderAsync(ukprn);
+            if (providerReports?.Reports == null || providerReports.Reports.Count == 0)
+            {
+                return [];
+            }
+            return providerReports.Reports.Select(Domain.Reports.Report.ToReportSummary).ToList();
         }
 
-        public async Task<Report> GetReportAsync(Guid reportId, ReportVersion version = ReportVersion.V2)
+        public async Task<Report> GetReportAsync(Guid reportId)
         {
+            // Report retrieval is handled by the ProviderReportService which calls the Outer API
+            var response = await providerReportService.GetReportAsync(reportId);
+            return response?.Report?.ToEntity(response.Report);
+        }
+
+        public async Task WriteApplicationSummaryReportsToCsv(Stream stream, Guid reportId, ReportVersion version = ReportVersion.V2)
+        {
+            var response = await providerReportService.GetReportDataAsync(reportId);
+
             switch (version)
             {
                 case ReportVersion.V1:
-                    return await reportRepository.GetReportAsync(reportId);
+                    await reportService.WriteApplicationSummaryReportsV1ToCsv(stream, response.Reports.Select(c => (ApplicationSummaryCsvReportV1)c).ToList());
+                    break;
                 case ReportVersion.V2:
-                    // Report retrieval is handled by the ProviderReportService which calls the Outer API
-                    var response = await providerReportService.GetReportAsync(reportId);
-                    return response?.Report?.ToEntity(response.Report);
+                    await reportService.WriteApplicationSummaryReportsV2ToCsv(stream, response.Reports.Select(r => (ApplicationSummaryCsvReportV2)r).ToList());
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(version), version, null);
             }
         }
-
-        public async Task WriteReportAsCsv(Stream stream, Report report) 
-            => await reportService.WriteReportAsCsv(stream, report);
-
-        public async Task WriteApplicationSummaryReportsToCsv(Stream stream, Guid reportId)
-        {
-            var response = await providerReportService.GetReportDataAsync(reportId);
-
-            await reportService.WriteApplicationSummaryReportsToCsv(stream, response.Reports.Select(c=>(ApplicationSummaryCsvReport)c).ToList());
-        }
-
-        public Task IncrementReportDownloadCountAsync(Guid reportId)
-            => reportRepository.IncrementReportDownloadCountAsync(reportId);
 
         public Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync(int ukprn)
             => apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync(ukprn: ukprn);

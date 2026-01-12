@@ -50,23 +50,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
 
         public async Task<ReportDownloadViewModel> GetDownloadCsvAsync(long ukprn, Guid reportId, ReportVersion version = ReportVersion.V2)
         {
-            var report = await GetReportAsync(ukprn, reportId, version);
+            var report = await GetReportAsync(ukprn, reportId);
 
             var stream = new MemoryStream();
 
-            switch (version)
-            {
-                case ReportVersion.V1:
-                    var writeReportTask = _vacancyClient.WriteReportAsCsv(stream, report);
-                    var incrementReportDownloadCountTask = _vacancyClient.IncrementReportDownloadCountAsync(report.Id);
-                    await Task.WhenAll(writeReportTask, incrementReportDownloadCountTask);
-                    break;
-                case ReportVersion.V2:
-                    await _vacancyClient.WriteApplicationSummaryReportsToCsv(stream, reportId);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(version), version, null);
-            }
+            await _vacancyClient.WriteApplicationSummaryReportsToCsv(stream, reportId, version);
             
             return new ReportDownloadViewModel {
                 Content = stream,
