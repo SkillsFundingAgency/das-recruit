@@ -10,8 +10,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services.Reports
     {
         Task GenerateReportAsync(Guid reportId);
         Task WriteReportAsCsv(Stream stream, Domain.Entities.Report report);
-        Task WriteApplicationSummaryReportsToCsv(
+        Task WriteApplicationSummaryReportsV1ToCsv(
             Stream stream,
-            List<ApplicationSummaryCsvReport> reports);
+            List<ApplicationSummaryCsvReportV1> reports);
+        Task WriteApplicationSummaryReportsV2ToCsv(
+            Stream stream,
+            List<ApplicationSummaryCsvReportV2> reports);
     }
 }

@@ -44,7 +44,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IUserRepository userRepository,
         IUserRepositoryRunner userWriteRepository,
         IEmployerService employerService,
-        IReportRepository reportRepository,
         IReportService reportService,
         IProviderReportService providerReportService,
         IUserNotificationPreferencesRepository userNotificationPreferencesRepository,
@@ -57,8 +56,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IFeature feature)
         : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
-        private readonly bool _isReportsMigrationFeatureFlagEnabled = feature.IsFeatureEnabled(FeatureNames.ReportsMigration);
-
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
         {
             var command = new UpdateDraftVacancyCommand

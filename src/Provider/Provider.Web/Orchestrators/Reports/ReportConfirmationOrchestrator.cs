@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
     {
         public async Task<ConfirmationViewModel> GetConfirmationViewModelAsync(ReportRouteModel rrm)
         {
-            var report = await GetReportAsync(rrm.Ukprn, rrm.ReportId, rrm.Version);
+            var report = await GetReportAsync(rrm.Ukprn, rrm.ReportId);
 
             var vm = new ConfirmationViewModel 
             {

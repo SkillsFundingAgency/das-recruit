@@ -20,10 +20,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user);
         Task<Guid> CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyUser user, string reportName);
         Task<List<ReportSummary>> GetReportsForProviderAsync(long ukprn);
-        Task<Report> GetReportAsync(Guid reportId, ReportVersion version = ReportVersion.V2);
-        Task WriteReportAsCsv(Stream stream, Report report);
-        Task WriteApplicationSummaryReportsToCsv(Stream stream, Guid reportId);
-        Task IncrementReportDownloadCountAsync(Guid reportId);
+        Task<Report> GetReportAsync(Guid reportId);
+        Task WriteApplicationSummaryReportsToCsv(Stream stream, Guid reportId, ReportVersion version = ReportVersion.V2);
         Task CreateProviderApiVacancy(Guid id, string title, string employerAccountId, VacancyUser user);
         Task<ProviderDashboardSummary> GetDashboardSummary(long ukprn, string userId);
         Task<long> GetVacancyCount(long ukprn, FilteringOptions? filteringOptions, string searchTerm);

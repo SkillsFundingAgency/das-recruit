@@ -4,16 +4,15 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Reports;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
 {
     public abstract class ReportOrchestratorBase(ILogger logger, IProviderVacancyClient client)
     {
-        protected async Task<Report> GetReportAsync(long ukprn, Guid reportId, ReportVersion version = ReportVersion.V2)
+        protected async Task<Report> GetReportAsync(long ukprn, Guid reportId)
         {
-            var report = await client.GetReportAsync(reportId, version);
+            var report = await client.GetReportAsync(reportId);
 
             if (report == null)
             {
