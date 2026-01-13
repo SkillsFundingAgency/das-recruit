@@ -3,9 +3,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Reports;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
@@ -13,21 +14,22 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
     public class ReportDashboardOrchestrator(
         ILogger<ReportDashboardOrchestrator> logger,
         IProviderVacancyClient vacancyClient,
-        IFeature feature)
+        IConfiguration configuration)
         : ReportOrchestratorBase(logger, vacancyClient)
     {
         private readonly IProviderVacancyClient _vacancyClient = vacancyClient;
 
-        private readonly bool _isReportsMigrationFeatureFlagEnabled = feature.IsFeatureEnabled(FeatureNames.ReportsMigration);
-
         public async Task<ReportsDashboardViewModel> GetDashboardViewModel(long ukprn)
         {
+            var reportV2MigrationDate = configuration.GetValue<DateTime>("ReportsV1CutOffDate");
+
             var reports = await _vacancyClient.GetReportsForProviderAsync(ukprn);
 
             var vm = new ReportsDashboardViewModel 
             {
                 Ukprn = ukprn,
                 ProcessingCount = reports.Count(r => r.IsProcessing),
+                ReportV2MigrationDate = reportV2MigrationDate,
                 Reports = reports
                     .OrderByDescending(r => r.RequestedOn)
                     .Select(r => new ReportRowViewModel 
@@ -38,30 +40,22 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
                     CreatedDate = r.RequestedOn.ToUkTime().AsGdsDateTime(),
                     CreatedBy = r.RequestedBy.Name,
                     Status = r.Status,
-                    IsProcessing = r.IsProcessing
+                    IsProcessing = r.IsProcessing,
+                    IsPreV2Migration = r.RequestedOn < reportV2MigrationDate,
                 })
             };
 
             return vm;
         }
 
-        public async Task<ReportDownloadViewModel> GetDownloadCsvAsync(long ukprn, Guid reportId)
+        public async Task<ReportDownloadViewModel> GetDownloadCsvAsync(long ukprn, Guid reportId, ReportVersion version = ReportVersion.V2)
         {
             var report = await GetReportAsync(ukprn, reportId);
 
             var stream = new MemoryStream();
 
-            if (_isReportsMigrationFeatureFlagEnabled)
-            {
-                await _vacancyClient.WriteApplicationSummaryReportsToCsv(stream, reportId);
-            }
-            else
-            {
-                var writeReportTask = _vacancyClient.WriteReportAsCsv(stream, report);
-                var incrementReportDownloadCountTask = _vacancyClient.IncrementReportDownloadCountAsync(report.Id);
-
-                await Task.WhenAll(writeReportTask, incrementReportDownloadCountTask);
-            }
+            await _vacancyClient.WriteApplicationSummaryReportsToCsv(stream, reportId, version);
+            
             return new ReportDownloadViewModel {
                 Content = stream,
                 ReportName = report.ReportName

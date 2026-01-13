@@ -55,9 +55,9 @@ public static class RouteNames
     public const string Qualification_Add_Post = "Qualification_Add_Post";
     public const string Qualification_Edit_Post = "Qualification_Edit_Post";
     public const string Qualification_Delete_Post = "Qualification_Delete_Post";
-    public const string ReportConfirmation_Get = "ReportConfirmation_Get";
     public const string ReportDashboard_DownloadCsv = "ReportDashboard_DownloadCsv";
     public const string ReportDashboard_Get = "ReportDashboard_Get";
+    public const string ReportDataSpecifications_Get = "ReportDataSpecifications_Get";
     public const string Part1Complete_Get = "Part1Complete_Get";
     public const string ShortDescription_Get = "ShortDescription_Get";
     public const string ShortDescription_Post = "ShortDescription_Post";
