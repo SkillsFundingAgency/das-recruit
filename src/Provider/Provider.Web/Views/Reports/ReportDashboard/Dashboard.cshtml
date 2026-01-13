@@ -12,8 +12,8 @@
         : "Reports data has changed.";
 
     var notificationBody = Model.IsPreV2Migration
-        ? "The data fields in your reports will change on 1 April 2026. Until then, you can download both version 1 and version 2 of the reports."
-        : "The data fields you receive in your reports changed on 1 April 2026.";
+        ? "The data fields in your reports will change on <span class='govuk-!-font-weight-bold'>1 April 2026</span>. Until then, you can download both version 1 and version 2 of the reports."
+        : "The data fields you receive in your reports changed on <span class='govuk-!-font-weight-bold'>1 April 2026</span>.";
 }
 
 @section BackLink {
@@ -40,7 +40,7 @@
                     @notificationHeading
                 </h3>
                 <p class="govuk-body">
-                    @notificationBody
+                    @Html.Raw(notificationBody)
                 </p>
                 <p class="govuk-body">
                     <a asp-route="@RouteNames.ReportDataSpecifications_Get"
@@ -99,9 +99,6 @@
                class="govuk-button">
                 Create new report
             </a>
-            <p class="govuk-inset-text">
-                Reports will be available to download here once they have been created.
-            </p>
         </div>
     </div>
 </div>
