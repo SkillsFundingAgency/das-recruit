@@ -97,9 +97,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             csvBuilder.WriteCsvToStream(stream, results, report.Headers, reportStrategy.ResolveFormat);
         }
 
-        public Task WriteApplicationSummaryReportsToCsv(
+        public Task WriteApplicationSummaryReportsV1ToCsv(
             Stream stream,
-            List<ApplicationSummaryCsvReport> reports)
+            List<ApplicationSummaryCsvReportV1> reports)
+        {
+            var rows = JArray.FromObject(reports);
+            var headers = new List<KeyValuePair<string, string>>
+            {
+                new("Date", timeProvider.Now.ToUkTime().ToString("dd/MM/yyyy HH:mm:ss")),
+                new("Total_Number_Of_Applications", reports.Count.ToString())
+            };
+            csvBuilder.WriteCsvToStream(stream, rows, headers, ResolveDataType);
+            return Task.CompletedTask;
+        }
+
+        public Task WriteApplicationSummaryReportsV2ToCsv(
+            Stream stream,
+            List<ApplicationSummaryCsvReportV2> reports)
         {
             var rows = JArray.FromObject(reports);
             var headers = new List<KeyValuePair<string, string>>
