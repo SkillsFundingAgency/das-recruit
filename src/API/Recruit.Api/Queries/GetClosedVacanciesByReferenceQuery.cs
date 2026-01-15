@@ -4,7 +4,6 @@ using SFA.DAS.Recruit.Api.Models;
 using System.Threading.Tasks;
 using System.Threading;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using IQueryStoreReader = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.IQueryStoreReader;
 
 namespace SFA.DAS.Recruit.Api.Queries
 {
@@ -13,16 +12,14 @@ namespace SFA.DAS.Recruit.Api.Queries
         public List<long> VacancyReferences { get; set; } = vacancyReferences;
     }
 
-    public class GetClosedVacanciesByReferenceQueryResponse : ResponseBase
-    {
-    }
+    public class GetClosedVacanciesByReferenceQueryResponse : ResponseBase;
 
-    public class GetClosedVacanciesByReferenceQueryHandler(IVacancyQuery queryStoreReader)
+    public class GetClosedVacanciesByReferenceQueryHandler(IVacancyQuery vacancyQuery)
         : IRequestHandler<GetClosedVacanciesByReferenceQuery, GetClosedVacanciesByReferenceQueryResponse>
     {
         public async Task<GetClosedVacanciesByReferenceQueryResponse> Handle(GetClosedVacanciesByReferenceQuery request, CancellationToken cancellationToken)
         {
-            var queryResult = await queryStoreReader.FindClosedVacancies(request.VacancyReferences);
+            var queryResult = await vacancyQuery.FindClosedVacancies(request.VacancyReferences);
 
             return new GetClosedVacanciesByReferenceQueryResponse
             {

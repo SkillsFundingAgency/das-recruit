@@ -45,7 +45,6 @@ namespace SFA.DAS.Recruit.Api
             services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(CreateVacancyCommand).Assembly));
 
             services.AddSingleton<IVacancySummaryMapper, VacancySummaryMapper>();
-            services.AddSingleton<IQueryStoreReader, QueryStoreClient>();
             services.AddSingleton<IFeature, Feature>();
             RegisterDasEncodingService(services, Configuration);
 
