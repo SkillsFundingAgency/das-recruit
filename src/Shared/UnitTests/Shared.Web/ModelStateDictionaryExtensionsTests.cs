@@ -115,17 +115,7 @@ public class ModelStateDictionaryExtensionsTests
         dict["mappedProperty1"]!.Errors.Should().HaveCount(2);
         dict["property2"]!.Errors.Should().HaveCount(1);
     }
-    
-    // ========================================================================================================================
-    // ========================================================================================================================
-    // ========================================================================================================================
-    // ========================================================================================================================
-    // ========================================================================================================================
-    // ========================================================================================================================
-    // ========================================================================================================================
-    // ========================================================================================================================
-    // ========================================================================================================================
-    //
+
     [Test]
     public void AddValidationErrorsWithMappings_Throws_When_ModelState_Is_Null()
     {
@@ -201,5 +191,28 @@ public class ModelStateDictionaryExtensionsTests
         dict["mappedProperty1"]!.Errors[0].ErrorMessage.Should().Be("mappedErrorMessage1");
         dict["property2"]!.Errors.Should().HaveCount(1);
         dict["property2"]!.Errors[0].ErrorMessage.Should().Be("errorMessage2");
+    }
+    
+    [Test]
+    public void When_There_Is_No_ErrorCode_AddValidationErrorsWithMappings_Adds_Default_Error_When_No_Lookup_Exists()
+    {
+        // arrange
+        var dict = new ModelStateDictionary();
+        var validationResult = new EntityValidationResult
+        {
+            Errors =
+            [
+                new EntityValidationError(1, "property1", "errorMessage1", null),
+            ]
+        };
+        var propertyMappings = new Dictionary<string, Tuple<string, string>>();
+        
+        // act
+        dict.AddValidationErrorsWithMappings(validationResult, propertyMappings);
+        
+        // assert
+        dict.Should().HaveCount(1);
+        dict["property1"]!.Errors.Should().HaveCount(1);
+        dict["property1"]!.Errors[0].ErrorMessage.Should().Be("errorMessage1");
     }
 }
