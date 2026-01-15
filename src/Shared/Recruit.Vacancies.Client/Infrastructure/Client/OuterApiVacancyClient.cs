@@ -47,7 +47,7 @@ public class OuterApiVacancyClient(
     IEncodingService encodingService,
     IOuterApiClient apimRecruitClient): IOuterApiVacancyClient
 {
-    private const string DeprecatedControllerName = "/deprecated/vacancies";
+    private const string DeprecatedControllerName = "deprecated/vacancies";
 
     private static string EncodeDateTime(DateTime dateTime)
     {
