@@ -71,7 +71,7 @@
 @section FooterPreJS
 {
     <script nws-csp-add-nonce="true">
-        var providerArray = @(Html.Raw(JsonConvert.SerializeObject(Model.TrainingProviders.Select(c=>HttpUtility.JavaScriptStringEncode(c).ToList()))));
+        var providerArray = @Html.Raw(JsonConvert.SerializeObject(Model.TrainingProviders.Select(HttpUtility.JavaScriptStringEncode).ToList()));
         document.getElementById('selection-type').value = '@TrainingProviderSelectionType.TrainingProviderSearch'
     </script>
 }
