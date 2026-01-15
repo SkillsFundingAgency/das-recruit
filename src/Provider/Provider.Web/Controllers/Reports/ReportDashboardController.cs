@@ -23,6 +23,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Reports
                 {
                     vm.ShowSuccessBanner = true;
                     vm.SuccessReportName = newReport.ReportName;
+                    TempData.Remove("NewReportId");
                 }
             }
             return View(vm);
