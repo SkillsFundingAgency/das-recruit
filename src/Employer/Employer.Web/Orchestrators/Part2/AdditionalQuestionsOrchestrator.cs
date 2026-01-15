@@ -39,7 +39,7 @@ public class AdditionalQuestionsOrchestrator : VacancyValidatingOrchestrator<Add
     
     public async Task<AdditionalQuestionsViewModel> GetViewModel(VacancyRouteModel routeModel)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(routeModel, RouteNames.AdditionalQuestions_Get);
+        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(routeModel);
         var viewModel = new AdditionalQuestionsViewModel
         {
             VacancyId = vacancy.Id,
@@ -65,7 +65,7 @@ public class AdditionalQuestionsOrchestrator : VacancyValidatingOrchestrator<Add
     
     public async Task<OrchestratorResponse> PostEditModel(AdditionalQuestionsEditModel editModel, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.AdditionalQuestions_Post);
+        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(editModel);
         
         vacancy.HasSubmittedAdditionalQuestions = true;
 

@@ -13,4 +13,5 @@ public class VacancyTaskListViewModel: VacancyRouteModel
     public VacancyStatus Status { get; set; }
     public ProviderTaskListStateView TaskListStates { get; set; }
     public int AdditionalQuestionCount { get; set; }
+    public bool ShowReviewVacancyAsEmployerHasChangedBanner { get; set; }
 }

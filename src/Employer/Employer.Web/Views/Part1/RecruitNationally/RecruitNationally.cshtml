@@ -39,7 +39,7 @@
                         </label>
                     </h2>
                     <span esfa-validation-message-for="AdditionalInformation" class="govuk-error-message"></span>
-                    <textarea class="govuk-textarea govuk-js-character-count" asp-for="AdditionalInformation" rows="5" aria-describedby="AdditionalInformation-info"></textarea>
+                    <textarea class="govuk-textarea govuk-js-character-count html-editor" asp-for="AdditionalInformation" rows="5" aria-describedby="AdditionalInformation-info"></textarea>
                 </div>
                 <div id="AdditionalInformation-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
                     You can enter up to 500 characters
@@ -53,3 +53,10 @@
         </form>
     </div>
 </div>
+@section FooterJS 
+{
+    <script src="/lib/tinymce-4.9.2/tinymce.min.js" no-cdn></script>
+    <script nws-csp-add-nonce="true">
+        initializeHtmlEditors();
+    </script>
+}

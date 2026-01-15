@@ -7,20 +7,13 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
-    public class VacanciesSearchSuggestionsOrchestrator
+    public class VacanciesSearchSuggestionsOrchestrator(IEmployerVacancyClient employerVacancyClient)
     {
-        public const int MaxRowsInResult = 50;
-
-        private readonly IEmployerVacancyClient _employerVacancyClient;
-
-        public VacanciesSearchSuggestionsOrchestrator(IEmployerVacancyClient employerVacancyClient)
-        {
-            _employerVacancyClient = employerVacancyClient;
-        }
+        private const int MaxRowsInResult = 50;
 
         public async Task<IEnumerable<string>> GetSearchSuggestionsAsync(string searchTerm, string employerAccountId)
         {
-            if (searchTerm == null || searchTerm.Trim().Length < 5) return Enumerable.Empty<string>();
+            if (searchTerm == null || searchTerm.Trim().Length < 5) return [];
 
             var vacancies = (await GetVacanciesAsync(employerAccountId, searchTerm)).ToList();
 
@@ -34,7 +27,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         
         private async Task<IEnumerable<VacancySummary>> GetVacanciesAsync(string employerAccountId, string searchTerm)
         {
-            var dashboard = await _employerVacancyClient.GetDashboardAsync(employerAccountId, 1, null, searchTerm);
+            var dashboard = await employerVacancyClient.GetDashboardAsync(employerAccountId, "", 1, 25, "", "", null, searchTerm);
 
             return dashboard?.Vacancies?.OrderByDescending(v => v.CreatedDate) ?? Enumerable.Empty<VacancySummary>();
         }

@@ -13,133 +13,115 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer;
 
-namespace Esfa.Recruit.Provider.Web.Controllers.Part1
-{
-    [Route(RoutePaths.AccountRoutePath)]
-    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public class LegalEntityAndEmployerController : EmployerControllerBase
-    {
-        private readonly LegalEntityAndEmployerOrchestrator _orchestrator;
+namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
 
-        public LegalEntityAndEmployerController(
-            LegalEntityAndEmployerOrchestrator orchestrator, 
-            IWebHostEnvironment hostingEnvironment)
-            : base(hostingEnvironment)
+[Route(RoutePaths.AccountRoutePath)]
+[Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+public class LegalEntityAndEmployerController(
+    LegalEntityAndEmployerOrchestrator orchestrator,
+    IWebHostEnvironment hostingEnvironment)
+    : EmployerControllerBase(hostingEnvironment)
+{
+    [HttpGet("employer-legal-entity", Name = RouteNames.LegalEntityEmployer_Get)]
+    [HttpGet("{VacancyId}/change-employer-legal-entity", Name = RouteNames.LegalEntityEmployerChange_Get)]
+    public async Task<IActionResult> LegalEntityAndEmployer(VacancyRouteModel vrm, [FromQuery]string searchTerm, [FromQuery]int? page, [FromQuery] string sortOrder, [FromQuery] string sortByType)
+    {
+        Enum.TryParse<SortOrder>(sortOrder, out var outputSort);
+        Enum.TryParse<SortByType>(sortByType, out var outputSortByType);
+        
+        var vm = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(vrm, searchTerm, page, outputSort, outputSortByType);
+        if (vm.HasOnlyOneOrganisation)
         {
-            _orchestrator = orchestrator;
+            var result =
+                await orchestrator.PostConfirmAccountLegalEntityModel(new ConfirmLegalEntityAndEmployerEditModel
+                {
+                    AccountLegalEntityName = vm.Organisations.First().AccountLegalEntityName,
+                    EmployerAccountId = vm.Organisations.First().EmployerAccountId,
+                    AccountLegalEntityPublicHashedId = vm.Organisations.First().Id,
+                    VacancyId = vm.VacancyId,
+                    Ukprn = vm.Ukprn
+                }, HttpContext.User.ToVacancyUser());
+                
+            return RedirectToRoute(RouteNames.ProviderTaskListGet, new { vrm.Ukprn, result.Data.VacancyId });
         }
 
-        [HttpGet("employer-legal-entity", Name = RouteNames.LegalEntityEmployer_Get)]
-        [HttpGet("{VacancyId}/change-employer-legal-entity", Name = RouteNames.LegalEntityEmployerChange_Get)]
-        public async Task<IActionResult> LegalEntityAndEmployer(VacancyRouteModel vrm, [FromQuery]string searchTerm, [FromQuery]int? page, [FromQuery] string sortOrder, [FromQuery] string sortByType)
+        return View(vm);
+    }
+
+    [HttpPost("employer-legal-entity", Name = RouteNames.LegalEntityEmployer_Post)]
+    public async Task<IActionResult> LegalEntityAndEmployer(LegalEntityAndEmployerEditModel m)
+    {
+        if (string.IsNullOrWhiteSpace(m.SelectedOrganisationId))
         {
+            ModelState.AddModelError(nameof(m.SelectedOrganisationId), ValidationMessages.EmployerSelectionMessages.EmployerMustBeSelectedMessage);
+        }
 
-            Enum.TryParse<SortOrder>(sortOrder, out var outputSort);
-            Enum.TryParse<SortByType>(sortByType, out var outputSortByType);
-            
-            
-            var vm = await _orchestrator.GetLegalEntityAndEmployerViewModelAsync(vrm, searchTerm, page, outputSort, outputSortByType);
-
-            if (vm.HasOnlyOneOrganisation)
-            {
-                var result =
-                    await _orchestrator.PostConfirmAccountLegalEntityModel(new ConfirmLegalEntityAndEmployerEditModel
-                    {
-                        AccountLegalEntityName = vm.Organisations.First().AccountLegalEntityName,
-                        EmployerAccountId = vm.Organisations.First().EmployerAccountId,
-                        AccountLegalEntityPublicHashedId = vm.Organisations.First().Id,
-                        VacancyId = vm.VacancyId,
-                        Ukprn = vm.Ukprn
-                    }, HttpContext.User.ToVacancyUser());
-                
-                return RedirectToRoute(RouteNames.ProviderTaskListGet, new {vrm.Ukprn, VacancyId = result.Data.Item1});
-            }
-
+        var vm = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(new VacancyRouteModel
+        {
+            Ukprn = m.Ukprn,
+            VacancyId = m.VacancyId
+        }, m.SearchTerm, m.Page);
+        if (!ModelState.IsValid)
+        {
             return View(vm);
         }
-
-        [HttpPost("employer-legal-entity", Name = RouteNames.LegalEntityEmployer_Post)]
-        public async Task<IActionResult> LegalEntityAndEmployer(LegalEntityAndEmployerEditModel m)
+        if(m.VacancyId != null)
         {
-            if (string.IsNullOrWhiteSpace(m.SelectedOrganisationId))
-            {
-                ModelState.AddModelError(nameof(m.SelectedOrganisationId), ValidationMessages.EmployerSelectionMessages.EmployerMustBeSelectedMessage);
-            }
-
-            var vm = await _orchestrator.GetLegalEntityAndEmployerViewModelAsync(new VacancyRouteModel
-            {
-                Ukprn = m.Ukprn,
-                VacancyId = m.VacancyId
-            }, m.SearchTerm, m.Page);
-            if (!ModelState.IsValid)
-            {
-                return View(vm);
-            }
-            if(m.VacancyId != null)
-            {
-                return RedirectToRoute(RouteNames.ConfirmSelectedLegalEntityEmployer_Get, new { selectedId = m.SelectedOrganisationId, m.Ukprn, m.VacancyId});    
-            }
-
-            return RedirectToRoute(RouteNames.ConfirmLegalEntityEmployer_Get, new { selectedId = m.SelectedOrganisationId, m.Ukprn});
+            return RedirectToRoute(RouteNames.ConfirmSelectedLegalEntityEmployer_Get, new { selectedId = m.SelectedOrganisationId, m.Ukprn, m.VacancyId});    
         }
 
-        [HttpGet("confirm-employer-legal-entity", Name = RouteNames.ConfirmLegalEntityEmployer_Get)]
-        [HttpGet("{VacancyId}/confirm-selected-legal-entity", Name = RouteNames.ConfirmSelectedLegalEntityEmployer_Get)]
-        public async Task<IActionResult> ConfirmEmployerLegalEntitySelection(VacancyRouteModel vacancyRouteModel,[FromQuery] string selectedId)
-        {
-            var employerAccountLegalEntityId = selectedId?.Split('|')[0];
-            var employerAccountId = selectedId?.Split('|')[1];
-            var viewModel = await _orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, employerAccountId, employerAccountLegalEntityId);
+        return RedirectToRoute(RouteNames.ConfirmLegalEntityEmployer_Get, new { selectedId = m.SelectedOrganisationId, m.Ukprn});
+    }
+
+    [HttpGet("confirm-employer-legal-entity", Name = RouteNames.ConfirmLegalEntityEmployer_Get)]
+    [HttpGet("{VacancyId}/confirm-selected-legal-entity", Name = RouteNames.ConfirmSelectedLegalEntityEmployer_Get)]
+    public async Task<IActionResult> ConfirmEmployerLegalEntitySelection(VacancyRouteModel vacancyRouteModel,[FromQuery] string selectedId)
+    {
+        var employerAccountLegalEntityId = selectedId?.Split('|')[0];
+        var employerAccountId = selectedId?.Split('|')[1];
+        var viewModel = await orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, employerAccountId, employerAccountLegalEntityId);
             
-            return View(viewModel);
-        }
+        return View(viewModel);
+    }
 
-        [HttpPost("confirm-employer-legal-entity", Name = RouteNames.ConfirmLegalEntityEmployer_Post)]
-        public async Task<IActionResult> ConfirmEmployerLegalEntitySelection(ConfirmLegalEntityAndEmployerEditModel model)
+    [HttpPost("confirm-employer-legal-entity", Name = RouteNames.ConfirmLegalEntityEmployer_Post)]
+    public async Task<IActionResult> ConfirmEmployerLegalEntitySelection(ConfirmLegalEntityAndEmployerEditModel model)
+    {
+
+        if (!ModelState.IsValid)
         {
-
-            if (!ModelState.IsValid)
+            return View(new ConfirmLegalEntityAndEmployerViewModel
             {
-                return View(new ConfirmLegalEntityAndEmployerViewModel
-                {
-                    EmployerName = model.EmployerName,
-                    EmployerAccountId = model.EmployerAccountId,
-                    AccountLegalEntityName = model.AccountLegalEntityName,
-                    AccountLegalEntityPublicHashedId = model.AccountLegalEntityPublicHashedId,
-                    Ukprn = model.Ukprn,
-                    VacancyId = model.VacancyId,
-                    CancelLinkRoute = model.CancelLinkRoute,
-                    BackLinkRoute = model.BackLinkRoute
-                });
-            }
-
-            if (model.HasConfirmedEmployer.HasValue && !model.HasConfirmedEmployer.Value)
-            {
-                var routeName = model.VacancyId != null
-                    ? RouteNames.LegalEntityEmployerChange_Get
-                    : RouteNames.LegalEntityEmployer_Get;
-                return RedirectToRoute(routeName, new {ukprn = model.Ukprn, vacancyId = model.VacancyId});
-            }
-
-            var result =
-                await _orchestrator.PostConfirmAccountLegalEntityModel( model, HttpContext.User.ToVacancyUser());
-
-            if (result.Data.Item2)
-            {
-                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet,
-                    new
-                    {
-                        vacancyId = result.Data.Item1, 
-                        model.Ukprn
-                    });
-            }
-            
-            return RedirectToRoute(RouteNames.ProviderTaskListGet,
-                    new
-                            {
-                                vacancyId = result.Data.Item1, 
-                                model.Ukprn
-                            });
+                EmployerName = model.EmployerName,
+                EmployerAccountId = model.EmployerAccountId,
+                AccountLegalEntityName = model.AccountLegalEntityName,
+                AccountLegalEntityPublicHashedId = model.AccountLegalEntityPublicHashedId,
+                Ukprn = model.Ukprn,
+                VacancyId = model.VacancyId,
+                CancelLinkRoute = model.CancelLinkRoute,
+                BackLinkRoute = model.BackLinkRoute
+            });
         }
+
+        string routeName;
+        if (model.HasConfirmedEmployer.HasValue && !model.HasConfirmedEmployer.Value)
+        {
+            routeName = model.VacancyId != null
+                ? RouteNames.LegalEntityEmployerChange_Get
+                : RouteNames.LegalEntityEmployer_Get;
+            return RedirectToRoute(routeName, new {ukprn = model.Ukprn, vacancyId = model.VacancyId});
+        }
+
+        var result = await orchestrator.PostConfirmAccountLegalEntityModel( model, HttpContext.User.ToVacancyUser());
+        if (result.Data.ShouldFlagLegalEntityChange)
+        {
+            TempData[TempDataKeys.LegalEntityChanged] = true;
+        }
+        
+        routeName = result.Data.IsVacancyComplete
+            ? RouteNames.ProviderCheckYourAnswersGet
+            : RouteNames.ProviderTaskListGet;
+        
+        return RedirectToRoute(routeName, new { vacancyId = result.Data.VacancyId, model.Ukprn });
     }
 }

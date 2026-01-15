@@ -1,0 +1,33 @@
+.govuk-cookie-banner,
+.one-login-header,
+.service-header__container nav,
+.govuk-back-link,
+.faa-contents,
+.govuk-footer {
+  display: none;
+}
+
+.service-header {
+  background: none;
+  border-top: 10px solid #1d70b8;
+}
+
+* {
+  font-family: "GDS Transport", arial, sans-serif !important;
+}
+
+.govuk-details,
+.govuk-list,
+.govuk-summary-list,
+.govuk-body,
+p {
+  font-size: 12pt !important;
+}
+
+html {
+  font-size: 12pt !important;
+}
+
+.govuk-section-break.govuk-section-break--xl.govuk-section-break--visible {
+  margin: 10px 0;
+}

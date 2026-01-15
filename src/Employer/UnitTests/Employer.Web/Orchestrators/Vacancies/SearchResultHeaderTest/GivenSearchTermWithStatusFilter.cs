@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies.S
         public async Task WhenThereAreNoVacancies()
         {
             var expectedMessage = "0 live adverts with 'nurse'";
-            var sut = GetSut(new List<VacancySummary>(), FilteringOptions.Draft, "nurse", 0);
+            var sut = GetSut(new List<VacancySummary>(), FilteringOptions.Live, "nurse", 0);
             var vm = await sut.GetVacanciesViewModelAsync(EmployerAccountId, "Live", 1, User, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);
         }

@@ -59,7 +59,7 @@ public class AddLocationController(IUtility utility) : Controller
 
     private static async Task<AddLocationViewModel> GetAddLocationViewModel(IUtility utility, VacancyRouteModel vacancyRouteModel, string postcode, MultipleLocationsJourneyOrigin origin, bool wizard)
     {
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.Location_Get);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel);
         var viewModel = new AddLocationViewModel
         {
             ApprenticeshipTitle = vacancy.Title,

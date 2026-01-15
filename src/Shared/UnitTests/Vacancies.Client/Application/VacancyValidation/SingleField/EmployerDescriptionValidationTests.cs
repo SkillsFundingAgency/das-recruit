@@ -58,8 +58,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         }
 
         [Theory]
-        [MemberData(nameof(TestData.BlacklistedCharacters), MemberType = typeof(TestData))]
-        public void EmployerDescriptionMustContainValidCharacters(string invalidChar)
+        [InlineData("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
+        [InlineData("<script>alert('not allowed')</script>", false)]
+        [InlineData("<p>`</p>", false)]
+        public void EmployerDescriptionMustContainValidCharacters(string invalidChar, bool expectedResult)
         {
             var vacancy = new Vacancy 
             {
@@ -68,11 +70,18 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerDescription);
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerDescription));
-            result.Errors[0].ErrorCode.Should().Be("78");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerDescription);
+            if (expectedResult)
+            {
+                result.HasErrors.Should().BeFalse();
+            }
+            else
+            {
+                result.HasErrors.Should().BeTrue();
+                result.Errors.Should().HaveCount(1);
+                result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerDescription));
+                result.Errors[0].ErrorCode.Should().Be("78");
+                result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerDescription);
+            }
         }
 
         [Theory]

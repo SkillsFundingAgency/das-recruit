@@ -1,6 +1,3 @@
-using System;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
@@ -9,10 +6,7 @@ using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
-using Moq;
 using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.LegalEntityAndEmployer;
 
@@ -37,14 +31,13 @@ public class LegalEntityAndEmployerOrchestratorPostConfirmAccountLegalEntityMode
                     && c.TrainingProvider.Ukprn.Equals(user.Ukprn)
                     && c.LegalEntityName.Equals(model.AccountLegalEntityName)
                     && c.AccountLegalEntityPublicHashedId.Equals(model.AccountLegalEntityPublicHashedId)),
-                Esfa.Recruit.Vacancies.Client.Application.Validation.VacancyRuleSet.None)).Returns(new EntityValidationResult());
+                VacancyRuleSet.None)).Returns(new EntityValidationResult());
         providerVacancyClient.Setup(x => x.CreateVacancyAsync(model.EmployerAccountId, user.Ukprn.Value, null, user,
             model.AccountLegalEntityPublicHashedId, model.AccountLegalEntityName)).ReturnsAsync(vacancyId);
         
         var actual = await orchestrator.PostConfirmAccountLegalEntityModel(model, user);
 
-        actual.Data.Item1.Should().Be(vacancyId);
-        
+        actual.Data.VacancyId.Should().Be(vacancyId);
     }
 
     [Test, MoqAutoData]
@@ -67,11 +60,11 @@ public class LegalEntityAndEmployerOrchestratorPostConfirmAccountLegalEntityMode
                     c.EmployerAccountId.Equals(model.EmployerAccountId)
                     && c.LegalEntityName.Equals(model.AccountLegalEntityName)
                     && c.AccountLegalEntityPublicHashedId.Equals(model.AccountLegalEntityPublicHashedId)),
-                Esfa.Recruit.Vacancies.Client.Application.Validation.VacancyRuleSet.None)).Returns(new EntityValidationResult());
+                VacancyRuleSet.None)).Returns(new EntityValidationResult());
         
         var actual = await orchestrator.PostConfirmAccountLegalEntityModel(model, user);
 
-        actual.Data.Item1.Should().Be(vacancy.Id);
+        actual.Data.VacancyId.Should().Be(vacancy.Id);
         recruitVacancyClient.Verify(x =>
             x.UpdateDraftVacancyAsync(It.Is<Vacancy>(c => 
                 c.EmployerAccountId.Equals(model.EmployerAccountId)
@@ -79,5 +72,68 @@ public class LegalEntityAndEmployerOrchestratorPostConfirmAccountLegalEntityMode
                 && c.LegalEntityName.Equals(model.AccountLegalEntityName)
                 ), user), Times.Once);
     }
+    
+    [Test, MoqAutoData]
+    public async Task Then_If_The_Legal_Entity_Is_Changed_Part_It_Should_Be_Flagged(
+        Vacancy vacancy,
+        VacancyUser user,
+        ConfirmLegalEntityAndEmployerEditModel model,
+        VacancyRouteModel vacancyRouteModel,
+        [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+        [Frozen] Mock<IUtility> utility,
+        LegalEntityAndEmployerOrchestrator orchestrator)
+    {
+        // arrange
+        utility.Setup(x =>
+                x.GetAuthorisedVacancyForEditAsync(
+                    It.Is<VacancyRouteModel>(c => c.Ukprn.Equals(model.Ukprn) && c.VacancyId.Equals(model.VacancyId)),
+                    RouteNames.ConfirmLegalEntityEmployer_Get))
+            .ReturnsAsync(vacancy);
+        recruitVacancyClient.Setup(x =>
+            x.Validate(It.Is<Vacancy>(c => 
+                    c.EmployerAccountId.Equals(model.EmployerAccountId)
+                    && c.LegalEntityName.Equals(model.AccountLegalEntityName)
+                    && c.AccountLegalEntityPublicHashedId.Equals(model.AccountLegalEntityPublicHashedId)),
+                VacancyRuleSet.None)).Returns(new EntityValidationResult());
         
+        // actr
+        var actual = await orchestrator.PostConfirmAccountLegalEntityModel(model, user);
+
+        // assert
+        actual.Data.ShouldFlagLegalEntityChange.Should().BeTrue();
+    }
+    
+    [Test, MoqAutoData]
+    public async Task Then_If_The_Legal_Entity_Is_Changed_On_A_Brand_New_Vacancy_It_Should_Not_Be_Flagged(
+        VacancyUser user,
+        ConfirmLegalEntityAndEmployerEditModel model,
+        VacancyRouteModel vacancyRouteModel,
+        [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+        [Frozen] Mock<IUtility> utility,
+        LegalEntityAndEmployerOrchestrator orchestrator)
+    {
+        // arrange
+        var vacancy = new Vacancy()
+        {
+            LegalEntityName = "Some entity"
+        };
+        
+        utility.Setup(x =>
+                x.GetAuthorisedVacancyForEditAsync(
+                    It.Is<VacancyRouteModel>(c => c.Ukprn.Equals(model.Ukprn) && c.VacancyId.Equals(model.VacancyId)),
+                    RouteNames.ConfirmLegalEntityEmployer_Get))
+            .ReturnsAsync(vacancy);
+        recruitVacancyClient.Setup(x =>
+            x.Validate(It.Is<Vacancy>(c => 
+                    c.EmployerAccountId.Equals(model.EmployerAccountId)
+                    && c.LegalEntityName.Equals(model.AccountLegalEntityName)
+                    && c.AccountLegalEntityPublicHashedId.Equals(model.AccountLegalEntityPublicHashedId)),
+                VacancyRuleSet.None)).Returns(new EntityValidationResult());
+        
+        // actr
+        var actual = await orchestrator.PostConfirmAccountLegalEntityModel(model, user);
+
+        // assert
+        actual.Data.ShouldFlagLegalEntityChange.Should().BeFalse();
+    }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.CustomWage;
@@ -37,7 +36,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<CustomWageViewModel> GetCustomWageViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Wage_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
 
             var wagePeriod = _minimumWageProvider.GetWagePeriod(vacancy.StartDate.Value);
 
@@ -77,10 +76,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostCustomWageEditModelAsync(CustomWageEditModel m, VacancyUser user)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.CustomWage_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m);
 
-            if (vacancy.Wage == null)
-                vacancy.Wage = new Wage();
+            vacancy.Wage ??= new Wage();
 
             if (vacancy.Wage.WageType != WageType.FixedWage)
                 SetVacancyWithEmployerReviewFieldIndicators(
@@ -128,9 +126,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         protected override EntityToViewModelPropertyMappings<Vacancy, CustomWageEditModel> DefineMappings()
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, CustomWageEditModel>();
-            mappings.Add(e => e.Wage.FixedWageYearlyAmount, vm => vm.FixedWageYearlyAmount);
-            return mappings;
+            return new EntityToViewModelPropertyMappings<Vacancy, CustomWageEditModel>
+            {
+                { e => e.Wage.FixedWageYearlyAmount, vm => vm.FixedWageYearlyAmount }
+            };
         }
     }
 }

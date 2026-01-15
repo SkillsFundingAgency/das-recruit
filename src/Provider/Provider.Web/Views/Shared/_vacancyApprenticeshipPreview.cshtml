@@ -102,7 +102,7 @@
                     </ul>
                 </div>
                 <p>
-                    @Model.ShortDescription
+                    @Html.Raw(Model.ShortDescription)
                 </p>
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
@@ -211,9 +211,9 @@
                         }
                         case AvailableWhere.AcrossEngland:
                         {
-                            <p class="govuk-body">
-                                @Model.LocationInformation
-                            </p>
+                            <div class="govuk-body">
+                                @Html.Raw(Model.LocationInformation)
+                            </div>
                             break;
                         }
                         default:
@@ -331,7 +331,7 @@
                 @if (!string.IsNullOrEmpty(Model.ThingsToConsider))
                 {
                     <h3 class="govuk-heading-s">Other requirements</h3>
-                    <p>@Model.ThingsToConsider</p>
+                    <p>@Html.Raw(Model.ThingsToConsider)</p>
                 }
             </section>
             <section class="faa-vacancy__section" id="company">
@@ -406,24 +406,16 @@
                     </ul>
                 </div>
                 <p>Closes on @Model.ClosingDate</p>
-                <p class="govuk-body"> When you apply, you’ll be asked to sign in with a GOV.UK One Login. You can
-                    create one at the same time as applying for this apprenticeship.</p>
-                @if (!string.IsNullOrWhiteSpace(Model.ApplicationUrl))
-                {
-                    <p class="govuk-body">
-                        After signing in, you’ll apply for this apprenticeship on the company's website.
-                    </p>
-                }
                 @if (!string.IsNullOrWhiteSpace(Model.ApplicationInstructions))
                 {
-                    <h3 class="govuk-heading-m">Company’s application instructions</h3>
+                    <h3 class="govuk-heading-m">How to apply for this apprenticeship</h3>
                     <p class="govuk-body">
                         @Model.ApplicationInstructions
                     </p>
                 }
                 <div clas="govuk-button-group">
-                    <button class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button">
-                        Sign in to apply
+                    <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">
+                        @(Model.HasApplicationUrl ? "Go to application website" : "Apply for apprenticeship")
                     </button>
                 </div>
             </section>

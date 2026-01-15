@@ -29,6 +29,7 @@ public class VacancyCheckYourAnswersOrchestratorTests
         ApprenticeshipStandard standard,
         Vacancy vacancy,
         List<LegalEntity> legalEntities,
+        Mock<IReferenceDataClient> referenceDataClient,
         [Frozen] Mock<IOptions<ExternalLinksConfiguration>> externalLinksConfiguration,
         [Frozen] Mock<IUtility> utility,
         [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
@@ -47,7 +48,7 @@ public class VacancyCheckYourAnswersOrchestratorTests
             .ReturnsAsync(legalEntities);
         utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.Is<VacancyRouteModel>(
                 c => c.VacancyId.Equals(routeModel.VacancyId) &&
-                     c.EmployerAccountId.Equals(routeModel.EmployerAccountId)), RouteNames.EmployerTaskListGet))
+                     c.EmployerAccountId.Equals(routeModel.EmployerAccountId))))
             .ReturnsAsync(vacancy);
         outerApiClient.Setup(x=>x.GetApprenticeshipStandardVacancyPreviewData(standardId)).ReturnsAsync(standard);
             
@@ -56,8 +57,12 @@ public class VacancyCheckYourAnswersOrchestratorTests
         externalLinksConfiguration.Object.Value.FindAnApprenticeshipUrl = findAnApprenticeshipUrl;
         var expectedViewModel = new VacancyPreviewViewModel();
 
-        var mapper = new DisplayVacancyViewModelMapper(Mock.Of<IGeocodeImageService>(),
-            externalLinksConfiguration.Object, recruitVacancyClient.Object, outerApiClient.Object);
+        var mapper = new DisplayVacancyViewModelMapper(
+            Mock.Of<IGeocodeImageService>(),
+            externalLinksConfiguration.Object,
+            recruitVacancyClient.Object,
+            referenceDataClient.Object,
+            outerApiClient.Object);
         await mapper.MapFromVacancyAsync(expectedViewModel, vacancy);
         
         expectedViewModel.VacancyId = routeModel.VacancyId;
@@ -130,7 +135,7 @@ public class VacancyCheckYourAnswersOrchestratorTests
             { address3.Postcode, new PostcodeData(address1.Postcode, "Northern Ireland", 2, 2) },
         };
             
-        utility.Setup(x => x.GetAuthorisedVacancyAsync(submitEditModel, It.IsAny<string>())).ReturnsAsync(vacancy);
+        utility.Setup(x => x.GetAuthorisedVacancyAsync(submitEditModel)).ReturnsAsync(vacancy);
         locationsService.Setup(x => x.GetBulkPostcodeDataAsync(It.IsAny<List<string>>())).ReturnsAsync(postcodeLookupResults);
             
         // arrange

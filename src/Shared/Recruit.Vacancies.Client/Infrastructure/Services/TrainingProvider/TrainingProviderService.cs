@@ -2,24 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
 {
     public class TrainingProviderService(
         ILogger<TrainingProviderService> logger,
-        IReferenceDataReader referenceDataReader,
-        ICache cache,
-        ITimeProvider timeProvider,
         IOuterApiClient outerApiClient)
         : ITrainingProviderService
     {
@@ -30,22 +23,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
             
             try
             {
-                var providers = await GetProviders();
-                var provider = providers.Data.SingleOrDefault(c=>c.Ukprn == ukprn);
-                return TrainingProviderMapper.MapFromApiProvider(provider);
+                var provider = await GetProviderDetails(ukprn);
+
+                if (provider is not null) return MapProvider(provider);
+
+                logger.LogWarning("No provider returned for UKPRN: {Ukprn}", ukprn);
+                return null;
+
             }
             catch (Exception ex)
             {
-                logger.LogWarning(ex, $"Failed to retrieve provider information for UKPRN: {ukprn}");
+                logger.LogWarning(ex, "Failed to retrieve provider information for UKPRN: {Ukprn}", ukprn);
                 return null;
             }
         }
 
-        public async Task<IEnumerable<Domain.Entities.TrainingProvider>> FindAllAsync()
-        {
-            var providers = await GetProviders();
-            return providers.Data.Select(TrainingProviderMapper.MapFromApiProvider).ToList();
-        }
+        public async Task<IEnumerable<Domain.Entities.TrainingProvider>> FindAllAsync() => await GetProviders();
 
         /// <inheritdoc />
         public async Task<GetProviderResponseItem> GetProviderDetails(long ukprn)
@@ -54,7 +47,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
 
             var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-            var result = await retryPolicy.Execute(context => outerApiClient.Get<GetProviderResponseItem>(new GetProviderRequest(ukprn)), new Dictionary<string, object>() { { "apiCall", "Providers" } });
+            var result = await retryPolicy.Execute(_ =>
+                    outerApiClient.Get<GetProviderResponseItem>(new GetProviderRequest(ukprn)),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Providers"
+                    }
+                });
 
             return result;
         }
@@ -76,14 +76,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
                 });
         }
 
-        public async Task<GetDashboardCountApiResponse> GetProviderDashboardStats(long ukprn)
+        public async Task<GetProviderDashboardApiResponse> GetProviderDashboardStats(long ukprn, string userId)
         {
             logger.LogTrace("Getting Provider Dashboard Stats from Outer Api");
 
             var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-            return await retryPolicy.Execute(_ => outerApiClient.Get<GetDashboardCountApiResponse>(
-                    new GetProviderDashboardCountApiRequest(ukprn)),
+            return await retryPolicy.Execute(_ => outerApiClient.Get<GetProviderDashboardApiResponse>(
+                    new GetProviderDashboardCountApiRequest(ukprn, userId)),
                 new Dictionary<string, object>
                 {
                     {
@@ -91,6 +91,29 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
                     }
                 });
         }
+
+        public async Task<GetVacanciesByUkprnApiResponse> GetProviderVacancies(int ukprn,
+            int page,
+            int pageSize,
+            string sortColumn,
+            string sortOrder,
+            FilteringOptions filterBy,
+            string searchTerm)
+        {
+            logger.LogTrace("Getting Provider Vacancies from Outer Api");
+
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
+
+            return await retryPolicy.Execute(_ => outerApiClient.Get<GetVacanciesByUkprnApiResponse>(
+                    new GetVacanciesByUkprnApiRequest(ukprn, page, pageSize, sortColumn, sortOrder, filterBy, searchTerm)),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Providers"
+                    }
+                });
+        }
+
 
         public async Task<GetVacanciesDashboardResponse> GetProviderDashboardVacanciesByApplicationReviewStatuses(
             long ukprn,
@@ -120,12 +143,38 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
             }) ?? [];
         }
 
-        private Task<TrainingProviders> GetProviders()
+        public async Task<GetAlertsByUkprnApiResponse> GetProviderAlerts(int ukprn, string userId)
         {
-            return cache.CacheAsideAsync(
-                CacheKeys.TrainingProviders,
-                timeProvider.NextDay6am,
-                ()=>referenceDataReader.GetReferenceData<TrainingProviders>());
+            logger.LogTrace("Getting Provider alerts from Outer Api");
+
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
+
+            return await retryPolicy.Execute(_ => outerApiClient.Get<GetAlertsByUkprnApiResponse>(
+                    new GetAlertsByUkprnApiRequest(ukprn, userId)),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Providers"
+                    }
+                });
+        }
+
+        private async Task<List<Domain.Entities.TrainingProvider>> GetProviders()
+        {
+            logger.LogTrace("Getting Providers from Outer Api");
+
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
+
+            var result = await retryPolicy.Execute(_ => outerApiClient.Get<GetProvidersResponse>(
+                    new GetProvidersRequest()),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Providers"
+                    }
+                });
+
+            return result.Providers.Select(MapProvider).ToList();
         }
 
         private Domain.Entities.TrainingProvider GetEsfaTestTrainingProvider()
@@ -142,6 +191,30 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
                     AddressLine4 = EsfaTestTrainingProvider.AddressLine4,
                     Postcode = EsfaTestTrainingProvider.Postcode
                 }
+            };
+        }
+
+        private static Domain.Entities.TrainingProvider MapProvider(GetProviderResponseItem source)
+        {
+            if (source is null) return null;
+            return new Domain.Entities.TrainingProvider
+            {
+                Name = source.Name,
+                Ukprn = source.Ukprn,
+                Address = MapAddress(source.Address)
+            };
+        }
+
+        private static Address MapAddress(ProviderAddress source)
+        {
+            if (source is null) return null;
+            return new Address
+            {
+                AddressLine1 = source.Address1,
+                AddressLine2 = source.Address2,
+                AddressLine3 = source.Address3,
+                AddressLine4 = source.Town,
+                Postcode = source.Postcode
             };
         }
     }

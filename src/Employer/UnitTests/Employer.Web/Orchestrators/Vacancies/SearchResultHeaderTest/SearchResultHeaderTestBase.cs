@@ -24,16 +24,15 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies.S
         {
             var clientMock = new Mock<IEmployerVacancyClient>();
             TimeProvider = new Mock<ITimeProvider>();
-            clientMock.Setup(c => c.GetDashboardAsync(EmployerAccountId, 1, status, searchTerm))
+            clientMock.Setup(c => c.GetDashboardAsync(EmployerAccountId, User.UserId, 1, 25, "CreatedDate", "Desc", status, searchTerm))
                 .ReturnsAsync(new EmployerDashboard {
-                    Vacancies = vacancySummaries
+                    Vacancies = vacancySummaries,
+                    TotalVacancies = Convert.ToInt32(vacancyCount)
                 });
             clientMock.Setup(c => c.GetVacancyCount(EmployerAccountId, status, searchTerm))
                 .ReturnsAsync(vacancyCount);
             return new VacanciesOrchestrator(
-                clientMock.Object,
-                RecruitVacancyClientMock.Object,
-                EmployerAlertsViewModelFactoryMock.Object);
+                clientMock.Object);
         }
 
         protected IEnumerable<VacancySummary> GenerateVacancySummaries(int count, string legalEntityName, string term, VacancyStatus status)

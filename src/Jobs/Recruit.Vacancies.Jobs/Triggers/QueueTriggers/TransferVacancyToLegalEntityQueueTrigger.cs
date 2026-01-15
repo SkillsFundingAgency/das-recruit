@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
                 {
                     var queueMessage = JsonConvert.DeserializeObject<TransferVacancyToLegalEntityQueueMessage>(message);
 
-                    await _runner.Run(queueMessage.VacancyReference, queueMessage.UserRef, queueMessage.UserEmailAddress, queueMessage.UserName, queueMessage.TransferReason);
+                    await _runner.Run(queueMessage.VacancyId, queueMessage.UserRef, queueMessage.UserEmailAddress, queueMessage.UserName, queueMessage.TransferReason);
 
                     _logger.LogInformation("Finished queuing vacancy to transfer.");
                 }

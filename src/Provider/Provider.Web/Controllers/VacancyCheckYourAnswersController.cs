@@ -42,7 +42,14 @@ public class VacancyCheckYourAnswersController(VacancyCheckYourAnswersOrchestrat
         };
 
         if (TempData.ContainsKey(TempDataKeys.VacancyPreviewInfoMessage))
+        {
             viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyPreviewInfoMessage].ToString();
+        }
+
+        if (TempData[TempDataKeys.LegalEntityChanged] is bool legalEntityChanged)
+        {
+            viewModel.ShowReviewVacancyAsEmployerHasChangedBanner = legalEntityChanged;
+        }
             
         return View(viewModel);
     }

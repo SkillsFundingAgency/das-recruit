@@ -1,5 +1,5 @@
+@using Esfa.Recruit.Shared.Web.TagHelpers
 @using Esfa.Recruit.Shared.Web.ViewModels.TaskList
-@using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle
 
 @model VacancyTaskListViewModel
 
@@ -17,6 +17,12 @@
         <h1 class="govuk-heading-xl">
             Create an apprenticeship vacancy
         </h1>
+        <govuk-banner asp-show="@Model.ShowReviewVacancyAsEmployerHasChangedBanner" type="@BannerStyle.Important">
+            <govuk-banner-heading>
+                Employer has been changed
+            </govuk-banner-heading>
+            <p class="govuk-body">You must review all sections of your vacancy as some details may need updating.</p>
+        </govuk-banner>
         <ol class="das-task-list">
             <li>
                 <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(1, "Vacancy summary", Model.TaskListStates.SectionOneState))"/>

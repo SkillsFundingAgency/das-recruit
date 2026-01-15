@@ -14,7 +14,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.Jobs
     {
         private const string UserEmail = "test@test.com";
         private const string UserName = "John Smith";
-        private const long VacancyReference = 1111;
         private readonly Mock<IVacancyRepository> _mockVacancyRepository;
         private readonly Mock<IMessaging> _mockMessaging;
         private readonly TransferVacancyToLegalEntityJob _sut;
@@ -30,22 +29,24 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.Jobs
         public async Task GivenExistingVacancyTransferRequest_ThenShouldProcessVacancyToTransfer()
         {
             var userRef = Guid.NewGuid();
-            _mockVacancyRepository.Setup(x => x.GetVacancyAsync(It.IsAny<long>()))
-                                .ReturnsAsync(new Vacancy { VacancyReference = VacancyReference });
+            var vacancyId = Guid.NewGuid();
+            _mockVacancyRepository.Setup(x => x.GetVacancyAsync(vacancyId))
+                                .ReturnsAsync(new Vacancy { Id = vacancyId });
 
-            await _sut.Run(VacancyReference, userRef, UserEmail, UserName, TransferReason.EmployerRevokedPermission);
+            await _sut.Run(vacancyId, userRef, UserEmail, UserName, TransferReason.EmployerRevokedPermission);
 
-            _mockMessaging.Verify(x => x.SendCommandAsync(It.IsAny<TransferVacancyToLegalEntityCommand>()), Times.Once);
+            _mockMessaging.Verify(x => x.SendCommandAsync(It.Is<TransferVacancyToLegalEntityCommand>(c=>c.Id == vacancyId)), Times.Once);
         }
 
         [Fact]
         public async Task GivenNonExistingVacancyTransferRequest_ThenShouldNotProcessVacancyToTransfer()
         {
             var userRef = Guid.NewGuid();
+            var vacancyId = Guid.NewGuid();
             _mockVacancyRepository.Setup(x => x.GetVacancyAsync(It.IsAny<long>()))
                                 .Returns(Task.FromResult<Vacancy>(null));
 
-            await _sut.Run(VacancyReference, userRef, UserEmail, UserName, TransferReason.EmployerRevokedPermission);
+            await _sut.Run(vacancyId, userRef, UserEmail, UserName, TransferReason.EmployerRevokedPermission);
 
             _mockMessaging.Verify(x => x.SendCommandAsync(It.IsAny<TransferVacancyToLegalEntityCommand>()), Times.Never);
         }

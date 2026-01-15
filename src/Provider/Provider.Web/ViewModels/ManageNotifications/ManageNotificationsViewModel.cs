@@ -13,4 +13,14 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.ManageNotifications
         public bool HasAnySubscription => IsVacancyRejectedSelected || IsVacancyClosingSoonSelected || IsApplicationSubmittedSelected || IsVacancyRejectedByEmployerSelected;
         public long Ukprn { get; set; }
     }
+
+    public class ManageNotificationsViewModelEx : ManageNotificationsViewModel
+    {
+        public bool Updated { get; set; }
+        public string VacancyApprovedOrRejectedValue { get; init; }
+        public string ApplicationSubmittedValue { get; init; }
+        public string ApplicationSubmittedFrequencyValue { get; init; }
+        public string SharedApplicationReviewedValue { get; init; }
+        public string ProviderAttachedToVacancyValue { get; init; }
+    }
 }

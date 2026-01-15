@@ -21,8 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IUtility _utility;
 
-        public DurationOrchestrator(IEmployerVacancyClient client,
-            IRecruitVacancyClient vacancyClient,
+        public DurationOrchestrator(IRecruitVacancyClient vacancyClient,
             ILogger<DurationOrchestrator> logger,
             IReviewSummaryService reviewSummaryService,
             IUtility utility) : base(logger)
@@ -34,7 +33,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<DurationViewModel> GetDurationViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Duration_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
 
             var training = await _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
@@ -75,7 +74,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostDurationEditModelAsync(DurationEditModel m, VacancyUser user)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Duration_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m);
 
             if(vacancy.Wage == null)
                 vacancy.Wage = new Wage();

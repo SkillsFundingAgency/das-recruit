@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
@@ -11,7 +10,6 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -117,14 +115,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(request);
+                var applicationReviewsToUnsuccessfulConfirmationViewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(request);
+                return View(applicationReviewsToUnsuccessfulConfirmationViewModel);
             }
 
             if (request.ApplicationsToUnsuccessfulConfirmed == true)
             {
                 await _orchestrator.PostApplicationReviewsToUnsuccessfulAsync(request, User.ToVacancyUser());
                 SetApplicationsToUnsuccessfulBannerMessageViaTempData(request.IsMultipleApplications);
-                return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
             }
 
             return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
@@ -185,7 +183,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                         .ToList()
                 }, User.ToVacancyUser(), ApplicationReviewStatus.Shared, null);
                 SetSharedApplicationsBannerMessageViaTempData(request.SharingMultipleApplications);
-                return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
             }
 
             return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });

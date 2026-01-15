@@ -13,10 +13,6 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public VacancyStatus Status { get; set; }
         public DateTime? ClosingDate { get; set; }
         public ApplicationMethod? ApplicationMethod { get; set; }
-        public string ProgrammeId { get; set; }
-        public string TrainingTitle { get; set; }
-        public TrainingType TrainingType { get; set; }
-        public ApprenticeshipLevel TrainingLevel { get; set; }
         public bool IsTransferred { get; set; }
         public int NoOfNewApplications { get; set; }
         public int NoOfSuccessfulApplications { get; set; }

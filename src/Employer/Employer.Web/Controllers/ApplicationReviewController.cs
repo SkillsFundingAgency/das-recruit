@@ -25,26 +25,26 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("", Name = RouteNames.ApplicationReview_Get)]
-        public async Task<IActionResult> ApplicationReview(ApplicationReviewRouteModel rm, [FromQuery] bool vacancySharedByProvider)
+        public async Task<IActionResult> ApplicationReview(ApplicationReviewRouteModel rm)
         {
-            var vm = await _orchestrator.GetApplicationReviewViewModelAsync(rm, vacancySharedByProvider);
+            var vm = await _orchestrator.GetApplicationReviewViewModelAsync(rm);
             var viewName = vm.IsFaaV2Application ? "ApplicationReviewV2" : "ApplicationReview";
             return View(viewName, vm);
         }
 
         [HttpPost("", Name = RouteNames.ApplicationReview_Post)]
-        public async Task<IActionResult> ApplicationReview(ApplicationReviewEditModel editModel, [FromQuery] bool vacancySharedByProvider)
+        public async Task<IActionResult> ApplicationReview(ApplicationReviewEditModel editModel)
         {
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetApplicationReviewViewModelAsync(editModel, vacancySharedByProvider);
+                var vm = await _orchestrator.GetApplicationReviewViewModelAsync(editModel);
                 var viewName = vm.IsFaaV2Application ? "ApplicationReviewV2" : "ApplicationReview";
                 return View(viewName, vm);
             }
 
-            if (vacancySharedByProvider)
+            if (editModel.IsApplicationSharedByProvider)
             {
-                var candidateInfo = await _orchestrator.PostApplicationReviewEditModelAsync(editModel, User.ToVacancyUser(), vacancySharedByProvider);
+                var candidateInfo = await _orchestrator.PostApplicationReviewEditModelAsync(editModel, User.ToVacancyUser());
                 TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage,
                     editModel.Outcome == ApplicationReviewStatus.EmployerInterviewing
                         ? string.Format(InfoMessages.ApplicationEmployerInterviewingHeader, candidateInfo.FriendlyId, candidateInfo.Name)
@@ -55,7 +55,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                         ? string.Format(InfoMessages.ApplicationEmployerInterviewingBody)
                         : string.Format(InfoMessages.ApplicationEmployerUnsuccessfulBody));
 
-                return RedirectToRoute( RouteNames.VacancyManage_Get, new { editModel.EmployerAccountId, editModel.VacancyId, vacancySharedByProvider });
+                return RedirectToRoute( RouteNames.VacancyManage_Get, new { editModel.EmployerAccountId, editModel.VacancyId });
             }
 
             if (editModel.Outcome == ApplicationReviewStatus.InReview || editModel.Outcome == ApplicationReviewStatus.Interviewing)

@@ -2,30 +2,104 @@
 
 @{
     ViewBag.Title = "Reports";
+
+    var notificationTitleId = Model.IsPreV2Migration
+        ? "govuk-notification-banner-title-premigration"
+        : "govuk-notification-banner-title-postmigration";
+
+    var notificationHeading = Model.IsPreV2Migration
+        ? "Reports data is changing."
+        : "Reports data has changed.";
+
+    var notificationBody = Model.IsPreV2Migration
+        ? "The data fields in your reports will change on <span class='govuk-!-font-weight-bold'>1 April 2026</span>. Until then, you can download both version 1 and version 2 of the reports."
+        : "The data fields you receive in your reports changed on <span class='govuk-!-font-weight-bold'>1 April 2026</span>.";
 }
 
 @section BackLink {
-    <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-back-link">Return to dashboard</a>
+    <a asp-route="@RouteNames.Dashboard_Get"
+       asp-route-ukprn="@Model.Ukprn"
+       class="govuk-back-link">
+        Return to recruitment dashboard
+    </a>
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-notification-banner"
+             role="region"
+             aria-labelledby="@notificationTitleId"
+             data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="@notificationTitleId">
+                    Important
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <h3 class="govuk-notification-banner__heading">
+                    @notificationHeading
+                </h3>
+                <p class="govuk-body">
+                    @Html.Raw(notificationBody)
+                </p>
+                <p class="govuk-body">
+                    <a asp-route="@RouteNames.ReportDataSpecifications_Get"
+                       asp-route-ukprn="@Model.Ukprn"
+                       target="_blank"
+                       class="govuk-link">
+                       View the data specification (opens in new tab).
+                   </a>
+                    for details.
+                </p>
+            </div>
+        </div>
 
         <h1 class="govuk-heading-xl">Reports</h1>
-    
-        <div asp-hide="@Model.HasReports">
-            <p  class="govuk-body">You can create and download a report that gives you information on all the applications you received. You can decide what time period you would like for the report.</p>
-            <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-button">Create new report</a>
+
+        <div asp-show="@Model.IsPreV2Migration">
+            <div asp-hide="@Model.HasReports">
+                <p class="govuk-body">
+                    You can create and download a report that gives you information
+                    on all the applications you received. You can decide what
+                    time period you would like for the report.
+                </p>
+                <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get"
+                   asp-route-ukprn="@Model.Ukprn"
+                   class="govuk-button">
+                    Create new report
+                </a>
+            </div>
+
+            <div asp-show="@Model.HasReports">
+                <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get"
+                   asp-route-ukprn="@Model.Ukprn"
+                   class="govuk-button">
+                    Create new report
+                </a>
+
+                <p asp-show="@Model.IsProcessingReports" class="govuk-body">
+                    You have @Model.ProcessingCaption being processed.
+                    <a asp-route="@RouteNames.ReportDashboard_Get"
+                       asp-route-ukprn="@Model.Ukprn">
+                        Check if your report is ready to download
+                    </a>
+                </p>
+            </div>
         </div>
 
-        <div asp-show="@Model.HasReports">
-            <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-button">Create new report</a>
-            <p asp-show="@Model.IsProcessingReports" class="govuk-body">
-                You have @Model.ProcessingCaption being processed.
-                <a asp-route="@RouteNames.ReportDashboard_Get" asp-route-ukprn="@Model.Ukprn">Check if your report is ready to download</a>
+        <div asp-hide="@Model.IsPreV2Migration">
+            <p class="govuk-body">
+                Create a report of your applications for a chosen time period.
             </p>
+            <p class="govuk-body">
+                The file will be available to download for 7 days.
+            </p>
+            <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get"
+               asp-route-ukprn="@Model.Ukprn"
+               class="govuk-button">
+                Create new report
+            </a>
         </div>
-
     </div>
 </div>
 
@@ -34,9 +108,14 @@
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th class="govuk-table__header" scope="col">Report period</th>
-                <th class="govuk-table__header" scope="col">Created</th>
                 <th class="govuk-table__header" scope="col">Created by</th>
-                <th class="govuk-table__header" scope="col"><span class="govuk-visually-hidden">Action</span></th>
+                <th class="govuk-table__header" scope="col">Created</th>
+                <th class="govuk-table__header" scope="col">
+                    <span class="govuk-visually-hidden">Download v1</span>
+                </th>
+                <th class="govuk-table__header" scope="col">
+                    <span class="govuk-visually-hidden">Download v2</span>
+                </th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -44,24 +123,63 @@
             {
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell" data-label="Report period">
-                        <span class="govuk-tag govuk-tag--blue govuk-!-margin-right-1" asp-show="@report.IsNew">New</span>
-                        @report.ReportName 
-                    </td>
-                    <td class="govuk-table__cell" data-label="Created">
-                        @report.CreatedDate
+                        <span class="govuk-tag govuk-tag--blue govuk-!-margin-right-1"
+                              asp-show="@report.IsNew">
+                            New
+                        </span>
+                        @report.ReportName
                     </td>
                     <td class="govuk-table__cell" data-label="Created by">
                         @report.CreatedBy
                     </td>
+                    <td class="govuk-table__cell" data-label="Created">
+                        @report.CreatedDate
+                    </td>
                     <td class="govuk-table__cell govuk-table__cell--numeric">
-                        <span asp-hide="@report.CanDownload">Processing</span>
-                        <a asp-show="@report.CanDownload" asp-route="@RouteNames.ReportDashboard_DownloadCsv" asp-route-ukprn="@Model.Ukprn" asp-route-reportId="@report.ReportId" class="govuk-link">
-                            Download <span class="govuk-visually-hidden">the @report.ReportName in</span>CSV<span class="govuk-visually-hidden"> format</span>
+                        @if (report.IsPreV2Migration)
+                        {
+                            <span asp-hide="@report.CanDownload">Processing</span>
+                            <a asp-show="@report.CanDownload"
+                               asp-route="@RouteNames.ReportDashboard_DownloadCsv"
+                               asp-route-ukprn="@Model.Ukprn"
+                               asp-route-reportId="@report.ReportId"
+                               asp-route-version="v1"
+                               class="govuk-link">
+                                <span class="govuk-!-display-block">Download</span>
+                                <span class="govuk-!-display-block">version 1</span>
+                                <span class="govuk-visually-hidden">
+                                    the @report.ReportName in format
+                                </span>
+                            </a>
+                        }
+                    </td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric">
+                        <a asp-route="@RouteNames.ReportDashboard_DownloadCsv"
+                           asp-route-ukprn="@Model.Ukprn"
+                           asp-route-reportId="@report.ReportId"
+                           asp-route-version="v2"
+                           class="govuk-link">
+                            @if (Model.IsPreV2Migration)
+                            {
+                                <span class="govuk-!-display-block">Download</span>
+                                <span class="govuk-!-display-block">version 2</span>
+                            }
+                            else
+                            {
+                                <span class="govuk-!-display-block">Download CSV</span>
+                            }
+                            <span class="govuk-visually-hidden">
+                                the @report.ReportName in format
+                            </span>
                         </a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-    <p class="govuk-body">The files will be kept for 7 days from the date created.</p>
+    <div asp-show="@Model.IsPreV2Migration">
+        <p class="govuk-body">
+            The files will be kept for 7 days from the date created.
+        </p>
+    </div>
 </div>

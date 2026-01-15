@@ -1,6 +1,4 @@
 using System.Security.Claims;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
@@ -10,156 +8,159 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 
-namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
+namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers;
+
+public class LegalEntityAndEmployerControllerTests
 {
-    public class LegalEntityAndEmployerControllerTests
+    [Test, MoqAutoData]
+    public async Task Then_If_Not_Selected_Then_Shows_Validation_Error(
+        ConfirmLegalEntityAndEmployerEditModel editModel,
+        VacancyRouteModel vacancyRouteModel,
+        LegalEntityAndEmployerOrchestrator orchestrator)
     {
-        [Test, MoqAutoData]
-        public async Task Then_If_Not_Selected_Then_Shows_Validation_Error(
-            ConfirmLegalEntityAndEmployerEditModel editModel,
-            VacancyRouteModel vacancyRouteModel,
-            LegalEntityAndEmployerOrchestrator orchestrator)
-        {
-            var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>());
-            controller.ModelState.AddModelError("HasConfirmedEmployer","Error");
+        var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>());
+        controller.ModelState.AddModelError("HasConfirmedEmployer","Error");
             
-            editModel.HasConfirmedEmployer = null;
+        editModel.HasConfirmedEmployer = null;
 
-            var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel);
-            var actualResult = actual as ViewResult;
+        var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel);
+        var actualResult = actual as ViewResult;
             
-            Assert.That(actual, Is.Not.Null);
-            Assert.That(actualResult, Is.Not.Null);
-            var actualModel = actualResult.Model as ConfirmLegalEntityAndEmployerViewModel;
-            Assert.That(actualModel, Is.Not.Null);
-            actualModel.EmployerName.Should().Be(editModel.EmployerName);
-            actualModel.EmployerAccountId.Should().Be(editModel.EmployerAccountId);
-            actualModel.AccountLegalEntityName.Should().Be(editModel.AccountLegalEntityName);
-            actualModel.AccountLegalEntityPublicHashedId.Should().Be(editModel.AccountLegalEntityPublicHashedId);
-            actualModel.Ukprn.Should().Be(editModel.Ukprn);
-            actualModel.BackLinkRoute.Should().Be(editModel.BackLinkRoute);
-            actualModel.CancelLinkRoute.Should().Be(editModel.CancelLinkRoute);
-        }
+        Assert.That(actual, Is.Not.Null);
+        Assert.That(actualResult, Is.Not.Null);
+        var actualModel = actualResult.Model as ConfirmLegalEntityAndEmployerViewModel;
+        Assert.That(actualModel, Is.Not.Null);
+        actualModel.EmployerName.Should().Be(editModel.EmployerName);
+        actualModel.EmployerAccountId.Should().Be(editModel.EmployerAccountId);
+        actualModel.AccountLegalEntityName.Should().Be(editModel.AccountLegalEntityName);
+        actualModel.AccountLegalEntityPublicHashedId.Should().Be(editModel.AccountLegalEntityPublicHashedId);
+        actualModel.Ukprn.Should().Be(editModel.Ukprn);
+        actualModel.BackLinkRoute.Should().Be(editModel.BackLinkRoute);
+        actualModel.CancelLinkRoute.Should().Be(editModel.CancelLinkRoute);
+    }
         
-        [Test, MoqAutoData]
-        public async Task Then_Chooses_No_For_Employer_Then_Redirected_To_EmployerLegalEntity_View_For_New_Vacancy(
-            ConfirmLegalEntityAndEmployerEditModel editModel,
-            VacancyRouteModel vacancyRouteModel,
-            LegalEntityAndEmployerOrchestrator orchestrator)
-        {
-            editModel.VacancyId = null;
-            var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>());
-            editModel.HasConfirmedEmployer = false;
+    [Test, MoqAutoData]
+    public async Task Then_Chooses_No_For_Employer_Then_Redirected_To_EmployerLegalEntity_View_For_New_Vacancy(
+        ConfirmLegalEntityAndEmployerEditModel editModel,
+        VacancyRouteModel vacancyRouteModel,
+        LegalEntityAndEmployerOrchestrator orchestrator)
+    {
+        editModel.VacancyId = null;
+        var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>());
+        editModel.HasConfirmedEmployer = false;
 
-            var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel);
+        var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel);
 
-            actual.Should().NotBeNull();
-            var result = actual as RedirectToRouteResult;
-            result?.RouteName.Should().Be(RouteNames.LegalEntityEmployer_Get);
-            result?.RouteValues["ukprn"].Should().Be(editModel.Ukprn);
-        }
-        [Test, MoqAutoData]
-        public async Task Then_Chooses_No_For_Employer_Then_Redirected_To_EmployerLegalEntity_View_For_Existing_Vacancy(
-            ConfirmLegalEntityAndEmployerEditModel editModel,
-            VacancyRouteModel vacancyRouteModel,
-            LegalEntityAndEmployerOrchestrator orchestrator)
-        {
-            var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>());
-            editModel.HasConfirmedEmployer = false;
+        actual.Should().NotBeNull();
+        var result = actual as RedirectToRouteResult;
+        result?.RouteName.Should().Be(RouteNames.LegalEntityEmployer_Get);
+        result?.RouteValues["ukprn"].Should().Be(editModel.Ukprn);
+    }
+    [Test, MoqAutoData]
+    public async Task Then_Chooses_No_For_Employer_Then_Redirected_To_EmployerLegalEntity_View_For_Existing_Vacancy(
+        ConfirmLegalEntityAndEmployerEditModel editModel,
+        VacancyRouteModel vacancyRouteModel,
+        LegalEntityAndEmployerOrchestrator orchestrator)
+    {
+        var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>());
+        editModel.HasConfirmedEmployer = false;
 
-            var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel);
+        var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel);
 
-            actual.Should().NotBeNull();
-            var result = actual as RedirectToRouteResult;
-            result?.RouteName.Should().Be(RouteNames.LegalEntityEmployerChange_Get);
-            result?.RouteValues["ukprn"].Should().Be(editModel.Ukprn);
-            result?.RouteValues["vacancyId"].Should().Be(editModel.VacancyId);
-        }
+        actual.Should().NotBeNull();
+        var result = actual as RedirectToRouteResult;
+        result?.RouteName.Should().Be(RouteNames.LegalEntityEmployerChange_Get);
+        result?.RouteValues["ukprn"].Should().Be(editModel.Ukprn);
+        result?.RouteValues["vacancyId"].Should().Be(editModel.VacancyId);
+    }
         
-        [Test, MoqAutoData]
-        public async Task Then_If_Has_Confirmed_Employer_Then_Redirected_To_TaskList(
-            ConfirmLegalEntityAndEmployerEditModel editModel,
-            VacancyRouteModel vacancyRouteModel,
-            Vacancy vacancy,
-            [Frozen] Mock<IUtility> utility,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
-            LegalEntityAndEmployerOrchestrator orchestrator)
+    [Test, MoqAutoData]
+    public async Task Then_If_Has_Confirmed_Employer_Then_Redirected_To_TaskList(
+        ConfirmLegalEntityAndEmployerEditModel editModel,
+        VacancyRouteModel vacancyRouteModel,
+        Vacancy vacancy,
+        [Frozen] Mock<IUtility> utility,
+        [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+        LegalEntityAndEmployerOrchestrator orchestrator)
+    {
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
         {
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            new Claim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier,vacancyRouteModel.Ukprn.ToString()),
+        }));
+        utility.Setup(x =>
+                x.GetAuthorisedVacancyForEditAsync(It.Is<VacancyRouteModel>(c=>c.Ukprn.Equals(editModel.Ukprn) && c.VacancyId.Equals(editModel.VacancyId)), RouteNames.ConfirmLegalEntityEmployer_Get))
+            .ReturnsAsync(vacancy);
+        utility.Setup(x => x.IsTaskListCompleted(vacancy)).Returns(false);
+        var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>())
+        {
+            ControllerContext = new ControllerContext
             {
-                new Claim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier,vacancyRouteModel.Ukprn.ToString()),
-            }));
-            utility.Setup(x =>
-                    x.GetAuthorisedVacancyForEditAsync(It.Is<VacancyRouteModel>(c=>c.Ukprn.Equals(editModel.Ukprn) && c.VacancyId.Equals(editModel.VacancyId)), RouteNames.ConfirmLegalEntityEmployer_Get))
-                .ReturnsAsync(vacancy);
-            utility.Setup(x => x.IsTaskListCompleted(vacancy)).Returns(false);
-            var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>())
-            {
-                ControllerContext = new ControllerContext
+                HttpContext = new DefaultHttpContext
                 {
-                    HttpContext = new DefaultHttpContext
-                    {
-                        User = user
-                    }
+                    User = user
                 }
+            },
+            TempData = Mock.Of<ITempDataDictionary>(),
                 
-            };
-            editModel.HasConfirmedEmployer = true;
+        };
+        editModel.HasConfirmedEmployer = true;
 
-            var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel);
+        var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel);
 
-            actual.Should().NotBeNull();
-            var result = actual as RedirectToRouteResult;
-            result?.RouteName.Should().Be(RouteNames.ProviderTaskListGet);
-            result?.RouteValues["ukprn"].Should().Be(editModel.Ukprn);
-            result?.RouteValues["vacancyId"].Should().Be(vacancy.Id);
-        }
+        actual.Should().NotBeNull();
+        var result = actual as RedirectToRouteResult;
+        result?.RouteName.Should().Be(RouteNames.ProviderTaskListGet);
+        result?.RouteValues["ukprn"].Should().Be(editModel.Ukprn);
+        result?.RouteValues["vacancyId"].Should().Be(vacancy.Id);
+    }
         
-        [Test, MoqAutoData]
-        public async Task Then_If_Has_Confirmed_Employer_And_Completed_TaskList_Then_Redirected_To_CheckYourAnswers(
-            ConfirmLegalEntityAndEmployerEditModel editModel,
-            VacancyRouteModel vacancyRouteModel,
-            Vacancy vacancy,
-            [Frozen] Mock<IUtility> utility,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
-            LegalEntityAndEmployerOrchestrator orchestrator)
+    [Test, MoqAutoData]
+    public async Task Then_If_Has_Confirmed_Employer_And_Completed_TaskList_Then_Redirected_To_CheckYourAnswers(
+        ConfirmLegalEntityAndEmployerEditModel editModel,
+        VacancyRouteModel vacancyRouteModel,
+        Vacancy vacancy,
+        [Frozen] Mock<IUtility> utility,
+        [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+        LegalEntityAndEmployerOrchestrator orchestrator)
+    {
+        // act
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
         {
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            new Claim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier,vacancyRouteModel.Ukprn.ToString()),
+        }));
+        utility.Setup(x =>
+                x.GetAuthorisedVacancyForEditAsync(It.Is<VacancyRouteModel>(c=>c.Ukprn.Equals(editModel.Ukprn) && c.VacancyId.Equals(editModel.VacancyId)), RouteNames.ConfirmLegalEntityEmployer_Get))
+            .ReturnsAsync(vacancy);
+        utility.Setup(x => x.IsTaskListCompleted(vacancy)).Returns(true);
+        var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>())
+        {
+            ControllerContext = new ControllerContext
             {
-                new Claim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier,vacancyRouteModel.Ukprn.ToString()),
-            }));
-            utility.Setup(x =>
-                    x.GetAuthorisedVacancyForEditAsync(It.Is<VacancyRouteModel>(c=>c.Ukprn.Equals(editModel.Ukprn) && c.VacancyId.Equals(editModel.VacancyId)), RouteNames.ConfirmLegalEntityEmployer_Get))
-                .ReturnsAsync(vacancy);
-            utility.Setup(x => x.IsTaskListCompleted(vacancy)).Returns(true);
-            var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>())
-            {
-                ControllerContext = new ControllerContext
+                HttpContext = new DefaultHttpContext
                 {
-                    HttpContext = new DefaultHttpContext
-                    {
-                        User = user
-                    }
+                    User = user
                 }
-                
-            };
-            editModel.HasConfirmedEmployer = true;
+            },
+            TempData = Mock.Of<ITempDataDictionary>(),
+        };
+            
+//            controller.TempData = new TempDataDictionary(controller.ControllerContext.HttpContext, Mock.Of<ITempDataProvider>());
+        editModel.HasConfirmedEmployer = true;
 
-            var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel);
+        // act
+        var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel);
 
-            actual.Should().NotBeNull();
-            var result = actual as RedirectToRouteResult;
-            result?.RouteName.Should().Be(RouteNames.ProviderCheckYourAnswersGet);
-            result?.RouteValues["ukprn"].Should().Be(editModel.Ukprn);
-            result?.RouteValues["vacancyId"].Should().Be(vacancy.Id);
-        }
+        // assert
+        actual.Should().NotBeNull();
+        var result = actual as RedirectToRouteResult;
+        result?.RouteName.Should().Be(RouteNames.ProviderCheckYourAnswersGet);
+        result?.RouteValues["ukprn"].Should().Be(editModel.Ukprn);
+        result?.RouteValues["vacancyId"].Should().Be(vacancy.Id);
     }
 }

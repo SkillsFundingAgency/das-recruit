@@ -16,14 +16,12 @@ namespace SFA.DAS.Recruit.Api.Queries
 {
     public class GetVacanciesQueryHandler : IRequestHandler<GetVacanciesQuery, GetVacanciesResponse>
     {
-        private readonly ILogger<GetVacanciesQueryHandler> _logger;
         private readonly IVacancySummaryMapper _mapper;
         private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IEmployerVacancyClient _employerVacancyClient;
 
         public GetVacanciesQueryHandler(ILogger<GetVacanciesQueryHandler> logger, IVacancySummaryMapper mapper, IProviderVacancyClient providerVacancyClient, IEmployerVacancyClient employerVacancyClient)
         {
-            _logger = logger;
             _mapper = mapper;
             _providerVacancyClient = providerVacancyClient;
             _employerVacancyClient = employerVacancyClient;
@@ -43,7 +41,7 @@ namespace SFA.DAS.Recruit.Api.Queries
             long totalVacancies;
             if (isRequestingProviderOwnedVacancies)
             {
-                var providerVacanciesTask = _providerVacancyClient.GetDashboardAsync(request.Ukprn.Value, request.PageNo, FilteringOptions.All, null);
+                var providerVacanciesTask = _providerVacancyClient.GetDashboardAsync(request.Ukprn.Value, "", request.PageNo, 25, "", "", FilteringOptions.All, null);
                 var totalVacanciesTask = _providerVacancyClient.GetVacancyCount(request.Ukprn.Value,
                      FilteringOptions.All, null);
 
@@ -54,8 +52,7 @@ namespace SFA.DAS.Recruit.Api.Queries
             }
             else
             {
-                var employerVacanciesTask = _employerVacancyClient.GetDashboardAsync(request.EmployerAccountId,
-                    request.PageNo, FilteringOptions.All, null);
+                var employerVacanciesTask = _employerVacancyClient.GetDashboardAsync(request.EmployerAccountId, "", request.PageNo, 25, "", "", FilteringOptions.All, null);
                 var totalVacanciesTask = _employerVacancyClient.GetVacancyCount(request.EmployerAccountId, FilteringOptions.All, null);
 
                 await Task.WhenAll(employerVacanciesTask, totalVacanciesTask);

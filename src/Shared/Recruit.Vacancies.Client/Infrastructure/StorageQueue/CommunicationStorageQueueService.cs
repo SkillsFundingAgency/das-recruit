@@ -11,7 +11,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
         private readonly IDictionary<Type, string> _messageToCommunicationStorageQueueMapper = new Dictionary<Type, string>
         {
             { typeof(CommunicationRequest), "communication-requests-queue" },
-            { typeof(AggregateCommunicationRequest), "aggregate-communication-requests-queue" }
         };
 
         protected override string ConnectionString { get; }

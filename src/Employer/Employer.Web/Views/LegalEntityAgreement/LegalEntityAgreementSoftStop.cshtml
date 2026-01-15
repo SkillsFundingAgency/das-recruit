@@ -5,27 +5,25 @@
 <div class="govuk-grid-row employer-agreement-container">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-8">Agreement not accepted</h1>
-
         <div class="govuk-!-margin-bottom-8 govuk-warning-text">
-            <span class="govuk-warning-text__icon das-warning-text__icon--top" aria-hidden="true">!</span>
-
-            <span class="govuk-warning-text__assistive">Warning</span>
-            <p> 
-                <strong class="govuk-warning-text__text">
-                    @Model.LegalEntityName does not have an accepted agreement with the 
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <div class="govuk-warning-text__text">
+                <span class="govuk-visually-hidden">Warning</span>
+                <p>
+                    @Model.LegalEntityName does not have an accepted agreement with the
                     Department for Education (DfE). Without an accepted agreement,
                     you can create a draft advert, but cannot post it on Find an apprenticeship.
-                </strong>
-            </p>
-            <p>
-                <strong class="govuk-warning-text__text">
+                </p>
+                <p>
                     Only someone with the authority for your organisation can accept the agreement.
-                </strong>
-            </p>
+                </p>
+            </div>
         </div>
         <div class="govuk-button-group">
-            <a asp-route="@RouteNames.Dashboard_AccountsAgreements" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button">View agreement</a>
-            <a asp-route="@RouteNames.Location_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-button govuk-button--secondary">Save draft and continue</a>
+            <a asp-route="@RouteNames.Dashboard_AccountsAgreements" asp-route-employerAccountId="@Model.EmployerAccountId"
+               class="govuk-button">View agreement</a>
+            <a asp-route="@RouteNames.Location_Get" asp-all-route-data="@Model.RouteDictionary"
+               class="govuk-button govuk-button--secondary">Save draft and continue</a>
         </div>
     </div>
 </div>

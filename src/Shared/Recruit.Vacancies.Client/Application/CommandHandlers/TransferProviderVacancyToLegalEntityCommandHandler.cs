@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task<Unit> Handle(TransferVacancyToLegalEntityCommand message, CancellationToken cancellationToken)
         {
-            var vacancy = await _vacancyRepository.GetVacancyAsync(message.VacancyReference);
+            var vacancy = await _vacancyRepository.GetVacancyAsync(message.Id);
 
             if (vacancy.OwnerType == OwnerType.Provider)
             {
@@ -55,7 +55,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         private async Task ProcessTransferringVacancy(Vacancy vacancy, VacancyUser user, TransferReason transferReason)
         {
-            _logger.LogInformation($"Starting transfer of vacancy {vacancy.VacancyReference.Value} to Legal Entity. Transfer reason: {transferReason.ToString()}");
+            _logger.LogInformation($"Starting transfer of vacancy {vacancy.Id} to Legal Entity. Transfer reason: {transferReason.ToString()}");
             var originalStatus = vacancy.Status;
 
             await _vacancyTransferService.TransferVacancyToLegalEntityAsync(vacancy, user, transferReason);

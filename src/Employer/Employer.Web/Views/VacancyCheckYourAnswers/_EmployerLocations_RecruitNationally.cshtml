@@ -21,7 +21,7 @@
             <div class="app-summary-list__row">
                 <dt class="app-summary-list__key">Add more information about where the apprentice will work</dt>
                 <dd class="app-summary-list__value">
-                    @Model.LocationInformation
+                    @Html.Raw(Model.LocationInformation)
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerAddress" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions"></dd>

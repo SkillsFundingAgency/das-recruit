@@ -32,7 +32,7 @@
                     </div>
                     <div class="govuk-character-count" data-module="govuk-character-count" data-minlength="50"
                          data-maxlength="250">
-                        <textarea asp-for="WageAdditionalInformation" class="govuk-textarea govuk-!-width-three-quarters govuk-js-character-count"
+                        <textarea asp-for="WageAdditionalInformation" class="govuk-textarea govuk-!-width-three-quarters govuk-js-character-count html-editor"
                                   id="WageAdditionalInformation" name="WageAdditionalInformation" rows="5"></textarea>
                         <div id="WageAdditionalInformation-info" class="govuk-hint govuk-character-count__message"
                              aria-live="polite">
@@ -45,7 +45,7 @@
                 <label asp-for="CompanyBenefitsInformation" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">Company benefits (optional)</label>
                 <div id="extra-info-hint" class="govuk-hint">Mention benefits your company offers. For example, you pay for a gym membership. This will be displayed in the section about your company </div>
                 <div class="govuk-character-count" data-module="govuk-character-count" data-minlength="50"data-maxlength="250">
-                    <textarea asp-for="CompanyBenefitsInformation" class="govuk-textarea govuk-!-width-three-quarters govuk-js-character-count"
+                    <textarea asp-for="CompanyBenefitsInformation" class="govuk-textarea govuk-!-width-three-quarters govuk-js-character-count html-editor"
                                id="CompanyBenefitsInformation" name="CompanyBenefitsInformation" rows="5"></textarea>
                     <div id="CompanyBenefitsInformation-info" class="govuk-hint govuk-character-count__message"
                          aria-live="polite">
@@ -63,3 +63,11 @@
 
     </div>
 </div>
+
+@section FooterJS 
+{
+    <script src="/lib/tinymce-4.9.2/tinymce.min.js" no-cdn></script>
+    <script nws-csp-add-nonce="true">
+        initializeHtmlEditors();
+    </script>
+}

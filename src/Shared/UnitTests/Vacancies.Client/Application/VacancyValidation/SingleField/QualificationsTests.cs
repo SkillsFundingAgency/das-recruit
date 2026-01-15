@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
     {
         public QualificationsTests()
         {
-            MockQualificationsProvider.Setup(q => q.GetQualificationsAsync()).ReturnsAsync(new List<string>{"type"});
+            MockReferenceDataClient.Setup(q => q.GetCandidateQualificationsAsync()).ReturnsAsync(["type"]);
         }
 
         [Fact]
@@ -175,7 +175,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
 
             return new Vacancy
             {
-                Qualifications = new List<Qualification> { qualification },
+                Qualifications = [qualification],
                 HasOptedToAddQualifications = true
             };
         }

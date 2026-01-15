@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.BlockedOrganisations;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.BlockedOrganisations;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
@@ -55,12 +53,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var key = QueryViewType.VacancyAnalyticsSummaryV2.GetIdValue(vacancyReference);
 
             return _queryStore.GetAsync<VacancyAnalyticsSummaryV2>(QueryViewType.VacancyAnalyticsSummaryV2.TypeName, key);
-        }
-        public Task<BlockedProviderOrganisations> GetBlockedProviders()
-        {
-            var key = QueryViewType.BlockedProviderOrganisations.GetIdValue();
-
-            return _queryStore.GetAsync<BlockedProviderOrganisations>(key);
         }
 
         public Task UpdateEmployerDashboardAsync(string employerAccountId, IEnumerable<VacancySummary> vacancySummaries)
@@ -191,21 +183,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             vacancyApplications.LastUpdated = _timeProvider.Now;
 
             return _queryStore.UpsertAsync(vacancyApplications);
-        }
-
-        public Task<QaDashboard> GetQaDashboardAsync()
-        {
-            var key = QueryViewType.QaDashboard.GetIdValue();
-
-            return _queryStore.GetAsync<QaDashboard>(QueryViewType.QaDashboard.TypeName, key);
-        }
-
-        public Task UpdateQaDashboardAsync(QaDashboard qaDashboard)
-        {
-            qaDashboard.Id = QueryViewType.QaDashboard.GetIdValue();
-            qaDashboard.LastUpdated = _timeProvider.Now;
-
-            return _queryStore.UpsertAsync(qaDashboard);
         }
 
         public Task UpdateClosedVacancyAsync(ClosedVacancy closedVacancy)

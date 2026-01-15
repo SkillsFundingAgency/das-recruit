@@ -500,3 +500,50 @@ if (locationFilterSelect) {
         document.location.href = "?" + params.toString();
     });
 }
+
+function RadioConditionalReveal(radio, state) {
+  this.hiddenClass = "govuk-radios__conditional--hidden"
+  this.radio = radio
+  this.targetState = state
+  const targetId = this.targetState
+      ? radio.getAttribute("data-radio-conditional-reveal")
+      : radio.getAttribute("data-radio-conditional-hide")
+  if (!targetId)
+  {
+    return
+  }
+
+  this.target = document.getElementById(targetId);
+  if (!this.target)
+  {
+    return
+  }
+
+  this.radio.setAttribute("aria-controls", targetId)
+  this.radio.addEventListener("change", this.handleReveal.bind(this))
+  this.handleReveal({ target: this.radio })
+
+  this.radio.removeAttribute("data-radio-conditional-reveal");
+  this.radio.removeAttribute("data-radio-conditional-state");
+}
+
+RadioConditionalReveal.prototype.handleReveal = function (event) {
+  if (!event.target.checked) return
+
+  if (this.targetState)
+    this.target.classList.remove(this.hiddenClass);
+  else
+    this.target.classList.add(this.hiddenClass);
+}
+
+document.addEventListener("DOMContentLoaded", (event) => {
+  const revealRadios = document.querySelectorAll("input[data-radio-conditional-reveal]");
+  revealRadios.forEach(function (radio) {
+    new RadioConditionalReveal(radio, true);
+  });
+
+  const hideRadios = document.querySelectorAll("input[data-radio-conditional-hide]");
+  hideRadios.forEach(function (radio) {
+    new RadioConditionalReveal(radio, false);
+  });
+});

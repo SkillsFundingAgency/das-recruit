@@ -1,13 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using Esfa.Recruit.Provider.Web.Orchestrators.Reports;
+﻿using Esfa.Recruit.Provider.Web.Orchestrators.Reports;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
 using Xunit;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
@@ -15,15 +11,15 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
     public class ReportOrchestratorBaseTests
     {
         private readonly Guid _reportId = Guid.NewGuid();
-        private const long _ukprn = 11111111;
+        private const long Ukprn = 11111111;
 
         [Fact]
         public async Task GetReportAsync_ShouldThrowReportNotFoundExceptionWhenReportIsNotFound()
         {
-            var orch = GetOrchestrator();
+            var orchestrator = GetOrchestrator();
 
             var incorrectReportId = Guid.NewGuid();
-            Func<Task<Report>> act = async () => await orch.GetTestReportAsync(0, incorrectReportId);
+            Func<Task<Report>> act = async () => await orchestrator.GetTestReportAsync(0, incorrectReportId);
 
             var err = await act.Should().ThrowAsync<ReportNotFoundException>();
 
@@ -33,10 +29,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
         [Fact]
         public async Task GetReportAsync_ShouldThrowAuthorisationExceptionIfNotOwner()
         {
-            var orch = GetOrchestrator();
+            var orchestrator = GetOrchestrator();
 
-            var incorrectUkprn = 22222222;
-            Func<Task<Report>> act = async () => await orch.GetTestReportAsync(incorrectUkprn, _reportId);
+            const int incorrectUkprn = 22222222;
+            Func<Task<Report>> act = async () => await orchestrator.GetTestReportAsync(incorrectUkprn, _reportId);
 
             var err = await act.Should().ThrowAsync<AuthorisationException>();
             
@@ -46,9 +42,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
         [Fact]
         public async Task GetReportAsync_ShouldReturnOwnedReport()
         {
-            var orch = GetOrchestrator();
+            var orchestrator = GetOrchestrator();
 
-            var report = await orch.GetTestReportAsync(_ukprn, _reportId);
+            var report = await orchestrator.GetTestReportAsync(Ukprn, _reportId);
 
             report.Should().NotBeNull();
         }
@@ -59,7 +55,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
 
             var reportOwner = new ReportOwner {
                 OwnerType = ReportOwnerType.Provider,
-                Ukprn = _ukprn
+                Ukprn = Ukprn
             };
 
             var report = new Report(_reportId, reportOwner, ReportStatus.New, "report name",
@@ -71,16 +67,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
             return new TestReportOrchestrator(logger.Object, repo.Object);
         }
 
-        private class TestReportOrchestrator : ReportOrchestratorBase
+        private class TestReportOrchestrator(ILogger logger, IProviderVacancyClient client)
+            : ReportOrchestratorBase(logger, client)
         {
-            public TestReportOrchestrator(ILogger logger, IProviderVacancyClient client) : base(logger, client)
-            {    
-            }
-
-            public Task<Report> GetTestReportAsync(long ukprn, Guid reportId)
-            {
-                return GetReportAsync(ukprn, reportId);
-            }
+            public Task<Report> GetTestReportAsync(long ukprn, Guid reportId) 
+                => GetReportAsync(ukprn, reportId);
         }
     }
 }

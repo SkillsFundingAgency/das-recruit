@@ -17,7 +17,7 @@ public class VacancyTaskListOrchestrator(
     public async Task<VacancyTaskListViewModel> GetVacancyTaskListModel(VacancyRouteModel vrm)
     {
         var getEmployerDataTask = employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.EmployerTaskListGet);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm);
 
         var taskListStateView = new EmployerTaskListStateView(
             await taskListValidator.GetItemStatesAsync(vacancy, EmployerTaskListSectionFlags.All),

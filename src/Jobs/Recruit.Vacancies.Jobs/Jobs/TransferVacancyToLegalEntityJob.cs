@@ -18,13 +18,13 @@ namespace Esfa.Recruit.Vacancies.Jobs.Jobs
             _messaging = messaging;
         }
 
-        public async Task Run(long vacancyReference, Guid userRef, string userEmailAddress, string userName, TransferReason transferReason)
+        public async Task Run(Guid vacancyId, Guid userRef, string userEmailAddress, string userName, TransferReason transferReason)
         {
-            var vacancyToTransfer = await _vacancyRepository.GetVacancyAsync(vacancyReference);
+            var vacancyToTransfer = await _vacancyRepository.GetVacancyAsync(vacancyId);
 
             if (vacancyToTransfer != null)
             {
-                await _messaging.SendCommandAsync(new TransferVacancyToLegalEntityCommand(vacancyToTransfer.VacancyReference.GetValueOrDefault(), userRef, userEmailAddress, userName, transferReason));
+                await _messaging.SendCommandAsync(new TransferVacancyToLegalEntityCommand(vacancyToTransfer.Id, userRef, userEmailAddress, userName, transferReason));
             }
         }
     }

@@ -42,7 +42,7 @@ public class VacancyCheckYourAnswersOrchestrator(
 
     public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel vrm)
     {
-        var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.EmployerTaskListGet);
+        var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm);
         var getEmployerDataTask = employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
 
         await Task.WhenAll(vacancyTask, getEmployerDataTask);
@@ -74,7 +74,7 @@ public class VacancyCheckYourAnswersOrchestrator(
         
     public async Task ClearRejectedVacancyReason(SubmitReviewModel m, VacancyUser user)
     {
-        var vacancy = await utility.GetAuthorisedVacancyAsync(m, RouteNames.ApproveJobAdvert_Post);
+        var vacancy = await utility.GetAuthorisedVacancyAsync(m);
 
         vacancy.EmployerRejectedReason = null;
 
@@ -83,7 +83,7 @@ public class VacancyCheckYourAnswersOrchestrator(
 
     public async Task UpdateRejectedVacancyReason(SubmitReviewModel m, VacancyUser user)
     {
-        var vacancy = await utility.GetAuthorisedVacancyAsync(m, RouteNames.ApproveJobAdvert_Post);
+        var vacancy = await utility.GetAuthorisedVacancyAsync(m);
 
         vacancy.EmployerRejectedReason = m.RejectedReason;
 
@@ -202,7 +202,7 @@ public class VacancyCheckYourAnswersOrchestrator(
 
     public async Task<OrchestratorResponse<SubmitVacancyResponse>> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
     {
-        var vacancy = await utility.GetAuthorisedVacancyAsync(m, RouteNames.Preview_Submit_Post);
+        var vacancy = await utility.GetAuthorisedVacancyAsync(m);
             
         if (!vacancy.CanSubmit)
             throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForEditing, vacancy.Title));

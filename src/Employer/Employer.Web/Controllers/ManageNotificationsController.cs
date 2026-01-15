@@ -6,79 +6,74 @@ using Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Esfa.Recruit.Employer.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers;
+
+[Route(RoutePaths.AccountRoutePath)]
+public class ManageNotificationsController(ManageNotificationsOrchestrator orchestrator) : Controller
 {
-    [Route(RoutePaths.AccountRoutePath)]
-    public class ManageNotificationsController : Controller
+    [HttpGet("notifications-manage", Name = RouteNames.ManageNotifications_Get)]
+    public async Task<IActionResult> ManageNotifications([FromRoute] string employerAccountId, [FromQuery] string updated)
     {
-        private readonly ManageNotificationsOrchestrator _orchestrator;
-        public ManageNotificationsController(ManageNotificationsOrchestrator orchestrator)
+        var vm = await orchestrator.NewGetManageNotificationsViewModelAsync(User.ToVacancyUser(), employerAccountId);
+        if (bool.TryParse(updated, out bool updatedValue))
         {
-            _orchestrator = orchestrator;
+            vm.Updated = updatedValue;
+        }
+        return View("NewManageNotifications", vm);
+    }
+        
+    [HttpPost("notifications-manage", Name = RouteNames.ManageNotifications_Post)]
+    public async Task<IActionResult> ManageNotifications(ManageNotificationsEditModelEx model)
+    {
+        var response = await orchestrator.NewUpdateUserNotificationPreferencesAsync(model, User.ToVacancyUser());
+        if (!response.Success)
+        {
+            response.AddErrorsToModelState(ModelState);
         }
 
-        [HttpGet("notifications-manage", Name = RouteNames.ManageNotifications_Get)]
-        public async Task<IActionResult> ManageNotifications([FromRoute] string employerAccountId)
+        if (ModelState.IsValid)
         {
-            var vm = await _orchestrator.GetManageNotificationsViewModelAsync(User.ToVacancyUser(), employerAccountId);
-            return View(vm);
+            return RedirectToRoute(RouteNames.ManageNotifications_Get, new { updated = true, model.EmployerAccountId });
         }
 
-        [HttpPost("notifications-manage", Name = RouteNames.ManageNotifications_Post)]
-        public async Task<IActionResult> ManageNotifications(ManageNotificationsEditModel model)
+        var vm = new ManageNotificationsViewModelEx
         {
-            var response = await _orchestrator.UpdateUserNotificationPreferencesAsync(model, User.ToVacancyUser());
+            VacancyApprovedOrRejectedValue = model.VacancyApprovedOrRejectedValue,
+            ApplicationSubmittedFrequencyValue = model.ApplicationSubmittedFrequencyValue,
+            ApplicationSubmittedValue = model.ApplicationSubmittedValue,
+        };
+        return View("NewManageNotifications", vm);
+    }
 
-            if (!response.Success)
-            {
-                response.AddErrorsToModelState(ModelState);
-            }
+    [HttpGet("notifications-unsubscribe", Name = RouteNames.ConfirmUnsubscribeNotifications_Get)]
+    public IActionResult ConfirmUnsubscribeNotifications(ManageNotificationsRouteModel model)
+    {
+        return View(new ConfirmUnsubscribeNotificationsViewModel{EmployerAccountId = model.EmployerAccountId});
+    }
 
-            if(!ModelState.IsValid)
-            {
-                var vm = await _orchestrator.GetManageNotificationsViewModelAsync(User.ToVacancyUser(), model.EmployerAccountId);
-                return View(vm);
-            }
-
-            if(model.HasAnySubscription)
-            {
-                var vm = _orchestrator.GetAcknowledgementViewModel(model, User.ToVacancyUser());
-                return RedirectToRoute(RouteNames.NotificationsUpdatedAcknowledgement_Get, vm);
-            }
-
-            return RedirectToRoute(RouteNames.NotificationUnsubscribedAcknowledgement_Get, new {model.EmployerAccountId});
-        }
-
-        [HttpGet("notifications-unsubscribe", Name = RouteNames.ConfirmUnsubscribeNotifications_Get)]
-        public IActionResult ConfirmUnsubscribeNotifications(ManageNotificationsRouteModel model)
-        {
+    [HttpPost("notifications-unsubscribe", Name = RouteNames.ConfirmUnsubscribeNotifications_Post)]
+    public async Task<IActionResult> ConfirmUnsubscribeNotifications(ConfirmUnsubscribeNotificationsEditModel model)
+    {
+        if(!ModelState.IsValid)
             return View(new ConfirmUnsubscribeNotificationsViewModel{EmployerAccountId = model.EmployerAccountId});
-        }
 
-        [HttpPost("notifications-unsubscribe", Name = RouteNames.ConfirmUnsubscribeNotifications_Post)]
-        public async Task<IActionResult> ConfirmUnsubscribeNotifications(ConfirmUnsubscribeNotificationsEditModel model)
-        {
-            if(!ModelState.IsValid)
-                return View(new ConfirmUnsubscribeNotificationsViewModel{EmployerAccountId = model.EmployerAccountId});
+        if(model.ConfirmUnsubscribe == false)
+            return RedirectToRoute(RouteNames.ManageNotifications_Get, new {model.EmployerAccountId});
 
-            if(model.ConfirmUnsubscribe == false)
-                return RedirectToRoute(RouteNames.ManageNotifications_Get, new {model.EmployerAccountId});
-
-            await _orchestrator.UnsubscribeUserNotificationsAsync(User.ToVacancyUser());
+        await orchestrator.UnsubscribeUserNotificationsAsync(User.ToVacancyUser());
             
-            return RedirectToRoute(RouteNames.NotificationUnsubscribedAcknowledgement_Get, new {model.EmployerAccountId});
-        }
+        return RedirectToRoute(RouteNames.NotificationUnsubscribedAcknowledgement_Get, new {model.EmployerAccountId});
+    }
 
-        [HttpGet("notifications-acknowledgement", Name = RouteNames.NotificationsUpdatedAcknowledgement_Get)]
-        public IActionResult NotificationsUpdatedAcknowledgement(ManageNotificationsAcknowledgementViewModel model)
-        {
-            return View(model);
-        }
+    [HttpGet("notifications-acknowledgement", Name = RouteNames.NotificationsUpdatedAcknowledgement_Get)]
+    public IActionResult NotificationsUpdatedAcknowledgement(ManageNotificationsAcknowledgementViewModel model)
+    {
+        return View(model);
+    }
 
-        [HttpGet("notifications-unsubscribed", Name = RouteNames.NotificationUnsubscribedAcknowledgement_Get)]
-        public IActionResult NotificationUnsubscribedAcknowledgement(ManageNotificationsRouteModel routeModel)
-        {
-            return View(routeModel);
-        }
+    [HttpGet("notifications-unsubscribed", Name = RouteNames.NotificationUnsubscribedAcknowledgement_Get)]
+    public IActionResult NotificationUnsubscribedAcknowledgement(ManageNotificationsRouteModel routeModel)
+    {
+        return View(routeModel);
     }
 }

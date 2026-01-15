@@ -33,7 +33,7 @@ public class TrainingOrchestrator(
 
     public async Task<TrainingViewModel> GetTrainingViewModelAsync(VacancyRouteModel vrm, VacancyUser user)
     {
-        var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Training_Get);
+        var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm);
         var programmesTask = vacancyClient.GetActiveApprenticeshipProgrammesAsync();
         var isUsersFirstVacancyTask = IsUsersFirstVacancy(user.UserId);
         var getEmployerDataTask = employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
@@ -75,7 +75,7 @@ public class TrainingOrchestrator(
 
     public async Task<TrainingFirstVacancyViewModel> GetTrainingFirstVacancyViewModelAsync(VacancyRouteModel vrm)
     {
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Training_First_Time_Get);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm);
 
         return new TrainingFirstVacancyViewModel
         {
@@ -85,7 +85,7 @@ public class TrainingOrchestrator(
 
     public async Task<ConfirmTrainingViewModel> GetConfirmTrainingViewModelAsync(VacancyRouteModel vrm, string programmeId)
     {
-        var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Training_Confirm_Get);
+        var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm);
         var programmesTask = vacancyClient.GetActiveApprenticeshipProgrammesAsync();
 
         await Task.WhenAll(vacancyTask, programmesTask);
@@ -140,7 +140,7 @@ public class TrainingOrchestrator(
             });
         }
 
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Training_Confirm_Post);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m);
         vacancy.ApprenticeshipType = programme.ApprenticeshipType switch {
             TrainingType.Foundation => ApprenticeshipTypes.Foundation,
             _ => null

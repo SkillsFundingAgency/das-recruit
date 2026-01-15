@@ -1,11 +1,10 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using Esfa.Recruit.Provider.Web.AppStart;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -39,7 +38,8 @@ namespace Esfa.Recruit.Provider.Web
 #if DEBUG
             configBuilder
                 .AddJsonFile("appsettings.json", optional:true)
-                .AddJsonFile("appsettings.Development.json", optional: true);   
+                .AddJsonFile("appsettings.Development.json", optional: true)
+                .AddUserSecrets(Assembly.GetExecutingAssembly());
 #endif
             
             configBuilder.AddAzureTableStorage(

@@ -4,18 +4,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays
 {
     public class BankHolidayProvider : IBankHolidayProvider
     {
-        private readonly IReferenceDataReader _referenceDataReader;
+        private readonly IOuterApiClient _outerApiClient;
         private readonly ICache _cache;
         private readonly ITimeProvider _timeProvider;
 
-        public BankHolidayProvider(IReferenceDataReader referenceDataReader, ICache cache, ITimeProvider timeProvider)
+        public BankHolidayProvider(IOuterApiClient outerApiClient, ICache cache, ITimeProvider timeProvider)
         {
-            _referenceDataReader = referenceDataReader;
+            _outerApiClient = outerApiClient;
             _cache = cache;
             _timeProvider = timeProvider;
         }
@@ -26,9 +28,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHoliday
                 _timeProvider.NextDay,
                 async () =>
                 {
-                    var bankHolidayReferenceData = await _referenceDataReader.GetReferenceData<BankHolidays>();
+                    var bankHolidayReferenceData = await _outerApiClient.Get<BankHolidaysData>(new GetBankHolidaysRequest());
 
-                    return bankHolidayReferenceData.Data.EnglandAndWales.Events
+                    return bankHolidayReferenceData.EnglandAndWales.Events
                         .Select(e => DateTime.Parse(e.Date))
                         .ToList();
                 });

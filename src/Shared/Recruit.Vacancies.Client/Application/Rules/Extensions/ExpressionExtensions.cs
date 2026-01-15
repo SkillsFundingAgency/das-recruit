@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Esfa.QA.Core.Extensions
+namespace Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions
 {
     public static class ExpressionExtensions
     {

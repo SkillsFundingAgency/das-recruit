@@ -13,7 +13,7 @@ public class WhenMappingQualifications
     public async Task Then_They_Are_Ordered_Correctly(
         Vacancy vacancy,
         DisplayVacancyViewModel viewModel,
-        [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
+        [Frozen] Mock<IReferenceDataClient> referenceDataClient,
         DisplayVacancyViewModelMapper sut)
     {
         // arrange
@@ -24,7 +24,7 @@ public class WhenMappingQualifications
         ];
         
         List<string> allQualifications = ["GCSE", "A Level", "Diploma"];
-        vacancyClient.Setup(x => x.GetCandidateQualificationsAsync()).ReturnsAsync(allQualifications);
+        referenceDataClient.Setup(x => x.GetCandidateQualificationsAsync()).ReturnsAsync(allQualifications);
         
         // act
         await sut.MapFromVacancyAsync(viewModel, vacancy);
@@ -40,7 +40,7 @@ public class WhenMappingQualifications
     public async Task Then_They_Are_Split_By_Type_Correctly(
         Vacancy vacancy,
         DisplayVacancyViewModel viewModel,
-        [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
+        [Frozen] Mock<IReferenceDataClient> referenceDataClient,
         DisplayVacancyViewModelMapper sut)
     {
         // arrange
@@ -51,7 +51,7 @@ public class WhenMappingQualifications
         ];
         
         List<string> allQualifications = ["GCSE", "A Level", "Diploma"];
-        vacancyClient.Setup(x => x.GetCandidateQualificationsAsync()).ReturnsAsync(allQualifications);
+        referenceDataClient.Setup(x => x.GetCandidateQualificationsAsync()).ReturnsAsync(allQualifications);
         
         // act
         await sut.MapFromVacancyAsync(viewModel, vacancy);

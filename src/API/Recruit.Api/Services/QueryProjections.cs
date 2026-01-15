@@ -39,7 +39,6 @@ namespace SFA.DAS.Recruit.Api.Services
         public static QueryViewType EditVacancyInfo => new QueryViewType(nameof(EditVacancyInfo), "EditVacancyInfo_{0}");
         public static QueryViewType LiveVacancy => new QueryViewType(nameof(LiveVacancy), "LiveVacancy_{0}");
         public static QueryViewType VacancyApplications => new QueryViewType(nameof(VacancyApplications), "VacancyApplications_{0}");
-        public static QueryViewType QaDashboard => new QueryViewType(nameof(QaDashboard), "QaDashboard");
         public static QueryViewType ClosedVacancy => new QueryViewType(nameof(ClosedVacancy), "ClosedVacancy_{0}");
         public static QueryViewType VacancyAnalyticsSummary => new QueryViewType(nameof(VacancyAnalyticsSummary), "VacancyAnalyticsSummary_{0}");
         public static QueryViewType BlockedEmployerOrganisations => new QueryViewType(nameof(BlockedEmployerOrganisations), "BlockedEmployerOrganisations");
