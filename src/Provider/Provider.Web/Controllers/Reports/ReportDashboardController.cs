@@ -9,12 +9,23 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Reports
 {
-    public class ReportDashboardController(ReportDashboardOrchestrator orchestrator) : Controller
+    public class ReportDashboardController(IReportDashboardOrchestrator orchestrator) : Controller
     {
         [HttpGet(RoutePaths.ReportsDashboardRoutePath, Name = RouteNames.ReportDashboard_Get)]
         public async Task<IActionResult> Dashboard([FromRoute] long ukprn)
         {
             var vm = await orchestrator.GetDashboardViewModel(ukprn);
+            if (TempData.TryGetValue("NewReportId", out var newReportIdObj) &&
+                Guid.TryParse(newReportIdObj?.ToString(), out var newReportId))
+            {
+                var newReport = vm.Reports?.FirstOrDefault(r => r.ReportId == newReportId);
+                if (newReport != null)
+                {
+                    vm.ShowSuccessBanner = true;
+                    vm.SuccessReportName = newReport.ReportName;
+                    TempData.Remove("NewReportId");
+                }
+            }
             return View(vm);
         }
 

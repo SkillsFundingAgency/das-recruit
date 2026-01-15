@@ -10,7 +10,14 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
 {
-    public class ProviderApplicationsReportOrchestrator
+    public interface IProviderApplicationsReportOrchestrator
+    {
+        ProviderApplicationsReportCreateViewModel GetCreateViewModel();
+        ProviderApplicationsReportCreateViewModel GetCreateViewModel(ProviderApplicationsReportCreateEditModel model);
+        Task<Guid> PostCreateViewModelAsync(ProviderApplicationsReportCreateEditModel model, VacancyUser user);
+    }
+
+    public class ProviderApplicationsReportOrchestrator : IProviderApplicationsReportOrchestrator
     {
         private readonly IProviderVacancyClient _client;
         private readonly ITimeProvider _timeProvider;

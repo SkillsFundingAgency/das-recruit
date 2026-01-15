@@ -26,6 +26,21 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        @if (Model.ShowSuccessBanner)
+        {
+            <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                <div class="govuk-notification-banner__header">
+                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                        Success
+                    </h2>
+                </div>
+                <div class="govuk-notification-banner__content">
+                    <h3 class="govuk-notification-banner__heading">
+                        Report from @Model.SuccessReportName is ready.
+                    </h3>
+                </div>
+            </div>
+        }
         <div class="govuk-notification-banner"
              role="region"
              aria-labelledby="@notificationTitleId"
@@ -47,8 +62,8 @@
                        asp-route-ukprn="@Model.Ukprn"
                        target="_blank"
                        class="govuk-link">
-                       View the data specification (opens in new tab).
-                   </a>
+                        View the data specification (opens in new tab).
+                    </a>
                     for details.
                 </p>
             </div>
@@ -66,7 +81,7 @@
                 <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get"
                    asp-route-ukprn="@Model.Ukprn"
                    class="govuk-button">
-                    Create new report
+                    Create a new report
                 </a>
             </div>
 
@@ -74,7 +89,7 @@
                 <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get"
                    asp-route-ukprn="@Model.Ukprn"
                    class="govuk-button">
-                    Create new report
+                    Create a new report
                 </a>
 
                 <p asp-show="@Model.IsProcessingReports" class="govuk-body">
@@ -97,12 +112,14 @@
             <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get"
                asp-route-ukprn="@Model.Ukprn"
                class="govuk-button">
-                Create new report
+                Create a new report
             </a>
         </div>
     </div>
 </div>
-
+<div asp-hide="@Model.HasReports" class="govuk-inset-text">
+    Reports will be available to download here once they have been created.
+</div>
 <div asp-show="@Model.HasReports">
     <table class="govuk-table das-table--responsive">
         <thead class="govuk-table__head">
