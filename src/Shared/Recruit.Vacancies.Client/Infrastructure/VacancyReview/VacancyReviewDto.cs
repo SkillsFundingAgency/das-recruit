@@ -55,7 +55,7 @@ public class VacancyReviewDto
             ManualOutcome = source.ManualOutcome?.ToString(),
             ManualQaComment = source.ManualQaComment,
             ManualQaFieldIndicators =source.ManualQaFieldIndicators!=null ? source.ManualQaFieldIndicators.Where(c=>c.IsChangeRequested)
-                .Select(c=>c.ToString()).ToList() : [],
+                .Select(c=>c.FieldIdentifier.ToString()).ToList() : [],
             AutomatedQaOutcome = source.AutomatedQaOutcome?.Decision.ToString(),
             AutomatedQaOutcomeIndicators = source.AutomatedQaOutcomeIndicators?.FirstOrDefault()?.IsReferred.ToString(),
             DismissedAutomatedQaOutcomeIndicators = source.DismissedAutomatedQaOutcomeIndicators,
