@@ -46,4 +46,17 @@ public class RaaTagsTagHelperTests: TagHelperTestsBase
         // assert
         TagHelperOutput.AsString().Should().Be("""<strong class="govuk-tag--pink govuk-tag">Foundation</strong>""");
     }
+    
+    [Test]
+    public async Task ApiSubmittedTag_TagHelper_Renders_Output()
+    {
+        // arrange
+        var sut = new ApiSubmittedTagHelper();
+
+        // act
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
+
+        // assert
+        TagHelperOutput.AsString().Should().Be("""<strong class="govuk-tag--yellow govuk-tag">API submitted</strong>""");
+    }
 }

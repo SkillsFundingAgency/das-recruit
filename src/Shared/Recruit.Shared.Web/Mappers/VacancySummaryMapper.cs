@@ -27,6 +27,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
                 IsTransferred = vacancySummary.TransferInfoTransferredDate.HasValue,
                 IsTaskListCompleted = vacancySummary.IsTaskListCompleted,
                 ApprenticeshipType = vacancySummary.ApprenticeshipType ?? ApprenticeshipTypes.Standard,
+                SourceOrigin = vacancySummary.SourceOrigin,
             };
 
             return summaryViewModel;
