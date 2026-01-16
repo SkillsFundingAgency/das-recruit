@@ -8,24 +8,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
 {
-    public abstract class ReportOrchestratorBase
+    public abstract class ReportOrchestratorBase(ILogger logger, IProviderVacancyClient client)
     {
-        private readonly IProviderVacancyClient _client;
-        private readonly ILogger _logger;
-
-        protected ReportOrchestratorBase(ILogger logger, IProviderVacancyClient client)
-        {
-            _logger = logger;
-            _client = client;
-        }
-
         protected async Task<Report> GetReportAsync(long ukprn, Guid reportId)
         {
-            var report = await _client.GetReportAsync(reportId);
+            var report = await client.GetReportAsync(reportId);
 
             if (report == null)
             {
-                _logger.LogInformation("Cannot find report: {reportId}", reportId);
+                logger.LogInformation("Cannot find report: {reportId}", reportId);
                 throw new ReportNotFoundException($"Cannot find report: {reportId}");
             }
 
@@ -34,7 +25,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
                 return report;
             }
 
-            _logger.LogWarning("Ukprn: {ukprn} does not have access to report: {reportId}", ukprn, reportId);
+            logger.LogWarning("Ukprn: {ukprn} does not have access to report: {reportId}", ukprn, reportId);
             throw new AuthorisationException($"Ukprn: {ukprn} does not have access to report: {reportId}");
         }
     }
