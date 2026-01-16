@@ -39,9 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
 
             _logger.LogInformation("Closing vacancy {vacancyId} by user {userEmail}.", vacancy.Id, message.User.Email);
-            vacancy.ClosedByUser = message.User;
             vacancy.ClosureReason = message.ClosureReason;
-
             vacancy.ClosedDate = _timeProvider.Now;
             vacancy.Status = VacancyStatus.Closed;
 
