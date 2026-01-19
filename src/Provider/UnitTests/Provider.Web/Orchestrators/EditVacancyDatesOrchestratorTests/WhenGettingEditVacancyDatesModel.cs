@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.EditVacancy
             vacancy.ProgrammeId = programmes.FirstOrDefault().Id;
             vacancyClient.Setup(x => x.GetVacancyAsync(vacancyRouteModel.VacancyId.GetValueOrDefault()))
                 .ReturnsAsync(vacancy);
-            vacancyClient.Setup(x => x.GetActiveApprenticeshipProgrammesAsync()).ReturnsAsync(programmes);
+            vacancyClient.Setup(x => x.GetActiveApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
 
             var actual = await orchestrator.GetEditVacancyDatesViewModelAsync(vacancyRouteModel,
                 DateTime.UtcNow.AddMonths(1), DateTime.UtcNow.AddMonths(2));
