@@ -16,7 +16,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public SourceType SourceType { get; set; }
         public long? SourceVacancyReference { get; set; }
         public DateTime? ClosedDate { get; set; }
-        public VacancyUser ClosedByUser { get; set; }
         public DateTime? CreatedDate { get; set; }
         public VacancyUser CreatedByUser { get; set; }
         public DateTime? SubmittedDate { get; set; }
@@ -26,12 +25,9 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public int ReviewCount { get; set; }
         public DateTime? ApprovedDate { get; set; }
         public DateTime? LiveDate { get; set; }
-
         public DateTime? LastUpdatedDate { get; set; }
-        public VacancyUser LastUpdatedByUser { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? DeletedDate { get; set; }
-        public VacancyUser DeletedByUser { get; set; }
         public string AnonymousReason { get; set; }
         public string ApplicationInstructions { get; set; }
         public ApplicationMethod? ApplicationMethod { get; set; }
@@ -89,7 +85,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public TrainingProvider TrainingProvider { get; set; }
         public Wage Wage { get; set; }
         public ClosureReason? ClosureReason { get; set; }
-        public string ClosureExplanation { get; set; }
         public TransferInfo TransferInfo { get; set; }
         public bool CanClose => Status == VacancyStatus.Live;
         public bool CanClone => (Status == VacancyStatus.Live || 
