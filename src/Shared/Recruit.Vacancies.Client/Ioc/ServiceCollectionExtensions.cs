@@ -151,7 +151,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
             // Projection services
             services.AddTransient<IEditVacancyInfoProjectionService, EditVacancyInfoProjectionService>();
-            services.AddTransient<IPublishedVacancyProjectionService, PublishedVacancyProjectionService>();
             services.AddTransient<IVacancyApplicationsProjectionService, VacancyApplicationsProjectionService>();
             services.AddTransient<IBlockedOrganisationsProjectionService, BlockedOrganisationsProjectionService>();
 
@@ -219,7 +218,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IBlockedOrganisationRepository, MongoDbBlockedOrganisationRepository>();
 
             //Queries
-            services.AddTransient<IVacancyQuery, MongoDbVacancyRepository>();
+            services.AddTransient<IVacancyQuery, SqlVacancyQuery>(); // replaces MongoDbVacancyRepository
             services.AddTransient<IVacancyReviewQuery, MongoDbVacancyReviewRepository>();
             services.AddTransient<IApplicationReviewQuery, MongoDbApplicationReviewRepository>();
             services.AddTransient<IBlockedOrganisationQuery, MongoDbBlockedOrganisationRepository>();
