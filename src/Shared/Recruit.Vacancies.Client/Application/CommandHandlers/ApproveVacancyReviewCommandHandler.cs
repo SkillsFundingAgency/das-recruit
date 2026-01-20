@@ -136,7 +136,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             vacancy.Status = VacancyStatus.Closed;
             vacancy.ClosedDate = _timeProvider.Now;
-            vacancy.ClosedByUser = vacancy.TransferInfo?.TransferredByUser;
             vacancy.ClosureReason = closureReason;
             return _vacancyRepository.UpdateAsync(vacancy);
         }

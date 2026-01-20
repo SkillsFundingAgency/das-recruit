@@ -4,15 +4,9 @@ using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using SFA.DAS.Encoding;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy.Models;
 
-public class PostVacancyRequest(Guid id, VacancyDto vacancy) : IPostApiRequest
-{
-    public string PostUrl => $"vacancies/{id}";
-    public object Data { get; set; } = vacancy;
-}
-
-public class VacancyDto
+public class PostVacancyDto
 {
     public long? VacancyReference { get; init; }
     public long? AccountId { get; init; }
@@ -75,9 +69,9 @@ public class VacancyDto
     public string? SubmittedByUserId { get; init; }
     public string? ReviewRequestedByUserId { get; set; }
     
-    public static VacancyDto From(Vacancy vacancy, IEncodingService encodingService)
+    public static PostVacancyDto From(Domain.Entities.Vacancy vacancy, IEncodingService encodingService)
     {
-        return new VacancyDto
+        return new PostVacancyDto
         {
             AccountLegalEntityId = string.IsNullOrWhiteSpace(vacancy.AccountLegalEntityPublicHashedId) ? null : encodingService.Decode(vacancy.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId),
             AdditionalQuestion1 = vacancy.AdditionalQuestion1,
@@ -142,7 +136,7 @@ public class VacancyDto
         };
     }
 
-    private static List<Address> MapLocations(Vacancy vacancy)
+    private static List<Address> MapLocations(Domain.Entities.Vacancy vacancy)
     {
         return vacancy.EmployerLocationOption switch
         {
@@ -154,10 +148,4 @@ public class VacancyDto
             _ => throw new ArgumentOutOfRangeException()
         };
     }
-}
-
-public class ReviewFieldIndicator
-{
-    public string FieldIdentifier { get; set; }
-    public bool IsChangeRequested { get; set; }
 }

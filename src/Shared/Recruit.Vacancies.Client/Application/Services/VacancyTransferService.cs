@@ -74,7 +74,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
         {
             vacancy.Status = VacancyStatus.Closed;
             vacancy.ClosedDate = _timeProvider.Now;
-            vacancy.ClosedByUser = initiatingUser;
             vacancy.ClosureReason = ClosureReason.TransferredByEmployer;
         }
     }

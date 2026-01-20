@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Collections.Generic;
-using System.Net;
 using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -14,9 +12,6 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Polly;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
-using MongoDB.Driver.Core.Clusters;
-using MongoDB.Driver.Core.Connections;
-using MongoDB.Driver.Core.Servers;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
@@ -90,24 +85,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<IEnumerable<T>> GetVacanciesByEmployerAccountAsync<T>(string employerAccountId)
-        {
-            var builder = Builders<T>.Filter;
-            var filter = builder.Eq(EmployerAccountIdFieldName, employerAccountId) &
-                        builder.Eq(OwnerTypeFieldName, OwnerType.Employer.ToString()) &
-                        builder.Ne(IsDeletedFieldName, true);
-
-            var collection = GetCollection<T>();
-
-            var result = await RetryPolicy.ExecuteAsync(_ =>
-                collection.Find(filter)
-                .Project<T>(GetProjection<T>())
-                .ToListAsync(),
-            new Context(nameof(GetVacanciesByEmployerAccountAsync)));
-
-            return result;
-        }
-
         public async Task<int> GetVacancyCountForUserAsync(string userId)
         {
             var builder = Builders<Vacancy>.Filter;
@@ -121,24 +98,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 new Context(nameof(GetVacancyCountForUserAsync)));
 
             return (int)result;
-        }
-
-        public async Task<IEnumerable<T>> GetVacanciesByProviderAccountAsync<T>(long ukprn)
-        {
-            var builder = Builders<T>.Filter;
-            var filter = builder.Eq(ProviderUkprnFieldName, ukprn) &
-                        builder.Eq(OwnerTypeFieldName, OwnerType.Provider.ToString()) &
-                        builder.Eq(IsDeletedFieldName, false);
-
-            var collection = GetCollection<T>();
-
-            var result = await RetryPolicy.ExecuteAsync(_ =>
-                    collection.Find(filter)
-                    .Project<T>(GetProjection<T>())
-                    .ToListAsync(),
-            new Context(nameof(GetVacanciesByProviderAccountAsync)));
-
-            return result;
         }
 
         public async Task<IEnumerable<T>> GetDraftVacanciesCreatedBeforeAsync<T>(DateTime staleByDate)
@@ -175,57 +134,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<IEnumerable<T>> GetVacanciesByStatusAsync<T>(VacancyStatus status)
+        public Task<IEnumerable<VacancyIdentifier>> GetVacanciesToCloseAsync(DateTime pointInTime)
         {
-            var filter = Builders<T>.Filter.Eq(VacancyStatusFieldName, status.ToString());
-
-            var collection = GetCollection<T>();
-
-            var result = await RetryPolicy.ExecuteAsync(_ =>
-                collection.Find(filter)
-                .Project<T>(GetProjection<T>())
-                .ToListAsync(),
-            new Context(nameof(GetVacanciesByStatusAsync)));
-
-            return result;
-        }
-        
-        public async Task<IAsyncCursor<VacancyIdentifier>> GetVacanciesByStatusAndClosingDateAsync(VacancyStatus status, DateTime? closingDate)
-        {
-            var builder = Builders<VacancyIdentifier>.Filter;
-                
-            var filter =builder.Eq(VacancyStatusFieldName, status.ToString()) & 
-                        builder.Lt(identifier => identifier.ClosingDate, closingDate);
-                
-            var collection = GetCollection<VacancyIdentifier>();
-
-            var result = await RetryPolicy.ExecuteAsync(_ =>
-                    collection.Find(filter)
-                        .Project<VacancyIdentifier>(GetProjection<VacancyIdentifier>())
-                        .ToCursorAsync(),
-                new Context(nameof(GetVacanciesByStatusAsync)));
-
-            return result;
-        }
-
-        public async Task<Vacancy> GetSingleVacancyForPostcodeAsync(string postcode)
-        {
-            var builder = Builders<Vacancy>.Filter;
-
-            //Anonymous vacancies only have outcode geocoded
-            var filter = builder.Eq(v => v.EmployerLocation.Postcode, postcode) &
-                        builder.Ne(v => v.EmployerLocation.Latitude, null) &
-                        builder.Ne(v => v.EmployerLocation.Longitude, null) &
-                        builder.Ne(v => v.EmployerNameOption, EmployerNameOption.Anonymous);
-
-            var collection = GetCollection<Vacancy>();
-            var result = await RetryPolicy.ExecuteAsync(_ =>
-                collection.Find(filter).ToListAsync(),
-                new Context(nameof(GetSingleVacancyForPostcodeAsync)));
-
-            return result
-                        .OrderByDescending(x => x.VacancyReference)
-                        .FirstOrDefault();
+            throw new NotImplementedException();
         }
 
         public async Task UpdateAsync(Vacancy vacancy)
@@ -235,59 +146,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             await RetryPolicy.ExecuteAsync(async _ =>
                 await collection.ReplaceOneAsync(filter, vacancy),
                 new Context(nameof(UpdateAsync)));
-        }
-
-        public async Task<IEnumerable<string>> GetDistinctVacancyOwningEmployerAccountsAsync()
-        {
-            var filter = Builders<Vacancy>.Filter.Eq(v => v.OwnerType, OwnerType.Employer);
-            var collection = GetCollection<Vacancy>();
-            var result = await RetryPolicy.ExecuteAsync(_ =>
-                collection.Distinct(x => x.EmployerAccountId, filter).ToListAsync(),
-                new Context(nameof(GetDistinctVacancyOwningEmployerAccountsAsync)));
-
-            return result;
-        }
-
-        public async Task<IEnumerable<long>> GetDistinctVacancyOwningProviderAccountsAsync()
-        {
-            var filter = Builders<Vacancy>.Filter.Eq(v => v.OwnerType, OwnerType.Provider);
-            var collection = GetCollection<Vacancy>();
-
-            var result = await RetryPolicy.ExecuteAsync(_ =>
-                collection.Distinct(x => x.TrainingProvider.Ukprn, filter).ToListAsync(),
-                new Context(nameof(GetDistinctVacancyOwningEmployerAccountsAsync)));
-
-            return result.Where(x => x != null).Cast<long>().ToList();
-        }
-
-        public async Task<IEnumerable<long>> GetAllVacancyReferencesAsync()
-        {
-            var filter = Builders<Vacancy>.Filter.Empty;
-
-            var collection = GetCollection<Vacancy>();
-
-            var result = await RetryPolicy.ExecuteAsync(_ =>
-                    collection.Distinct(v => v.VacancyReference, filter)
-                        .ToListAsync(),
-                new Context(nameof(GetAllVacancyReferencesAsync)));
-
-            return result.Where(r => r.HasValue).Select(r => r.Value);
-        }
-
-        public async Task<IEnumerable<Guid>> GetAllVacancyIdsAsync()
-        {
-            var filter = Builders<Vacancy>.Filter.Empty;
-
-            var collection = GetCollection<Vacancy>();
-
-            var result = await RetryPolicy.ExecuteAsync(_ =>
-                    collection
-                        .Find(filter)
-                        .Project(v => v.Id)
-                        .ToListAsync(),
-                new Context(nameof(GetAllVacancyReferencesAsync)));
-
-            return result;
         }
 
         public async Task<IEnumerable<ProviderVacancySummary>> GetVacanciesAssociatedToProvider(long ukprn)

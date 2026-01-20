@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 
@@ -19,13 +21,20 @@ public class SqlVacancyRepository(IOuterApiVacancyClient outerApiVacancyClient):
         await outerApiVacancyClient.UpdateAsync(vacancy);
     }
 
-    public Task<Vacancy> GetVacancyAsync(Guid id)
+    public Task<int> GetVacancyCountForUserAsync(string userId)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Vacancy> GetVacancyAsync(long vacancyReference)
+    public async Task<Vacancy> GetVacancyAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var vacancy = await outerApiVacancyClient.GetVacancyAsync(id);
+        return vacancy ?? throw new VacancyNotFoundException(string.Format(ExceptionMessages.VacancyWithIdNotFound, id));
+    }
+
+    public async Task<Vacancy> GetVacancyAsync(long vacancyReference)
+    {
+        var vacancy = await outerApiVacancyClient.GetVacancyAsync(vacancyReference);
+        return vacancy ?? throw new VacancyNotFoundException(string.Format(ExceptionMessages.VacancyWithReferenceNotFound, vacancyReference));
     }
 }

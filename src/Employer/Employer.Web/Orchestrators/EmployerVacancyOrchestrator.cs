@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             if (string.IsNullOrWhiteSpace(programmeId))
                 return null;
-            var programmes = await _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+            var programmes = await _vacancyClient.GetActiveApprenticeshipProgrammesAsync(includePlaceholderProgramme:true);
             return programmes.SingleOrDefault(p => p.Id == programmeId);
         }
     }

@@ -1,6 +1,7 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
@@ -20,12 +21,12 @@ using Newtonsoft.Json;
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 
 public class TrainingOrchestrator(
-    IEmployerVacancyClient client,
     IRecruitVacancyClient vacancyClient,
     ILogger<TrainingOrchestrator> logger,
     IReviewSummaryService reviewSummaryService,
     IUtility utility,
-    IEmployerVacancyClient employerVacancyClient)
+    IEmployerVacancyClient employerVacancyClient,
+    RecruitConfiguration recruitConfiguration)
     : VacancyValidatingOrchestrator<TrainingEditModel>(logger)
 {
     private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProgramme;
@@ -34,14 +35,16 @@ public class TrainingOrchestrator(
     public async Task<TrainingViewModel> GetTrainingViewModelAsync(VacancyRouteModel vrm, VacancyUser user)
     {
         var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm);
-        var programmesTask = vacancyClient.GetActiveApprenticeshipProgrammesAsync();
         var isUsersFirstVacancyTask = IsUsersFirstVacancy(user.UserId);
         var getEmployerDataTask = employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
 
-        await Task.WhenAll(vacancyTask, programmesTask, isUsersFirstVacancyTask, getEmployerDataTask);
+        await Task.WhenAll(vacancyTask, isUsersFirstVacancyTask, getEmployerDataTask);
 
         var vacancy = vacancyTask.Result;
-        var programmes = programmesTask.Result;
+
+        var includePlaceholderProgramme = vacancy.EmployerAccountId.Equals(recruitConfiguration.EmployerAccountId,
+            StringComparison.CurrentCultureIgnoreCase);
+        var programmes = await vacancyClient.GetActiveApprenticeshipProgrammesAsync(includePlaceholderProgramme);
 
         var vm = new TrainingViewModel
         {
@@ -86,7 +89,7 @@ public class TrainingOrchestrator(
     public async Task<ConfirmTrainingViewModel> GetConfirmTrainingViewModelAsync(VacancyRouteModel vrm, string programmeId)
     {
         var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm);
-        var programmesTask = vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+        var programmesTask = vacancyClient.GetActiveApprenticeshipProgrammesAsync(includePlaceholderProgramme:true);
 
         await Task.WhenAll(vacancyTask, programmesTask);
         var vacancy = vacancyTask.Result;
@@ -130,7 +133,7 @@ public class TrainingOrchestrator(
 
     public async Task<OrchestratorResponse<PostConfirmTrainingEditModelResponse>> PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel m, VacancyUser user)
     {
-        var programmes = (await vacancyClient.GetActiveApprenticeshipProgrammesAsync()).ToList();
+        var programmes = (await vacancyClient.GetActiveApprenticeshipProgrammesAsync(includePlaceholderProgramme: true)).ToList();
         var programme = programmes.SingleOrDefault(p => p.Id == m.ProgrammeId);
         if (programme == null)
         {
@@ -186,13 +189,13 @@ public class TrainingOrchestrator(
 
     public async Task<IApprenticeshipProgramme> GetProgrammeAsync(string programmeId)
     {
-        var programmes = await vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+        var programmes = await vacancyClient.GetActiveApprenticeshipProgrammesAsync(includePlaceholderProgramme:true);
         return programmes.SingleOrDefault(p => p.Id == programmeId);
     }
 
     private async Task<bool> IsUsersFirstVacancy(string userId)
     {
-        int userVacancies = await client.GetVacancyCountForUserAsync(userId);
+        int userVacancies = await employerVacancyClient.GetVacancyCountForUserAsync(userId);
         return userVacancies <= 1;
     }
 

@@ -42,7 +42,7 @@ public class VacancyPreviewOrchestrator(
     public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
     {
         var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm);
-        var programmesTask = vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+        var programmesTask = vacancyClient.GetActiveApprenticeshipProgrammesAsync(includePlaceholderProgramme: true);
 
         await Task.WhenAll(vacancyTask, programmesTask);
 

@@ -7,67 +7,47 @@ using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Microsoft.Extensions.Logging;
-using NServiceBus;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
+namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
+
+public class DeleteVacancyCommandHandler(
+    ILogger<DeleteVacancyCommandHandler> logger,
+    IVacancyRepository repository,
+    IMessaging messaging,
+    ITimeProvider timeProvider)
+    : IRequestHandler<DeleteVacancyCommand, Unit>
 {
-    public class DeleteVacancyCommandHandler : IRequestHandler<DeleteVacancyCommand, Unit>
+    public async Task<Unit> Handle(DeleteVacancyCommand message, CancellationToken cancellationToken)
     {
-        private readonly ILogger<DeleteVacancyCommandHandler> _logger;
-        private readonly IVacancyRepository _repository;
-        private readonly IMessaging _messaging;
-        private readonly ITimeProvider _timeProvider;
-
-        public DeleteVacancyCommandHandler(
-            ILogger<DeleteVacancyCommandHandler> logger,
-            IVacancyRepository repository, 
-            IMessaging messaging, 
-            ITimeProvider timeProvider)
-        {
-            _logger = logger;
-            _repository = repository;
-            _messaging = messaging;
-            _timeProvider = timeProvider;
-        }
-
-        public async Task<Unit> Handle(DeleteVacancyCommand message, CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Deleting vacancy {vacancyId}", message.VacancyId);
+        logger.LogInformation("Deleting vacancy {vacancyId}", message.VacancyId);
             
-            var vacancy = await _repository.GetVacancyAsync(message.VacancyId);
+        var vacancy = await repository.GetVacancyAsync(message.VacancyId);
 
-            if (vacancy == null)
-            {
-                _logger.LogWarning($"Unable to find vacancy {{vacancyId}} for deletion", message.VacancyId);
-                return Unit.Value;
-            }
-
-            if (vacancy.CanDelete == false)
-            {
-                _logger.LogWarning($"Unable to delete vacancy {{vacancyId}} due to vacancy having a status of {vacancy?.Status}.", message.VacancyId);
-                return Unit.Value;
-            }
-
-            var now = _timeProvider.Now;
-
-            vacancy.IsDeleted = true;
-            vacancy.DeletedDate = now;
-            vacancy.LastUpdatedDate = now;
-
-            if (message.User != null)
-            {
-                vacancy.DeletedByUser = message.User;
-                vacancy.LastUpdatedByUser = message.User;
-            }
-
-            await _repository.UpdateAsync(vacancy);
-
-            await _messaging.PublishEvent(new VacancyDeletedEvent
-            {
-                VacancyId = vacancy.Id
-            });
-            
+        if (vacancy == null)
+        {
+            logger.LogWarning($"Unable to find vacancy {{vacancyId}} for deletion", message.VacancyId);
             return Unit.Value;
         }
+
+        if (vacancy.CanDelete == false)
+        {
+            logger.LogWarning($"Unable to delete vacancy {{vacancyId}} due to vacancy having a status of {vacancy?.Status}.", message.VacancyId);
+            return Unit.Value;
+        }
+
+        var now = timeProvider.Now;
+
+        vacancy.IsDeleted = true;
+        vacancy.DeletedDate = now;
+        vacancy.LastUpdatedDate = now;
+
+        await repository.UpdateAsync(vacancy);
+
+        await messaging.PublishEvent(new VacancyDeletedEvent
+        {
+            VacancyId = vacancy.Id
+        });
+            
+        return Unit.Value;
     }
 }

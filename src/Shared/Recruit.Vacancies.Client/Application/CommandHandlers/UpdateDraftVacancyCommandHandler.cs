@@ -8,43 +8,29 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
+namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
+
+public class UpdateDraftVacancyCommandHandler(
+    ILogger<UpdateDraftVacancyCommandHandler> logger,
+    IVacancyRepository repository,
+    IMessaging messaging,
+    ITimeProvider timeProvider)
+    : IRequestHandler<UpdateDraftVacancyCommand, Unit>
 {
-    public class UpdateDraftVacancyCommandHandler : IRequestHandler<UpdateDraftVacancyCommand, Unit>
+    public async Task<Unit> Handle(UpdateDraftVacancyCommand message, CancellationToken cancellationToken)
     {
-        private readonly ILogger<UpdateDraftVacancyCommandHandler> _logger;
-        private readonly IVacancyRepository _repository;
-        private readonly IMessaging _messaging;
-        private readonly ITimeProvider _timeProvider;
+        logger.LogInformation("Updating vacancy {vacancyId}.", message.Vacancy.Id);
 
-        public UpdateDraftVacancyCommandHandler(
-            ILogger<UpdateDraftVacancyCommandHandler> logger,
-            IVacancyRepository repository, 
-            IMessaging messaging, 
-            ITimeProvider timeProvider)
+        message.Vacancy.LastUpdatedDate = timeProvider.Now;
+
+        await repository.UpdateAsync(message.Vacancy);
+
+        await messaging.PublishEvent(new DraftVacancyUpdatedEvent
         {
-            _logger = logger;
-            _repository = repository;
-            _messaging = messaging;
-            _timeProvider = timeProvider;
-        }
-
-        public async Task<Unit> Handle(UpdateDraftVacancyCommand message, CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Updating vacancy {vacancyId}.", message.Vacancy.Id);
-
-            message.Vacancy.LastUpdatedDate = _timeProvider.Now;
-            message.Vacancy.LastUpdatedByUser = message.User;
-
-            await _repository.UpdateAsync(message.Vacancy);
-
-            await _messaging.PublishEvent(new DraftVacancyUpdatedEvent
-            {
-                EmployerAccountId = message.Vacancy.EmployerAccountId,
-                VacancyId = message.Vacancy.Id
-            });
+            EmployerAccountId = message.Vacancy.EmployerAccountId,
+            VacancyId = message.Vacancy.Id
+        });
             
-            return Unit.Value;
-        }
+        return Unit.Value;
     }
 }
