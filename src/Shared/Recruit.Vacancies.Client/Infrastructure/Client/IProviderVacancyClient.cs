@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Reports;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -20,9 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<Guid> CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyUser user, string reportName);
         Task<List<ReportSummary>> GetReportsForProviderAsync(long ukprn);
         Task<Report> GetReportAsync(Guid reportId);
-        Task WriteReportAsCsv(Stream stream, Report report);
-        Task WriteApplicationSummaryReportsToCsv(Stream stream, Guid reportId);
-        Task IncrementReportDownloadCountAsync(Guid reportId);
+        Task WriteApplicationSummaryReportsToCsv(Stream stream, Guid reportId, ReportVersion version = ReportVersion.V2);
         Task CreateProviderApiVacancy(Guid id, string title, string employerAccountId, VacancyUser user);
         Task<ProviderDashboardSummary> GetDashboardSummary(long ukprn, string userId);
         Task<long> GetVacancyCount(long ukprn, FilteringOptions? filteringOptions, string searchTerm);

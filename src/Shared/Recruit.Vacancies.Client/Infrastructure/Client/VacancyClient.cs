@@ -25,12 +25,10 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProv
 using Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 using FluentValidation;
 using FluentValidation.Results;
-using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public partial class VacancyClient(
-        ILogger<VacancyClient> logger,
         IVacancyRepository repository,
         IVacancyQuery vacancyQuery,
         IQueryStoreReader reader,
@@ -44,7 +42,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IUserRepository userRepository,
         IUserRepositoryRunner userWriteRepository,
         IEmployerService employerService,
-        IReportRepository reportRepository,
         IReportService reportService,
         IProviderReportService providerReportService,
         IUserNotificationPreferencesRepository userNotificationPreferencesRepository,
@@ -53,12 +50,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IVacancySummariesProvider vacancySummariesQuery,
         ITimeProvider timeProvider,
         ITrainingProviderService trainingProviderService,
-        ISqlDbRepository sqlDbRepository,
-        IFeature feature)
+        ISqlDbRepository sqlDbRepository)
         : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
-        private readonly bool _isReportsMigrationFeatureFlagEnabled = feature.IsFeatureEnabled(FeatureNames.ReportsMigration);
-
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
         {
             var command = new UpdateDraftVacancyCommand
@@ -249,14 +243,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return validator.Validate(vacancy, rules);
         }
 
-        public Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync()
+        public Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync(bool includePlaceholderProgramme = false)
         {
-            return apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync();
+            return apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync(includePlaceholderProgramme: includePlaceholderProgramme);
         }
 
-        public Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId)
+        public Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId, bool includePlaceholderProgramme = false)
         {
-            return apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(programmeId);
+            return apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(programmeId, includePlaceholderProgramme: includePlaceholderProgramme);
         }
 
         public Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email)
