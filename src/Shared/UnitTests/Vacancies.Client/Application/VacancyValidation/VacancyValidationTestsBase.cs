@@ -1,4 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
@@ -13,6 +17,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Rules.VacancyRules;
 using Microsoft.Extensions.Logging;
+using Moq.Protected;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation
 {
@@ -27,11 +32,20 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         protected readonly TestProfanityListProvider MockProfanityListProvider;
         protected readonly Mock<IProviderRelationshipsService> MockProviderRelationshipsService;
         protected readonly Mock<ITrainingProviderService> MockTrainingProviderService;
+        protected readonly Mock<IExternalWebsiteHealthCheckService> MockExternalWebsiteHealthCheckService;
         protected ITimeProvider TimeProvider;
         protected readonly Mock<IFeature> Feature;
+        
+        private IExternalWebsiteHealthCheckService _externalWebsiteHealthCheckService;
 
         protected VacancyValidationTestsBase()
         {
+            var externalWebsiteMessageHandler = new Mock<HttpMessageHandler>();
+            externalWebsiteMessageHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync((HttpRequestMessage _, CancellationToken _) => new HttpResponseMessage(HttpStatusCode.OK));
+            _externalWebsiteHealthCheckService = new ExternalWebsiteHealthCheckService(new HttpClient(externalWebsiteMessageHandler.Object));
+            
             MockMinimumWageService = new Mock<IMinimumWageProvider>();
             MockApprenticeshipProgrammeProvider = new Mock<IApprenticeshipProgrammeProvider>();
             MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("123", null, true))
@@ -79,6 +93,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                     Ukprn = 10000000,
                 }
             });
+            MockExternalWebsiteHealthCheckService = new Mock<IExternalWebsiteHealthCheckService>();
             TimeProvider = new CurrentUtcTimeProvider();
             Feature = new Mock<IFeature>();
         }
@@ -90,7 +105,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 var fluentValidator = new FluentVacancyValidator(TimeProvider, MockMinimumWageService.Object, 
                     MockApprenticeshipProgrammeProvider.Object, MockReferenceDataClient.Object, SanitizerService, 
                     MockTrainingProviderSummaryProvider.Object, MockTrainingProviderService.Object, MockBlockedOrganisationRepo.Object,
-                    MockProfanityListProvider, MockProviderRelationshipsService.Object);
+                    MockProfanityListProvider, MockProviderRelationshipsService.Object, _externalWebsiteHealthCheckService);
                 return new EntityValidator<Vacancy, VacancyRuleSet>(fluentValidator);
             }
         }
