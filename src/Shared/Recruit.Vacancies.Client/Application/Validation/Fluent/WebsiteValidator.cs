@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 
 internal class WebsiteValidator<T, TProperty>(IExternalWebsiteHealthCheckService externalWebsiteHealthCheckService) : AsyncPropertyValidator<T, TProperty> 
 {
-    public override async Task<bool> IsValidAsync(ValidationContext<T> context, TProperty value, CancellationToken cancellationToken)
+    public override async Task<bool> IsValidAsync(ValidationContext<T> context, TProperty value, CancellationToken cancellation)
     {
         if (value is not string url || !Uri.TryCreate(url, UriKind.Absolute, out var uri))
         {
@@ -18,7 +18,7 @@ internal class WebsiteValidator<T, TProperty>(IExternalWebsiteHealthCheckService
 
         try
         {
-            return await externalWebsiteHealthCheckService.IsHealthyAsync(uri, cancellationToken);
+            return await externalWebsiteHealthCheckService.IsHealthyAsync(uri, cancellation);
         }
         catch (InvalidSchemeException)
         {

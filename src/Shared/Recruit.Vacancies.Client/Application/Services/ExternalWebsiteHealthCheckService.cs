@@ -14,7 +14,7 @@ public class InvalidSchemeException(string message) : Exception(message);
 
 public class ExternalWebsiteHealthCheckService(HttpClient httpClient) : IExternalWebsiteHealthCheckService
 {
-    public async Task<bool> IsHealthyAsync(Uri uri, CancellationToken cancellationToken = default)
+    public async Task<bool> IsHealthyAsync(Uri uri, CancellationToken cancellationToken)
     {
         if (uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp)
         {
