@@ -42,5 +42,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
         public bool IsTaskListCompleted { get; set; }
         public bool? HasChosenProviderContactDetails { get; set; }
         public ApprenticeshipTypes? ApprenticeshipType { get; set; }
+        public SourceOrigin? SourceOrigin { get; set; }
     }
 }
