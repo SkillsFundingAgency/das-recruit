@@ -64,11 +64,11 @@
                                        data-aria-controls="custom-range-panel">
                                 <label for="daterange-custom" class="govuk-label govuk-radios__label">
                                     choose a date range
-                                    <span class="govuk-hint">Maximum of 3 months</span>
                                 </label>
                             </div>
                             <div id="custom-range-panel" class="govuk-radios__conditional govuk-radios__conditional--hidden">
                                 <div class="govuk-form-group">
+                                    <p class="govuk-hint">You can select a maximum of 3 months.</p>
                                     <div esfa-validation-marker-for="FromDate" class="govuk-form-group">
                                         <fieldset class="govuk-fieldset">
                                             <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">
@@ -85,9 +85,9 @@
                                                             Day
                                                         </label>
                                                         <input asp-for="FromDay"
-                                                            class="govuk-input govuk-date-input__input govuk-input--width-2"
-                                                            type="number"
-                                                            pattern="[0-9]*">
+                                                               class="govuk-input govuk-date-input__input govuk-input--width-2"
+                                                               type="number"
+                                                               pattern="[0-9]*">
                                                     </div>
                                                 </div>
                                                 <div class="govuk-date-input__item">
@@ -96,9 +96,9 @@
                                                             Month
                                                         </label>
                                                         <input asp-for="FromMonth"
-                                                            class="govuk-input govuk-date-input__input govuk-input--width-2"
-                                                            type="number"
-                                                            pattern="[0-9]*">
+                                                               class="govuk-input govuk-date-input__input govuk-input--width-2"
+                                                               type="number"
+                                                               pattern="[0-9]*">
                                                     </div>
                                                 </div>
                                                 <div class="govuk-date-input__item">
@@ -107,9 +107,9 @@
                                                             Year
                                                         </label>
                                                         <input asp-for="FromYear"
-                                                            class="govuk-input govuk-date-input__input govuk-input--width-4"
-                                                            type="number"
-                                                            pattern="[0-9]*">
+                                                               class="govuk-input govuk-date-input__input govuk-input--width-4"
+                                                               type="number"
+                                                               pattern="[0-9]*">
                                                     </div>
                                                 </div>
                                             </div>
