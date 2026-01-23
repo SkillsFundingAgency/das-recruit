@@ -41,5 +41,6 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public bool IsNotSubmittable => !IsSubmittable;
         public int NoOfApplications => NoOfNewApplications + NoOfSuccessfulApplications + NoOfUnsuccessfulApplications;
         public bool IsTaskListCompleted { get; set; }
+        public SourceOrigin? SourceOrigin { get; set; }
     }
 }

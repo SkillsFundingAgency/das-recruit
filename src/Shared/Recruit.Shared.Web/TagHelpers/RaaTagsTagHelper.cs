@@ -57,3 +57,20 @@ public class FoundationTagTagHelper : RaaTagsTagHelper
         return Task.FromResult<IHtmlContent>(new HtmlString("Foundation"));
     }
 }
+
+[HtmlTargetElement(TagName)]
+public class ApiSubmittedTagHelper : RaaTagsTagHelper
+{
+    public new const string TagName = "govuk-tag-api-submitted";
+    
+    public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+    {
+        output.AddClass("govuk-tag--yellow", HtmlEncoder.Default);
+        await base.ProcessAsync(context, output);
+    }
+
+    protected override Task<IHtmlContent> GetContent(TagHelperOutput output)
+    {
+        return Task.FromResult<IHtmlContent>(new HtmlString("API submitted"));
+    }
+}
