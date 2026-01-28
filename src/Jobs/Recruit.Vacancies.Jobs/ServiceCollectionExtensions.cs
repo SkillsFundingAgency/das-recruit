@@ -11,7 +11,6 @@ using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Ioc;
-using Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor;
 using Esfa.Recruit.Vacancies.Jobs.Communication;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
@@ -47,8 +46,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<TransferVacancyToLegalEntityJob>();
 
             services.AddScoped<INotificationService, NotificationService>();
-
-            services.AddScoped<IAnalyticsAggregator, AnalyticsAggregator>();
             
             // Domain Event Queue Handlers
 

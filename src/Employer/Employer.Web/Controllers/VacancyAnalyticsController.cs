@@ -10,20 +10,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
     [Authorize(Policy = nameof(PolicyNames.HasEmployerOwnerOrTransactorAccount))]
-    public class VacancyAnalyticsController : Controller
+    public class VacancyAnalyticsController(IVacancyAnalyticsOrchestrator orchestrator) : Controller
     {
-        private readonly IVacancyAnalyticsOrchestrator _orchestrator;
-
-
-        public VacancyAnalyticsController(IVacancyAnalyticsOrchestrator orchestrator)
-        {
-            _orchestrator = orchestrator;
-        }
-
         [HttpGet("analytics", Name = RouteNames.VacancyAnalytics_Get)]
         public async Task<IActionResult> VacancyAnalytics(VacancyRouteModel vrm)
         {
-            var viewModel = await _orchestrator.GetVacancyAnalytics(vrm);
+            var viewModel = await orchestrator.GetVacancyAnalytics(vrm);
 
             return View(viewModel);
         }
