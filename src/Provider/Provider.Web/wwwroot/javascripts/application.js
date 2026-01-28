@@ -351,42 +351,41 @@ characterCount = function (element, count) {
     count += (text.match(/\n/g) || []).length;
   }
 
-  var maxLength = $element.attr("data-val-length-max"),
+  var maxLength = $element.closest(".govuk-character-count").attr("data-maxlength"),
     absRemainder = Math.abs(maxLength - count),
-    $maxLengthCountElement = $element
-      .closest(".govuk-form-group")
-      .find(".maxchar-count"),
-    $maxLengthTextElement = $element
-      .closest(".govuk-form-group")
-      .find(".maxchar-text");
-
+    $maxLengthCountElement = $element.parent()
+      .find(".govuk-character-count__message");
+  
   if (maxLength) {
     $maxLengthCountElement.text(absRemainder);
   } else {
     $maxLengthCountElement.hide();
     return;
   }
+  
+  let status
 
   if (count > maxLength) {
-    $maxLengthCountElement.parent().addClass("has-error");
-    $maxLengthTextElement.text(
+    $maxLengthCountElement.addClass("has-error");
+    status =
       absRemainder === 1
-        ? " character over the limit"
-        : " characters over the limit"
-    );
+        ? `You have 1 character too many`
+        : `You have ${absRemainder} characters too many`
+    
   } else {
-    $maxLengthCountElement.parent().removeClass("has-error");
-    $maxLengthTextElement.text(
-      absRemainder === 1 ? " character remaining" : " characters remaining"
-    );
+    $maxLengthCountElement.removeClass("has-error");
+    status =
+      absRemainder === 1 ? `You have 1 character remaining` : `You have ${absRemainder}  characters remaining`
+    
   }
+  $maxLengthCountElement.text(status)
 };
 
-$(".character-count").on("keyup", function () {
+$(".govuk-js-character-count").on("keyup", function () {
   characterCount(this);
 });
 
-$(".character-count").each(function () {
+$(".govuk-js-character-count").each(function () {
   characterCount(this);
 });
 
@@ -449,35 +448,37 @@ function inViewport($el) {
 }
 
 function initializeHtmlEditors() {
-  tinymce.init({
-    element_format: "html",
-    apply_source_formatting: true,
-    menubar: false,
-    plugins: "lists paste",
-    selector: ".html-editor",
-    statusbar: false,
-    toolbar: "bullist",
-    paste_as_text: true,
-    content_style:
-      '.mce-content-body {font-size:19px;font-family:"GDS Transport",arial,sans-serif}',
-    setup: function (tinyMceEditor) {
-      var element = tinyMceEditor.getElement();
-
-      tinyMceEditor.on("keyup", function (e) {
+  window.addEventListener("load", function () {
+    tinymce.init({
+      element_format: "html",
+      apply_source_formatting: true,
+      menubar: false,
+      plugins: "lists paste",
+      selector: ".html-editor",
+      statusbar: false,
+      toolbar: "bullist",
+      paste_as_text: true,
+      content_style:
+        '.mce-content-body {font-size:19px;font-family:"Inter", sans-serif !important}',
+      setup: function (tinyMceEditor) {
+        var element = tinyMceEditor.getElement();
+  
+        tinyMceEditor.on("keyup", function (e) {
+          setEditorMaxLength(element, tinyMceEditor);
+        });
+        tinyMceEditor.on("focus", function (e) {
+          tinyMceEditor.editorContainer.classList.add("editor-focus");
+        });
+        tinyMceEditor.on("blur", function (e) {
+          tinyMceEditor.editorContainer.classList.remove("editor-focus");
+        });
+      },
+      init_instance_callback: function (tinyMceEditor) {
+        var element = tinyMceEditor.getElement();
         setEditorMaxLength(element, tinyMceEditor);
-      });
-      tinyMceEditor.on("focus", function (e) {
-        tinyMceEditor.editorContainer.classList.add("editor-focus");
-      });
-      tinyMceEditor.on("blur", function (e) {
-        tinyMceEditor.editorContainer.classList.remove("editor-focus");
-      });
-    },
-    init_instance_callback: function (tinyMceEditor) {
-      var element = tinyMceEditor.getElement();
-      setEditorMaxLength(element, tinyMceEditor);
-    },
-  });
+      },
+    });
+  })
 }
 
 function setEditorMaxLength(element, tinyMceEditor) {
