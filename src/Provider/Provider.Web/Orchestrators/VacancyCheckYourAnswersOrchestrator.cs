@@ -38,10 +38,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>(logger)
     {
         private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
+
         private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage |
                                                            VacancyRuleSet.TrainingExpiryDate |
                                                            VacancyRuleSet.TrainingProgramme |
-                                                           VacancyRuleSet.TrainingProviderDeliverCourse;
+                                                           VacancyRuleSet.TrainingProviderDeliverCourse |
+                                                           VacancyRuleSet.EmployerWebsiteUrl |
+                                                           VacancyRuleSet.ApplicationMethod;
 
         public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel routeModel)
         {

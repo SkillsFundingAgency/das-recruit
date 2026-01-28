@@ -1,67 +1,67 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
+
+public class EmployerWebsiteUrlValidationTests : VacancyValidationTestsBase
 {
-    public class EmployerWebsiteUrlValidationTests : VacancyValidationTestsBase
+    [TestCase(null)]
+    [TestCase("")]
+    
+    [TestCase("http://www.company.com")]
+    [TestCase("https://www.company.com")]
+    public void NoErrorsWhenEmployerWebsiteUrlIsValid(string url)
     {
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData("company.com")]
-        [InlineData("www.company.com")]
-        [InlineData("http://www.company.com")]
-        [InlineData("https://www.company.com")]
-        public void NoErrorsWhenEmployerWebsiteUrlIsValid(string url)
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
-            {
-                EmployerWebsiteUrl = url
-            };
+            EmployerWebsiteUrl = url
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerWebsiteUrl);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerWebsiteUrl);
 
-            result.HasErrors.Should().BeFalse();
-            result.Errors.Should().HaveCount(0);
-        }
+        result.HasErrors.Should().BeFalse();
+        result.Errors.Should().HaveCount(0);
+    }
         
-        [Fact]
-        public void EmployerWebsiteUrlMustBe100CharactersOrLess()
+    [Test]
+    public void EmployerWebsiteUrlMustBe100CharactersOrLess()
+    {
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
-            {
-                EmployerWebsiteUrl = "http://www.company.com".PadRight(101, 'w')
-            };
+            EmployerWebsiteUrl = "http://www.company.com".PadRight(101, 'w')
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerWebsiteUrl);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerWebsiteUrl);
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerWebsiteUrl));
-            result.Errors[0].ErrorCode.Should().Be("84");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerWebsiteUrl);
-        }
+        result.HasErrors.Should().BeTrue();
+        result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerWebsiteUrl));
+        result.Errors[0].ErrorCode.Should().Be("84");
+        result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerWebsiteUrl);
+    }
 
-        [Theory]
-        [InlineData("invalid url")]
-        [InlineData("company")]
-        [InlineData("domain.com ?term=query")]
-        [InlineData(".com")]
-        [InlineData(".org.uk")]
-        [InlineData(",com")]
-        public void EmployerWebsiteUrlMustBeAValidWebAddress(string invalidUrl)
+    [TestCase("invalid url")]
+    [TestCase("company")]
+    [TestCase("domain.com ?term=query")]
+    [TestCase(".com")]
+    [TestCase(".org.uk")]
+    [TestCase(",com")]
+    [TestCase("company.com")]
+    [TestCase("www.company.com")]
+    [TestCase("/apply")]
+    [TestCase("/apply?source=foo")]
+    [TestCase("/apply.aspx")]
+    public void EmployerWebsiteUrlMustBeAValidWebAddress(string invalidUrl)
+    {
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
-            {
-                EmployerWebsiteUrl = invalidUrl
-            };
+            EmployerWebsiteUrl = invalidUrl
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerWebsiteUrl);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerWebsiteUrl);
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerWebsiteUrl));
-            result.Errors[0].ErrorCode.Should().Be("82");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerWebsiteUrl);
-        }
+        result.HasErrors.Should().BeTrue();
+        result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerWebsiteUrl));
+        result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerWebsiteUrl);
     }
 }
