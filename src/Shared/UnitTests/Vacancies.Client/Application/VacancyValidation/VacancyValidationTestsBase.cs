@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             externalWebsiteMessageHandler.Protected()
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync((HttpRequestMessage _, CancellationToken _) => new HttpResponseMessage(HttpStatusCode.OK));
-            _externalWebsiteHealthCheckService = new ExternalWebsiteHealthCheckService(new HttpClient(externalWebsiteMessageHandler.Object));
+            _externalWebsiteHealthCheckService = new ExternalWebsiteHealthCheckService(Mock.Of<ILogger<ExternalWebsiteHealthCheckService>>(), new HttpClient(externalWebsiteMessageHandler.Object));
             
             MockMinimumWageService = new Mock<IMinimumWageProvider>();
             MockApprenticeshipProgrammeProvider = new Mock<IApprenticeshipProgrammeProvider>();

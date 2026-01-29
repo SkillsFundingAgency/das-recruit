@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Microsoft.Extensions.Logging;
 using Moq.Protected;
 using NUnit.Framework;
 
@@ -21,7 +22,7 @@ public class WhenCheckingExternalWebsiteHealth
             .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync((HttpRequestMessage _, CancellationToken _) => new HttpResponseMessage(HttpStatusCode.OK));
         
-        var sut = new ExternalWebsiteHealthCheckService(new HttpClient(externalWebsiteMessageHandler.Object));
+        var sut = new ExternalWebsiteHealthCheckService(Mock.Of<ILogger<ExternalWebsiteHealthCheckService>>(), new HttpClient(externalWebsiteMessageHandler.Object));
         var action = async () => await sut.IsHealthyAsync(new Uri($"{scheme}://www.example.com"), CancellationToken.None);
         
         // act/assert
@@ -38,7 +39,7 @@ public class WhenCheckingExternalWebsiteHealth
             .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync((HttpRequestMessage _, CancellationToken _) => new HttpResponseMessage(HttpStatusCode.OK));
         
-        var sut = new ExternalWebsiteHealthCheckService(new HttpClient(externalWebsiteMessageHandler.Object));
+        var sut = new ExternalWebsiteHealthCheckService(Mock.Of<ILogger<ExternalWebsiteHealthCheckService>>(), new HttpClient(externalWebsiteMessageHandler.Object));
         var action = async () => await sut.IsHealthyAsync(new Uri($"{scheme}://www.example.com"), CancellationToken.None);
         
         // act/assert
@@ -55,7 +56,7 @@ public class WhenCheckingExternalWebsiteHealth
             .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync((HttpRequestMessage _, CancellationToken _) => new HttpResponseMessage(statusCode));
         
-        var sut = new ExternalWebsiteHealthCheckService(new HttpClient(externalWebsiteMessageHandler.Object));
+        var sut = new ExternalWebsiteHealthCheckService(Mock.Of<ILogger<ExternalWebsiteHealthCheckService>>(), new HttpClient(externalWebsiteMessageHandler.Object));
 
         // act
         var result = await sut.IsHealthyAsync(new Uri("https://www.example.com"), CancellationToken.None);
@@ -77,7 +78,7 @@ public class WhenCheckingExternalWebsiteHealth
             .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync((HttpRequestMessage _, CancellationToken _) => new HttpResponseMessage(statusCode));
         
-        var sut = new ExternalWebsiteHealthCheckService(new HttpClient(externalWebsiteMessageHandler.Object));
+        var sut = new ExternalWebsiteHealthCheckService(Mock.Of<ILogger<ExternalWebsiteHealthCheckService>>(), new HttpClient(externalWebsiteMessageHandler.Object));
 
         // act
         var result = await sut.IsHealthyAsync(new Uri("https://www.example.com"), CancellationToken.None);
