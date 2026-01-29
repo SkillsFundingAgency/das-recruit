@@ -11,11 +11,17 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
 {
+    public interface IReportDashboardOrchestrator
+    {
+        Task<ReportsDashboardViewModel> GetDashboardViewModel(long ukprn);
+        Task<ReportDownloadViewModel> GetDownloadCsvAsync(long ukprn, Guid reportId, ReportVersion version = ReportVersion.V2);
+    }
+
     public class ReportDashboardOrchestrator(
         ILogger<ReportDashboardOrchestrator> logger,
         IProviderVacancyClient vacancyClient,
         IConfiguration configuration)
-        : ReportOrchestratorBase(logger, vacancyClient)
+        : ReportOrchestratorBase(logger, vacancyClient), IReportDashboardOrchestrator
     {
         private readonly IProviderVacancyClient _vacancyClient = vacancyClient;
 

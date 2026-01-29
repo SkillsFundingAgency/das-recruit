@@ -16,6 +16,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard
         public long Ukprn { get; set; }
         public DateTime ReportV2MigrationDate { get; set; }
         public bool IsPreV2Migration => DateTime.UtcNow < ReportV2MigrationDate;
+        public bool ShowSuccessBanner { get; set; }
+        public string SuccessReportName { get; set; }
     }
 
     public class ReportRowViewModel
