@@ -24,6 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private readonly IBlockedOrganisationQuery _blockedOrganisationRepo;
         private readonly IProfanityListProvider _profanityListProvider;
         private readonly IProviderRelationshipsService _providerRelationshipService;
+        private readonly IExternalWebsiteHealthCheckService _externalWebsiteHealthCheckService;
 
         public FluentVacancyValidator(
             ITimeProvider timeProvider,
@@ -35,7 +36,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ITrainingProviderService trainingProviderService,
             IBlockedOrganisationQuery blockedOrganisationRepo,
             IProfanityListProvider profanityListProvider,
-            IProviderRelationshipsService providerRelationshipService)
+            IProviderRelationshipsService providerRelationshipService,
+            IExternalWebsiteHealthCheckService externalWebsiteHealthCheckService)
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;
@@ -47,6 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             _blockedOrganisationRepo = blockedOrganisationRepo;
             _profanityListProvider = profanityListProvider;
             _providerRelationshipService = providerRelationshipService;
+            _externalWebsiteHealthCheckService = externalWebsiteHealthCheckService;
 
             SingleFieldValidations();
             CrossFieldValidations();
@@ -782,6 +785,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private void ValidateApplicationUrl()
         {
             RuleFor(x => x.ApplicationUrl)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                     .WithMessage("Enter the application website link")
                     .WithErrorCode("85")
@@ -793,6 +797,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .Must(FluentExtensions.BeValidWebUrl)
                     .WithMessage("Application website link must be a valid link")
                     .WithErrorCode("86")
+                .WithState(_ => VacancyRuleSet.ApplicationMethod)
+                .MustBeValidWebsiteAsync(_externalWebsiteHealthCheckService)
+                    .WithMessage("Enter a valid website address")
+                    .WithErrorCode("86.1")
                 .WithState(_ => VacancyRuleSet.ApplicationMethod)
                 .RunCondition(VacancyRuleSet.ApplicationMethod);
         }
@@ -875,6 +883,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .RunCondition(VacancyRuleSet.EmployerDescription);
 
             RuleFor(x => x.EmployerWebsiteUrl)
+                .Cascade(CascadeMode.Stop)                
                 .MaximumLength(100)
                     .WithMessage("Application website link must not exceed {MaxLength} characters")
                     .WithErrorCode("84")
@@ -882,7 +891,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .Must(FluentExtensions.BeValidWebUrl)
                     .WithMessage("Application website link must be a valid link")
                     .WithErrorCode("82")
-                .WithState(_ => VacancyRuleSet.EmployerWebsiteUrl)
+                    .WithState(_ => VacancyRuleSet.EmployerWebsiteUrl)
+                    .When(v => !string.IsNullOrEmpty(v.EmployerWebsiteUrl))
+                .MustBeValidWebsiteAsync(_externalWebsiteHealthCheckService)
+                    .WithMessage("Enter a valid website address")
+                    .WithErrorCode("86")
+                    .WithState(_ => VacancyRuleSet.EmployerWebsiteUrl)
                     .When(v => !string.IsNullOrEmpty(v.EmployerWebsiteUrl))
                 .RunCondition(VacancyRuleSet.EmployerWebsiteUrl);
         }
