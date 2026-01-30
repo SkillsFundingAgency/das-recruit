@@ -183,7 +183,6 @@
         "webJobAppServicePlanName": "[concat(variables('resourceNamePrefix'),'-webjob-asp')]",
         "employerRecruitAppServiceName": "[concat(variables('resourceNamePrefix'), '-as')]",
         "providerRecruitAppServiceName": "[concat(variables('resourceNamePrefix'), '-pr-as')]",
-        "qaAppServiceName": "[concat(variables('resourceNamePrefix'), '-qa-as')]",
         "webjobAppServiceName": "[concat(variables('resourceNamePrefix'), '-webjob-as')]",
         "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]",
         "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
@@ -258,59 +257,7 @@
                     }
                 }
             }
-        },
-        {
-            "apiVersion": "2020-10-01",
-            "name": "[concat('qa-app-insights-', parameters('utcValue'))]",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[variables('resourceGroupName')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'application-insights.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "appInsightsName": {
-                        "value": "[variables('qaAppServiceName')]"
-                    },
-                    "attachedService": {
-                        "value": "[variables('qaAppServiceName')]"
-                    },
-                    "logAnalyticsWorkspaceId": {
-                        "value": "[resourceId(parameters('logAnalyticsSubscriptionId'),parameters('sharedManagementResourceGroup'),'Microsoft.OperationalInsights/workspaces',parameters('logAnalyticsWorkspaceName'))]"
-                    }
-                }
-            },
-            "dependsOn": [
-                "[variables('resourceGroupName')]"
-            ]
-        },
-        {
-            "condition": "[parameters('deployPrivateLinkedScopedResource')]",
-            "apiVersion": "2021-04-01",
-            "name": "[concat(variables('qaAppServiceName'), '-private-link-scoped-', parameters('utcValue'))]",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'private-linked-scoped-resource.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "privateLinkScopeName": {
-                        "value": "[variables('privateLinkScopeName')]"
-                    },
-                    "scopedResourceName": {
-                        "value": "[variables('qaAppServiceName')]"
-                    },
-                    "scopedResourceId": {
-                        "value": "[reference(concat('qa-app-insights-', parameters('utcValue'))).outputs.AppInsightsResourceId.value]"
-                    }
-                }
-            }
-        },
+        },        
         {
             "apiVersion": "2020-10-01",
             "name": "[concat('provider-recruit-app-insights-', parameters('utcValue'))]",
@@ -686,77 +633,7 @@
                     }
                 }
             }
-        },
-        {
-            "apiVersion": "2020-10-01",
-            "name": "[concat('qa-app-service-', parameters('utcValue'))]",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[variables('resourceGroupName')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-v2.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "appServiceName": {
-                        "value": "[variables('qaAppServiceName')]"
-                    },
-                    "appServicePlanName": {
-                        "value": "[parameters('sharedFrontEndAppServicePlanName')]"
-                    },
-                    "appServicePlanResourceGroup": {
-                        "value": "[parameters('sharedEnvResourceGroup')]"
-                    },
-                    "subnetResourceId": {
-                        "value": "[parameters('sharedFrontEndSubnetResourceId')]"
-                    },
-                    "appServiceAppSettings": {
-                        "value": {
-                            "array": [
-                                {
-                                    "name": "ConfigurationStorageConnectionString",
-                                    "value": "[parameters('configurationStorageConnectionString')]"
-                                },
-                                {
-                                    "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-                                    "value": "[reference(concat('qa-app-insights-', parameters('utcValue'))).outputs.ConnectionString.value]"
-                                },
-                                {
-                                    "name": "Environment",
-                                    "value": "[toUpper(parameters('environmentName'))]"
-                                },
-                                {
-                                    "name": "LoggingRedisConnectionString",
-                                    "value": "[parameters('loggingRedisConnectionString')]"
-                                },
-                                {
-                                    "name": "Cdn:Url",
-                                    "value": "[parameters('cdnUrl')]"
-                                },
-                                {
-                                    "name": "ResourceEnvironmentName",
-                                    "value": "[toUpper(parameters('resourceEnvironmentName'))]"
-                                },
-                                {
-                                    "name": "ConfigNames",
-                                    "value": "[variables('qaConfigNames')]"
-                                }
-                            ]
-                        }
-                    },
-                    "customHostName": {
-                        "value": "[parameters('QAAppCustomHostname')]"
-                    },
-                    "certificateThumbprint": {
-                        "value": "[if(greater(length(parameters('EmployerCustomHostname')), 0), reference(concat('qa-app-service-certificate-', parameters('utcValue')), '2018-11-01').outputs.certificateThumbprint.value, '')]"
-                    },
-                    "ipSecurityRestrictions": {
-                        "value": "[parameters('frontEndAccessRestrictions')]"
-                    }
-                }
-            }
-        },
+        },        
         {
             "condition": "[greater(length(parameters('ProviderKeyvaultCertificateName')), 0)]",
             "apiVersion": "2020-10-01",
@@ -1243,11 +1120,7 @@
         "ProviderAppServiceName": {
             "type": "string",
             "value": "[variables('providerRecruitAppServiceName')]"
-        },
-        "QAAppServiceName": {
-            "type": "string",
-            "value": "[variables('qaAppServiceName')]"
-        },
+        },        
         "JobsAppServiceName": {
             "type": "string",
             "value": "[variables('webjobAppServiceName')]"

@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
@@ -23,43 +22,27 @@ using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators;
 
-public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>
+public class VacancyPreviewOrchestrator(
+    IRecruitVacancyClient vacancyClient,
+    ILogger<VacancyPreviewOrchestrator> logger,
+    DisplayVacancyViewModelMapper vacancyDisplayMapper,
+    IReviewSummaryService reviewSummaryService,
+    ILegalEntityAgreementService legalEntityAgreementService,
+    IMessaging messaging,
+    IOptions<ExternalLinksConfiguration> externalLinksOptions,
+    IUtility utility)
+    : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>(logger)
 {
     private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
     private const VacancyRuleSet RejectValidationRules = VacancyRuleSet.None;
     private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage | VacancyRuleSet.TrainingExpiryDate;
 
-    private readonly IRecruitVacancyClient _vacancyClient;
-    private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
-    private readonly IReviewSummaryService _reviewSummaryService;
-    private readonly ILegalEntityAgreementService _legalEntityAgreementService;
-    private readonly IMessaging _messaging;
-    private readonly IUtility _utility;
-    private readonly ExternalLinksConfiguration _externalLinksConfiguration;
-
-    public VacancyPreviewOrchestrator(
-        IRecruitVacancyClient vacancyClient,
-        ILogger<VacancyPreviewOrchestrator> logger,
-        DisplayVacancyViewModelMapper vacancyDisplayMapper,
-        IReviewSummaryService reviewSummaryService,
-        ILegalEntityAgreementService legalEntityAgreementService,
-        IMessaging messaging,
-        IOptions<ExternalLinksConfiguration> externalLinksOptions,
-        IUtility utility) : base(logger)
-    {
-        _vacancyClient = vacancyClient;
-        _vacancyDisplayMapper = vacancyDisplayMapper;
-        _reviewSummaryService = reviewSummaryService;
-        _legalEntityAgreementService = legalEntityAgreementService;
-        _messaging = messaging;
-        _utility = utility;
-        _externalLinksConfiguration = externalLinksOptions.Value;
-    }
+    private readonly ExternalLinksConfiguration _externalLinksConfiguration = externalLinksOptions.Value;
 
     public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
     {
-        var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Vacancy_Preview_Get);
-        var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+        var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm);
+        var programmesTask = vacancyClient.GetActiveApprenticeshipProgrammesAsync(includePlaceholderProgramme: true);
 
         await Task.WhenAll(vacancyTask, programmesTask);
 
@@ -67,7 +50,7 @@ public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, 
         var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
 
         var vm = new VacancyPreviewViewModel();
-        await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
+        await vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
 
         vm.VacancyId = vacancy.Id;
         vm.EmployerAccountId = vacancy.EmployerAccountId;
@@ -86,38 +69,16 @@ public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, 
 
         if (vacancy.Status == VacancyStatus.Referred)
         {
-            vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                 ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
         }
 
         return vm;
     }
 
-    public async Task<OrchestratorResponse<SubmitVacancyResponse>> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
-    {
-        var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.Preview_Submit_Post);
-
-        if (!vacancy.CanSubmit)
-            throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForEditing, vacancy.Title));
-
-        var employerDescriptionTask = _vacancyClient.GetEmployerDescriptionAsync(vacancy);
-        var employerNameTask = _vacancyClient.GetEmployerNameAsync(vacancy);
-
-        await Task.WhenAll(employerDescriptionTask, employerNameTask);
-
-        vacancy.EmployerDescription = employerDescriptionTask.Result;
-        vacancy.EmployerName = employerNameTask.Result;
-
-        return await ValidateAndExecute(
-            vacancy,
-            v => ValidateVacancy(v, SubmitValidationRules),
-            v => SubmitActionAsync(v, user)
-        );
-    }
-
     private EntityValidationResult ValidateVacancy(Vacancy vacancy, VacancyRuleSet rules)
     {
-        var result = _vacancyClient.Validate(vacancy, rules);
+        var result = vacancyClient.Validate(vacancy, rules);
         FlattenErrors(result.Errors);
         return result;
     }
@@ -126,7 +87,7 @@ public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, 
     {
         var response = new SubmitVacancyResponse
         {
-            HasLegalEntityAgreement = await _legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId),
+            HasLegalEntityAgreement = await legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId),
             IsSubmitted = false
         };
 
@@ -135,7 +96,7 @@ public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, 
 
         var command = new SubmitVacancyCommand(vacancy.Id, user, OwnerType.Employer, vacancy.EmployerDescription);
 
-        await _messaging.SendCommandAsync(command);
+        await messaging.SendCommandAsync(command);
 
         response.IsSubmitted = true;
 
@@ -143,42 +104,42 @@ public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, 
     }
 
 
-    private async Task<RejectVacancyResponse> RejectActionAsync(Vacancy vacancy, VacancyUser user)
+    private async Task<RejectVacancyResponse> RejectActionAsync(Vacancy vacancy)
     {
         var command = new RejectVacancyCommand { VacancyReference = (long)vacancy.VacancyReference };
 
-        await _messaging.SendCommandAsync(command);
+        await messaging.SendCommandAsync(command);
 
         return new RejectVacancyResponse { IsRejected = true };
     }
 
     public async Task ClearRejectedVacancyReason(SubmitReviewModel m, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.ApproveJobAdvert_Post);
+        var vacancy = await utility.GetAuthorisedVacancyAsync(m);
 
         vacancy.EmployerRejectedReason = null;
 
-        await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+        await vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
     }
 
     public async Task UpdateRejectedVacancyReason(SubmitReviewModel m, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.ApproveJobAdvert_Post);
+        var vacancy = await utility.GetAuthorisedVacancyAsync(m);
 
         vacancy.EmployerRejectedReason = m.RejectedReason;
 
-        await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+        await vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
     }
 
     public async Task<OrchestratorResponse<SubmitVacancyResponse>> ApproveJobAdvertAsync(ApproveJobAdvertViewModel m, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.ApproveJobAdvert_Post);
+        var vacancy = await utility.GetAuthorisedVacancyAsync(m);
 
         if (!vacancy.CanReview)
             throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForEditing, vacancy.Title));
 
-        var employerDescriptionTask = _vacancyClient.GetEmployerDescriptionAsync(vacancy);
-        var employerNameTask = _vacancyClient.GetEmployerNameAsync(vacancy);
+        var employerDescriptionTask = vacancyClient.GetEmployerDescriptionAsync(vacancy);
+        var employerNameTask = vacancyClient.GetEmployerNameAsync(vacancy);
 
         await Task.WhenAll(employerDescriptionTask, employerNameTask);
 
@@ -194,7 +155,7 @@ public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, 
 
     public async Task<OrchestratorResponse<RejectVacancyResponse>> RejectJobAdvertAsync(RejectJobAdvertViewModel vm, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyAsync(vm, RouteNames.RejectJobAdvert_Post);
+        var vacancy = await utility.GetAuthorisedVacancyAsync(vm);
 
         if (!vacancy.CanReject)
             throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForReject, vacancy.Title));
@@ -202,13 +163,13 @@ public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, 
         return await ValidateAndExecute(
             vacancy,
             v => ValidateVacancy(v, RejectValidationRules),
-            v => RejectActionAsync(v, user)
+            v => RejectActionAsync(v)
         );
     }
 
     public async Task<JobAdvertConfirmationViewModel> GetVacancyConfirmationJobAdvertAsync(VacancyRouteModel vrm)
     {
-        var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
+        var vacancy = await vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
         var vm = new JobAdvertConfirmationViewModel
         {
@@ -226,12 +187,15 @@ public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, 
 
     public async Task<RejectJobAdvertViewModel> GetVacancyRejectJobAdvertAsync(VacancyRouteModel vrm)
     {
-        var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
+        var vacancy = await vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
         var vm = new RejectJobAdvertViewModel
         {
             RejectionReason = vacancy.EmployerRejectedReason,
-            TrainingProviderName = vacancy.TrainingProvider.Name
+            TrainingProviderName = vacancy.TrainingProvider.Name,
+            
+            EmployerAccountId = vrm.EmployerAccountId,
+            VacancyId = vrm.VacancyId
         };
 
         return vm;

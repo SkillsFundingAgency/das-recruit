@@ -11,7 +11,6 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.FeatureManagement.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1;
 
@@ -28,7 +27,7 @@ public class SelectLocationController(IUtility utility) : Controller
         {
             return RedirectToRoute(RouteNames.AddLocation_Get, new { model.VacancyId, model.EmployerAccountId, model.Wizard, model.Origin });
         }
-        var viewModel = await GetSelectLocationViewModel(getAddressesClient, utility, model, postcode, RouteNames.SelectAnAddress_Get);
+        var viewModel = await GetSelectLocationViewModel(getAddressesClient, utility, model, postcode);
         return View(viewModel);
     }
     
@@ -47,11 +46,11 @@ public class SelectLocationController(IUtility utility) : Controller
         var addressToAdd = ModelState.IsValid ? await LookupAddress(getAddressesClient, postcode, model.SelectedLocation) : null;
         if (addressToAdd is null)
         {
-            var viewModel = await GetSelectLocationViewModel(getAddressesClient, utility, model, postcode, RouteNames.SelectAnAddress_Post);
+            var viewModel = await GetSelectLocationViewModel(getAddressesClient, utility, model, postcode);
             return View(viewModel);
         }
         
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.SelectAnAddress_Post);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model);
         await vacancyLocationService.SaveEmployerAddress(User.ToVacancyUser(), vacancy, addressToAdd);
         
         TempData[TempDataKeys.AddedLocation] = addressToAdd.ToAddressString();
@@ -68,9 +67,9 @@ public class SelectLocationController(IUtility utility) : Controller
         return addressItem?.ToDomain();
     }
 
-    private static async Task<SelectLocationViewModel> GetSelectLocationViewModel(IGetAddressesClient getAddressesClient, IUtility utility, AddLocationJourneyModel model, string postcode, string routeName)
+    private static async Task<SelectLocationViewModel> GetSelectLocationViewModel(IGetAddressesClient getAddressesClient, IUtility utility, AddLocationJourneyModel model, string postcode)
     {
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, routeName);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model);
         var response = await getAddressesClient.GetAddresses(postcode);
         var viewModel = new SelectLocationViewModel
         {

@@ -10,12 +10,13 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -33,11 +34,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _utility = utility;
         }
 
-        public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm, bool vacancySharedByProvider = false)
+        public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
         {
             var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
 
-            _utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId, vacancySharedByProvider);
+            _utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             return vacancy;
         }
@@ -47,7 +48,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             int pageSize,
             SortColumn sortColumn,
             SortOrder sortOrder,
-            bool vacancySharedByProvider,
             string locationFilter = "All")
         {
             var viewModel = new ManageVacancyViewModel
@@ -76,10 +76,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             {
                 viewModel.WithdrawnDate = vacancy.ClosedDate?.AsGdsDate();
             }
+            
+            var vacancyApplications = await _client.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, sortColumn, sortOrder, vacancy.CanEmployerReviewApplications);
+            var totalUnfilteredApplicationsCount = vacancyApplications?.Count ?? 0;
 
-            var vacancyApplications = await _client.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, sortColumn, sortOrder, vacancySharedByProvider);
-            int totalUnfilteredApplicationsCount = vacancyApplications?.Count ?? 0;
-
+            if (vacancy.CanEmployerReviewApplications && vacancyApplications is { Count: 0 })
+            {
+                //If there are no applications the employer user shouldnt be here
+                throw new AuthorisationException(string.Format(ExceptionMessages.UserIsNotTheOwner, OwnerType.Employer));
+            }
+            
             var applications = string.IsNullOrEmpty(locationFilter)
                                || locationFilter.Equals("All", StringComparison.CurrentCultureIgnoreCase)
                                || vacancyApplications.Any(fil => fil.CandidateAppliedLocations == null)
@@ -117,7 +123,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 ShowDisability = vacancy.IsDisabilityConfident,
                 VacancyId = vacancy.Id,
                 EmployerAccountId = vacancy.EmployerAccountId,
-                VacancySharedByProvider = vacancySharedByProvider,
+                VacancySharedByProvider = vacancy.CanEmployerReviewApplications,
                 AvailableWhere = vacancy.EmployerLocationOption,
                 Pager = pager,
             };

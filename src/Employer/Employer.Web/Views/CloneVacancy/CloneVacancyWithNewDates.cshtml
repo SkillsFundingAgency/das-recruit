@@ -11,7 +11,7 @@
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <span class="govuk-caption-xl">Clone advert @("VAC" + Model.VacancyReference)</span>
         <h1 class="govuk-heading-xl">@Model.Title</h1>
-        <div asp-show="Model.IsNewDatesForced" class="govuk-inset-text">The advert you're cloning has a closing date or start date that's in the past. You must add new dates.</div>
+        <div asp-show="Model.IsNewDatesForced" class="govuk-inset-text">The advert you're cloning has a closing date or start date that's either in the past or closing too soon. You must add new dates.</div>
         <form asp-route="@RouteNames.CloneVacancyWithNewDates_Post" asp-all-route-data="@Model.RouteDictionary" novalidate>
             <div esfa-validation-marker-for="ClosingDate" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">

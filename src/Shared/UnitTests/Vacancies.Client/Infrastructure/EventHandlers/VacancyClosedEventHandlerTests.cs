@@ -140,7 +140,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
 
             _mockReferenceDataReader = new Mock<IApprenticeshipProgrammeProvider>();
             _mockReferenceDataReader
-                .Setup(x => x.GetApprenticeshipProgrammeAsync(_vacancy.ProgrammeId))
+                .Setup(x => x.GetApprenticeshipProgrammeAsync(_vacancy.ProgrammeId, 10000000, false))
                 .ReturnsAsync(_apprenticeshipProgramme);
 
             _mockTimeProvider = new Mock<ITimeProvider>();

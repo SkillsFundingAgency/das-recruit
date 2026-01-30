@@ -28,7 +28,7 @@ public class VacancyWorkDescriptionOrchestrator : VacancyValidatingOrchestrator<
 
     public async Task<VacancyWorkDescriptionModel> GetVacancyDescriptionViewModelAsync(VacancyRouteModel vrm)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.VacancyWorkDescription_Index_Get);
+        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
         var vm = new VacancyWorkDescriptionModel
         {
             VacancyId = vacancy.Id,
@@ -52,7 +52,7 @@ public class VacancyWorkDescriptionOrchestrator : VacancyValidatingOrchestrator<
 
     public async Task<OrchestratorResponse> PostVacancyDescriptionEditModelAsync(VacancyWorkDescriptionEditModel m, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.VacancyWorkDescription_Index_Post);
+        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m);
 
         SetVacancyWithEmployerReviewFieldIndicators(
             vacancy.Description,
@@ -70,9 +70,10 @@ public class VacancyWorkDescriptionOrchestrator : VacancyValidatingOrchestrator<
 
     protected override EntityToViewModelPropertyMappings<Vacancy, VacancyWorkDescriptionEditModel> DefineMappings()
     {
-        var mappings = new EntityToViewModelPropertyMappings<Vacancy, VacancyWorkDescriptionEditModel>();
-
-        mappings.Add(e => e.Description, vm => vm.VacancyDescription);
+        var mappings = new EntityToViewModelPropertyMappings<Vacancy, VacancyWorkDescriptionEditModel>
+        {
+            { e => e.Description, vm => vm.VacancyDescription }
+        };
 
         return mappings;
     }

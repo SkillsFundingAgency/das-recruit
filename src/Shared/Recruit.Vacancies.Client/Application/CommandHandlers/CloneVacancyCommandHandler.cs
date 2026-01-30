@@ -65,7 +65,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             clone.Id = message.NewVacancyId;
             clone.CreatedByUser = message.User;
             clone.CreatedDate = now;
-            clone.LastUpdatedByUser = message.User;
             clone.LastUpdatedDate = now;
             clone.SourceOrigin = message.SourceOrigin;
             clone.SourceType = SourceType.Clone;
@@ -80,14 +79,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             clone.VacancyReference = null;
             clone.ApprovedDate = null;
             clone.ClosedDate = null;
-            clone.ClosedByUser = null;
-            clone.DeletedByUser = null;
             clone.DeletedDate = null;
             clone.LiveDate = null;
             clone.SubmittedByUser = null;
             clone.SubmittedDate = null;
             clone.ClosureReason = null;
-            clone.ClosureExplanation = null;
             clone.TransferInfo = null;
             clone.ReviewByUser = null;
             clone.ReviewDate = null;
@@ -95,8 +91,30 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             clone.EmployerReviewFieldIndicators = null;
             clone.EmployerRejectedReason = null;
             clone.ProviderReviewFieldIndicators = null;
+            
+            MigrateLocations(clone);
 
             return clone;
+        }
+        
+        private static void MigrateLocations(Vacancy clone)
+        {
+            switch (clone)
+            {
+                case { EmployerLocation: not null }:
+                    clone.EmployerLocationOption = AvailableWhere.OneLocation;
+                    clone.EmployerLocations = [clone.EmployerLocation];
+                    clone.EmployerLocation = null;
+                    return;
+                case { EmployerLocationInformation: not null, EmployerLocationOption: null }:
+                    clone.EmployerLocationOption = AvailableWhere.AcrossEngland;
+                    return;
+                case { EmployerLocations.Count: > 0, EmployerLocationOption: null }:
+                    clone.EmployerLocationOption = clone.EmployerLocations.Count == 1
+                        ? AvailableWhere.OneLocation
+                        : AvailableWhere.MultipleLocations;
+                    break;
+            }
         }
     }
 }

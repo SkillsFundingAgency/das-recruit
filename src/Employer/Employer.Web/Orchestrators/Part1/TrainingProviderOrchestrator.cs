@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
@@ -39,11 +38,18 @@ public class TrainingProviderOrchestrator(
 
     public virtual async Task<SelectTrainingProviderViewModel> GetSelectTrainingProviderViewModelAsync(VacancyRouteModel vrm, long? ukprn = null)
     {
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.TrainingProvider_Select_Get);
-        var programme = await vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
-        var trainingProviders = int.TryParse(programme.Id, out int programmeId)
-            ? (await trainingProviderService.GetCourseProviders(programmeId)).ToList()
-            : (await trainingProviderSummaryProvider.FindAllAsync()).ToList();
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm);
+
+        var includePlaceholderProgramme = vacancy.EmployerAccountId.Equals(recruitConfiguration.EmployerAccountId,
+            StringComparison.CurrentCultureIgnoreCase);
+        var programme = await vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId, includePlaceholderProgramme);
+        
+        // TODO: temporarily commented out as part of FAI-2818
+        // var trainingProviders = int.TryParse(programme.Id, out int programmeId)
+        //     ? (await trainingProviderService.GetCourseProviders(programmeId)).ToList()
+        //     : (await trainingProviderSummaryProvider.FindAllAsync()).ToList();
+        
+        var trainingProviders = (await trainingProviderSummaryProvider.FindAllAsync()).ToList();
 
         var vm = new SelectTrainingProviderViewModel
         {
@@ -62,7 +68,7 @@ public class TrainingProviderOrchestrator(
             
         if (vacancy.Status == VacancyStatus.Referred)
         {
-            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.GetValueOrDefault(),
                 ReviewFieldMappingLookups.GetTrainingProviderFieldIndicators());
         }
 
@@ -71,7 +77,7 @@ public class TrainingProviderOrchestrator(
 
     public async Task<OrchestratorResponse<PostSelectTrainingProviderResult>> PostSelectTrainingProviderAsync(SelectTrainingProviderEditModel m, VacancyUser user)
     {
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.TrainingProvider_Select_Post);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m);
         var providerSummary = await GetProviderFromModelAsync(m, vacancy.EmployerAccountId, vacancy.ProgrammeId);
 
         TrainingProvider provider = null;
@@ -100,7 +106,7 @@ public class TrainingProviderOrchestrator(
 
     public async Task<ConfirmTrainingProviderViewModel> GetConfirmViewModelAsync(VacancyRouteModel vrm, long ukprn)
     {
-        var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.TrainingProvider_Confirm_Get);
+        var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm);
         var providerTask = trainingProviderService.GetProviderAsync(ukprn);
 
         await Task.WhenAll(vacancyTask, providerTask);
@@ -113,7 +119,7 @@ public class TrainingProviderOrchestrator(
             EmployerAccountId = vrm.EmployerAccountId,
             VacancyId = vrm.VacancyId,
             Title = vacancy.Title,
-            Ukprn = provider.Ukprn.Value,
+            Ukprn = provider.Ukprn.GetValueOrDefault(),
             ProviderName = provider.Name,
             ProviderAddress = provider.Address.ToAddressString(),
             PageInfo = utility.GetPartOnePageInfo(vacancy),
@@ -132,7 +138,7 @@ public class TrainingProviderOrchestrator(
 
     public async Task<OrchestratorResponse> PostConfirmEditModelAsync(ConfirmTrainingProviderEditModel m, VacancyUser user)
     {
-        var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.TrainingProvider_Confirm_Post);
+        var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(m);
         var providerTask = trainingProviderService.GetProviderAsync(long.Parse(m.Ukprn));
         await Task.WhenAll(vacancyTask, providerTask);
         var vacancy = vacancyTask.Result;
@@ -143,17 +149,14 @@ public class TrainingProviderOrchestrator(
             vacancy.TrainingProvider?.Ukprn,
             FieldIdResolver.ToFieldId(v => v.TrainingProvider.Ukprn),
             vacancy,
-            (v) =>
-            {
-                return provider.Ukprn;
-            });
+            _ => provider.Ukprn);
 
         vacancy.TrainingProvider = provider;
 
         return await ValidateAndExecute(
             vacancy,
             v => vacancyClient.Validate(v, ValidationRules),
-            v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+            _ => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
         );
     }
 
@@ -174,12 +177,15 @@ public class TrainingProviderOrchestrator(
                 && model.TrainingProviderSearch.EndsWith(EsfaTestTrainingProvider.Ukprn.ToString()))
                 return await GetProviderAsync(EsfaTestTrainingProvider.Ukprn.ToString());
 
-            var trainingProviders = int.TryParse(programmeId, out int id)
-                ? (await trainingProviderService.GetCourseProviders(id)).ToList()
-                : (await trainingProviderSummaryProvider.FindAllAsync()).ToList();
+            // TODO: Temporarily commented out for FAI-2818
+            // var trainingProviders = int.TryParse(programmeId, out int id)
+            //     ? (await trainingProviderService.GetCourseProviders(id)).ToList()
+            //     : (await trainingProviderSummaryProvider.FindAllAsync()).ToList();
 
-            var matches = trainingProviders.Where(p =>
-                    FormatSuggestion(p.ProviderName, p.Ukprn).Contains(model.TrainingProviderSearch))
+            var trainingProviders = await trainingProviderSummaryProvider.FindAllAsync();
+
+            var matches = trainingProviders
+                .Where(p => FormatSuggestion(p.ProviderName, p.Ukprn).Contains(model.TrainingProviderSearch))
                 .ToList();
 
             return matches.Count == 1 ? matches.First() : null;
@@ -205,14 +211,15 @@ public class TrainingProviderOrchestrator(
     private static void SetModelUsingVacancyTrainingProvider(SelectTrainingProviderViewModel vm,
         IEnumerable<TrainingProviderSummary> trainingProviders, Vacancy vacancy)
     {
-        if (trainingProviders.SingleOrDefault(x => x.ProviderName == vacancy.TrainingProvider.Name) is null)
-        {
-            vm.ProviderDoesNotSupportCourse = true;
-            return;
-        }
+        // TODO: Temporarily commented out for FAI-2818
+        // if (trainingProviders.SingleOrDefault(x => x.ProviderName == vacancy.TrainingProvider.Name) is null)
+        // {
+        //     vm.ProviderDoesNotSupportCourse = true;
+        //     return;
+        // }
         
         vm.Ukprn = vacancy.TrainingProvider.Ukprn.ToString();
-        vm.TrainingProviderSearch = FormatSuggestion(vacancy.TrainingProvider.Name, vacancy.TrainingProvider.Ukprn.Value);
+        vm.TrainingProviderSearch = FormatSuggestion(vacancy.TrainingProvider.Name, vacancy.TrainingProvider.Ukprn.GetValueOrDefault());
         vm.IsTrainingProviderSelected = true;
     }
 
@@ -230,16 +237,11 @@ public class TrainingProviderOrchestrator(
         vm.IsTrainingProviderSelected = true;
     }
 
-    protected override EntityToViewModelPropertyMappings<Vacancy, ConfirmTrainingProviderEditModel> DefineMappings()
-    {
-        return new EntityToViewModelPropertyMappings<Vacancy, ConfirmTrainingProviderEditModel>
+    protected override EntityToViewModelPropertyMappings<Vacancy, ConfirmTrainingProviderEditModel> DefineMappings() =>
+        new()
         {
             { e => e.TrainingProvider.Ukprn, vm => vm.Ukprn }
         };
-    }
 
-    private static string FormatSuggestion(string providerName, long ukprn)
-    {
-        return $"{providerName.ToUpper()} ({ukprn})";
-    }
+    private static string FormatSuggestion(string providerName, long ukprn) => $"{providerName.ToUpper()} ({ukprn})";
 }

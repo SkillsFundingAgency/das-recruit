@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using FluentValidation;
@@ -15,7 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     {
         private readonly ITimeProvider _timeProvider;
         private readonly IMinimumWageProvider _minimumWageService;
-        private readonly IQualificationsProvider _qualificationsProvider;
+        private readonly IReferenceDataClient _referenceDataClient;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
         private readonly IHtmlSanitizerService _htmlSanitizerService;
         private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
@@ -28,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ITimeProvider timeProvider,
             IMinimumWageProvider minimumWageService,
             IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
-            IQualificationsProvider qualificationsProvider,
+            IReferenceDataClient referenceDataClient,
             IHtmlSanitizerService htmlSanitizerService,
             ITrainingProviderSummaryProvider trainingProviderSummaryProvider,
             ITrainingProviderService trainingProviderService,
@@ -38,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;
-            _qualificationsProvider = qualificationsProvider;
+            _referenceDataClient = referenceDataClient;
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
             _htmlSanitizerService = htmlSanitizerService;
             _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
@@ -297,7 +298,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage($"Summary of the {VacancyContext} must be at least {{MinLength}} characters")
                     .WithErrorCode("14")
                 .WithState(_ => VacancyRuleSet.ShortDescription)
-                .ValidFreeTextCharacters()
+                .ValidHtmlCharacters(_htmlSanitizerService)
                     .WithMessage($"Short description of the {VacancyContext} contains some invalid characters")
                     .WithErrorCode("15")
                 .WithState(_ => VacancyRuleSet.ShortDescription)
@@ -311,13 +312,27 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private void ValidateClosingDate()
         {
             RuleFor(x => x.ClosingDate)
+                .Cascade(CascadeMode.Stop)
                 .NotNull()
                     .WithMessage("Enter an application closing date")
                     .WithErrorCode("16")
                 .WithState(_ => VacancyRuleSet.ClosingDate)
-                .GreaterThan(v => _timeProvider.Now.Date.AddDays(1).AddTicks(-1))
-                    .WithMessage("Closing date should be at least 1 day in the future.")
-                    .WithErrorCode("18")
+                .Must((vacancy, closingDate) =>
+                {
+                    var closing = closingDate!.Value.Date;
+                    var today = _timeProvider.Now.Date;
+
+                    if (vacancy.CanExtendStartAndClosingDates)
+                    {
+                        return closing >= today;
+                    }
+                    return closing >= today.AddDays(7);
+                })
+                .WithMessage(vacancy =>
+                    (vacancy.CanExtendStartAndClosingDates)
+                        ? "Closing date cannot be in the past."
+                        : "Closing date should be at least 7 days in the future.")
+                .WithErrorCode("18")
                 .WithState(_ => VacancyRuleSet.ClosingDate)
                 .RunCondition(VacancyRuleSet.ClosingDate);
         }
@@ -502,7 +517,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                         .WithMessage("Information about pay must be {MaxLength} characters or less")
                         .WithErrorCode("44")
                     .WithState(_ => VacancyRuleSet.Wage)
-                    .ValidFreeTextCharacters()
+                    .ValidHtmlCharacters(_htmlSanitizerService)
                         .WithMessage("Information about pay contains some invalid characters")
                         .WithErrorCode("45")
                     .WithState(_ => VacancyRuleSet.Wage)
@@ -517,7 +532,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Company benefits must be {MaxLength} characters or less")
                     .WithErrorCode("44")
                     .WithState(_ => VacancyRuleSet.Wage)
-                    .ValidFreeTextCharacters()
+                    .ValidHtmlCharacters(_htmlSanitizerService)
                     .WithMessage("Company benefits contains some invalid characters")
                     .WithErrorCode("45")
                     .WithState(_ => VacancyRuleSet.Wage)
@@ -578,7 +593,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             RuleForEach(x => x.Qualifications)
                 .NotEmpty()
                 .SetValidator(new VacancyQualificationsValidator((long)VacancyRuleSet.Qualifications,
-                    _qualificationsProvider, _profanityListProvider))
+                    _referenceDataClient, _profanityListProvider))
                 .RunCondition(VacancyRuleSet.Qualifications)
                 .WithState(_ => VacancyRuleSet.Qualifications);
         }
@@ -827,7 +842,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Other requirements must not exceed {MaxLength} characters")
                     .WithErrorCode("75")
                 .WithState(_ => VacancyRuleSet.ThingsToConsider)
-                .ValidFreeTextCharacters()
+                .ValidHtmlCharacters(_htmlSanitizerService)
                     .WithMessage("Other requirements contains some invalid characters")
                     .WithErrorCode("76")
                 .WithState(_ => VacancyRuleSet.ThingsToConsider)
@@ -849,7 +864,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Information about the employer must not exceed {MaxLength} characters")
                     .WithErrorCode("77")
                 .WithState(_ => VacancyRuleSet.EmployerDescription)
-                .ValidFreeTextCharacters()
+                .ValidHtmlCharacters(_htmlSanitizerService)
                     .WithMessage("Information about the employer contains some invalid characters")
                     .WithErrorCode("78")
                 .WithState(_ => VacancyRuleSet.EmployerDescription)
@@ -874,32 +889,41 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateTrainingProvider()
         {
-            var trainingProviderValidator = new TrainingProviderValidator((long)VacancyRuleSet.TrainingProvider, _trainingProviderSummaryProvider, _blockedOrganisationRepo);
+            // Skip Provider validation entirely when ESFA Test Programme is chosen
+            When(x => x.TrainingProvider is not {Ukprn: EsfaTestTrainingProvider.Ukprn},
+                () =>
+            {
+                var trainingProviderValidator =
+                    new TrainingProviderValidator((long)VacancyRuleSet.TrainingProvider, _trainingProviderSummaryProvider, _blockedOrganisationRepo);
 
-            RuleFor(x => x.TrainingProvider)
-                .NotNull()
-                    .WithMessage("Enter the name or UKPRN of a training provider who delivers the training course you’ve selected")
+                RuleFor(x => x.TrainingProvider)
+                    .NotNull()
+                    .WithMessage(
+                        "Enter the name or UKPRN of a training provider who delivers the training course you've selected")
                     .WithErrorCode(ErrorCodes.TrainingProviderUkprnNotEmpty)
-                .WithState(_ => VacancyRuleSet.TrainingProvider)
-                .SetValidator(trainingProviderValidator)
-                .RunCondition(VacancyRuleSet.TrainingProvider)
-                .WithState(_ => VacancyRuleSet.TrainingProvider);
-
-            RuleFor(x => x)
-                .TrainingProviderVacancyMustHaveEmployerPermission(_providerRelationshipService)
-                .RunCondition(VacancyRuleSet.TrainingProvider);
+                    .WithState(_ => VacancyRuleSet.TrainingProvider)
+                    .SetValidator(trainingProviderValidator)
+                    .RunCondition(VacancyRuleSet.TrainingProvider)
+                    .WithState(_ => VacancyRuleSet.TrainingProvider);
+                RuleFor(x => x)
+                    .TrainingProviderVacancyMustHaveEmployerPermission(_providerRelationshipService)
+                    .RunCondition(VacancyRuleSet.TrainingProvider);
+            });
         }
 
         private void ValidateTrainingProviderDeliverTrainingCourse()
         {
-            When(x => x.TrainingProvider != null && x.OwnerType == OwnerType.Employer && x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn, () =>            
-            {
-                RuleFor(x => x)
-                    .TrainingProviderMustBeDeliverTheTrainingCourse(_trainingProviderService, _apprenticeshipProgrammesProvider)
-                    .RunCondition(VacancyRuleSet.TrainingProviderDeliverCourse);
-            });
+            // TODO: removed temporarily as part of FAI-2818
+            // When(x => x.TrainingProvider != null &&
+            //           x.OwnerType == OwnerType.Employer &&
+            //           x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn,
+            //     () =>
+            //     {
+            //         RuleFor(x => x)
+            //             .TrainingProviderMustBeDeliverTheTrainingCourse(_trainingProviderService, _apprenticeshipProgrammesProvider)
+            //             .RunCondition(VacancyRuleSet.TrainingProviderDeliverCourse);
+            //     });
         }
-
         private void ValidateStartDateClosingDate()
         {
             When(x => x.StartDate.HasValue && x.ClosingDate.HasValue, () =>
@@ -923,12 +947,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private void TrainingExpiryDateValidation()
         {
             // This rule is only applicable for non-ESFA test training providers
-            When(x => x.TrainingProvider is { Ukprn: not null } && x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn && !string.IsNullOrWhiteSpace(x.ProgrammeId), () =>
+            When(x => x.TrainingProvider is
+                        {
+                            Ukprn: not null
+                        } && x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn &&
+                                  !string.IsNullOrWhiteSpace(x.ProgrammeId),
+                () =>
             {
                 RuleFor(x => x)
                     .Cascade(CascadeMode.Stop)
-                    .TrainingMustExist(_apprenticeshipProgrammesProvider)
-                    .TrainingMustBeActiveForCurrentDate(_apprenticeshipProgrammesProvider, _timeProvider)
                     .TrainingMustBeActiveForStartDate(_apprenticeshipProgrammesProvider)
                 .RunCondition(VacancyRuleSet.TrainingExpiryDate);
             });
@@ -937,21 +964,40 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private void ValidateTrainingCourse()
         {
             // This rule is only applied when the training provider is not the ESFA test training provider
-            When(x => x.TrainingProvider is { Ukprn: not null } && x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn && !string.IsNullOrWhiteSpace(x.ProgrammeId), () =>
+            When(x => x.TrainingProvider is
+                      {
+                          Ukprn: not null
+                      } &&
+                      x.OwnerType == OwnerType.Provider &&
+                      x.TrainingProvider.Ukprn != EsfaTestTrainingProvider.Ukprn &&
+                      !string.IsNullOrWhiteSpace(x.ProgrammeId),
+                () =>
             {
                 RuleFor(x => x)
                     .Cascade(CascadeMode.Stop)
-                    .TrainingMustBeValid(_apprenticeshipProgrammesProvider)
                     .TrainingMustBeActiveForCurrentDate(_apprenticeshipProgrammesProvider, _timeProvider)
                     .RunCondition(VacancyRuleSet.TrainingProgramme);
             });
 
-            When(x => !string.IsNullOrWhiteSpace(x.ProgrammeId) && x.TrainingProvider is not null, () =>
-            {
-                RuleFor(x => x)
-                    .Cascade(CascadeMode.Stop)
-                    .TrainingCourseMustBeOfferedByTrainingProvider(_trainingProviderService, _apprenticeshipProgrammesProvider);
-            });
+            When(x =>
+                    x.OwnerType == OwnerType.Employer &&
+                    !string.IsNullOrWhiteSpace(x.ProgrammeId),
+                () =>
+                {
+                    RuleFor(x => x.ProgrammeId)
+                        .Must((model, programmeId) =>
+                        {
+                            // Only ESFA Test Provider is allowed to use the ESFA Test Programme
+                            var isEsfaProvider = model.TrainingProvider?.Ukprn == EsfaTestTrainingProvider.Ukprn;
+                            var isEsfaProgramme = programmeId == EsfaTestTrainingProgramme.Id.ToString();
+
+                            // VALID ONLY if BOTH match
+                            return !(isEsfaProgramme && !isEsfaProvider);
+                        })
+                        .WithMessage("Enter the name or UKPRN of a training provider who delivers the training course you've selected")
+                        .WithState(_ => VacancyRuleSet.TrainingProgramme)
+                        .RunCondition(VacancyRuleSet.TrainingProgramme);
+                });
         }
     }
 }

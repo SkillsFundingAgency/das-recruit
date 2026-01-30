@@ -1,10 +1,7 @@
-﻿using System.Threading.Tasks;
-using Esfa.Recruit.Shared.Web.Services;
+﻿using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.PasAccount;
-using FluentAssertions;
-using Moq;
 using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
@@ -12,7 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
     public class TrainingProviderAgreementServiceTests
     {
         private Mock<IProviderVacancyClient> _clientMock;
-        private Mock<IPasAccountProvider> _pasAccountProviderMock;
+        private Mock<IGetProviderStatusClient> _pasAccountProviderMock;
 
         private const long Ukprn = 99999999;
 
@@ -24,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
             var result = await sut.HasAgreementAsync(Ukprn);
 
             result.Should().BeFalse();
-            _pasAccountProviderMock.Verify(c => c.HasAgreementAsync(It.IsAny<long>()), Times.Never);
+            _pasAccountProviderMock.Verify(c => c.GetProviderStatus(It.IsAny<long>()), Times.Never);
             _clientMock.Verify(c => c.SetupProviderAsync(It.IsAny<long>()), Times.Never);
         }
 
@@ -36,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
             var result = await sut.HasAgreementAsync(Ukprn);
 
             result.Should().BeTrue();
-            _pasAccountProviderMock.Verify(c => c.HasAgreementAsync(It.IsAny<long>()), Times.Never);
+            _pasAccountProviderMock.Verify(c => c.GetProviderStatus(It.IsAny<long>()), Times.Never);
             _clientMock.Verify(c => c.SetupProviderAsync(It.IsAny<long>()), Times.Never);
         }
 
@@ -48,8 +45,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
             var result = await sut.HasAgreementAsync(Ukprn);
 
             result.Should().BeFalse();
-            _pasAccountProviderMock.Verify(c => c.HasAgreementAsync(It.IsAny<long>()), Times.Once);
-            _pasAccountProviderMock.Verify(c => c.HasAgreementAsync(Ukprn), Times.Once);
+            _pasAccountProviderMock.Verify(c => c.GetProviderStatus(It.IsAny<long>()), Times.Once);
+            _pasAccountProviderMock.Verify(c => c.GetProviderStatus(Ukprn), Times.Once);
             _clientMock.Verify(c => c.SetupProviderAsync(It.IsAny<long>()), Times.Never);
         }
 
@@ -61,8 +58,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
             var result = await sut.HasAgreementAsync(Ukprn);
 
             result.Should().BeTrue();
-            _pasAccountProviderMock.Verify(c => c.HasAgreementAsync(It.IsAny<long>()), Times.Once);
-            _pasAccountProviderMock.Verify(c => c.HasAgreementAsync(Ukprn), Times.Once);
+            _pasAccountProviderMock.Verify(c => c.GetProviderStatus(It.IsAny<long>()), Times.Once);
+            _pasAccountProviderMock.Verify(c => c.GetProviderStatus(Ukprn), Times.Once);
             _clientMock.Verify(c => c.SetupProviderAsync(It.IsAny<long>()), Times.Once);
             _clientMock.Verify(c => c.SetupProviderAsync(Ukprn), Times.Once);
         }
@@ -80,11 +77,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
                     });
             }
             
-            _pasAccountProviderMock = new Mock<IPasAccountProvider>();
+            _pasAccountProviderMock = new Mock<IGetProviderStatusClient>();
 
             if (pasHasAgreement.HasValue)
             {
-                _pasAccountProviderMock.Setup(c => c.HasAgreementAsync(Ukprn)).ReturnsAsync(pasHasAgreement.Value);
+                _pasAccountProviderMock.Setup(c => c.GetProviderStatus(Ukprn)).ReturnsAsync(new ProviderAccountResponse{CanAccessService =  pasHasAgreement.Value});
             }
             
             var sut = new TrainingProviderAgreementService(_clientMock.Object, _pasAccountProviderMock.Object);

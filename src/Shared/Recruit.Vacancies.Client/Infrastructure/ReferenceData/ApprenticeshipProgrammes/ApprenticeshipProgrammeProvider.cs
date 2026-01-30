@@ -3,64 +3,88 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
-using Microsoft.Extensions.Configuration;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes
 {
-    public class ApprenticeshipProgrammeProvider : IApprenticeshipProgrammeProvider
+    public class ApprenticeshipProgrammeProvider(
+        IOuterApiClient outerApiClient,
+        ICache cache,
+        ITimeProvider timeProvider) : IApprenticeshipProgrammeProvider
     {
-        private readonly ICache _cache;
-        private readonly ITimeProvider _timeProvider;
-        private readonly IOuterApiClient _outerApiClient;
-        private readonly IFeature _feature;
-
-        public ApprenticeshipProgrammeProvider(ICache cache, ITimeProvider timeProvider, IOuterApiClient outerApiClient, IFeature feature, IConfiguration configuration)
+        public async Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId, int? ukprn = null, bool includePlaceholderProgramme = false)
         {
-            _cache = cache;
-            _timeProvider = timeProvider;
-            _outerApiClient = outerApiClient;
-            _feature = feature;
-        }
-
-        public async Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId)
-        {
-            var apprenticeships = await GetApprenticeshipProgrammesAsync(true);
+            var apprenticeships = await GetApprenticeshipProgrammesAsync(true, ukprn, includePlaceholderProgramme);
 
             return apprenticeships?.SingleOrDefault(x => x.Id == programmeId);
         }
 
         public async Task<ApprenticeshipStandard> GetApprenticeshipStandardVacancyPreviewData(int programmedId)
         {
-            return await _outerApiClient.Get<GetVacancyPreviewApiResponse>(new GetVacancyPreviewApiRequest(programmedId));
+            if (programmedId.Equals(EsfaTestTrainingProgramme.Id)) return GetDummyStandard();
+
+            return await outerApiClient.Get<GetVacancyPreviewApiResponse>(new GetVacancyPreviewApiRequest(programmedId));
         }
 
-        public async Task<IEnumerable<IApprenticeshipProgramme>> GetApprenticeshipProgrammesAsync(bool includeExpired = false, int? ukprn = null)
+        public async Task<IEnumerable<IApprenticeshipProgramme>> GetApprenticeshipProgrammesAsync(bool includeExpired = false, int? ukprn = null, bool includePlaceholderProgramme = false)
         {
-            var queryItem = await GetApprenticeshipProgrammes(ukprn);
-            return includeExpired ? 
-                queryItem.Data : 
-                queryItem.Data.Where(x =>x.IsActive || (x.ApprenticeshipType == TrainingType.Foundation && IsStandardActive(x.EffectiveTo,x.LastDateStarts)));
+            var queryItem = await GetApprenticeshipProgrammes(ukprn, includePlaceholderProgramme);
+            return includeExpired ?
+                queryItem.Data :
+                queryItem.Data.Where(x => x.IsActive || (x.ApprenticeshipType == TrainingType.Foundation && IsStandardActive(x.EffectiveTo, x.LastDateStarts)));
         }
 
-        private async Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammes(int? ukprn)
+        private async Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammes(int? ukprn, bool includePlaceholderProgramme = false)
         {
-            var result = await _outerApiClient.Get<GetTrainingProgrammesResponse>(new GetTrainingProgrammesRequest(ukprn));
-            return new ApprenticeshipProgrammes
+            var trainingProviders = await cache.CacheAsideAsync(CacheKeys.ApprenticeshipProgrammes,
+                timeProvider.NextDay6am,
+                async () =>
+                {
+                    var result = await outerApiClient.Get<GetTrainingProgrammesResponse>(new GetTrainingProgrammesRequest(ukprn));
+                    var trainingProgrammes = result.TrainingProgrammes.Select(c => (ApprenticeshipProgramme)c).ToList();
+                    return new ApprenticeshipProgrammes
+                    {
+                        Data = trainingProgrammes
+                    };
+                });
+
+            if (!includePlaceholderProgramme) return trainingProviders;
+            
+            if (trainingProviders.Data.All(tp => tp.Id != EsfaTestTrainingProgramme.Id.ToString()))
             {
-                Data = result.TrainingProgrammes.Select(c => (ApprenticeshipProgramme)c).ToList(),
-            };
+                trainingProviders.Data.Add(GetDummyProgramme());
+            }
+
+            return trainingProviders;
         }
         
-        private bool IsStandardActive(DateTime? effectiveTo, DateTime? lastDateStarts)
-        {
-            return (!effectiveTo.HasValue || effectiveTo.Value.Date >= DateTime.UtcNow.Date)
-                   && (!lastDateStarts.HasValue || lastDateStarts.Value.Date >= DateTime.UtcNow.Date);
-        }
+        private static bool IsStandardActive(DateTime? effectiveTo, DateTime? lastDateStarts) =>
+            (!effectiveTo.HasValue || effectiveTo.Value.Date >= DateTime.UtcNow.Date)
+            && (!lastDateStarts.HasValue || lastDateStarts.Value.Date >= DateTime.UtcNow.Date);
+
+        private static ApprenticeshipProgramme GetDummyProgramme() =>
+            new()
+            {
+                Id = EsfaTestTrainingProgramme.Id.ToString(),
+                Title = EsfaTestTrainingProgramme.Title,
+                IsActive = true,
+                ApprenticeshipType = EsfaTestTrainingProgramme.ApprenticeshipType,
+                ApprenticeshipLevel = EsfaTestTrainingProgramme.ApprenticeshipLevel,
+                EffectiveTo = DateTime.UtcNow.AddYears(1),
+                LastDateStarts = DateTime.UtcNow.AddYears(1)
+            };
+
+        private static ApprenticeshipStandard GetDummyStandard() =>
+            new()
+            {
+                Title = EsfaTestTrainingProgramme.Title,
+                ApprenticeshipType = EsfaTestTrainingProgramme.ApprenticeshipType,
+                ApprenticeshipLevel = EsfaTestTrainingProgramme.ApprenticeshipLevel,
+            };
     }
 }

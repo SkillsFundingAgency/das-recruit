@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using Esfa.Recruit.Employer.Web.AppStart;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -13,9 +14,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.Employer.Shared.UI;
 using SFA.DAS.GovUK.Auth.AppStart;
-using SFA.DAS.GovUK.Auth.Employer;
 using SFA.DAS.GovUK.Auth.Models;
-using SFA.DAS.GovUK.Auth.Services;
 
 namespace Esfa.Recruit.Employer.Web
 {
@@ -38,7 +37,8 @@ namespace Esfa.Recruit.Employer.Web
 #if DEBUG
             configBuilder
                 .AddJsonFile("appsettings.json", optional:true)
-                .AddJsonFile("appsettings.Development.json", optional: true);   
+                .AddJsonFile("appsettings.Development.json", optional: true)
+                .AddUserSecrets(Assembly.GetExecutingAssembly());
 #endif   
             
             configBuilder.AddAzureTableStorage(

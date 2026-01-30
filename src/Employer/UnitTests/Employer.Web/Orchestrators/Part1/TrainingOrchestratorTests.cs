@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using AutoFixture.NUnit3;
+using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
@@ -28,7 +28,7 @@ public class TrainingOrchestratorTests
         // arrange
         var programmes = new Fixture().CreateMany<ApprenticeshipProgramme>(10).ToList();
         programmes[5].Id = programmeId;
-        _fixture.MockRecruitVacancyClient.Setup(x => x.GetActiveApprenticeshipProgrammesAsync()).ReturnsAsync(programmes);
+        _fixture.MockRecruitVacancyClient.Setup(x => x.GetActiveApprenticeshipProgrammesAsync(true)).ReturnsAsync(programmes);
         _fixture
             .WithProgrammeId("this is a value")
             .Setup();
@@ -62,8 +62,8 @@ public class TrainingOrchestratorTests
         var selectedProgramme = programmes.First(x => x.ApprenticeshipType == TrainingType.Foundation);
         vacancy.ApprenticeshipType = null;
         model.ProgrammeId = selectedProgramme.Id;
-        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>())).ReturnsAsync(vacancy);
-        vacancyClient.Setup(x => x.GetActiveApprenticeshipProgrammesAsync()).ReturnsAsync(programmes);
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model)).ReturnsAsync(vacancy);
+        vacancyClient.Setup(x => x.GetActiveApprenticeshipProgrammesAsync(true)).ReturnsAsync(programmes);
 
         // act
         await sut.PostConfirmTrainingEditModelAsync(model, user);
@@ -83,7 +83,6 @@ public class TrainingOrchestratorTests
 
         public TrainingOrchestratorTestsFixture()
         {
-            MockClient = new Mock<IEmployerVacancyClient>();
             MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
             MockEmployerVacancyClient = new Mock<IEmployerVacancyClient>();
 
@@ -114,8 +113,8 @@ public class TrainingOrchestratorTests
                 });
             var utility = new Utility(MockRecruitVacancyClient.Object, Mock.Of<ITaskListValidator>());
                 
-            Sut = new TrainingOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<TrainingOrchestrator>>(), 
-                Mock.Of<IReviewSummaryService>(), utility, MockEmployerVacancyClient.Object);
+            Sut = new TrainingOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<TrainingOrchestrator>>(), 
+                Mock.Of<IReviewSummaryService>(), utility, MockEmployerVacancyClient.Object, new RecruitConfiguration(VacancyOrchestratorTestData.EmployerAccountId));
         }
 
         public async Task PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel model)
@@ -130,7 +129,6 @@ public class TrainingOrchestratorTests
                 .Match<EmployerReviewFieldIndicator>((x) => x.IsChangeRequested == value);
         }
 
-        public Mock<IEmployerVacancyClient> MockClient { get; set; }
         public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
     }
 }

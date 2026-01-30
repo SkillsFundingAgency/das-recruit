@@ -34,7 +34,7 @@ public class RecruitNationallyControllerTests
         // arrange
         var vacancyRouteModel = new VacancyRouteModel { VacancyId = vacancy.Id, EmployerAccountId = vacancy.EmployerAccountId, };
         utility
-            .Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.RecruitNationally_Get))
+            .Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel))
             .ReturnsAsync(vacancy);
         
         // act
@@ -58,7 +58,7 @@ public class RecruitNationallyControllerTests
         vacancy.Status = VacancyStatus.Referred;
         var vacancyRouteModel = new VacancyRouteModel { VacancyId = vacancy.Id, EmployerAccountId = vacancy.EmployerAccountId, };
         utility
-            .Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.RecruitNationally_Get))
+            .Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel))
             .ReturnsAsync(vacancy);
         
         // act
@@ -80,7 +80,7 @@ public class RecruitNationallyControllerTests
             EmployerAccountId = vacancy.EmployerAccountId
         };
         utility
-            .Setup(x => x.GetAuthorisedVacancyForEditAsync(model, RouteNames.RecruitNationally_Post))
+            .Setup(x => x.GetAuthorisedVacancyForEditAsync(model))
             .ReturnsAsync(vacancy);
         _vacancyLocationService
             .Setup(x => x.UpdateDraftVacancyLocations(vacancy, It.IsAny<VacancyUser>(), AvailableWhere.AcrossEngland, null, model.AdditionalInformation))
@@ -110,7 +110,7 @@ public class RecruitNationallyControllerTests
             EmployerAccountId = vacancy.EmployerAccountId
         };
         utility
-            .Setup(x => x.GetAuthorisedVacancyForEditAsync(model, RouteNames.RecruitNationally_Post))
+            .Setup(x => x.GetAuthorisedVacancyForEditAsync(model))
             .ReturnsAsync(vacancy);
         _vacancyLocationService
             .Setup(x => x.UpdateDraftVacancyLocations(vacancy, It.IsAny<VacancyUser>(), AvailableWhere.AcrossEngland, null, model.AdditionalInformation))

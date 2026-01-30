@@ -7,7 +7,7 @@
 }
 
 @section BackLink {
-    <a asp-route="@RouteNames.VacancyManage_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-vacancySharedByProvider="@Model.IsApplicationSharedByProvider" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-route="@RouteNames.VacancyManage_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
@@ -115,7 +115,7 @@
             {
                 foreach (var qualification in Model.QualificationGroups.Where(c => c.QualificationType.Equals(qualificationType.QualificationType, StringComparison.CurrentCultureIgnoreCase)))
                 {
-                    <div class="govuk-summary-card">
+                    <div class="govuk-summary-card faa-summary-card">
                         <div class="govuk-summary-card__title-wrapper">
                             <h3 class="govuk-summary-card__title">
                                 @qualificationType.HeaderName
@@ -154,7 +154,7 @@
             <h2 class="govuk-heading-l">Training courses</h2>
             @foreach (var course in Model.TrainingCourses)
             {
-                <div class="govuk-summary-card">
+                <div class="govuk-summary-card faa-summary-card">
                     <div class="govuk-summary-card__title-wrapper">
                         <h3 class="govuk-summary-card__title">
                             @course.Title
@@ -184,7 +184,7 @@
             <h2 class="govuk-heading-l">Jobs</h2>
             @foreach (var job in Model.Jobs)
             {
-                <div class="govuk-summary-card">
+                <div class="govuk-summary-card faa-summary-card">
                     <div class="govuk-summary-card__title-wrapper">
                         <h3 class="govuk-summary-card__title">
                             @job.Employer, @job.JobTitle
@@ -222,7 +222,7 @@
             <h2 class="govuk-heading-l">Volunteering and work experience</h2>
             @foreach (var workExperience in Model.WorkExperiences)
             {
-                <div class="govuk-summary-card">
+                <div class="govuk-summary-card faa-summary-card">
                     <div class="govuk-summary-card__title-wrapper">
                         <h3 class="govuk-summary-card__title">
                             @workExperience.Employer @workExperience.JobTitle
@@ -344,7 +344,8 @@
 
             <a asp-route="@RouteNames.VacancyManage_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button">Return to advert</a>
         </div>
-        <form asp-show="@Model.CanChangeOutcome" asp-hide="@Model.HideRadioButtons" asp-route="@RouteNames.ApplicationReview_Post" asp-all-route-data="@Model.ApplicationRouteDictionary" asp-route-vacancySharedByProvider=@Model.IsApplicationSharedByProvider class="govuk-!-margin-top-6">
+        <form asp-show="@Model.CanChangeOutcome" asp-hide="@Model.HideRadioButtons" asp-route="@RouteNames.ApplicationReview_Post" asp-all-route-data="@Model.ApplicationRouteDictionary" class="govuk-!-margin-top-6">
+            <input type="hidden" asp-for="IsApplicationSharedByProvider"/>
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
@@ -415,7 +416,7 @@
 
             <div class="govuk-button-group hide-print">
                 <button type="submit" class="govuk-button">Continue</button>
-                <a asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@Model.VacancyId" asp-route-employerAccountId="@Model.EmployerAccountId" asp-all-route-data="@Model.RouteDictionary" asp-route-vacancySharedByProvider="@Model.IsApplicationSharedByProvider" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@Model.VacancyId" asp-route-employerAccountId="@Model.EmployerAccountId" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
             </div>
         </form>
     </div>

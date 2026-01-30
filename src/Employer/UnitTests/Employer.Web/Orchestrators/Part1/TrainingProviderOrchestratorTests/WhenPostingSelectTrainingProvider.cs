@@ -30,7 +30,7 @@ public class WhenPostingSelectTrainingProvider
         vacancy.ProgrammeId = "100-1";
         var provider = providerSummaries.First();
         utility
-            .Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>()))
+            .Setup(x => x.GetAuthorisedVacancyForEditAsync(model))
             .ReturnsAsync(vacancy);
         trainingProviderSummaryProvider
             .Setup(x => x.FindAllAsync())
@@ -61,6 +61,7 @@ public class WhenPostingSelectTrainingProvider
         [Frozen] Mock<IUtility> utility,
         [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
         [Frozen] Mock<ITrainingProviderService> trainingProviderService,
+        [Frozen] Mock<ITrainingProviderSummaryProvider> trainingProviderSummaryProvider,
         [Greedy] TrainingProviderOrchestrator sut)
     {
         // arrange
@@ -68,7 +69,7 @@ public class WhenPostingSelectTrainingProvider
         vacancy.ProgrammeId = "100";
         var provider = providerSummaries.First();
         utility
-            .Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>()))
+            .Setup(x => x.GetAuthorisedVacancyForEditAsync(model))
             .ReturnsAsync(vacancy);
         trainingProviderService
             .Setup(x => x.GetCourseProviders(100))
@@ -76,6 +77,9 @@ public class WhenPostingSelectTrainingProvider
         trainingProviderService
             .Setup(x => x.GetProviderAsync(provider.Ukprn))
             .ReturnsAsync(trainingProvider);
+        trainingProviderSummaryProvider
+            .Setup(x => x.FindAllAsync())
+            .ReturnsAsync(providerSummaries);
         vacancyClient
             .Setup(x => x.Validate(vacancy, It.IsAny<VacancyRuleSet>()))
             .Returns(new EntityValidationResult());
@@ -106,7 +110,7 @@ public class WhenPostingSelectTrainingProvider
         vacancy.ProgrammeId = "100";
         var provider = providerSummaries.First();
         utility
-            .Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>()))
+            .Setup(x => x.GetAuthorisedVacancyForEditAsync(model))
             .ReturnsAsync(vacancy);
         trainingProviderService
             .Setup(x => x.GetCourseProviders(100))

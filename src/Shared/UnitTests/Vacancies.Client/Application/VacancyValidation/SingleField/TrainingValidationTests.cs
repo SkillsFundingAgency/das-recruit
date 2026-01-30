@@ -57,7 +57,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(2);
-            result.Errors[0].ErrorCode.Should().Be("260");
+            result.Errors[0].ErrorCode.Should().Be("27");
         }
 
         [Theory]

@@ -6,9 +6,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Providers
 {
     public interface IApprenticeshipProgrammeProvider
     {
-        Task<IEnumerable<IApprenticeshipProgramme>> GetApprenticeshipProgrammesAsync(bool includeExpired = false, int? ukprn = null);
+        Task<IEnumerable<IApprenticeshipProgramme>> GetApprenticeshipProgrammesAsync(bool includeExpired = false, int? ukprn = null, bool includePlaceholderProgramme = false);
 
-        Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId);
+        Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId, int? ukprn = null, bool includePlaceholderProgramme = false);
 
         Task<ApprenticeshipStandard> GetApprenticeshipStandardVacancyPreviewData(int programmedId);
     }
