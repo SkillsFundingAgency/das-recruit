@@ -10,44 +10,44 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 // TODO: Delegates interface calls to the correct implementation(s) - this class should go once we have migrated vacancies over to SQL
 public class MigrationVacancyRepository(
     ILogger<MigrationVacancyRepository> logger,
-    [FromKeyedServices("mongo")] IVacancyRepository mongoRepository,
+    [FromKeyedServices("mongo")] IVacancyRepository mongoRepository, 
     [FromKeyedServices("sql")] IVacancyRepository sqlRepository): IVacancyRepository
 {
     public async Task CreateAsync(Vacancy vacancy)
     {
-        await mongoRepository.CreateAsync(vacancy);
+        await sqlRepository.CreateAsync(vacancy);
         try
         {
-            await sqlRepository.CreateAsync(vacancy);
+            await mongoRepository.CreateAsync(vacancy);
         }
         catch (Exception ex)
         {
-            // let's swallow exceptions until the creates are working smoothly
-            logger.LogError(ex, "Error calling the migration SQL repository to CREATE a vacancy");
+            // swallow errors
+            logger.LogError(ex, "Error calling the migration Mongo repository to CREATE a vacancy");
         }
     }
 
     public async Task UpdateAsync(Vacancy vacancy)
     {
-        await mongoRepository.UpdateAsync(vacancy);
+        await sqlRepository.UpdateAsync(vacancy);
         try
         {
-            await sqlRepository.UpdateAsync(vacancy);
+            await mongoRepository.UpdateAsync(vacancy);
         }
         catch (Exception ex)
         {
-            // let's swallow exceptions until the updates are working smoothly
-            logger.LogError(ex, "Error calling the migration SQL repository to UPDATE a vacancy");
+            // swallow errors
+            logger.LogError(ex, "Error calling the migration Mongo repository to UPDATE a vacancy");
         }
     }
 
-    public Task<Vacancy> GetVacancyAsync(Guid id)
+    public async Task<Vacancy> GetVacancyAsync(Guid id)
     {
-        return mongoRepository.GetVacancyAsync(id);
+        return await sqlRepository.GetVacancyAsync(id);
     }
 
-    public Task<Vacancy> GetVacancyAsync(long vacancyReference)
+    public async Task<Vacancy> GetVacancyAsync(long vacancyReference)
     {
-        return mongoRepository.GetVacancyAsync(vacancyReference);
+        return await sqlRepository.GetVacancyAsync(vacancyReference);
     }
 }

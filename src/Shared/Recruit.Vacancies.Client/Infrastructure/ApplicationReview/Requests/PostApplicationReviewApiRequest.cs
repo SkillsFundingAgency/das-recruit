@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Request
         public bool HasEverBeenEmployerInterviewing { get; init; }
         public DateTime? DateSharedWithEmployer { get; init; }
         public string? EmployerFeedback { get; init; } = null;
-        public required string Status { get; init; }
+        public string? Status { get; init; }
         public string? TemporaryReviewStatus { get; init; } = null;
         public string CandidateFeedback { get; set; }
     }

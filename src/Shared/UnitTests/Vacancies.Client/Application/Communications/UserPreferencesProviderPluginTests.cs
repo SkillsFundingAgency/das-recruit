@@ -1,206 +1,74 @@
-using System;
-using System.Threading.Tasks;
-using AutoFixture;
 using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using FluentAssertions;
-using Moq;
 using Xunit;
 using static Esfa.Recruit.Vacancies.Client.Application.Communications.CommunicationConstants;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Communications
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Communications;
+
+public class UserPreferencesProviderPluginTests
 {
-    public class UserPreferencesProviderPluginTests
+    private readonly Fixture _fixture = new ();
+    private readonly Mock<IUserNotificationPreferencesRepository> _repositoryMock = new();
+    private UserPreferencesProviderPlugin GetSut() => new();
+
+    [Theory]
+    [InlineData(RequestType.VacancyWithdrawnByQa, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
+    [InlineData(RequestType.ProviderBlockedProviderNotification, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
+    [InlineData(RequestType.ProviderBlockedEmployerNotificationForTransferredVacancies, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
+    [InlineData(RequestType.ProviderBlockedEmployerNotificationForLiveVacancies, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
+    [InlineData(RequestType.ProviderBlockedEmployerNotificationForPermissionOnly, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
+    public async Task WhenUserPreferenceIsNotSet(string requestType, DeliveryChannelPreferences channel, DeliveryFrequency frequency)
     {
-        private readonly Fixture _fixture = new Fixture();
-        private readonly Mock<IUserNotificationPreferencesRepository> _repositoryMock = new Mock<IUserNotificationPreferencesRepository>();
+        _repositoryMock
+            .Setup(u => u.GetAsync(It.IsAny<string>()))
+            .ReturnsAsync((UserNotificationPreferences)null);
 
-        private UserPreferencesProviderPlugin GetSut() => new UserPreferencesProviderPlugin(_repositoryMock.Object);
+        var sut = GetSut();
 
-        [Theory]
-        [InlineData(CommunicationConstants.RequestType.VacancyRejected, DeliveryChannelPreferences.None, DeliveryFrequency.Default)]
-        [InlineData(CommunicationConstants.RequestType.VacancyRejectedByEmployer, DeliveryChannelPreferences.None, DeliveryFrequency.Default)]
-        [InlineData(CommunicationConstants.RequestType.ApplicationSubmitted, DeliveryChannelPreferences.None, DeliveryFrequency.Default)]
-        [InlineData(CommunicationConstants.RequestType.VacancySubmittedForReview, DeliveryChannelPreferences.None, DeliveryFrequency.Default)]
-        [InlineData(CommunicationConstants.RequestType.VacancyWithdrawnByQa, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
-        [InlineData(CommunicationConstants.RequestType.ProviderBlockedProviderNotification, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
-        [InlineData(CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForTransferredVacancies, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
-        [InlineData(CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForLiveVacancies, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
-        [InlineData(CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForPermissionOnly, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
-        public async Task WhenUserPreferenceIsNotSet(string requestType, DeliveryChannelPreferences channel, DeliveryFrequency frequency)
-        {
-            _repositoryMock
-                .Setup(u => u.GetAsync(It.IsAny<string>()))
-                .ReturnsAsync((UserNotificationPreferences)null);
+        var user = _fixture.Create<CommunicationUser>();
 
-            var sut = GetSut();
+        var pref = await sut.GetUserPreferenceAsync(requestType, user);
 
-            var user = _fixture.Create<CommunicationUser>();
+        pref.Channels.Should().Be(channel);
+        pref.Frequency.Should().Be(frequency);
+    }
 
-            var pref = await sut.GetUserPreferenceAsync(requestType, user);
+    [Fact]
+    public async Task WhenRequestTypeIsNotKnown_ShouldReturnNoneChannel()
+    {
+        var sut = GetSut();
 
-            pref.Channels.Should().Be(channel);
-            pref.Frequency.Should().Be(frequency);
-        }
+        var user = _fixture.Create<CommunicationUser>();
 
-        [Fact]
-        public async Task WhenRequestTypeIsNotKnown_ShouldReturnNoneChannel()
-        {
-            var sut = GetSut();
+        await Assert.ThrowsAsync<NotImplementedException>(() =>  sut.GetUserPreferenceAsync("UnknownRequestType", user));
+    }
 
-            var user = _fixture.Create<CommunicationUser>();
+    [Theory]
+    [InlineData(RequestType.VacancyWithdrawnByQa)]
+    [InlineData(RequestType.ProviderBlockedProviderNotification)]
+    [InlineData(RequestType.ProviderBlockedEmployerNotificationForTransferredVacancies)]
+    [InlineData(RequestType.ProviderBlockedEmployerNotificationForLiveVacancies)]
+    [InlineData(RequestType.ProviderBlockedEmployerNotificationForPermissionOnly)]
+    public async Task WhenRequestTypeIsOfHighSeverity_ShouldReturnImmediateEmailPreferenceIrrespectiveToUserPreference(string requestType)
+    {
+        var userPref = _fixture
+            .Build<UserNotificationPreferences>()
+            .With(p => p.NotificationTypes, NotificationTypes.None)
+            .Create();
 
-            await Assert.ThrowsAsync<NotImplementedException>(() =>  sut.GetUserPreferenceAsync("UnknownRequestType", user));
-        }
+        _repositoryMock
+            .Setup(u => u.GetAsync(It.IsAny<string>()))
+            .ReturnsAsync(userPref);
 
-        [Fact]
-        public async Task WhenRequestTypeIsVacancyRejected_ShouldReturnRespectivePreferences()
-        {
-            var userPref = _fixture
-                .Build<UserNotificationPreferences>()
-                .With(p => p.NotificationTypes, NotificationTypes.VacancyRejected)
-                .With(p => p.NotificationScope, Esfa.Recruit.Vacancies.Client.Domain.Entities.NotificationScope.OrganisationVacancies)
-                .Create();
+        var sut = GetSut();
 
-            _repositoryMock
-                .Setup(u => u.GetAsync(It.IsAny<string>()))
-                .ReturnsAsync(userPref);
+        var user = _fixture.Create<CommunicationUser>();
 
-            var sut = GetSut();
+        var pref = await sut.GetUserPreferenceAsync(requestType, user);
 
-            var user = _fixture.Create<CommunicationUser>();
-
-            var pref = await sut.GetUserPreferenceAsync(RequestType.VacancyRejected, user);
-
-            pref.Channels.Should().Be(DeliveryChannelPreferences.EmailOnly);
-            pref.Frequency.Should().Be(DeliveryFrequency.Immediate);
-            pref.Scope.Should().Be(Communication.Types.NotificationScope.Organisation);
-        }
-        
-        [Fact]
-        public async Task WhenRequestTypeIsVacancyRejected_ForDfESignInUSer_ShouldReturnRespectivePreferences()
-        {
-            var userPref = _fixture
-                .Build<UserNotificationPreferences>()
-                .With(p => p.NotificationTypes, NotificationTypes.VacancyRejected)
-                .With(p => p.NotificationScope, Esfa.Recruit.Vacancies.Client.Domain.Entities.NotificationScope.OrganisationVacancies)
-                .Create();
-            var user = _fixture.Create<CommunicationUser>();
-            _repositoryMock
-                .Setup(u => u.GetAsync(It.IsAny<string>()))
-                .ReturnsAsync((UserNotificationPreferences)null);
-            _repositoryMock
-                .Setup(u => u.GetByDfeUserId(user.DfEUserId))
-                .ReturnsAsync(userPref);
-
-            var sut = GetSut();
-
-            var pref = await sut.GetUserPreferenceAsync(RequestType.VacancyRejected, user);
-
-            pref.Channels.Should().Be(DeliveryChannelPreferences.EmailOnly);
-            pref.Frequency.Should().Be(DeliveryFrequency.Immediate);
-            pref.Scope.Should().Be(Communication.Types.NotificationScope.Organisation);
-        }
-
-        [Fact]
-        public async Task WhenRequestTypeIsVacancyRejectedByEmployer_ShouldReturnRespectivePreferences()
-        {
-            var userPref = _fixture
-                .Build<UserNotificationPreferences>()
-                .With(p => p.NotificationTypes, NotificationTypes.VacancyRejectedByEmployer)
-                .With(p => p.NotificationScope, Esfa.Recruit.Vacancies.Client.Domain.Entities.NotificationScope.OrganisationVacancies)
-                .Create();
-
-            _repositoryMock
-                .Setup(u => u.GetAsync(It.IsAny<string>()))
-                .ReturnsAsync(userPref);
-
-            var sut = GetSut();
-
-            var user = _fixture.Create<CommunicationUser>();
-
-            var pref = await sut.GetUserPreferenceAsync(RequestType.VacancyRejectedByEmployer, user);
-
-            pref.Channels.Should().Be(DeliveryChannelPreferences.EmailOnly);
-            pref.Frequency.Should().Be(DeliveryFrequency.Immediate);
-            pref.Scope.Should().Be(Communication.Types.NotificationScope.Organisation);
-        }
-
-        [Fact]
-        public async Task WhenRequestTypeIsApplicationSubmitted_ShouldReturnRespectivePreferences()
-        {
-            var userPref = _fixture
-                .Build<UserNotificationPreferences>()
-                .With(p => p.NotificationTypes, NotificationTypes.ApplicationSubmitted)
-                .With(p => p.NotificationScope, Esfa.Recruit.Vacancies.Client.Domain.Entities.NotificationScope.UserSubmittedVacancies)
-                .Create();
-
-            _repositoryMock
-                .Setup(u => u.GetAsync(It.IsAny<string>()))
-                .ReturnsAsync(userPref);
-
-            var sut = GetSut();
-
-            var user = _fixture.Create<CommunicationUser>();
-
-            var pref = await sut.GetUserPreferenceAsync(RequestType.ApplicationSubmitted, user);
-
-            pref.Channels.Should().Be(DeliveryChannelPreferences.EmailOnly);
-            pref.Frequency.Should().Be(DeliveryFrequency.Immediate);
-            pref.Scope.Should().Be(Communication.Types.NotificationScope.Individual);
-        }
-
-        [Fact]
-        public async Task WhenRequestTypeIsVacancySubmittedForReviewed_ShouldReturnRespectivePreferences()
-        {
-            var userPref = _fixture
-                .Build<UserNotificationPreferences>()
-                .With(p => p.NotificationTypes, NotificationTypes.VacancySentForReview)
-                .With(p => p.NotificationScope, Esfa.Recruit.Vacancies.Client.Domain.Entities.NotificationScope.UserSubmittedVacancies)
-                .Create();
-
-            _repositoryMock
-                .Setup(u => u.GetAsync(It.IsAny<string>()))
-                .ReturnsAsync(userPref);
-
-            var sut = GetSut();
-
-            var user = _fixture.Create<CommunicationUser>();
-
-            var pref = await sut.GetUserPreferenceAsync(RequestType.VacancySubmittedForReview, user);
-
-            pref.Channels.Should().Be(DeliveryChannelPreferences.EmailOnly);
-            pref.Frequency.Should().Be(DeliveryFrequency.Immediate);
-            pref.Scope.Should().Be(Communication.Types.NotificationScope.Organisation);
-        }
-
-        [Theory]
-        [InlineData(CommunicationConstants.RequestType.VacancyWithdrawnByQa)]
-        [InlineData(CommunicationConstants.RequestType.ProviderBlockedProviderNotification)]
-        [InlineData(CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForTransferredVacancies)]
-        [InlineData(CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForLiveVacancies)]
-        [InlineData(CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForPermissionOnly)]
-        public async Task WhenRequestTypeIsOfHighSeverity_ShouldReturnImmediateEmailPreferenceIrrespectiveToUserPreference(string requestType)
-        {
-            var userPref = _fixture
-                .Build<UserNotificationPreferences>()
-                .With(p => p.NotificationTypes, NotificationTypes.None)
-                .Create();
-
-            _repositoryMock
-                .Setup(u => u.GetAsync(It.IsAny<string>()))
-                .ReturnsAsync(userPref);
-
-            var sut = GetSut();
-
-            var user = _fixture.Create<CommunicationUser>();
-
-            var pref = await sut.GetUserPreferenceAsync(requestType, user);
-
-            pref.Channels.Should().Be(DeliveryChannelPreferences.EmailOnly);
-            pref.Frequency.Should().Be(DeliveryFrequency.Immediate);
-        }
+        pref.Channels.Should().Be(DeliveryChannelPreferences.EmailOnly);
+        pref.Frequency.Should().Be(DeliveryFrequency.Immediate);
     }
 }

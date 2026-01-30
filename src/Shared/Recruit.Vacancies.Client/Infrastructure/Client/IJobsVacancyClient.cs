@@ -13,12 +13,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task CreateVacancyReview(long vacancyReference);
         Task CloseExpiredVacancies();
         Task EnsureVacancyIsGeocodedAsync(Guid vacancyId);
-        Task UpdateBankHolidaysAsync();
         Task ReferVacancyAsync(long vacancyReference);
         Task CreateApplicationReviewAsync(Domain.Entities.Application application);
         Task PerformRulesCheckAsync(Guid reviewId);
         Task WithdrawApplicationAsync(long vacancyReference, Guid candidateId);
-        Task HardDeleteApplicationReviewsForCandidate(Guid candidateId);
         Task RefreshEmployerProfiles(string employerAccountId, IEnumerable<string> accountLegalEntityPublicHashedIds);
         Task UpdateUserAccountAsync(string idamsUserId);
         Task UpdateProviders();
