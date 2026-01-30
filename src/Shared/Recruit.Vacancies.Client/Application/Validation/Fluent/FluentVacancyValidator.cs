@@ -785,6 +785,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private void ValidateApplicationUrl()
         {
             RuleFor(x => x.ApplicationUrl)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                     .WithMessage("Enter the application website link")
                     .WithErrorCode("85")
@@ -882,6 +883,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .RunCondition(VacancyRuleSet.EmployerDescription);
 
             RuleFor(x => x.EmployerWebsiteUrl)
+                .Cascade(CascadeMode.Stop)                
                 .MaximumLength(100)
                     .WithMessage("Application website link must not exceed {MaxLength} characters")
                     .WithErrorCode("84")
