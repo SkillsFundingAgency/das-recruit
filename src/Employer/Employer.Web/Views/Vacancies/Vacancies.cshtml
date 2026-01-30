@@ -140,6 +140,9 @@
                             <td class="govuk-table__cell" data-label="Advert ref no">
                                 <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
                                 <span asp-show="@vacancy.HasNoVacancyReference">Not available</span>
+                                <div class="govuk-!-margin-top-1">
+                                    <govuk-tag-api-submitted asp-show="@vacancy.SourceOrigin == @SourceOrigin.Api && @Model.Filter == @FilteringOptions.Referred" class="app-tag" />
+                                </div>
                             </td>
                             <td asp-show="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">
                                 <!-- New Counts-->
