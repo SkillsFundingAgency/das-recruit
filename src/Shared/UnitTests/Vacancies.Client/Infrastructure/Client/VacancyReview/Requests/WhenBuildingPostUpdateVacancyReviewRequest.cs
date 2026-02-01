@@ -51,7 +51,12 @@ public class WhenBuildingPostUpdateVacancyReviewRequest
             OwnerType = vReview.VacancySnapshot.OwnerType.ToString(),
             AccountId = 123456,
             Ukprn = vReview.VacancySnapshot.TrainingProvider.Ukprn!.Value,
-            AccountLegalEntityID = 654321
+            AccountLegalEntityId = 654321,
+            EmployerName = vReview.VacancySnapshot.EmployerName,
+            HashedAccountId = vReview.VacancySnapshot.EmployerAccountId,
+            VacancyId = vReview.VacancySnapshot.Id,
+            EmployerLocations = vReview.VacancySnapshot.EmployerLocations,
+            EmployerLocationOption = vReview.VacancySnapshot.EmployerLocationOption
         });
     }
 }
