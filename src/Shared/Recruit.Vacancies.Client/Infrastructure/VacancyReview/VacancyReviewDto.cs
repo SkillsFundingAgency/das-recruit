@@ -19,6 +19,7 @@ public class VacancyReviewDto
     public byte SubmissionCount { get; init; }
     public string ReviewedByUserEmail { get; init; }
     public required string SubmittedByUserEmail { get; init; }
+    public string SubmittedByUserId { get; set; }
     public DateTime? ClosedDate { get; init; }
     public string ManualOutcome { get; set; }
     public string ManualQaComment { get; init; }
@@ -33,7 +34,6 @@ public class VacancyReviewDto
     public long AccountId { get; set; }
     public long AccountLegalEntityId { get; set; }
     public string EmployerName { get; set; }
-
     public string HashedAccountId { get; set; }
     public Guid VacancyId { get; set; }
 
@@ -51,6 +51,7 @@ public class VacancyReviewDto
             SubmissionCount = (byte)source.SubmissionCount,
             ReviewedByUserEmail = source.ReviewedByUser?.Email,
             SubmittedByUserEmail = source.SubmittedByUser.Email,
+            SubmittedByUserId = source.SubmittedByUser.UserId ?? source.SubmittedByUser.DfEUserId,
             ClosedDate = source.ClosedDate,
             ManualOutcome = source.ManualOutcome?.ToString(),
             ManualQaComment = source.ManualQaComment,
@@ -95,7 +96,7 @@ public class VacancyReviewDto
             Status = Enum.Parse<ReviewStatus>(source.Status),
             SubmissionCount = source.SubmissionCount,
             ReviewedByUser = new VacancyUser{Email = source.ReviewedByUserEmail},
-            SubmittedByUser = new VacancyUser{Email = source.SubmittedByUserEmail },
+            SubmittedByUser = new VacancyUser{Email = source.SubmittedByUserEmail},
             ClosedDate = source.ClosedDate,
             ManualOutcome = Enum.Parse<ManualQaOutcome>(source.ManualOutcome),
             ManualQaComment = source.ManualQaComment,
