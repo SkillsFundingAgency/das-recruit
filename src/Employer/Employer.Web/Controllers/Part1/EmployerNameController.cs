@@ -65,7 +65,7 @@ public class EmployerNameController(EmployerNameOrchestrator orchestrator, IWebH
         employerInfoModel.AnonymousReason = model.SelectedEmployerIdentityOption == EmployerIdentityOption.Anonymous ? model.AnonymousReason : null;
         SetVacancyEmployerInfoCookie(employerInfoModel);
 
-        return RedirectToRoute(RouteNames.LegalEntityAgreement_SoftStop_Get, new {model.VacancyId, model.EmployerAccountId, wizard = model.IsTaskList});
+        return RedirectToRoute(RouteNames.AboutEmployer_Get, new { model.VacancyId, model.EmployerAccountId, wizard = model.IsTaskList });
     }
 
     [HttpGet("employer-name-cancel", Name = RouteNames.EmployerName_Cancel)]
