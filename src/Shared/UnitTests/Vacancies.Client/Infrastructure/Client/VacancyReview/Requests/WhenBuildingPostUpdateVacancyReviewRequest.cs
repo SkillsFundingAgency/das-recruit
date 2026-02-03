@@ -38,6 +38,7 @@ public class WhenBuildingPostUpdateVacancyReviewRequest
             SubmissionCount = (byte)vReview.SubmissionCount,
             ReviewedByUserEmail = vReview.ReviewedByUser?.Email,
             SubmittedByUserEmail = vReview.SubmittedByUser.Email,
+            SubmittedByUserId = vReview.SubmittedByUser.UserId,
             ClosedDate = vReview.ClosedDate,
             ManualOutcome = vReview.ManualOutcome?.ToString(),
             ManualQaComment = vReview.ManualQaComment,
