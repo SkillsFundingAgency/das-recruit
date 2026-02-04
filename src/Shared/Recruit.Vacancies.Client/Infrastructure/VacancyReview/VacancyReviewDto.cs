@@ -36,8 +36,12 @@ public class VacancyReviewDto
     public string EmployerName { get; set; }
     public string HashedAccountId { get; set; }
     public Guid VacancyId { get; set; }
+    public bool EnableAiProcessing { get; set; }
 
-    public static VacancyReviewDto MapVacancyReviewDto(Domain.Entities.VacancyReview source, IEncodingService encodingService)
+    public static VacancyReviewDto MapVacancyReviewDto(
+        Domain.Entities.VacancyReview source,
+        IEncodingService encodingService,
+        bool enableQaAi = false)
     {
         return new VacancyReviewDto
         {
@@ -70,7 +74,8 @@ public class VacancyReviewDto
             EmployerName =  source.VacancySnapshot.EmployerName,
             EmployerLocations = source.VacancySnapshot.EmployerLocationOption == null ? [ source.VacancySnapshot.EmployerLocation ] : source.VacancySnapshot.EmployerLocations,
             EmployerLocationOption = source.VacancySnapshot.EmployerLocationOption ?? AvailableWhere.OneLocation,
-            VacancyId = source.VacancySnapshot.Id
+            VacancyId = source.VacancySnapshot.Id,
+            EnableAiProcessing = enableQaAi
         };
     }
 
