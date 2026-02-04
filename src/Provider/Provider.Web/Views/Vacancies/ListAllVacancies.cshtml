@@ -1,0 +1,67 @@
+@using Esfa.Recruit.Provider.Web.RouteModel
+@using Esfa.Recruit.Shared.Web.TagHelpers
+
+@model Esfa.Recruit.Provider.Web.ViewModels.Vacancies.ListAllVacanciesViewModel
+
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancies";
+    ViewBag.Title = "Vacancies";
+    
+    var vacancyRouteModel = new VacancyRouteModel { Ukprn = Model.Ukprn };
+    var vacanciesSearchSuggestionsEndpointUrl = Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, vacancyRouteModel.RouteDictionary, Context.Request.Scheme);
+}
+
+<partial name="@PartialNames.Alerts" for="Alerts" />
+
+<div asp-show="Model.HasWarning" class="das-notification das-notification--warning">
+    <p class="das-notification__body">@Model.WarningMessage</p>
+</div>
+
+<govuk-banner asp-show="Model.HasInfo" type="BannerStyle.Success">
+    <govuk-banner-heading>@Model.InfoMessage</govuk-banner-heading>
+</govuk-banner>
+
+@section BackLink
+{
+    <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" esfa-automation="link-back" class="govuk-back-link">Return to recruitment dashboard</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">All vacancies</h1>
+    </div>
+</div>
+
+<form method="get" autocomplete="off" asp-route-ukprn="@Model.Ukprn">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-form-group">
+                <label for="search-input" class="govuk-label">
+                    Search by vacancy title, reference number or employer
+                </label>
+                <div class="das-search-form__group">
+                    <input id="search-input" asp-for="SearchTerm" title="Search" class="govuk-input das-search-form__input app-vacancy-autocomplete" type="text" maxlength="200" data-apiurl="@vacanciesSearchSuggestionsEndpointUrl">
+                    <div class="das-search-form__button-wrap">
+                        <button class="govuk-button das-search-form__button" type="submit">
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<h3 class="govuk-heading-m">
+    @Model.ResultsHeading
+</h3>
+
+<p asp-hide="@Model.ShowResultsTable" class="govuk-body">No vacancies match the criteria</p>
+
+<div asp-show="@Model.ShowResultsTable">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <partial model="@Model.ListViewModel" name="_VacancyList" />
+        </div>
+    </div>
+</div>
