@@ -32,7 +32,7 @@ public class PaginationTagHelper(IUrlHelperFactory urlHelperFactory, IActionCont
         output.Content.AppendHtml(GetPagination());
     }
 
-    private IHtmlContent GetPagination()
+    private TagBuilder GetPagination()
     {
         var action = ViewContext.RouteData.Values["action"] as string;
         var controller = ViewContext.RouteData.Values["controller"] as string;
@@ -88,7 +88,7 @@ public class PaginationTagHelper(IUrlHelperFactory urlHelperFactory, IActionCont
         return ul;
     }
     
-    private static IHtmlContent GetPageItem(IHtmlContent anchor)
+    private static TagBuilder GetPageItem(IHtmlContent anchor)
     {
         var li = new TagBuilder("li");
         li.AddCssClass("das-pagination__item");
@@ -96,7 +96,7 @@ public class PaginationTagHelper(IUrlHelperFactory urlHelperFactory, IActionCont
         return li;
     }
 
-    private IHtmlContent GetCaption()
+    private TagBuilder GetCaption()
     {
         var div = new TagBuilder("div");
         div.AddCssClass("das-pagination__summary");

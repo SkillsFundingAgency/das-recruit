@@ -83,7 +83,7 @@ public class DasSortableColumnHeaderTagHelper(IUrlHelperFactory urlHelperFactory
         };
     }
     
-    private string GetCurrentAriaSortOrder(ColumnSortOrder? sortOrder)
+    private static string GetCurrentAriaSortOrder(ColumnSortOrder? sortOrder)
     {
         return sortOrder switch
         {

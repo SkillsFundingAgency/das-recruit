@@ -29,6 +29,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         ITrainingProviderService trainingProviderService,
         IOuterApiClient outerApiClient)
     {
+        private const int MinPage = 1;
+        private const int MaxPage = 9999;
+        private static int ClampPage(int page) => Math.Clamp(page, MinPage, MaxPage);
         private const int VacanciesPerPage = 25;
 
         public async Task<VacanciesViewModel> GetVacanciesViewModelAsync(
@@ -106,24 +109,25 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         
         public async Task<ListAllVacanciesViewModel> ListAllVacanciesAsync(
             int ukprn,
-            VacancyUser user,
+            string userId,
             int? page,
+            int pageSize,
             string searchTerm,
             VacancySortColumn? sortColumn,
             ColumnSortOrder? sortOrder)
         {
-            page ??= 1;
+            page = ClampPage(page ?? 1);
             
             var resultTask = outerApiClient.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(
                 new GetVacanciesByUkprnApiRequestV2(
-                    Convert.ToInt32(user.Ukprn),
+                    ukprn,
                     searchTerm,
                     page.Value,
-                    VacanciesPerPage,
+                    pageSize,
                     sortColumn ?? VacancySortColumn.CreatedDate,
                     sortOrder ?? ColumnSortOrder.Desc)
             );
-            var alertsTask = trainingProviderService.GetProviderAlerts(ukprn, user.UserId);
+            var alertsTask = trainingProviderService.GetProviderAlerts(ukprn, userId);
             await Task.WhenAll(resultTask, alertsTask);
             var result = resultTask.Result;
             var alerts = alertsTask.Result;
@@ -178,7 +182,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, totalItems, FilteringOptions.All, searchTerm, UserType.Provider),
                 SearchTerm = searchTerm,
                 TotalVacancies = (uint)totalItems,
-                Ukprn = user.Ukprn!.Value,
+                Ukprn = ukprn,
             };
         }
     }

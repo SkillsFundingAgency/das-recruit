@@ -22,7 +22,15 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
         [FromQuery] int? page = 1,
         [FromQuery] string searchTerm = null)
     {
-        var vm = await orchestrator.ListAllVacanciesAsync(ukprn, User.ToVacancyUser(), page, searchTerm, sortParams.SortColumn, sortParams.SortOrder);
+        const int pageSize = 10;
+        var vm = await orchestrator.ListAllVacanciesAsync(
+            ukprn,
+            User.ToVacancyUser().UserId,
+            page,
+            pageSize,
+            searchTerm,
+            sortParams.SortColumn,
+            sortParams.SortOrder);
 
         if (TempData.TryGetValue(TempDataKeys.VacanciesErrorMessage, out var warningMessage))
         {
