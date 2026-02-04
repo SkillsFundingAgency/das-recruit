@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
@@ -35,11 +36,15 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
 
         return View(vm);
     }
-        
 
     [HttpGet("", Name = RouteNames.Vacancies_Get)]
-    public async Task<IActionResult> Vacancies([FromQuery] string filter, [FromQuery] int page = 1, [FromQuery] string searchTerm = "")
+    public async Task<IActionResult> Vacancies([FromRoute] int ukprn, [FromQuery] string filter, [FromQuery] int page = 1, [FromQuery] string searchTerm = "")
     {
+        if (filter.Equals("all", StringComparison.CurrentCultureIgnoreCase))
+        {
+            return RedirectToRoute(RouteNames.Vacancies_GetAll, new { ukprn });
+        }
+        
         if (string.IsNullOrWhiteSpace(filter) && string.IsNullOrWhiteSpace(searchTerm))
             TryGetFiltersFromCookie(out filter, out searchTerm);
             
