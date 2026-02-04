@@ -23,9 +23,9 @@ public class WhenBuildingPostUpdateVacancyReviewRequest
         encodingService.Setup(x => x.Decode(vReview.VacancySnapshot.EmployerAccountId, EncodingType.AccountId)).Returns(123456);
         encodingService.Setup(x => x.Decode(vReview.VacancySnapshot.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId)).Returns(654321);
         
-        var actual = new PostUpdateVacancyReviewRequest(VacancyReviewDto.MapVacancyReviewDto(vReview, encodingService.Object));
+        var actual = new PostVacancyReviewRequest(vReview.Id,VacancyReviewDto.MapVacancyReviewDto(vReview, encodingService.Object));
 
-        actual.PostUrl.Should().Be($"VacancyReviews/{vReview.Id}/update");
+        actual.PostUrl.Should().Be($"VacancyReviews/{vReview.Id}");
         ((VacancyReviewDto)actual.Data).Should().BeEquivalentTo(new VacancyReviewDto
         {
             Id = vReview.Id,
