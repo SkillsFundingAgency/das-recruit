@@ -47,14 +47,15 @@
                         </button>
                     </div>
                 </div>
+                <div class="govuk-!-font-weight-bold govuk-!-margin-top-2">
+                    @Model.ResultsHeading
+                </div>
             </div>
         </div>
     </div>
 </form>
 
-<h3 class="govuk-heading-m">
-    @Model.ResultsHeading
-</h3>
+
 
 <p asp-hide="@Model.ShowResultsTable" class="govuk-body">No vacancies match the criteria</p>
 
