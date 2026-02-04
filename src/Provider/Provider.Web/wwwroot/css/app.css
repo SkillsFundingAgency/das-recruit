@@ -715,3 +715,7 @@ dd.govuk-summary-list__value .faa-user-content:first-child {
     }
   }
 }
+
+.das-sortable-column-header {
+    display: flex !important;
+}
