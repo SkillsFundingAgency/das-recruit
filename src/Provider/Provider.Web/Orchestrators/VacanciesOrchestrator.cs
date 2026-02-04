@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         ITrainingProviderService trainingProviderService,
         IOuterApiClient outerApiClient)
     {
-        private const int VacanciesPerPage = 10;
+        private const int VacanciesPerPage = 25;
 
         public async Task<VacanciesViewModel> GetVacanciesViewModelAsync(
             VacancyUser user, string filter, int page, string searchTerm)
