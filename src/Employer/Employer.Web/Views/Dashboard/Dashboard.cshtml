@@ -1,44 +1,38 @@
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @using Esfa.Recruit.Employer.Web.RouteModel
-
 @model Esfa.Recruit.Employer.Web.ViewModels.Dashboard.DashboardViewModel
-
-@{ var vacanciesSearchSuggestionsEndpointUrl = Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
+@{
+    var vacanciesSearchSuggestionsEndpointUrl = Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
     string GetCardStatus(bool hasPermission)
     {
-        return hasPermission ? String.Empty : "app-card--inactive";
+        return hasPermission ? string.Empty : "app-card--inactive";
     }
     ViewBag.ShowReturnToMaLink = Model.FromMaHome;
     ViewBag.Vpv = "/recruitment/employer/page-dashboard";
     ViewBag.ZenDeskLabel = "recruit-recruitment";
-    ViewBag.Title = "Your apprenticeship adverts"; }
-
+    ViewBag.Title = "Your apprenticeship adverts";
+}
 @section BackLink
 {
-    <a asp-hide="@Model.HasAnyVacancies" asp-route="@RouteNames.Dashboard_Account_Home" asp-route-employerAccountId="@Model.EmployerAccountId"  class="govuk-back-link">Back</a>
+    <a asp-hide="@Model.HasAnyVacancies" asp-route="@RouteNames.Dashboard_Account_Home" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-back-link">Back</a>
 }
-
-<partial asp-hide="@Model.HasAnyVacancies" name="_NoVacanciesContent" model="@(new VacancyRouteModel{EmployerAccountId = Model.EmployerAccountId})" />
-
+<partial asp-hide="@Model.HasAnyVacancies" name="_NoVacanciesContent" model="@(new VacancyRouteModel { EmployerAccountId = Model.EmployerAccountId })" />
 <div asp-show="@Model.HasAnyVacancies">
-
     <partial name="@PartialNames.Alerts" for="Alerts" />
-
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">
-            <h1 class="govuk-heading-xl">Your apprenticeship adverts</h1>
+            <h1 class="govuk-heading-l">Recruitment dashboard</h1>
         </div>
         <div class="govuk-grid-column-one-half ">
             <a asp-route="@RouteNames.CreateVacancyStart" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button das-float-right govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create an advert</a>
         </div>
     </div>
-
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" method="get" autocomplete="off">
                 <div class="govuk-form-group">
                     <label for="search-input" class="govuk-label">
-                        Search by advert title or reference number
+                        Search by advert title, reference number or employer
                     </label>
                     <div class="das-search-form__group">
                         <input id="search-input" name="searchTerm" title="Search" class="govuk-input das-search-form__input app-vacancy-autocomplete" type="text" maxlength="200" data-apiurl="@vacanciesSearchSuggestionsEndpointUrl" />
@@ -52,7 +46,15 @@
             </form>
         </div>
     </div>
-
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-!-margin-bottom-5">
+                <a asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.All" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
+                    View all adverts (@Model.NumberOfVacancies)
+                </a>
+            </div>
+        </div>
+    </div>
     <div class="govuk-grid-row app-card__row">
         <div class="govuk-grid-column-one-third">
             <div class="app-card">
@@ -63,7 +65,7 @@
                             @FilteringOptions.Draft @Model.VacancyTextDraft
                         </a>
                     </h3>
-                    <p class="govuk-body app-card__description">Adverts that you need to complete and send for review.</p>
+                    <p class="govuk-body app-card__description">Adverts that need completing and sending for review.</p>
                 </div>
             </div>
         </div>
@@ -109,7 +111,7 @@
                             @FilteringOptions.Referred.GetDisplayName() @Model.VacancyTextReferred
                         </a>
                     </h3>
-                    <p class="govuk-body app-card__description">Adverts that you need to edit and resubmit.</p>
+                    <p class="govuk-body app-card__description">Rejected adverts will need to be edited and resubmitted.</p>
                 </div>
             </div>
         </div>
@@ -158,7 +160,6 @@
             </div>
         </div>
     </div>
-
     <div class="govuk-grid-row app-card__row">
         <div class="govuk-grid-column-one-third">
             <div class="app-card">
@@ -166,7 +167,7 @@
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.NoOfSharedApplications</span>
                         <a asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.NewSharedApplications" class="govuk-link govuk-link--no-visited-state">
-                            New shared @Model.SharedApplicationsText
+                            Shared @Model.SharedApplicationsText
                         </a>
                     </h3>
                     <span class="govuk-body app-card__description">Applications your training provider needs feedback on.</span>
@@ -189,41 +190,30 @@
                             @FilteringOptions.Closed @Model.VacancyTextClosed
                         </a>
                     </h3>
-                    <span class="govuk-body app-card__description">Adverts that have passed the closing date. You can clone these adverts to republish them.</span>
+                    <span class="govuk-body app-card__description">Adverts that have passed the closing date.</span>
                 </div>
             </div>
         </div>
     </div>
-    
-    
-    <a asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.All" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
-        View all your adverts (@Model.NumberOfVacancies)
-    </a>
-
     <hr class="govuk-grid-column-full govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
-      
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-third">
             <h3 class="govuk-heading-s">
-
                 <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.YourTrainingProviderPermission" asp-route-employerAccountId="@Model.EmployerAccountId">Set up permission</a>
             </h3>
-            <p class="govuk-body">Give training providers permission to add apprentice records, recruit apprentices and create job adverts on your behalf.</p>
+            <p class="govuk-body">Let training providers manage apprentices and job adverts for you.</p>
         </div>
-
         <div class="govuk-grid-column-one-third">
             <h3 class="govuk-heading-s">
                 <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ManageNotifications_Get" asp-route-employerAccountId="@Model.EmployerAccountId">Manage your emails</a>
             </h3>
-            <p class="govuk-body">Set up and manage the emails you receive about your adverts and applications.</p>
+            <p class="govuk-body">Manage email notifications for your adverts and applications.</p>
         </div>
-
         <div class="govuk-grid-column-one-third">
             <h3 class="govuk-heading-s">
-
                 <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerRecruitmentApi" asp-route-employerAccountId="@Model.EmployerAccountId">Recruitment APIs</a>
             </h3>
-            <p class="govuk-body">Integrate our APIs to create adverts using your own systems and display adverts on your websites.</p>
+            <p class="govuk-body">Integrate our APIs to create adverts using your own systems.</p>
         </div>
     </div>
 </div>
