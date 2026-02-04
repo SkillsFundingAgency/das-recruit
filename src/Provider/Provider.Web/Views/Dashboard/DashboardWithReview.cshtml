@@ -26,7 +26,7 @@
     </div>
      <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <form asp-route="@RouteNames.Vacancies_Get" asp-all-route-data="@vacancyRouteModel.RouteDictionary" method="get" autocomplete="off">
+            <form asp-route="@RouteNames.Vacancies_GetAll" asp-all-route-data="@vacancyRouteModel.RouteDictionary" method="get" autocomplete="off">
                 <div class="govuk-form-group">
                     <label for="search-input" class="govuk-label">
                         Search by vacancy title or reference number
@@ -171,7 +171,7 @@
         </div>
     </div>
 
-    <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.All" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state">
+    <a asp-route="@RouteNames.Vacancies_GetAll" asp-route-ukprn="@Model.Ukprn" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state">
         View all your vacancies (@Model.NumberOfVacancies)
     </a>
 

@@ -88,7 +88,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 {
                     _logger.LogWarning(exception, "Exception on path: {route}", routeWhereExceptionOccurred);
                     AddDashboardMessage(exception.Message);
-                    return RedirectToRoute(RouteNames.Vacancies_Get, new { Ukprn = ukprn });
+                    return RedirectToRoute(RouteNames.Vacancies_GetAll, new { Ukprn = ukprn });
                 }
 
                 if (exception is InvalidRouteForVacancyException invalidRouteException)
@@ -134,7 +134,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             var vm = new MissingPermissionsViewModel
             {
                 RouteValues = new VacancyRouteModel { Ukprn = ukprn },
-                CtaRoute = RouteNames.Vacancies_Get
+                CtaRoute = RouteNames.Vacancies_GetAll
             };
 
             return View(ViewNames.MissingPermissions, vm);
