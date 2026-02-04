@@ -44,6 +44,7 @@ public class DasSortableColumnHeaderTagHelper(IUrlHelperFactory urlHelperFactory
 
         var anchor = new TagBuilder("a");
         anchor.AddCssClass("govuk-link");
+        anchor.AddCssClass("govuk-link--no-visited-state");
         anchor.AddCssClass("das-sortable-column-header");
         anchor.Attributes.Add("aria-sort", GetCurrentAriaSortOrder(ActiveSortOrder));
         anchor.InnerHtml.AppendHtml(await output.GetChildContentAsync());
