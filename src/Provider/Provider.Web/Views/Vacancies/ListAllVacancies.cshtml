@@ -32,37 +32,37 @@
     </div>
 </div>
 
-<form method="get" autocomplete="off" asp-route-ukprn="@Model.Ukprn">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <div class="govuk-form-group">
-                <label for="search-input" class="govuk-label">
-                    Search by vacancy title, reference number or employer
-                </label>
-                <div class="das-search-form__group">
-                    <input id="search-input" asp-for="SearchTerm" title="Search" class="govuk-input das-search-form__input app-vacancy-autocomplete" type="text" maxlength="200" data-apiurl="@vacanciesSearchSuggestionsEndpointUrl">
-                    <div class="das-search-form__button-wrap">
-                        <button class="govuk-button das-search-form__button" type="submit">
-                            Search
-                        </button>
+@if (Model is { ListViewModel.Vacancies.Count: > 0 } || !string.IsNullOrWhiteSpace(Model.SearchTerm))
+{
+    <form method="get" autocomplete="off" asp-route-ukprn="@Model.Ukprn">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <div class="govuk-form-group">
+                    <label for="search-input" class="govuk-label">
+                        Search by vacancy title, reference number or employer
+                    </label>
+                    <div class="das-search-form__group">
+                        <input id="search-input" asp-for="SearchTerm" title="Search" class="govuk-input das-search-form__input app-vacancy-autocomplete" type="text" maxlength="200" data-apiurl="@vacanciesSearchSuggestionsEndpointUrl">
+                        <div class="das-search-form__button-wrap">
+                            <button class="govuk-button das-search-form__button" type="submit">
+                                Search
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="govuk-!-font-weight-bold govuk-!-margin-top-2">
-                    @Model.ResultsHeading
+                    <div class="govuk-!-font-weight-bold govuk-!-margin-top-2">
+                        @Model.ResultsHeading
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
+}
 
-
-
-<p asp-hide="@Model.ShowResultsTable" class="govuk-body">No vacancies match the criteria</p>
-
-<div asp-show="@Model.ShowResultsTable">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <partial model="@Model.ListViewModel" name="_VacancyList" />
-        </div>
-    </div>
-</div>
+@if (Model is { ListViewModel.Vacancies.Count: > 0 })
+{
+    <partial model="@Model.ListViewModel" name="_VacancyList" />
+}
+else
+{
+    <p class="govuk-body">No vacancies match the criteria</p>    
+}

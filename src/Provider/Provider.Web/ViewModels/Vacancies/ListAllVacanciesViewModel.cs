@@ -11,7 +11,6 @@ public class ListAllVacanciesViewModel
     public string SearchTerm { get; set; }
     public long Ukprn { get; set; }
     public uint TotalVacancies { get; set; }
-    public bool ShowResultsTable => ListViewModel is { Vacancies.Count: > 0 };
     public bool HasWarning => !string.IsNullOrEmpty(WarningMessage);
     public bool HasInfo => !string.IsNullOrEmpty(InfoMessage);
     public required VacanciesListViewModel ListViewModel { get; set; }
