@@ -8,7 +8,7 @@ public class VacanciesListViewModel
 {
     public string EditVacancyRoute { get; set; }
     public string ManageVacancyRoute { get; set; }
-    public PagerViewModel Pager { get; set; }
+    public PaginationViewModel Pagination { get; set; }
     public required Dictionary<string, string> RouteDictionary { get; set; }
     public bool ShowEmployerReviewedApplicationCounts { get; set; }
     public bool ShowNewApplicationCounts => !ShowEmployerReviewedApplicationCounts;

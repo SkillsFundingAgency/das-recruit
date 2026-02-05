@@ -163,13 +163,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 {
                     EditVacancyRoute = RouteNames.ProviderTaskListGet,
                     ManageVacancyRoute = RouteNames.VacancyManage_Get,
-                    Pager = new PagerViewModel(
-                        totalItems, 
-                        pageSize,
-                        page.Value,
-                        "Showing {0} to {1} of {2} vacancies",
-                        string.Empty,
-                        routeDictionary),
+                    Pagination = new PaginationViewModel(totalItems, pageSize, page.Value, "Showing {0} to {1} of {2} vacancies"),
                     RouteDictionary = routeDictionary,
                     ShowEmployerReviewedApplicationCounts = false,
                     ShowSourceOrigin = false,

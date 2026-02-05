@@ -97,6 +97,13 @@
             </tbody>
         </table>
 
-        <das-pagination asp-show="@Model.Pager.ShowPager" model="@Model.Pager"/>
+        <div class="das-pagination-container">
+            <div class="das-pagination__summary">@Model.Pagination.Caption</div>
+            <govuk-pagination
+                asp-show="@Model.Pagination.Show"
+                current-page="@Model.Pagination.CurrentPage"
+                page-count="@Model.Pagination.TotalPages"
+                route-dictionary="@Model.RouteDictionary" />
+        </div>
     </div>
 </div>

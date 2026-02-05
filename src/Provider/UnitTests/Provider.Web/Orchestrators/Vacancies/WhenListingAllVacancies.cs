@@ -96,7 +96,7 @@ public class WhenListingAllVacancies
         result.ListViewModel.Vacancies.Count.Should().Be(vacancyListItems.Count);
         result.ListViewModel.RouteDictionary.Count.Should().Be(4);
         result.ListViewModel.RouteDictionary.Keys.Should().Contain(["searchTerm", "sortOrder", "sortColumn", "ukprn"]);
-        result.ListViewModel.Pager.TotalPages.Should().Be(1);
-        result.ListViewModel.Pager.CurrentPage.Should().Be(5);
+        result.ListViewModel.Pagination.TotalPages.Should().Be(1);
+        result.ListViewModel.Pagination.CurrentPage.Should().Be(5);
     }
 }
