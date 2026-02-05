@@ -15,6 +15,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers;
 [Route(RoutePaths.VacanciesRoutePath)]
 public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment) : Controller
 {
+    private const int PageSize = 25;
+    
     [HttpGet("all", Name = RouteNames.Vacancies_GetAll)]
     public async Task<IActionResult> ListAllVacancies(
         [FromRoute] int ukprn,
@@ -22,12 +24,11 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
         [FromQuery] int? page = 1,
         [FromQuery] string searchTerm = null)
     {
-        const int pageSize = 10;
         var vm = await orchestrator.ListAllVacanciesAsync(
             ukprn,
             User.ToVacancyUser().UserId,
             page,
-            pageSize,
+            PageSize,
             searchTerm,
             sortParams.SortColumn,
             sortParams.SortOrder);
