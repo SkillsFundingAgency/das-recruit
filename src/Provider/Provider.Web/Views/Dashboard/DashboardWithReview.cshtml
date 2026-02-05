@@ -1,4 +1,5 @@
 @using Esfa.Recruit.Provider.Web.RouteModel
+@using Esfa.Recruit.Provider.Web.ViewModels.Dashboard
 @model Esfa.Recruit.Provider.Web.ViewModels.Dashboard.DashboardViewModel
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-dashboard";
@@ -10,131 +11,106 @@
     <partial name="@PartialNames.Alerts" for="Alerts" />
     <partial name="@PartialNames.DashboardSearchBoxPartial" for="@Model" />
     <div class="govuk-grid-row app-card__row">
-        <div class="govuk-grid-column-one-third">
-            <div class="app-card">
-                <div class="app-card__content">
-                    <h3 class="govuk-heading-m app-card__heading">
-                        <span class="app-card__stat">@Model.VacancyCountDraft</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" asp-route-filter="@FilteringOptions.Draft" class="govuk-link  govuk-link--no-visited-state">
-                            @FilteringOptions.Draft @Model.VacancyTextDraft
-                        </a>
-                    </h3>
-                    <p class="govuk-body app-card__description">Vacancies need completing and sending for review.</p>
-                </div>
-            </div>
-        </div>
-        <div class="govuk-grid-column-one-third">
-            <div class="app-card">
-                <div class="app-card__content">
-                    <h3 class="govuk-heading-m app-card__heading">
-                        <span class="app-card__stat">@Model.VacancyCountReview</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" asp-route-filter="@FilteringOptions.Review" class="govuk-link  govuk-link--no-visited-state">
-                            @FilteringOptions.Review.GetDisplayName(UserType.Provider)
-                        </a>
-                    </h3>
-                    <p class="govuk-body app-card__description">Vacancies that have been sent for review.</p>
-                </div>
-            </div>
-        </div>
-        <div class="govuk-grid-column-one-third">
-            <div class="app-card">
-                <div class="app-card__content">
-                    <h3 class="govuk-heading-m app-card__heading">
-                        <span class="app-card__stat">@Model.VacancyCountSubmitted</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" asp-route-filter="@FilteringOptions.Submitted" class="govuk-link  govuk-link--no-visited-state">
-                            @FilteringOptions.Submitted.GetDisplayName(UserType.Provider)
-                        </a>
-                    </h3>
-                    <p class="govuk-body app-card__description">Vacancies that have been sent for review.</p>
-                </div>
-            </div>
-        </div>
+        @(await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
+        {
+            Count = Model.VacancyCountDraft,
+            HeadingText = $"{FilteringOptions.Draft} {Model.VacancyTextDraft}",
+            Description = "Vacancies need completing and sending for review.",
+            RouteName = RouteNames.Vacancies_Get,
+            Ukprn = Model.Ukprn,
+            Filter = FilteringOptions.Draft
+        }))
+        @(await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
+        {
+            Count = Model.VacancyCountReview,
+            HeadingText = FilteringOptions.Review.GetDisplayName(UserType.Provider),
+            Description = "Vacancies that have been sent for review.",
+            RouteName = RouteNames.Vacancies_Get,
+            Ukprn = Model.Ukprn,
+            Filter = FilteringOptions.Review
+        }))
+        @(await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
+        {
+            Count = Model.VacancyCountSubmitted,
+            HeadingText = FilteringOptions.Submitted.GetDisplayName(UserType.Provider),
+            Description = "Vacancies that have been sent for review.",
+            RouteName = RouteNames.Vacancies_Get,
+            Ukprn = Model.Ukprn,
+            Filter = FilteringOptions.Submitted
+        }))
     </div>
     <div class="govuk-grid-row app-card__row">
-        <div class="govuk-grid-column-one-third">
-            <div class="app-card">
-                <div class="app-card__content">
-                    <h3 class="govuk-heading-m app-card__heading">
-                        <span class="app-card__stat">@Model.VacancyCountReferred</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" asp-route-filter="@FilteringOptions.Referred" class="govuk-link  govuk-link--no-visited-state">
-                            @FilteringOptions.Referred.GetDisplayName() @Model.VacancyTextReferred
-                        </a>
-                    </h3>
-                    <p class="govuk-body app-card__description">Rejected vacancies will need to be edited and resubmitted.</p>
-                </div>
-            </div>
-        </div>
-        <div class="govuk-grid-column-one-third">
-            <div class="app-card">
-                <div class="app-card__content">
-                    <h3 class="govuk-heading-m app-card__heading">
-                        <span class="app-card__stat">@Model.VacancyCountLive</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" asp-route-filter="@FilteringOptions.Live" class="govuk-link  govuk-link--no-visited-state">
-                            @FilteringOptions.Live @Model.VacancyTextLive
-                        </a>
-                    </h3>
-                    <p class="govuk-body app-card__description">Vacancies on Find an apprenticeship service.</p>
-                    <ul class="govuk-list app-card__tasks" asp-show="@(Model.ShowNoOfVacanciesClosingSoon || Model.ShowNoOfVacanciesClosingSoonWithNoApplications)">
-                        <li asp-show="@Model.ShowNoOfVacanciesClosingSoon">
-                            <a class="govuk-link  govuk-link--no-visited-state" asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" asp-route-filter="@FilteringOptions.ClosingSoon">@Model.NoOfVacanciesClosingSoon live @Model.VacancyTextClosingSoon closing soon</a>
-                        </li>
-                        <li asp-show="@Model.ShowNoOfVacanciesClosingSoonWithNoApplications">
-                            <a class="govuk-link  govuk-link--no-visited-state" asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" asp-route-filter="@FilteringOptions.ClosingSoonWithNoApplications">
-                                @Model.NoOfVacanciesClosingSoonWithNoApplications live @Model.VacancyTextClosingSoonWithNoApplications closing soon with no applications
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="govuk-grid-column-one-third">
-            <div class="app-card">
-                <div class="app-card__content">
-                    <h3 class="govuk-heading-m app-card__heading">
-                        <span class="app-card__stat">@Model.NoOfNewApplications</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" asp-route-filter="@FilteringOptions.NewApplications" class="govuk-link  govuk-link--no-visited-state">
-                            New @Model.ApplicationTextLive
-                        </a>
-                    </h3>
-                    <span class="govuk-body app-card__description">Applications from Find an apprenticeship service.</span>
-                    <ul class="govuk-list app-card__tasks" asp-show="@Model.ShowAllApplications">
-                        <li>
-                            <a class="govuk-link ga-track-anchor-click" asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" asp-route-filter="@FilteringOptions.AllApplications" data-ga-event-category="link - click">
-                                View all applications
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+        @(await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
+        {
+            Count = Model.VacancyCountReferred,
+            HeadingText = $"{FilteringOptions.Referred.GetDisplayName()} {Model.VacancyTextReferred}",
+            Description = "Rejected vacancies will need to be edited and resubmitted.",
+            RouteName = RouteNames.Vacancies_Get,
+            Ukprn = Model.Ukprn,
+            Filter = FilteringOptions.Referred
+        }))
+        @(await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
+        {
+            Count = Model.VacancyCountLive,
+            HeadingText = $"{FilteringOptions.Live} {Model.VacancyTextLive}",
+            Description = "Vacancies on Find an apprenticeship service.",
+            RouteName = RouteNames.Vacancies_Get,
+            Ukprn = Model.Ukprn,
+            Filter = FilteringOptions.Live,
+            Tasks = new[]
+            {
+                new VacancyCardTaskViewModel
+                {
+                    Show = Model.ShowNoOfVacanciesClosingSoon,
+                    Filter = FilteringOptions.ClosingSoon,
+                    Text = $"{Model.NoOfVacanciesClosingSoon} live {Model.VacancyTextClosingSoon} closing soon"
+                },
+                new VacancyCardTaskViewModel
+                {
+                    Show = Model.ShowNoOfVacanciesClosingSoonWithNoApplications,
+                    Filter = FilteringOptions.ClosingSoonWithNoApplications,
+                    Text = $"{Model.NoOfVacanciesClosingSoonWithNoApplications} live {Model.VacancyTextClosingSoonWithNoApplications} closing soon with no applications"
+                }
+            }
+        }))
+        @(await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
+        {
+            Count = Model.NoOfNewApplications,
+            HeadingText = $"New {Model.ApplicationTextLive}",
+            Description = "Applications from Find an apprenticeship service.",
+            RouteName = RouteNames.Vacancies_Get,
+            Ukprn = Model.Ukprn,
+            Filter = FilteringOptions.NewApplications,
+            Tasks = new[]
+            {
+                new VacancyCardTaskViewModel
+                {
+                    Show = Model.ShowAllApplications,
+                    Filter = FilteringOptions.AllApplications,
+                    Text = "View all applications"
+                }
+            }
+        }))
     </div>
     <div class="govuk-grid-row app-card__row">
-        <div class="govuk-grid-column-one-third">
-            <div class="app-card">
-                <div class="app-card__content">
-                    <h3 class="govuk-heading-m app-card__heading">
-                        <span class="app-card__stat">@Model.NumberOfEmployerReviewedApplications</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" asp-route-filter="@FilteringOptions.EmployerReviewedApplications" class="govuk-link  govuk-link--no-visited-state">
-                            @Model.ApplicationTextEmployerReviewedApplication
-                        </a>
-                    </h3>
-                    <p class="govuk-body app-card__description">Vacancies with applications that have been reviewed by an employer.</p>
-                </div>
-            </div>
-        </div>
-        <div class="govuk-grid-column-one-third">
-            <div class="app-card">
-                <div class="app-card__content">
-                    <h3 class="govuk-heading-m app-card__heading">
-                        <span class="app-card__stat">@Model.VacancyCountClosed</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" asp-route-filter="@FilteringOptions.Closed" class="govuk-link  govuk-link--no-visited-state">
-                            @FilteringOptions.Closed @Model.VacancyTextClosed
-                        </a>
-                    </h3>
-                    <p class="govuk-body app-card__description">Vacancies that have passed the closing date. You can clone these vacancies to republish them.</p>
-                </div>
-            </div>
-        </div>
+        @(await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
+        {
+            Count = Model.NumberOfEmployerReviewedApplications,
+            HeadingText = @Model.ApplicationTextEmployerReviewedApplication,
+            Description = "Vacancies with applications that have been reviewed by an employer.",
+            RouteName = RouteNames.Vacancies_Get,
+            Ukprn = Model.Ukprn,
+            Filter = FilteringOptions.EmployerReviewedApplications
+        }))
+        @(await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
+        {
+            Count = Model.VacancyCountClosed,
+            HeadingText = $"{FilteringOptions.Closed} {Model.VacancyTextClosed}",
+            Description = "Vacancies that have passed the closing date. You can clone these vacancies to republish them.",
+            RouteName = RouteNames.Vacancies_Get,
+            Ukprn = Model.Ukprn,
+            Filter = FilteringOptions.Closed
+        }))
     </div>
     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
     <partial name="@PartialNames.DashboardNavigationPartial" />
