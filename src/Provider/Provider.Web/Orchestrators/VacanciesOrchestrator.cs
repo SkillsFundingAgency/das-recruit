@@ -165,7 +165,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                     ManageVacancyRoute = RouteNames.VacancyManage_Get,
                     Pager = new PagerViewModel(
                         totalItems, 
-                        VacanciesPerPage,
+                        pageSize,
                         page.Value,
                         "Showing {0} to {1} of {2} vacancies",
                         string.Empty,

@@ -5,7 +5,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses.Vacancies;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using NUnit.Framework;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies;
@@ -22,7 +21,6 @@ public class WhenListingAllVacancies
         string userId,
         GetAlertsByUkprnApiResponse alertsResponse,
         PagedDataResponse<IEnumerable<VacancyListItem>> vacanciesResponse,
-        //[Frozen] Mock<ITrainingProviderService> trainingProviderService,
         [Frozen] Mock<IOuterApiClient> outerApiClient,
         VacanciesOrchestrator sut)
     {
@@ -32,10 +30,6 @@ public class WhenListingAllVacancies
             .Setup(x => x.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(It.IsAny<GetVacanciesByUkprnApiRequestV2>()))
             .Callback((IGetApiRequest x) => capturedRequest = x as GetVacanciesByUkprnApiRequestV2)
             .ReturnsAsync(vacanciesResponse);
-
-        // trainingProviderService
-        //     .Setup(x => x.GetProviderAlerts(ukprn, userId))
-        //     .ReturnsAsync(alertsResponse);
 
         // act
         await sut.ListAllVacanciesAsync(ukprn, userId, pageNumber, 10, null, null, null);
