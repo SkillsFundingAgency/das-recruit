@@ -37,6 +37,7 @@ namespace SFA.DAS.Recruit.Api.Mappers
                 EmployerLocations = request.Addresses?.Select(MapAddress).ToList(),
                 EmployerName = request.EmployerName,
                 EmployerNameOption = (EmployerNameOption?)request.EmployerNameOption,
+                EmployerWebsiteUrl = request.EmployerWebsiteUrl,
                 Id = id,
                 LegalEntityName = request.LegalEntityName,
                 NumberOfPositions = request.NumberOfPositions,
