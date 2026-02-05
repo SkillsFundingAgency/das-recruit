@@ -61,7 +61,6 @@
                 <label asp-for="Filter" class="govuk-label">Filter vacancies by</label>
                 <select asp-for="Filter" class="govuk-select">
                     <optgroup label="Status">
-                        <option value="@FilteringOptions.All">all vacancies</option>
                         <option value="@FilteringOptions.Live">live vacancies</option>
                         <option value="@FilteringOptions.Referred">rejected vacancies</option>
                         @if (Model.HasEmployerReviewPermission)

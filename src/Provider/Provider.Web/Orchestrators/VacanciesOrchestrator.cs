@@ -104,7 +104,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             if (Enum.TryParse(typeof(FilteringOptions), filter, out var status))
                 return (FilteringOptions)status;
-            return FilteringOptions.All;
+            return FilteringOptions.Draft;
         }
         
         public async Task<ListAllVacanciesViewModel> ListAllVacanciesAsync(
