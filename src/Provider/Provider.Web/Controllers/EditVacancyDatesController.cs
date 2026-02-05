@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             TempData.Add(TempDataKeys.VacanciesInfoMessage, string.Format(InfoMessages.VacancyUpdated, m.Title));
 
 
-            return RedirectToRoute(RouteNames.Vacancies_GetAll, new {m.Ukprn});
+            return RedirectToRoute(RouteNames.VacanciesGetAll, new {m.Ukprn});
         }
     }
 }

@@ -17,7 +17,7 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
 {
     private const int PageSize = 25;
     
-    [HttpGet("all", Name = RouteNames.Vacancies_GetAll)]
+    [HttpGet("all", Name = RouteNames.VacanciesGetAll)]
     public async Task<IActionResult> ListAllVacancies(
         [FromRoute] int ukprn,
         SortParams<VacancySortColumn> sortParams,
@@ -51,7 +51,7 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
     {
         if (filter.Equals("all", StringComparison.CurrentCultureIgnoreCase))
         {
-            return RedirectToRoute(RouteNames.Vacancies_GetAll, new { ukprn });
+            return RedirectToRoute(RouteNames.VacanciesGetAll, new { ukprn });
         }
         
         if (string.IsNullOrWhiteSpace(filter) && string.IsNullOrWhiteSpace(searchTerm))
