@@ -19,7 +19,7 @@
 
 @section BackLink
 {
-    <a asp-hide="@Model.ShowReferredFromMaBackLink" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" esfa-automation="link-back" class="govuk-back-link">Return to dashboard</a>
+    <a asp-hide="@Model.ShowReferredFromMaBackLink" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" esfa-automation="link-back" class="govuk-back-link">Return to recruitment dashboard</a>
     <a asp-show="@Model.ShowReferredFromMaBackLink" asp-route="@RouteNames.Dashboard_Account_Home" asp-route-employerAccountId="@Model.EmployerAccountId" esfa-automation="link-back" class="govuk-back-link">Return to home</a>
 }
 
