@@ -504,7 +504,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             var metrics = await vacancyAnalyticsService
                 .GetVacancyAnalyticsSummaryAsync(vacancyReference);
 
-            if (metrics?.Analytics == null || !metrics.Analytics.Any() || metrics.VacancyReference != vacancyReference)
+            if (metrics is not null && (metrics.Analytics == null || metrics.Analytics.Count == 0 || metrics.VacancyReference != vacancyReference))
             {
                 return new VacancyAnalyticsSummary();
             }
@@ -522,6 +522,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             return new VacancyAnalyticsSummary
             {
+                LastUpdated = metrics.UpdatedDate,
                 VacancyReference = vacancyReference,
 
                 // SEARCHES
