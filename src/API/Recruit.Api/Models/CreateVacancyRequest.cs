@@ -42,6 +42,7 @@ namespace SFA.DAS.Recruit.Api.Models
         public string AdditionalQuestion1 { get; set; }
         public string AdditionalQuestion2 { get; set; }
         public ApprenticeshipTypes? ApprenticeshipType { get; set; } = ApprenticeshipTypes.Standard;
+        public string EmployerWebsiteUrl { get; set; }
     }
 
     
