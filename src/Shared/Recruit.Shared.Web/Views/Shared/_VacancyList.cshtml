@@ -11,6 +11,7 @@
         {
             VacancyStatus.Referred or VacancyStatus.Rejected => "Edit and resubmit",
             VacancyStatus.Draft => "Edit and submit",
+            VacancyStatus.Review => "Review",
             _ => "Manage"
         };
     }
@@ -22,11 +23,13 @@
             <caption class="govuk-visually-hidden">Your draft vacancies</caption>
             <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-                <th asp-show="@(Model.ViewType is OwnerType.Employer)" class="govuk-table__header" scope="col">Advert title</th>
-                <th asp-show="@(Model.ViewType is OwnerType.Provider)" class="govuk-table__header" scope="col">Vacancy title</th>
-                <th asp-show="@(Model.ViewType is OwnerType.Provider)" class="govuk-table__header" scope="col">Employer</th>
+                <th asp-show="@(Model.UserType is UserType.Employer)" class="govuk-table__header" scope="col">Advert title</th>
+                <th asp-show="@(Model.UserType is UserType.Employer)" class="govuk-table__header" scope="col">Advert reference number</th>
 
-                <th class="govuk-table__header" scope="col">Vacancy reference number</th>
+                <th asp-show="@(Model.UserType is UserType.Provider)" class="govuk-table__header" scope="col">Vacancy title</th>
+                <th asp-show="@(Model.UserType is UserType.Provider)" class="govuk-table__header" scope="col">Employer</th>
+                <th asp-show="@(Model.UserType is UserType.Provider)" class="govuk-table__header" scope="col">Vacancy reference number</th>
+
                 <th class="govuk-table__header" scope="col">Applications</th>
                 
                 <das-sortable-column-header 
@@ -50,7 +53,7 @@
                         <div>@vacancy.Title</div>
                         <govuk-tag-foundation asp-show="@(vacancy.ApprenticeshipType == ApprenticeshipTypes.Foundation)" class="govuk-!-margin-top-2 govuk-!-margin-bottom-1 app-tag"/>
                     </td>
-                    <td asp-show="@(Model.ViewType is OwnerType.Provider)" class="govuk-table__cell" data-label="Employer">
+                    <td asp-show="@(Model.UserType is UserType.Provider)" class="govuk-table__cell" data-label="Employer">
                         <span>@vacancy.EmployerName</span>
                     </td>
                     <td class="govuk-table__cell" data-label="Vacancy reference number">
@@ -72,7 +75,7 @@
                     <td asp-hide="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">-</td>
                     <td class="govuk-table__cell" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
                     <td class="govuk-table__cell" data-label="Status">
-                        <span class="govuk-tag app-tag app-tag--@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName(UserType.Provider)</span>
+                        <span class="govuk-tag app-tag app-tag--@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName(Model.UserType)</span>
                     </td>
                     <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Action">
                         @{
@@ -81,7 +84,7 @@
                                 false => Model.ManageVacancyRoute,
                                 _ => vacancy.Status switch
                                 {
-                                    VacancyStatus.Referred or VacancyStatus.Rejected => Model.SubmitVacancyRoute,
+                                    VacancyStatus.Referred or VacancyStatus.Rejected or VacancyStatus.Review => Model.SubmitVacancyRoute,
                                     VacancyStatus.Draft when vacancy.IsTaskListCompleted => Model.SubmitVacancyRoute,
                                     _ => Model.EditVacancyRoute
                                 }
@@ -97,10 +100,9 @@
             </tbody>
         </table>
 
-        <div class="das-pagination-container">
+        <div asp-show="@Model.Pagination.Show" class="das-pagination-container">
             <div class="das-pagination__summary">@Model.Pagination.Caption</div>
             <govuk-pagination
-                asp-show="@Model.Pagination.Show"
                 current-page="@Model.Pagination.CurrentPage"
                 page-count="@Model.Pagination.TotalPages"
                 route-dictionary="@Model.RouteDictionary" />

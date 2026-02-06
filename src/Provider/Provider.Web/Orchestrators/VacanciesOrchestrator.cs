@@ -171,7 +171,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                     SortOrder = sortOrder,
                     SubmitVacancyRoute = RouteNames.ProviderCheckYourAnswersGet,
                     Vacancies = result.Data.Select(x => VacancyListItemViewModel.From(x, ukprn)).ToList(),
-                    ViewType = OwnerType.Provider,
+                    UserType = UserType.Provider,
                 },
                 ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, totalItems, FilteringOptions.All, searchTerm, UserType.Provider),
                 SearchTerm = searchTerm,

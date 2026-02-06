@@ -22,6 +22,7 @@ public static class RouteNames
     public const string Dashboard_Get = "Dashboard_Get";
 
     public const string Vacancies_Get = "Dashboard_Index_Get";
+    public const string VacanciesGetAll = nameof(VacanciesGetAll);
         
     public const string Dashboard_AccountsRename = "Dashboard_AccountsRename";
     public const string Dashboard_AccountsFinance = "Dashboard_AccountsFinance";

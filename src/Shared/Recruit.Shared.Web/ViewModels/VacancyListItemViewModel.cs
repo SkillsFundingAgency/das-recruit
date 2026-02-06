@@ -69,4 +69,33 @@ public class VacancyListItemViewModel
             VacancyReference = item.VacancyReference,
         };
     }
+    
+    public static VacancyListItemViewModel From(VacancyListItem item, string employerAccountId)
+    {
+        return new VacancyListItemViewModel
+        {
+            ApplicationMethod = item.ApplicationMethod,
+            Applications = $"{item.Stats?.Applications ?? '-'}",
+            ApprenticeshipType = item.ApprenticeshipType,
+            ClosingDate = item.ClosingDate,
+            EmployerName = item.LegalEntityName,
+            Id = item.Id,
+            IsTaskListCompleted = item.OwnerType is OwnerType.Provider or OwnerType.Employer && item.HasSubmittedAdditionalQuestions is true,
+            NoOfAllSharedApplications = item.Stats?.AllSharedApplications ?? 0,
+            NoOfEmployerReviewedApplications = item.Stats?.EmployerReviewedApplications ?? 0,
+            NoOfNewApplications = item.Stats?.NewApplications ?? 0,
+            NoOfSharedApplications = item.Stats?.SharedApplications ?? 0,
+            NoOfSuccessfulApplications = item.Stats?.SuccessfulApplications ?? 0,
+            NoOfUnsuccessfulApplications = item.Stats?.UnsuccessfulApplications ?? 0,
+            RouteDictionary = new Dictionary<string, string>
+            {
+                ["employerAccountId"] = $"{employerAccountId}",
+                ["vacancyId"] = $"{item.Id}",
+            },
+            SourceOrigin = item.SourceOrigin,
+            Status = item.Status,
+            Title = item.Title,
+            VacancyReference = item.VacancyReference,
+        };
+    }
 }

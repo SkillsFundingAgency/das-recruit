@@ -15,7 +15,7 @@ public class VacanciesListViewModel
     public bool ShowSourceOrigin { get; set; }
     public string SubmitVacancyRoute { get; set; }
     public List<VacancyListItemViewModel> Vacancies { get; set; }
-    public OwnerType ViewType { get; set; }
+    public UserType UserType { get; set; }
     public VacancySortColumn? SortColumn { get; set; }
     public ColumnSortOrder? SortOrder { get; set; }
 }
