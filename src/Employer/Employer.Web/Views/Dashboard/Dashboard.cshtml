@@ -35,7 +35,7 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <form asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" method="get" autocomplete="off">
+            <form asp-route="@RouteNames.VacanciesGetAll" asp-route-employerAccountId="@Model.EmployerAccountId" method="get" autocomplete="off">
                 <div class="govuk-form-group">
                     <label for="search-input" class="govuk-label">
                         Search by advert title or reference number
@@ -196,7 +196,7 @@
     </div>
     
     
-    <a asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.All" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
+    <a asp-route="@RouteNames.VacanciesGetAll" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
         View all your adverts (@Model.NumberOfVacancies)
     </a>
 
