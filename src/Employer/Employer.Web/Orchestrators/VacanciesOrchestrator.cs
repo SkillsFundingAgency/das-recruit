@@ -163,7 +163,6 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
         var result = resultTask.Result;
         var alerts = alertsTask.Result;
         var totalItems = Convert.ToInt32(result.PageInfo.TotalCount);
-
         var routeDictionary = GetRouteDictionary(employerAccountId, searchTerm, sortColumn, sortOrder);
         
         return new ListAllVacanciesViewModel

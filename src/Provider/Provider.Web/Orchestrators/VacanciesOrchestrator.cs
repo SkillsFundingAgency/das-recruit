@@ -107,6 +107,27 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return FilteringOptions.Draft;
         }
         
+        private static Dictionary<string, string> GetRouteDictionary(int ukprn, string searchTerm, VacancySortColumn? sortColumn, ColumnSortOrder? sortOrder)
+        {
+            var result = new Dictionary<string, string> { ["ukprn"] = $"{ukprn}" };
+            if (sortColumn is not (null or VacancySortColumn.CreatedDate)) // ignore default
+            {
+                result.Add("sortColumn", $"{sortColumn}");
+                if (sortOrder is not null)
+                {
+                    // only order if the sort column is set
+                    result.Add("sortOrder", $"{sortOrder}");
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                result.Add("searchTerm", searchTerm);
+            }
+
+            return result;
+        }
+        
         public async Task<ListAllVacanciesViewModel> ListAllVacanciesAsync(
             int ukprn,
             string userId,
@@ -132,22 +153,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var result = resultTask.Result;
             var alerts = alertsTask.Result;
             var totalItems = Convert.ToInt32(result.PageInfo.TotalCount);
-
-            var routeDictionary = new Dictionary<string, string> { ["ukprn"] = $"{ukprn}" };
-            if (sortColumn is not (null or VacancySortColumn.CreatedDate)) // ignore default
-            {
-                routeDictionary.Add("sortColumn", $"{sortColumn}");
-                if (sortOrder is not null)
-                {
-                    // only order if the sort column is set
-                    routeDictionary.Add("sortOrder", $"{sortOrder}");
-                }
-            }
-
-            if (!string.IsNullOrWhiteSpace(searchTerm))
-            {
-                routeDictionary.Add("searchTerm", searchTerm);
-            }
+            var routeDictionary = GetRouteDictionary(ukprn, searchTerm, sortColumn, sortOrder);
             
             return new ListAllVacanciesViewModel
             {
