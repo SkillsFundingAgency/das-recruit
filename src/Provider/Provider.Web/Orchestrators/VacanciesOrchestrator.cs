@@ -142,7 +142,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var resultTask = outerApiClient.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(
                 new GetVacanciesByUkprnApiRequestV2(
                     ukprn,
-                    searchTerm,
+                    searchTerm?.Trim(),
                     page.Value,
                     pageSize,
                     sortColumn ?? VacancySortColumn.CreatedDate,

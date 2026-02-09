@@ -152,7 +152,7 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
         var resultTask = outerApiClient.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(
             new GetVacanciesByEmployerAccountApiRequestV2(
                 encodingService.Decode(employerAccountId, EncodingType.AccountId),
-                searchTerm,
+                searchTerm?.Trim(),
                 page.Value,
                 pageSize,
                 sortColumn ?? VacancySortColumn.CreatedDate,
