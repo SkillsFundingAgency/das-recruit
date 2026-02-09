@@ -24,9 +24,15 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
         [FromQuery] int? page = 1,
         [FromQuery] string searchTerm = null)
     {
+        var user = User.ToVacancyUser();
+        if ((int)user.Ukprn!.Value != ukprn)
+        {
+            throw new Exception($"User does not have access to list 'all' vacancies for provider {ukprn}");
+        }
+        
         var vm = await orchestrator.ListAllVacanciesAsync(
             ukprn,
-            User.ToVacancyUser().UserId,
+            user.UserId,
             page,
             PageSize,
             searchTerm,
@@ -43,7 +49,41 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
             vm.InfoMessage = infoMessage!.ToString();
         }
 
-        return View(vm);
+        return View("ListVacancies", vm);
+    }
+    
+    [HttpGet("draft", Name = RouteNames.VacanciesListDraft)]
+    public async Task<IActionResult> ListDraftVacancies(
+        [FromRoute] int ukprn,
+        SortParams<VacancySortColumn> sortParams,
+        [FromQuery] int? page = 1,
+        [FromQuery] string searchTerm = null)
+    {
+        var user = User.ToVacancyUser();
+        if ((int)user.Ukprn!.Value != ukprn)
+        {
+            throw new Exception($"User does not have access to list 'draft' vacancies for provider {ukprn}");
+        }
+        var vm = await orchestrator.ListDraftVacanciesAsync(
+            ukprn,
+            user.UserId,
+            page,
+            PageSize,
+            searchTerm,
+            sortParams.SortColumn,
+            sortParams.SortOrder);
+
+        if (TempData.TryGetValue(TempDataKeys.VacanciesErrorMessage, out var warningMessage))
+        {
+            vm.WarningMessage = warningMessage!.ToString();
+        }
+
+        if (TempData.TryGetValue(TempDataKeys.VacanciesInfoMessage, out var infoMessage))
+        {
+            vm.InfoMessage = infoMessage!.ToString();
+        }
+
+        return View("ListVacancies", vm);
     }
 
     [HttpGet("", Name = RouteNames.Vacancies_Get)]
