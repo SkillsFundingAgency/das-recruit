@@ -19,6 +19,7 @@ public class VacancyReviewDto
     public byte SubmissionCount { get; init; }
     public string ReviewedByUserEmail { get; init; }
     public required string SubmittedByUserEmail { get; init; }
+    public string SubmittedByUserId { get; set; }
     public DateTime? ClosedDate { get; init; }
     public string ManualOutcome { get; set; }
     public string ManualQaComment { get; init; }
@@ -33,11 +34,14 @@ public class VacancyReviewDto
     public long AccountId { get; set; }
     public long AccountLegalEntityId { get; set; }
     public string EmployerName { get; set; }
-
     public string HashedAccountId { get; set; }
     public Guid VacancyId { get; set; }
+    public bool EnableAiProcessing { get; set; }
 
-    public static VacancyReviewDto MapVacancyReviewDto(Domain.Entities.VacancyReview source, IEncodingService encodingService)
+    public static VacancyReviewDto MapVacancyReviewDto(
+        Domain.Entities.VacancyReview source,
+        IEncodingService encodingService,
+        bool enableQaAi = false)
     {
         return new VacancyReviewDto
         {
@@ -51,11 +55,12 @@ public class VacancyReviewDto
             SubmissionCount = (byte)source.SubmissionCount,
             ReviewedByUserEmail = source.ReviewedByUser?.Email,
             SubmittedByUserEmail = source.SubmittedByUser.Email,
+            SubmittedByUserId = source.SubmittedByUser.UserId ?? source.SubmittedByUser.DfEUserId,
             ClosedDate = source.ClosedDate,
             ManualOutcome = source.ManualOutcome?.ToString(),
             ManualQaComment = source.ManualQaComment,
             ManualQaFieldIndicators =source.ManualQaFieldIndicators!=null ? source.ManualQaFieldIndicators.Where(c=>c.IsChangeRequested)
-                .Select(c=>c.ToString()).ToList() : [],
+                .Select(c=>c.FieldIdentifier.ToString()).ToList() : [],
             AutomatedQaOutcome = source.AutomatedQaOutcome?.Decision.ToString(),
             AutomatedQaOutcomeIndicators = source.AutomatedQaOutcomeIndicators?.FirstOrDefault()?.IsReferred.ToString(),
             DismissedAutomatedQaOutcomeIndicators = source.DismissedAutomatedQaOutcomeIndicators,
@@ -69,7 +74,8 @@ public class VacancyReviewDto
             EmployerName =  source.VacancySnapshot.EmployerName,
             EmployerLocations = source.VacancySnapshot.EmployerLocationOption == null ? [ source.VacancySnapshot.EmployerLocation ] : source.VacancySnapshot.EmployerLocations,
             EmployerLocationOption = source.VacancySnapshot.EmployerLocationOption ?? AvailableWhere.OneLocation,
-            VacancyId = source.VacancySnapshot.Id
+            VacancyId = source.VacancySnapshot.Id,
+            EnableAiProcessing = enableQaAi
         };
     }
 
@@ -95,7 +101,7 @@ public class VacancyReviewDto
             Status = Enum.Parse<ReviewStatus>(source.Status),
             SubmissionCount = source.SubmissionCount,
             ReviewedByUser = new VacancyUser{Email = source.ReviewedByUserEmail},
-            SubmittedByUser = new VacancyUser{Email = source.SubmittedByUserEmail },
+            SubmittedByUser = new VacancyUser{Email = source.SubmittedByUserEmail},
             ClosedDate = source.ClosedDate,
             ManualOutcome = Enum.Parse<ManualQaOutcome>(source.ManualOutcome),
             ManualQaComment = source.ManualQaComment,

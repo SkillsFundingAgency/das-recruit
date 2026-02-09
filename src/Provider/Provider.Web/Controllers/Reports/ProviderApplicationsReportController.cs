@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Esfa.Recruit.Provider.Web.Controllers.Reports
 {
     [Route(RoutePaths.ProviderApplicationsReportRoutePath)]
-    public class ProviderApplicationsReportController(ProviderApplicationsReportOrchestrator orchestrator) : Controller
+    public class ProviderApplicationsReportController(IProviderApplicationsReportOrchestrator orchestrator) : Controller
     {
         [HttpGet("create", Name = RouteNames.ProviderApplicationsReportCreate_Get)]
         public IActionResult Create([FromRoute]long ukprn)
@@ -27,7 +27,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Reports
                 return View(vm);
             }
 
-            await orchestrator.PostCreateViewModelAsync(m, User.ToVacancyUser());
+            var reportId = await orchestrator.PostCreateViewModelAsync(m, User.ToVacancyUser());
+            TempData["NewReportId"] = reportId.ToString();
+
             return RedirectToRoute(RouteNames.ReportDashboard_Get, new {Ukprn = m.Ukprn});
         }
     }
