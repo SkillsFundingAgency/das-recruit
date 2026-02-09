@@ -2,7 +2,7 @@
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses.Vacancies;
 using NUnit.Framework;
@@ -25,10 +25,10 @@ public class WhenListingAllVacancies
         VacanciesOrchestrator sut)
     {
         // arrange
-        GetVacanciesByUkprnApiRequestV2? capturedRequest = null;
+        GetAllVacanciesByUkprnApiRequest? capturedRequest = null;
         outerApiClient
-            .Setup(x => x.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(It.IsAny<GetVacanciesByUkprnApiRequestV2>()))
-            .Callback((IGetApiRequest x) => capturedRequest = x as GetVacanciesByUkprnApiRequestV2)
+            .Setup(x => x.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(It.IsAny<GetAllVacanciesByUkprnApiRequest>()))
+            .Callback((IGetApiRequest x) => capturedRequest = x as GetAllVacanciesByUkprnApiRequest)
             .ReturnsAsync(vacanciesResponse);
 
         // act
@@ -49,10 +49,10 @@ public class WhenListingAllVacancies
         VacanciesOrchestrator sut)
     {
         // arrange
-        GetVacanciesByUkprnApiRequestV2? capturedRequest = null;
+        GetAllVacanciesByUkprnApiRequest? capturedRequest = null;
         outerApiClient
-            .Setup(x => x.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(It.IsAny<GetVacanciesByUkprnApiRequestV2>()))
-            .Callback((IGetApiRequest x) => capturedRequest = x as GetVacanciesByUkprnApiRequestV2)
+            .Setup(x => x.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(It.IsAny<GetAllVacanciesByUkprnApiRequest>()))
+            .Callback((IGetApiRequest x) => capturedRequest = x as GetAllVacanciesByUkprnApiRequest)
             .ReturnsAsync(vacanciesResponse);
 
         // act
@@ -80,7 +80,7 @@ public class WhenListingAllVacancies
         // arrange
         var vacanciesResponse = new PagedDataResponse<IEnumerable<VacancyListItem>>(vacancyListItems, new PageInfo(5, 50, (uint)vacancyListItems.Count)); 
         outerApiClient
-            .Setup(x => x.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(It.IsAny<GetVacanciesByUkprnApiRequestV2>()))
+            .Setup(x => x.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(It.IsAny<GetAllVacanciesByUkprnApiRequest>()))
             .ReturnsAsync(vacanciesResponse);
 
         // act
@@ -90,7 +90,7 @@ public class WhenListingAllVacancies
         result.Should().NotBeNull();
         result.Alerts.TransferredVacanciesAlert.Should().BeNull();
         result.Ukprn.Should().Be(ukprn);
-        result.SearchTerm.Should().Be("foo");
+        result.FilterViewModel.SearchTerm.Should().Be("foo");
         result.ListViewModel.SortColumn.Should().Be(VacancySortColumn.ClosingDate);
         result.ListViewModel.SortOrder.Should().Be(ColumnSortOrder.Asc);
         result.ListViewModel.Vacancies.Count.Should().Be(vacancyListItems.Count);
