@@ -1,0 +1,31 @@
+﻿@model VacanciesListSearchFilterViewModel
+
+@{
+    var suggestionsUrl = Model.SuggestionsEnabled
+        ? Url.RouteUrl(Model.SuggestionsRoute, Model.SuggestionsRouteDictionary, Uri.UriSchemeHttps)
+        : "";
+}
+
+<form method="get" autocomplete="off" asp-route-ukprn="@Model.Ukprn">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-form-group">
+                <label for="search-input" class="govuk-label">
+                    Search by vacancy title, reference number or employer
+                </label>
+                <div class="das-search-form__group">
+                    <input asp-show="@Model.SuggestionsEnabled" id="search-input" asp-for="SearchTerm" title="Search" class="govuk-input das-search-form__input app-vacancy-autocomplete" type="text" maxlength="200" data-apiurl="@suggestionsUrl">
+                    <input asp-hide="@Model.SuggestionsEnabled" id="search-input" asp-for="SearchTerm" title="Search" class="govuk-input das-search-form__input" type="text" maxlength="200">
+                    <div class="das-search-form__button-wrap">
+                        <button class="govuk-button das-search-form__button" type="submit">
+                            Search
+                        </button>
+                    </div>
+                </div>
+                <div class="govuk-!-font-weight-bold govuk-!-margin-top-2">
+                    @Model.ResultsHeading
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
