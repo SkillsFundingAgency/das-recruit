@@ -79,7 +79,7 @@ public class VacanciesOrchestrator(
             Ukprn = ukprn
         }, ukprn);
 
-        var vm = new VacanciesViewModel 
+        var vm = new VacanciesViewModel
         {
             Vacancies = vacanciesVm,
             Pager = pager,
@@ -107,9 +107,9 @@ public class VacanciesOrchestrator(
         return FilteringOptions.Draft;
     }
         
-    private static Dictionary<string, string> GetRouteDictionary(int ukprn, string searchTerm, VacancySortColumn? sortColumn, ColumnSortOrder? sortOrder)
+    private static Dictionary<string, string> GetRouteDictionary(Dictionary<string, string> baseRouteDictionary, string searchTerm, VacancySortColumn? sortColumn, ColumnSortOrder? sortOrder)
     {
-        var result = new Dictionary<string, string> { ["ukprn"] = $"{ukprn}" };
+        var result = new Dictionary<string, string>(baseRouteDictionary);
         if (sortColumn is not (null or VacancySortColumn.CreatedDate)) // ignore default
         {
             result.Add("sortColumn", $"{sortColumn}");
@@ -153,7 +153,8 @@ public class VacanciesOrchestrator(
         var result = resultTask.Result;
         var alerts = alertsTask.Result;
         var totalItems = Convert.ToInt32(result.PageInfo.TotalCount);
-        var routeDictionary = GetRouteDictionary(ukprn, searchTerm, sortColumn, sortOrder);
+        var baseRouteDictionary = new Dictionary<string, string> { ["ukprn"] = $"{ukprn}" };
+        var routeDictionary = GetRouteDictionary(baseRouteDictionary, searchTerm, sortColumn, sortOrder);
             
         return new ListVacanciesViewModel
         {
@@ -172,7 +173,8 @@ public class VacanciesOrchestrator(
                 SuggestionsEnabled = true,
                 SuggestionsRoute = RouteNames.VacanciesSearchSuggestions_Get,
                 SuggestionsRouteDictionary = routeDictionary,
-                Ukprn = ukprn,
+                RouteDictionary = baseRouteDictionary,
+                UserType = UserType.Provider,
             },
             ListViewModel = new VacanciesListViewModel
             {
@@ -218,7 +220,8 @@ public class VacanciesOrchestrator(
         var result = resultTask.Result;
         var alerts = alertsTask.Result;
         var totalItems = Convert.ToInt32(result.PageInfo.TotalCount);
-        var routeDictionary = GetRouteDictionary(ukprn, searchTerm, sortColumn, sortOrder);
+        var baseRouteDictionary = new Dictionary<string, string> { ["ukprn"] = $"{ukprn}" };
+        var routeDictionary = GetRouteDictionary(baseRouteDictionary, searchTerm, sortColumn, sortOrder);
             
         return new ListVacanciesViewModel
         {
@@ -237,7 +240,8 @@ public class VacanciesOrchestrator(
                 SuggestionsEnabled = false, // TODO: disable for the moment it doesn't take into account the vacancy status, so would suggest things not in the list
                 SuggestionsRoute = RouteNames.VacanciesSearchSuggestions_Get,
                 SuggestionsRouteDictionary = routeDictionary,
-                Ukprn = ukprn,
+                RouteDictionary = baseRouteDictionary,
+                UserType = UserType.Provider,
             },
             ListViewModel = new VacanciesListViewModel
             {

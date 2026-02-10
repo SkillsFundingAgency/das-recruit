@@ -14,7 +14,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Alerts;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses.Vacancies;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
@@ -27,9 +27,6 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
     IOuterApiClient outerApiClient,
     IEncodingService encodingService)
 {
-    private const int MinPage = 1;
-    private const int MaxPage = 9999;
-    private static int ClampPage(int page) => Math.Clamp(page, MinPage, MaxPage);
     private const int VacanciesPerPage = 25;
 
     public async Task<VacanciesViewModel> GetVacanciesViewModelAsync(string employerAccountId, string filter, int page, VacancyUser user, string searchTerm)
@@ -115,103 +112,134 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
             return (FilteringOptions)status;
         return FilteringOptions.All;
     }
-
-    private static Dictionary<string, string> GetRouteDictionary(string employerAccountId, string searchTerm, VacancySortColumn? sortColumn, ColumnSortOrder? sortOrder)
-    {
-        var result = new Dictionary<string, string> { ["employerAccountId"] = $"{employerAccountId}" };
-        if (sortColumn is not (null or VacancySortColumn.CreatedDate)) // ignore default
-        {
-            result.Add("sortColumn", $"{sortColumn}");
-            if (sortOrder is not null)
-            {
-                // only order if the sort column is set
-                result.Add("sortOrder", $"{sortOrder}");
-            }
-        }
-
-        if (!string.IsNullOrWhiteSpace(searchTerm))
-        {
-            result.Add("searchTerm", searchTerm);
-        }
-
-        return result;
-    }
         
-    public async Task<ListAllVacanciesViewModel> ListAllVacanciesAsync(
+    public async Task<ListVacanciesViewModel> ListAllVacanciesAsync(
         string employerAccountId,
-        long? ukprn,
+        int? ukprn,
         string userId,
-        int? page,
+        int page,
         int pageSize,
         string searchTerm,
         VacancySortColumn? sortColumn,
         ColumnSortOrder? sortOrder)
     {
-        page = ClampPage(page ?? 1);
-
-        var resultTask = outerApiClient.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(
-            new GetVacanciesByEmployerAccountApiRequestV2(
-                encodingService.Decode(employerAccountId, EncodingType.AccountId),
-                searchTerm?.Trim(),
-                page.Value,
-                pageSize,
-                sortColumn ?? VacancySortColumn.CreatedDate,
-                sortOrder ?? ColumnSortOrder.Desc)
-        );
-        var alertsTask = employerAccountProvider.GetEmployerAlerts(employerAccountId, userId);
-        await Task.WhenAll(resultTask, alertsTask);
-        var result = resultTask.Result;
-        var alerts = alertsTask.Result;
-        var totalItems = Convert.ToInt32(result.PageInfo.TotalCount);
-        var routeDictionary = GetRouteDictionary(employerAccountId, searchTerm, sortColumn, sortOrder);
+        var request = new GetAllVacanciesByEmployerAccountApiRequest(
+            encodingService.Decode(employerAccountId, EncodingType.AccountId),
+            searchTerm?.Trim(),
+            page,
+            pageSize,
+            sortColumn ?? VacancySortColumn.CreatedDate,
+            sortOrder ?? ColumnSortOrder.Desc);
         
-        return new ListAllVacanciesViewModel
+        return await ListVacanciesAsync(request, "All adverts", employerAccountId, ukprn, userId);
+    }
+    
+    public async Task<ListVacanciesViewModel> ListDraftVacanciesAsync(
+        string hashedEmployerAccountId,
+        int? ukprn,
+        string userId,
+        int page,
+        int pageSize,
+        string searchTerm,
+        VacancySortColumn? sortColumn,
+        ColumnSortOrder? sortOrder)
+    {
+        var request = new GetDraftVacanciesByEmployerAccountApiRequest(
+            encodingService.Decode(hashedEmployerAccountId, EncodingType.AccountId),
+            searchTerm?.Trim(),
+            page,
+            pageSize,
+            sortColumn ?? VacancySortColumn.CreatedDate,
+            sortOrder ?? ColumnSortOrder.Desc);
+        
+        return await ListVacanciesAsync(request, "Draft adverts", hashedEmployerAccountId, ukprn, userId);
+    }
+    
+    private async Task<ListVacanciesViewModel> ListVacanciesAsync(
+        GetVacanciesByEmployerAccountApiRequestV2 request,
+        string pageHeading,
+        string hashedEmployerAccountId,
+        int? ukprn,
+        string userId)
+    {
+        var alertsTask = employerAccountProvider.GetEmployerAlerts(hashedEmployerAccountId, userId);
+        var result = await outerApiClient.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(request);
+        var totalItems = Convert.ToInt32(result.PageInfo.TotalCount);
+
+        // this is our base route
+        var baseRouteDictionary = new Dictionary<string, string> { ["employerAccountId"] = hashedEmployerAccountId };
+        
+        // create a separate dict with search params included
+        var routeDictionary = new Dictionary<string, string>(baseRouteDictionary);
+        if (request.SortColumn is not (null or VacancySortColumn.CreatedDate)) // ignore default
+        {
+            routeDictionary.Add("sortColumn", $"{request.SortColumn}");
+            if (request.SortOrder is not null)
+            {
+                // only order if the sort column is set
+                routeDictionary.Add("sortOrder", $"{request.SortOrder}");
+            }
+        }
+        if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+        {
+            routeDictionary.Add("searchTerm", request.SearchTerm);
+        }
+
+        var alerts = await alertsTask;
+        return new ListVacanciesViewModel
         {
             Alerts = new AlertsViewModel(
                 new EmployerTransferredVacanciesAlertViewModel
                 {
-                    EmployerAccountId = employerAccountId,
+                    EmployerAccountId = hashedEmployerAccountId,
                     TransferredVacanciesCount = alerts.EmployerRevokedTransferredVacanciesAlert.TransferredVacanciesCount,
                     TransferredVacanciesProviderNames = alerts.EmployerRevokedTransferredVacanciesAlert.TransferredVacanciesProviderNames,
 
                 },
                 new EmployerTransferredVacanciesAlertViewModel
                 {
-                    EmployerAccountId = employerAccountId,
+                    EmployerAccountId = hashedEmployerAccountId,
                     TransferredVacanciesCount = alerts.BlockedProviderTransferredVacanciesAlert.TransferredVacanciesCount,
                     TransferredVacanciesProviderNames = alerts.BlockedProviderTransferredVacanciesAlert.TransferredVacanciesProviderNames
                 },
                 new BlockedProviderAlertViewModel
                 {
-                    EmployerAccountId = employerAccountId,
+                    EmployerAccountId = hashedEmployerAccountId,
                     BlockedProviderNames = alerts.BlockedProviderAlert.BlockedProviderNames,
                     ClosedVacancies = alerts.BlockedProviderAlert.ClosedVacancies,
                 },
                 new WithdrawnVacanciesAlertViewModel
                 {
-                    EmployerAccountId = employerAccountId,
+                    EmployerAccountId = hashedEmployerAccountId,
                     ClosedVacancies = alerts.WithDrawnByQaVacanciesAlert.ClosedVacancies,
                     Ukprn = ukprn.GetValueOrDefault()
                 }
             ),
-            EmployerAccountId = employerAccountId,
+            FilterViewModel = new VacanciesListSearchFilterViewModel
+            {
+                ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, totalItems, FilteringOptions.Draft, request.SearchTerm, UserType.Employer),
+                SearchTerm = request.SearchTerm,
+                SuggestionsEnabled = false, // TODO: disable for the moment it doesn't take into account the vacancy status, so would suggest things not in the list
+                SuggestionsRoute = RouteNames.VacanciesSearchSuggestions_Get,
+                SuggestionsRouteDictionary = routeDictionary,
+                RouteDictionary = baseRouteDictionary,
+                UserType = UserType.Employer,
+            },
             ListViewModel = new VacanciesListViewModel
             {
                 EditVacancyRoute = RouteNames.EmployerTaskListGet,
                 ManageVacancyRoute = RouteNames.VacancyManage_Get,
-                Pagination = new PaginationViewModel(totalItems, pageSize, page.Value, "Showing {0} to {1} of {2} adverts"),
+                Pagination = new PaginationViewModel(totalItems, request.PageSize, request.Page, "Showing {0} to {1} of {2} adverts"),
                 RouteDictionary = routeDictionary,
                 ShowEmployerReviewedApplicationCounts = false,
                 ShowSourceOrigin = false,
-                SortColumn = sortColumn,
-                SortOrder = sortOrder,
+                SortColumn = request.SortColumn,
+                SortOrder = request.SortOrder,
                 SubmitVacancyRoute = RouteNames.EmployerCheckYourAnswersGet,
-                Vacancies = result.Data.Select(x => VacancyListItemViewModel.From(x, employerAccountId)).ToList(),
+                Vacancies = result.Data.Select(x => VacancyListItemViewModel.From(x, hashedEmployerAccountId)).ToList(),
                 UserType = UserType.Employer,
             },
-            ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, totalItems, FilteringOptions.All, searchTerm, UserType.Provider),
-            SearchTerm = searchTerm,
-            TotalVacancies = (uint)totalItems,
+            PageHeading = pageHeading,
         };
     }
 }

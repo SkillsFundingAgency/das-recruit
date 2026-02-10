@@ -2,9 +2,10 @@
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy;
 
-public record GetVacanciesByEmployerAccountApiRequestV2(
+public abstract record GetVacanciesByEmployerAccountApiRequestV2(
+    string Endpoint,
     long EmployerAccountId,
     string? SearchTerm = null,
     int Page = 1,
@@ -16,7 +17,7 @@ public record GetVacanciesByEmployerAccountApiRequestV2(
     {
         get
         {
-            var baseUrl = $"vacancies/employer/{EmployerAccountId}/all";
+            var baseUrl = $"vacancies/employer/{EmployerAccountId}/{Endpoint}";
             var queryParams = new Dictionary<string, string>
             {
                 ["pageNumber"] = $"{Page}",

@@ -5,6 +5,7 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.ViewModels.Vacancies;
 using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Microsoft.AspNetCore.Hosting;
@@ -16,6 +17,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers;
 public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment) : Controller
 {
     private const int PageSize = 25;
+    private const int MinPage = 1;
+    private const int MaxPage = 9999;
+    private static int ClampPage(int page) => Math.Clamp(page, MinPage, MaxPage);
     
     [HttpGet("all", Name = RouteNames.VacanciesGetAll)]
     public async Task<IActionResult> ListAllVacancies(
@@ -27,14 +31,44 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
         var user = User.ToVacancyUser();
         var vm = await orchestrator.ListAllVacanciesAsync(
             employerAccountId,
-            user.Ukprn,
+            (int?)user.Ukprn,
             user.UserId,
-            page,
+            ClampPage(page ?? MinPage),
             PageSize,
             searchTerm,
             sortParams.SortColumn,
             sortParams.SortOrder);
+        vm.ShowReferredFromMaBackLink = ShowReferredFromMaBackLink();
+        AddMessages(vm);
+
+        return View("ListVacancies", vm);
+    }
     
+    [HttpGet("draft", Name = RouteNames.VacanciesListDraft)]
+    public async Task<IActionResult> ListDraftVacancies(
+        [FromRoute] string employerAccountId,
+        SortParams<VacancySortColumn> sortParams,
+        [FromQuery] int? page = 1,
+        [FromQuery] string searchTerm = null)
+    {
+        var user = User.ToVacancyUser();
+        var vm = await orchestrator.ListDraftVacanciesAsync(
+            employerAccountId,
+            (int?)user.Ukprn,
+            user.UserId,
+            ClampPage(page ?? MinPage),
+            PageSize,
+            searchTerm,
+            sortParams.SortColumn,
+            sortParams.SortOrder);
+        vm.ShowReferredFromMaBackLink = ShowReferredFromMaBackLink();
+        AddMessages(vm);
+
+        return View("ListVacancies", vm);
+    }
+
+    private void AddMessages(ListVacanciesViewModel vm)
+    {
         if (TempData.TryGetValue(TempDataKeys.DashboardErrorMessage, out var warningMessage))
         {
             vm.WarningMessage = warningMessage!.ToString();
@@ -44,11 +78,8 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
         {
             vm.InfoMessage = infoMessage!.ToString();
         }
-    
-        vm.ShowReferredFromMaBackLink = ShowReferredFromMaBackLink();
-        return View(vm);
     }
-    
+
     [HttpGet("", Name = RouteNames.Vacancies_Get)]
     public async Task<IActionResult> Vacancies([FromRoute] string employerAccountId, [FromQuery] string filter, [FromQuery] int page = 1, [FromQuery] string searchTerm = "")
     {
