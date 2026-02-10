@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
@@ -10,7 +11,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview.Responses;
 using SFA.DAS.Encoding;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
-
 
 public interface IVacancyReviewRepositoryRunner
 {
@@ -43,12 +43,12 @@ public class VacancyReviewRepositoryRunner : IVacancyReviewRepositoryRunner
     }
 }
 
-public class VacancyReviewService(IOuterApiClient outerApiClient, IEncodingService encodingService) : IVacancyReviewRepository, IVacancyReviewQuery
+public class VacancyReviewService(IOuterApiClient outerApiClient, IEncodingService encodingService, IFeature feature) : IVacancyReviewRepository, IVacancyReviewQuery
 {
-    public string Key { get; } = "OuterApiVacancyReview";
     public async Task CreateAsync(Domain.Entities.VacancyReview vacancyReview)
     {
-        await outerApiClient.Post(new PostVacancyReviewRequest(vacancyReview.Id, VacancyReviewDto.MapVacancyReviewDto(vacancyReview, encodingService)), false);
+        var vacancyReviewDto = VacancyReviewDto.MapVacancyReviewDto(vacancyReview, encodingService, feature.IsFeatureEnabled(FeatureNames.QaAi));
+        await outerApiClient.Post(new PostVacancyReviewRequest(vacancyReview.Id, vacancyReviewDto));
     }
 
     public async Task<Domain.Entities.VacancyReview> GetAsync(Guid reviewId)
