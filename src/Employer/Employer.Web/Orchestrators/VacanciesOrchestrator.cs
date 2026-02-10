@@ -231,8 +231,8 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
     {
         return filteringOption switch
         {
-            FilteringOptions.All => "All vacancies",
-            FilteringOptions.Draft => "Draft vacancies",
+            FilteringOptions.All => "All adverts",
+            FilteringOptions.Draft => "Draft adverts",
             _ => throw new ArgumentOutOfRangeException(nameof(filteringOption), filteringOption, null)
         };
     }

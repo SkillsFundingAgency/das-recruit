@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Esfa.Recruit.Provider.Web.Orchestrators;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy;
@@ -9,38 +10,14 @@ using NUnit.Framework;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies;
 
-public class WhenListingAllVacancies
+public class WhenListingVacancies
 {
     [Test]
-    [MoqInlineAutoData(int.MinValue, 1)]
-    [MoqInlineAutoData(int.MaxValue, 9999)]
-    public async Task Then_The_Page_Number_Is_Clamped(
-        int pageNumber,
-        int expectedPageNumber,
-        int ukprn,
-        string userId,
-        GetAlertsByUkprnApiResponse alertsResponse,
-        PagedDataResponse<IEnumerable<VacancyListItem>> vacanciesResponse,
-        [Frozen] Mock<IOuterApiClient> outerApiClient,
-        VacanciesOrchestrator sut)
-    {
-        // arrange
-        GetAllVacanciesByUkprnApiRequest? capturedRequest = null;
-        outerApiClient
-            .Setup(x => x.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(It.IsAny<GetAllVacanciesByUkprnApiRequest>()))
-            .Callback((IGetApiRequest x) => capturedRequest = x as GetAllVacanciesByUkprnApiRequest)
-            .ReturnsAsync(vacanciesResponse);
-
-        // act
-        await sut.ListAllVacanciesAsync(ukprn, userId, pageNumber, 10, null, null, null);
-
-        // assert
-        capturedRequest.Should().NotBeNull();
-        capturedRequest.Page.Should().Be(expectedPageNumber);
-    }
-
-    [Test, MoqAutoData]
+    [MoqInlineAutoData(FilteringOptions.All, typeof(GetAllVacanciesByUkprnApiRequest))]
+    [MoqInlineAutoData(FilteringOptions.Draft, typeof(GetDraftVacanciesByUkprnApiRequest))]
     public async Task Then_The_List_Vacancies_Query_Is_Constructed_Correctly(
+        FilteringOptions filteringOption,
+        Type expectedType,
         int ukprn,
         string userId,
         GetAlertsByUkprnApiResponse alertsResponse,
@@ -49,17 +26,18 @@ public class WhenListingAllVacancies
         VacanciesOrchestrator sut)
     {
         // arrange
-        GetAllVacanciesByUkprnApiRequest? capturedRequest = null;
+        GetVacanciesByUkprnApiRequestV2? capturedRequest = null;
         outerApiClient
-            .Setup(x => x.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(It.IsAny<GetAllVacanciesByUkprnApiRequest>()))
-            .Callback((IGetApiRequest x) => capturedRequest = x as GetAllVacanciesByUkprnApiRequest)
+            .Setup(x => x.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(It.IsAny<GetVacanciesByUkprnApiRequestV2>()))
+            .Callback((IGetApiRequest x) => capturedRequest = x as GetVacanciesByUkprnApiRequestV2)
             .ReturnsAsync(vacanciesResponse);
 
         // act
-        await sut.ListAllVacanciesAsync(ukprn, userId, 5, 50, "foo", VacancySortColumn.ClosingDate, ColumnSortOrder.Asc);
+        await sut.ListVacanciesAsync(filteringOption, ukprn, userId, "foo", 5, 50, VacancySortColumn.ClosingDate, ColumnSortOrder.Asc);
 
         // assert
         capturedRequest.Should().NotBeNull();
+        capturedRequest.GetType().Should().Be(expectedType);
         capturedRequest.Page.Should().Be(5);
         capturedRequest.PageSize.Should().Be(50);
         capturedRequest.SearchTerm.Should().Be("foo");
@@ -68,8 +46,12 @@ public class WhenListingAllVacancies
         capturedRequest.Ukprn.Should().Be(ukprn);
     }
     
-    [Test, MoqAutoData]
+    [Test]
+    [MoqInlineAutoData(FilteringOptions.All, "All vacancies")]
+    [MoqInlineAutoData(FilteringOptions.Draft, "Draft vacancies")]
     public async Task Then_The_View_Is_Constructed_Correctly(
+        FilteringOptions filteringOption,
+        string expectedPageHeading,
         int ukprn,
         string userId,
         List<VacancyListItem> vacancyListItems,
@@ -80,17 +62,20 @@ public class WhenListingAllVacancies
         // arrange
         var vacanciesResponse = new PagedDataResponse<IEnumerable<VacancyListItem>>(vacancyListItems, new PageInfo(5, 50, (uint)vacancyListItems.Count)); 
         outerApiClient
-            .Setup(x => x.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(It.IsAny<GetAllVacanciesByUkprnApiRequest>()))
+            .Setup(x => x.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(It.IsAny<GetVacanciesByUkprnApiRequestV2>()))
             .ReturnsAsync(vacanciesResponse);
 
         // act
-        var result = await sut.ListAllVacanciesAsync(ukprn, userId, 5, 50, "foo", VacancySortColumn.ClosingDate, ColumnSortOrder.Asc);
+        var result = await sut.ListVacanciesAsync(filteringOption, ukprn, userId, "foo", 5, 50, VacancySortColumn.ClosingDate, ColumnSortOrder.Asc);
 
         // assert
         result.Should().NotBeNull();
         result.Alerts.TransferredVacanciesAlert.Should().BeNull();
         result.Ukprn.Should().Be(ukprn);
+        result.PageHeading.Should().Be(expectedPageHeading);
         result.FilterViewModel.SearchTerm.Should().Be("foo");
+        result.FilterViewModel.UserType.Should().Be(UserType.Provider);
+        result.ListViewModel.UserType.Should().Be(UserType.Provider);
         result.ListViewModel.SortColumn.Should().Be(VacancySortColumn.ClosingDate);
         result.ListViewModel.SortOrder.Should().Be(ColumnSortOrder.Asc);
         result.ListViewModel.Vacancies.Count.Should().Be(vacancyListItems.Count);
