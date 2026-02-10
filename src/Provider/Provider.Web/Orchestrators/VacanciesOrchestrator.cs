@@ -29,9 +29,6 @@ public class VacanciesOrchestrator(
     ITrainingProviderService trainingProviderService,
     IOuterApiClient outerApiClient)
 {
-    private const int MinPage = 1;
-    private const int MaxPage = 9999;
-    private static int ClampPage(int page) => Math.Clamp(page, MinPage, MaxPage);
     private const int VacanciesPerPage = 25;
 
     public async Task<VacanciesViewModel> GetVacanciesViewModelAsync(
@@ -107,55 +104,44 @@ public class VacanciesOrchestrator(
         return FilteringOptions.Draft;
     }
         
-    private static Dictionary<string, string> GetRouteDictionary(Dictionary<string, string> baseRouteDictionary, string searchTerm, VacancySortColumn? sortColumn, ColumnSortOrder? sortOrder)
+    public async Task<ListVacanciesViewModel> ListVacanciesAsync(
+        FilteringOptions filteringOption,
+        int ukprn,
+        string userId,
+        string searchTerm,
+        int page,
+        int pageSize,
+        VacancySortColumn sortColumn,
+        ColumnSortOrder sortOrder)
     {
-        var result = new Dictionary<string, string>(baseRouteDictionary);
-        if (sortColumn is not (null or VacancySortColumn.CreatedDate)) // ignore default
+        var alertsTask = trainingProviderService.GetProviderAlerts(ukprn, userId);
+
+        var request = GetVacanciesListRequest(filteringOption, ukprn, searchTerm, page, pageSize, sortColumn, sortOrder);
+        var pageHeading = GetPageHeading(filteringOption);
+        var result = await outerApiClient.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(request);
+        var totalItems = Convert.ToInt32(result.PageInfo.TotalCount);
+
+        // this is our base route
+        var baseRouteDictionary = new Dictionary<string, string> { ["ukprn"] = $"{ukprn}" };
+        
+        // create a separate dict with search params included
+        var routeDictionary = new Dictionary<string, string>(baseRouteDictionary);
+        if (request.SortColumn is not (null or VacancySortColumn.CreatedDate)) // ignore default
         {
-            result.Add("sortColumn", $"{sortColumn}");
-            if (sortOrder is not null)
+            routeDictionary.Add("sortColumn", $"{request.SortColumn}");
+            if (request.SortOrder is not null)
             {
                 // only order if the sort column is set
-                result.Add("sortOrder", $"{sortOrder}");
+                routeDictionary.Add("sortOrder", $"{request.SortOrder}");
             }
         }
 
-        if (!string.IsNullOrWhiteSpace(searchTerm))
+        if (!string.IsNullOrWhiteSpace(request.SearchTerm))
         {
-            result.Add("searchTerm", searchTerm);
+            routeDictionary.Add("searchTerm", request.SearchTerm);
         }
-
-        return result;
-    }
-        
-    public async Task<ListVacanciesViewModel> ListAllVacanciesAsync(
-        int ukprn,
-        string userId,
-        int? page,
-        int pageSize,
-        string searchTerm,
-        VacancySortColumn? sortColumn,
-        ColumnSortOrder? sortOrder)
-    {
-        page = ClampPage(page ?? 1);
             
-        var resultTask = outerApiClient.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(
-            new GetAllVacanciesByUkprnApiRequest(
-                ukprn,
-                searchTerm?.Trim(),
-                page.Value,
-                pageSize,
-                sortColumn ?? VacancySortColumn.CreatedDate,
-                sortOrder ?? ColumnSortOrder.Desc)
-        );
-        var alertsTask = trainingProviderService.GetProviderAlerts(ukprn, userId);
-        await Task.WhenAll(resultTask, alertsTask);
-        var result = resultTask.Result;
         var alerts = alertsTask.Result;
-        var totalItems = Convert.ToInt32(result.PageInfo.TotalCount);
-        var baseRouteDictionary = new Dictionary<string, string> { ["ukprn"] = $"{ukprn}" };
-        var routeDictionary = GetRouteDictionary(baseRouteDictionary, searchTerm, sortColumn, sortOrder);
-            
         return new ListVacanciesViewModel
         {
             Alerts = new AlertsViewModel(null,
@@ -168,75 +154,8 @@ public class VacanciesOrchestrator(
             ),
             FilterViewModel = new VacanciesListSearchFilterViewModel
             {
-                ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, totalItems, FilteringOptions.All, searchTerm, UserType.Provider),
-                SearchTerm = searchTerm,
-                SuggestionsEnabled = true,
-                SuggestionsRoute = RouteNames.VacanciesSearchSuggestions_Get,
-                SuggestionsRouteDictionary = routeDictionary,
-                RouteDictionary = baseRouteDictionary,
-                UserType = UserType.Provider,
-            },
-            ListViewModel = new VacanciesListViewModel
-            {
-                EditVacancyRoute = RouteNames.ProviderTaskListGet,
-                ManageVacancyRoute = RouteNames.VacancyManage_Get,
-                Pagination = new PaginationViewModel(totalItems, pageSize, page.Value, "Showing {0} to {1} of {2} vacancies"),
-                RouteDictionary = routeDictionary,
-                ShowEmployerReviewedApplicationCounts = false,
-                ShowSourceOrigin = false,
-                SortColumn = sortColumn,
-                SortOrder = sortOrder,
-                SubmitVacancyRoute = RouteNames.ProviderCheckYourAnswersGet,
-                Vacancies = result.Data.Select(x => VacancyListItemViewModel.From(x, ukprn)).ToList(),
-                UserType = UserType.Provider,
-            },
-            PageHeading = "All vacancies",
-            Ukprn = ukprn,
-        };
-    }
-    
-    public async Task<ListVacanciesViewModel> ListDraftVacanciesAsync(
-        int ukprn,
-        string userId,
-        int? page,
-        int pageSize,
-        string searchTerm,
-        VacancySortColumn? sortColumn,
-        ColumnSortOrder? sortOrder)
-    {
-        page = ClampPage(page ?? 1);
-            
-        var resultTask = outerApiClient.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(
-            new GetDraftVacanciesByUkprnApiRequest(
-                ukprn,
-                searchTerm?.Trim(),
-                page.Value,
-                pageSize,
-                sortColumn ?? VacancySortColumn.CreatedDate,
-                sortOrder ?? ColumnSortOrder.Desc)
-        );
-        var alertsTask = trainingProviderService.GetProviderAlerts(ukprn, userId);
-        await Task.WhenAll(resultTask, alertsTask);
-        var result = resultTask.Result;
-        var alerts = alertsTask.Result;
-        var totalItems = Convert.ToInt32(result.PageInfo.TotalCount);
-        var baseRouteDictionary = new Dictionary<string, string> { ["ukprn"] = $"{ukprn}" };
-        var routeDictionary = GetRouteDictionary(baseRouteDictionary, searchTerm, sortColumn, sortOrder);
-            
-        return new ListVacanciesViewModel
-        {
-            Alerts = new AlertsViewModel(null,
-                new WithdrawnVacanciesAlertViewModel
-                {
-                    ClosedVacancies = alerts.WithdrawnVacanciesAlert.ClosedVacancies,
-                    Ukprn = ukprn
-                },
-                ukprn
-            ),
-            FilterViewModel = new VacanciesListSearchFilterViewModel
-            {
-                ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, totalItems, FilteringOptions.Draft, searchTerm, UserType.Provider),
-                SearchTerm = searchTerm,
+                ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, totalItems, FilteringOptions.Draft, request.SearchTerm, UserType.Provider),
+                SearchTerm = request.SearchTerm,
                 SuggestionsEnabled = false, // TODO: disable for the moment it doesn't take into account the vacancy status, so would suggest things not in the list
                 SuggestionsRoute = RouteNames.VacanciesSearchSuggestions_Get,
                 SuggestionsRouteDictionary = routeDictionary,
@@ -247,18 +166,57 @@ public class VacanciesOrchestrator(
             {
                 EditVacancyRoute = RouteNames.ProviderTaskListGet,
                 ManageVacancyRoute = RouteNames.VacancyManage_Get,
-                Pagination = new PaginationViewModel(totalItems, pageSize, page.Value, "Showing {0} to {1} of {2} vacancies"),
+                Pagination = new PaginationViewModel(totalItems, request.PageSize, request.Page, "Showing {0} to {1} of {2} vacancies"),
                 RouteDictionary = routeDictionary,
+                ShowApplicationsColumn = ShouldShowApplicationsColumn(filteringOption),
                 ShowEmployerReviewedApplicationCounts = false,
                 ShowSourceOrigin = false,
-                SortColumn = sortColumn,
-                SortOrder = sortOrder,
+                SortColumn = request.SortColumn,
+                SortOrder = request.SortOrder,
                 SubmitVacancyRoute = RouteNames.ProviderCheckYourAnswersGet,
                 Vacancies = result.Data.Select(x => VacancyListItemViewModel.From(x, ukprn)).ToList(),
                 UserType = UserType.Provider,
             },
-            PageHeading = "Draft vacancies",
+            PageHeading = pageHeading,
             Ukprn = ukprn,
+        };
+    }
+    
+    private static GetVacanciesByUkprnApiRequestV2 GetVacanciesListRequest(
+        FilteringOptions options,
+        int ukprn,
+        string searchTerm,
+        int page,
+        int pageSize,
+        VacancySortColumn sortColumn,
+        ColumnSortOrder sortOrder)
+    {
+        return options switch
+        {
+            FilteringOptions.All => new GetAllVacanciesByUkprnApiRequest(ukprn, searchTerm, page, pageSize, sortColumn, sortOrder),
+            FilteringOptions.Draft => new GetDraftVacanciesByUkprnApiRequest(ukprn, searchTerm, page, pageSize, sortColumn, sortOrder),
+            _ => throw new ArgumentOutOfRangeException(nameof(options), options, null)
+        };
+    }
+
+    private static string GetPageHeading(FilteringOptions filteringOption)
+    {
+        return filteringOption switch
+        {
+            FilteringOptions.All => "All vacancies",
+            FilteringOptions.Draft => "Draft vacancies",
+            _ => throw new ArgumentOutOfRangeException(nameof(filteringOption), filteringOption, null)
+        };
+    }
+    
+    private static bool ShouldShowApplicationsColumn(FilteringOptions filteringOption)
+    {
+        return filteringOption switch
+        {
+            FilteringOptions.All => true,
+            FilteringOptions.Live => true,
+            FilteringOptions.Closed => true,
+            _ => false
         };
     }
 }

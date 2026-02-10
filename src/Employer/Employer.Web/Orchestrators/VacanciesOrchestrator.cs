@@ -112,57 +112,22 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
             return (FilteringOptions)status;
         return FilteringOptions.All;
     }
-        
-    public async Task<ListVacanciesViewModel> ListAllVacanciesAsync(
-        string employerAccountId,
-        int? ukprn,
-        string userId,
-        int page,
-        int pageSize,
-        string searchTerm,
-        VacancySortColumn? sortColumn,
-        ColumnSortOrder? sortOrder)
-    {
-        var request = new GetAllVacanciesByEmployerAccountApiRequest(
-            encodingService.Decode(employerAccountId, EncodingType.AccountId),
-            searchTerm?.Trim(),
-            page,
-            pageSize,
-            sortColumn ?? VacancySortColumn.CreatedDate,
-            sortOrder ?? ColumnSortOrder.Desc);
-        
-        return await ListVacanciesAsync(request, "All adverts", employerAccountId, ukprn, userId);
-    }
-    
-    public async Task<ListVacanciesViewModel> ListDraftVacanciesAsync(
+
+    public async Task<ListVacanciesViewModel> ListVacanciesAsync(
+        FilteringOptions filteringOption,
         string hashedEmployerAccountId,
         int? ukprn,
         string userId,
+        string searchTerm,
         int page,
         int pageSize,
-        string searchTerm,
-        VacancySortColumn? sortColumn,
-        ColumnSortOrder? sortOrder)
-    {
-        var request = new GetDraftVacanciesByEmployerAccountApiRequest(
-            encodingService.Decode(hashedEmployerAccountId, EncodingType.AccountId),
-            searchTerm?.Trim(),
-            page,
-            pageSize,
-            sortColumn ?? VacancySortColumn.CreatedDate,
-            sortOrder ?? ColumnSortOrder.Desc);
-        
-        return await ListVacanciesAsync(request, "Draft adverts", hashedEmployerAccountId, ukprn, userId);
-    }
-    
-    private async Task<ListVacanciesViewModel> ListVacanciesAsync(
-        GetVacanciesByEmployerAccountApiRequestV2 request,
-        string pageHeading,
-        string hashedEmployerAccountId,
-        int? ukprn,
-        string userId)
+        VacancySortColumn sortColumn,
+        ColumnSortOrder sortOrder)
     {
         var alertsTask = employerAccountProvider.GetEmployerAlerts(hashedEmployerAccountId, userId);
+        
+        var request = GetVacanciesListRequest(filteringOption, hashedEmployerAccountId, searchTerm, page, pageSize, sortColumn, sortOrder);
+        var pageHeading = GetPageHeading(filteringOption);
         var result = await outerApiClient.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(request);
         var totalItems = Convert.ToInt32(result.PageInfo.TotalCount);
 
@@ -180,9 +145,9 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
                 routeDictionary.Add("sortOrder", $"{request.SortOrder}");
             }
         }
-        if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+        if (!string.IsNullOrWhiteSpace(searchTerm))
         {
-            routeDictionary.Add("searchTerm", request.SearchTerm);
+            routeDictionary.Add("searchTerm", searchTerm);
         }
 
         var alerts = await alertsTask;
@@ -229,8 +194,9 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
             {
                 EditVacancyRoute = RouteNames.EmployerTaskListGet,
                 ManageVacancyRoute = RouteNames.VacancyManage_Get,
-                Pagination = new PaginationViewModel(totalItems, request.PageSize, request.Page, "Showing {0} to {1} of {2} adverts"),
+                Pagination = new PaginationViewModel(totalItems, pageSize, page, "Showing {0} to {1} of {2} adverts"),
                 RouteDictionary = routeDictionary,
+                ShowApplicationsColumn = ShouldShowApplicationsColumn(filteringOption),
                 ShowEmployerReviewedApplicationCounts = false,
                 ShowSourceOrigin = false,
                 SortColumn = request.SortColumn,
@@ -240,6 +206,45 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
                 UserType = UserType.Employer,
             },
             PageHeading = pageHeading,
+        };
+    }
+    
+    private GetVacanciesByEmployerAccountApiRequestV2 GetVacanciesListRequest(
+        FilteringOptions options,
+        string hashedEmployerAccountId,
+        string searchTerm,
+        int page,
+        int pageSize,
+        VacancySortColumn sortColumn,
+        ColumnSortOrder sortOrder)
+    {
+        var employerAccountId = encodingService.Decode(hashedEmployerAccountId, EncodingType.AccountId);
+        return options switch
+        {
+            FilteringOptions.All => new GetAllVacanciesByEmployerAccountApiRequest(employerAccountId, searchTerm, page, pageSize, sortColumn, sortOrder),
+            FilteringOptions.Draft => new GetDraftVacanciesByEmployerAccountApiRequest(employerAccountId, searchTerm, page, pageSize, sortColumn, sortOrder),
+            _ => throw new ArgumentOutOfRangeException(nameof(options), options, null)
+        };
+    }
+
+    private static string GetPageHeading(FilteringOptions filteringOption)
+    {
+        return filteringOption switch
+        {
+            FilteringOptions.All => "All vacancies",
+            FilteringOptions.Draft => "Draft vacancies",
+            _ => throw new ArgumentOutOfRangeException(nameof(filteringOption), filteringOption, null)
+        };
+    }
+    
+    private static bool ShouldShowApplicationsColumn(FilteringOptions filteringOption)
+    {
+        return filteringOption switch
+        {
+            FilteringOptions.All => true,
+            FilteringOptions.Live => true,
+            FilteringOptions.Closed => true,
+            _ => false
         };
     }
 }

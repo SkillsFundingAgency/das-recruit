@@ -10,6 +10,7 @@ public class VacanciesListViewModel
     public string ManageVacancyRoute { get; set; }
     public PaginationViewModel Pagination { get; set; }
     public required Dictionary<string, string> RouteDictionary { get; set; }
+    public required bool ShowApplicationsColumn { get; set; }
     public bool ShowEmployerReviewedApplicationCounts { get; set; }
     public bool ShowNewApplicationCounts => !ShowEmployerReviewedApplicationCounts;
     public bool ShowSourceOrigin { get; set; }
