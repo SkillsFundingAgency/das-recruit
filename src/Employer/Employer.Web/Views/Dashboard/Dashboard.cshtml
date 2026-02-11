@@ -11,7 +11,7 @@
     ViewBag.ShowReturnToMaLink = Model.FromMaHome;
     ViewBag.Vpv = "/recruitment/employer/page-dashboard";
     ViewBag.ZenDeskLabel = "recruit-recruitment";
-    ViewBag.Title = "Your apprenticeship adverts";
+    ViewBag.Title = "Recruitment dashboard";
 }
 @section BackLink
 {
@@ -186,7 +186,7 @@
         </div>
         <div class="govuk-grid-column-one-third">
             <h3 class="govuk-heading-s">
-                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ManageNotifications_Get" asp-route-employerAccountId="@Model.EmployerAccountId">Manage your emails</a>
+                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ManageNotifications_Get" asp-route-employerAccountId="@Model.EmployerAccountId">Manage recruitment emails</a>
             </h3>
             <p class="govuk-body">Manage email notifications for your adverts and applications.</p>
         </div>

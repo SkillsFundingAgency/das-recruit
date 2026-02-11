@@ -3,7 +3,7 @@
 @model Esfa.Recruit.Provider.Web.ViewModels.Dashboard.DashboardViewModel
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-dashboard";
-    ViewBag.Title = "Recruitment";
+    ViewBag.Title = "Recruitment dashboard";
     var vacancyRouteModel = new VacancyRouteModel { Ukprn = Model.Ukprn };
 }
 <partial asp-hide="@Model.HasAnyVacancies" name="_ProviderNoVacanciesContent" model="@vacancyRouteModel" />
