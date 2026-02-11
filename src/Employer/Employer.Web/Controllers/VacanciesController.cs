@@ -85,7 +85,7 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
     {
         // TODO: Comment back in for late stage testing - leave in so testers can compare data on the new to old page
         // var blocked = new List<string> {"all", "draft"};
-        // if (blocked.Any(x => filter.Equals(x, StringComparison.CurrentCultureIgnoreCase)))
+        // if (string.IsNullOrWhiteSpace(filter) || blocked.Any(x => filter.Equals(x, StringComparison.CurrentCultureIgnoreCase)))
         // {
         //     return RedirectToRoute(RouteNames.VacanciesGetAll, new { employerAccountId });
         // }
