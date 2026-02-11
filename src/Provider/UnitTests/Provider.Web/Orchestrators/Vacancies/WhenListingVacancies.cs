@@ -15,6 +15,7 @@ public class WhenListingVacancies
     [Test]
     [MoqInlineAutoData(FilteringOptions.All, typeof(GetAllVacanciesByUkprnApiRequest))]
     [MoqInlineAutoData(FilteringOptions.Draft, typeof(GetDraftVacanciesByUkprnApiRequest))]
+    [MoqInlineAutoData(FilteringOptions.Review, typeof(GetReviewVacanciesByUkprnApiRequest))]
     public async Task Then_The_List_Vacancies_Query_Is_Constructed_Correctly(
         FilteringOptions filteringOption,
         Type expectedType,
@@ -49,6 +50,7 @@ public class WhenListingVacancies
     [Test]
     [MoqInlineAutoData(FilteringOptions.All, "All vacancies")]
     [MoqInlineAutoData(FilteringOptions.Draft, "Draft vacancies")]
+    [MoqInlineAutoData(FilteringOptions.Review, "Pending employer review")]
     public async Task Then_The_View_Is_Constructed_Correctly(
         FilteringOptions filteringOption,
         string expectedPageHeading,

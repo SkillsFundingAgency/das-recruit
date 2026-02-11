@@ -27,7 +27,6 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
     
     [HttpGet("all", Name = RouteNames.VacanciesGetAll)]
     public async Task<IActionResult> ListAllVacancies(
-        [FromRoute] int ukprn,
         SortParams<VacancySortColumn> sortParams,
         [FromQuery] int? page = 1,
         [FromQuery] string searchTerm = null)
@@ -38,12 +37,21 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
     
     [HttpGet("draft", Name = RouteNames.VacanciesListDraft)]
     public async Task<IActionResult> ListDraftVacancies(
-        [FromRoute] int ukprn,
         SortParams<VacancySortColumn> sortParams,
         [FromQuery] int? page = 1,
         [FromQuery] string searchTerm = null)
     {
         var vm = await GetVacanciesViewModel(FilteringOptions.Draft, User.ToVacancyUser(), searchTerm, page, sortParams.SortColumn, sortParams.SortOrder);
+        return View("ListVacancies", vm);
+    }
+    
+    [HttpGet("review", Name = RouteNames.VacanciesListReview)]
+    public async Task<IActionResult> ListReviewVacancies(
+        SortParams<VacancySortColumn> sortParams,
+        [FromQuery] int? page = 1,
+        [FromQuery] string searchTerm = null)
+    {
+        var vm = await GetVacanciesViewModel(FilteringOptions.Review, User.ToVacancyUser(), searchTerm, page, sortParams.SortColumn, sortParams.SortOrder);
         return View("ListVacancies", vm);
     }
 
@@ -82,7 +90,7 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
     public async Task<IActionResult> Vacancies([FromRoute] int ukprn, [FromQuery] string filter, [FromQuery] int page = 1, [FromQuery] string searchTerm = "")
     {
         // TODO: Comment back in for late stage testing - leave in so testers can compare data on the new to old page
-        // var blocked = new List<string> {"all", "draft"};
+        // var blocked = new List<string> {"all", "draft", "review"};
         // if (string.IsNullOrWhiteSpace(filter) || blocked.Any(x => filter.Equals(x, StringComparison.CurrentCultureIgnoreCase)))
         // {
         //     return RedirectToRoute(RouteNames.VacanciesGetAll, new { ukprn });
