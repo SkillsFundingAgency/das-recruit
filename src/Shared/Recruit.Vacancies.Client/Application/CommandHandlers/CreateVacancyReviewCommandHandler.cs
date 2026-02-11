@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IVacancyReviewRepositoryRunner _vacancyReviewRepositoryRunner;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
-        private readonly IMessaging _messaging;
+        private readonly IVacancyService _vacancyService;
         private readonly ITimeProvider _time;
         private readonly ISlaService _slaService;
         private readonly IVacancyComparerService _vacancyComparerService;
@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             IVacancyRepository vacancyRepository,
             IVacancyReviewRepositoryRunner vacancyReviewRepositoryRunner,
             IVacancyReviewQuery vacancyReviewQuery, 
-            IMessaging messaging, 
+            IVacancyService vacancyService, 
             ITimeProvider time,
             ISlaService slaService,
             IVacancyComparerService vacancyComparerService)
@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _vacancyRepository = vacancyRepository;
             _vacancyReviewRepositoryRunner = vacancyReviewRepositoryRunner;
             _vacancyReviewQuery = vacancyReviewQuery;
-            _messaging = messaging;
+            _vacancyService = vacancyService;
             _time = time;
             _slaService = slaService;
             _vacancyComparerService = vacancyComparerService;
@@ -76,11 +76,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _vacancyReviewRepositoryRunner.CreateAsync(review);
 
-            await _messaging.PublishEvent(new VacancyReviewCreatedEvent
-            {
-                VacancyReference = message.VacancyReference,
-                ReviewId =  review.Id
-            });
+            await _vacancyService.PerformRulesCheckAsync(review.Id);
+            
             return Unit.Value;
         }
 
