@@ -154,7 +154,7 @@ public class VacanciesOrchestrator(
             ),
             FilterViewModel = new VacanciesListSearchFilterViewModel
             {
-                ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, totalItems, FilteringOptions.Draft, request.SearchTerm, UserType.Provider),
+                ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, totalItems, filteringOption, request.SearchTerm, UserType.Provider),
                 SearchTerm = request.SearchTerm,
                 SuggestionsEnabled = false, // TODO: disable for the moment it doesn't take into account the vacancy status, so would suggest things not in the list
                 SuggestionsRoute = RouteNames.VacanciesSearchSuggestions_Get,
