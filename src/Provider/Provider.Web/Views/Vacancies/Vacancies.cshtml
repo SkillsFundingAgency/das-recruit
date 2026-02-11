@@ -63,10 +63,6 @@
                     <optgroup label="Status">
                         <option value="@FilteringOptions.Live">live vacancies</option>
                         <option value="@FilteringOptions.Referred">rejected vacancies</option>
-                        @if (Model.HasEmployerReviewPermission)
-                        {
-                            <option value="@FilteringOptions.Review">pending employer review</option>   
-                        }
                         <option value="@FilteringOptions.Submitted">vacancies pending DfE review</option>
                         <option value="@FilteringOptions.Draft">draft vacancies</option>
                         <option value="@FilteringOptions.Closed">closed vacancies</option>

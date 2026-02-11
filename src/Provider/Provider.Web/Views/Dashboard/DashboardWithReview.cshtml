@@ -62,7 +62,7 @@
                 <div class="app-card__content">
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.VacancyCountReview</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.Review" class="govuk-link  govuk-link--no-visited-state">
+                        <a asp-route="@RouteNames.VacanciesListReview" asp-route-ukprn="@Model.Ukprn" class="govuk-link  govuk-link--no-visited-state">
                             @FilteringOptions.Review.GetDisplayName(UserType.Provider)
                         </a>
                     </h3>
