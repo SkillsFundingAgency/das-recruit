@@ -130,7 +130,7 @@ public class ManageNotificationsOrchestrator(
         if (Enum.TryParse<NotificationScopeEx>(scopeText, out var scope))
         {
             preference.Scope = scope;
-            preference.Frequency = NotificationFrequencyEx.NotSet;
+            preference.Frequency = NotificationFrequencyEx.Immediately;
         }
         else
         {
