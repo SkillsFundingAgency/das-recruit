@@ -11,7 +11,7 @@
         {
             VacancyStatus.Referred or VacancyStatus.Rejected => "Edit and resubmit",
             VacancyStatus.Draft => "Edit and submit",
-            VacancyStatus.Review => "Review",
+            VacancyStatus.Review when Model.UserType is UserType.Employer => "Review",
             _ => "Manage"
         };
     }
