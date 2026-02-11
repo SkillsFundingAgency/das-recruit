@@ -32,13 +32,7 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
         [FromQuery] int? page = 1,
         [FromQuery] string searchTerm = null)
     {
-        var user = User.ToVacancyUser();
-        if ((int)user.Ukprn!.Value != ukprn)
-        {
-            throw new Exception($"User does not have access to list 'all' vacancies for provider {ukprn}");
-        }
-        
-        var vm = await GetVacanciesViewModel(FilteringOptions.All, user, searchTerm, page, sortParams.SortColumn, sortParams.SortOrder);
+        var vm = await GetVacanciesViewModel(FilteringOptions.All, User.ToVacancyUser(), searchTerm, page, sortParams.SortColumn, sortParams.SortOrder);
         return View("ListVacancies", vm);
     }
     
@@ -49,13 +43,7 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
         [FromQuery] int? page = 1,
         [FromQuery] string searchTerm = null)
     {
-        var user = User.ToVacancyUser();
-        if ((int)user.Ukprn!.Value != ukprn)
-        {
-            throw new Exception($"User does not have access to list 'draft' vacancies for provider {ukprn}");
-        }
-        
-        var vm = await GetVacanciesViewModel(FilteringOptions.Draft, user, searchTerm, page, sortParams.SortColumn, sortParams.SortOrder);
+        var vm = await GetVacanciesViewModel(FilteringOptions.Draft, User.ToVacancyUser(), searchTerm, page, sortParams.SortColumn, sortParams.SortOrder);
         return View("ListVacancies", vm);
     }
 
