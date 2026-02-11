@@ -31,7 +31,7 @@ public class VacancyReviewServiceTests
             It.Is<PostVacancyReviewRequest>(
                 c=>c.PostUrl == expectedRequest.PostUrl
                 && ((VacancyReviewDto)c.Data).VacancyTitle == ((VacancyReviewDto)expectedRequest.Data).VacancyTitle
-                ), false
+                ), true
             ), Times.Once);
     }
     
