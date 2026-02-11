@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
@@ -92,7 +94,8 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
     public async Task<IActionResult> Vacancies([FromRoute] int ukprn, [FromQuery] string filter, [FromQuery] int page = 1, [FromQuery] string searchTerm = "")
     {
         // TODO: Comment back in for late stage testing - leave in so testers can compare data on the new to old page
-        // if (filter.Equals("all", StringComparison.CurrentCultureIgnoreCase))
+        // var blocked = new List<string> {"all", "draft"};
+        // if (blocked.Any(x => filter.Equals(x, StringComparison.CurrentCultureIgnoreCase)))
         // {
         //     return RedirectToRoute(RouteNames.VacanciesGetAll, new { ukprn });
         // }

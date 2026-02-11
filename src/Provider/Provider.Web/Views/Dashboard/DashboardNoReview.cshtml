@@ -52,7 +52,7 @@
                 <div class="app-card__content">
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.VacancyCountDraft</span>
-                        <a asp-route="@RouteNames.Vacancies_Get"  asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.Draft" class="govuk-link  govuk-link--no-visited-state">
+                        <a asp-route="@RouteNames.VacanciesListDraft"  asp-route-ukprn="@Model.Ukprn" class="govuk-link  govuk-link--no-visited-state">
                             @FilteringOptions.Draft @Model.VacancyTextDraft
                         </a>
                     </h3>
