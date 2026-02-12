@@ -62,8 +62,15 @@ public class ManageNotificationsOrchestrator(
         var vacancyAppRefPref = currentPreferences.NotificationPreferences.GetForEvent(NotificationTypesEx.VacancyApprovedOrRejected);
         if (Enum.TryParse<NotificationScopeEx>(editModel.VacancyApprovedOrRejectedValue, out var vacancyScope))
         {
-            vacancyAppRefPref.Scope = vacancyScope;
-            vacancyAppRefPref.Frequency = NotificationFrequencyEx.NotSet;
+            if (vacancyScope == NotificationScopeEx.NotSet)
+            {
+                vacancyAppRefPref.Frequency = NotificationFrequencyEx.Never;
+            }
+            else
+            {
+                vacancyAppRefPref.Scope = vacancyScope;
+                vacancyAppRefPref.Frequency = NotificationFrequencyEx.Immediately;
+            }
         }
         else
         {
