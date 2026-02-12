@@ -16,9 +16,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 public class SubmitVacancyCommandHandler(
     ILogger<SubmitVacancyCommandHandler> logger,
     IVacancyRepository vacancyRepository,
-    IMessaging messaging,
     ITimeProvider timeProvider,
-    IEmployerService employerService)
+    IEmployerService employerService,
+    IMediator mediator)
     : IRequestHandler<SubmitVacancyCommand, Unit>
 {
     public const string VacancyNotFoundExceptionMessageFormat = "Vacancy {0} not found";
@@ -59,12 +59,16 @@ public class SubmitVacancyCommandHandler(
 
         await vacancyRepository.UpdateAsync(vacancy);
 
-        await messaging.PublishEvent(new VacancySubmittedEvent
+        var command = new CreateVacancyReviewCommand
         {
-            EmployerAccountId = vacancy.EmployerAccountId,
-            VacancyId = vacancy.Id,
             VacancyReference = vacancy.VacancyReference.Value
-        });
+        };
+
+        await mediator.Send(command, cancellationToken);
+        
+        var geoCommand = new GeocodeVacancyCommand { VacancyId = vacancy.Id };
+        await mediator.Send(geoCommand, cancellationToken);
+        
         return Unit.Value;
     }
 }
