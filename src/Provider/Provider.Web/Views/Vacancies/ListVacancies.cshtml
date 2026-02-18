@@ -1,0 +1,43 @@
+@using Esfa.Recruit.Shared.Web.TagHelpers
+
+@model Esfa.Recruit.Provider.Web.ViewModels.Vacancies.ListVacanciesViewModel
+
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancies";
+    ViewBag.Title = "Vacancies";
+}
+
+<partial name="@PartialNames.Alerts" for="Alerts" />
+
+<div asp-show="@Model.HasWarning" class="das-notification das-notification--warning">
+    <p class="das-notification__body">@Model.WarningMessage</p>
+</div>
+
+<govuk-banner asp-show="@Model.HasInfo" type="BannerStyle.Success">
+    <govuk-banner-heading>@Model.InfoMessage</govuk-banner-heading>
+</govuk-banner>
+
+@section BackLink
+{
+    <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" esfa-automation="link-back" class="govuk-back-link">Return to recruitment dashboard</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.PageHeading</h1>
+    </div>
+</div>
+
+@if (Model is { ListViewModel.Vacancies.Count: > 0 } || !string.IsNullOrWhiteSpace(Model.FilterViewModel.SearchTerm))
+{
+    <partial name="_VacanciesListSearchFilter" model="@Model.FilterViewModel" />
+}
+
+@if (Model is { ListViewModel.Vacancies.Count: > 0 })
+{
+    <partial model="@Model.ListViewModel" name="_VacancyList" />
+}
+else
+{
+    <p class="govuk-body">No vacancies match the criteria</p>
+}

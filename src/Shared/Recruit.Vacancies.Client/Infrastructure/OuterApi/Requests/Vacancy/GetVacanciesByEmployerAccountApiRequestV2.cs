@@ -1,11 +1,12 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy;
 
-public record GetVacanciesByUkprnApiRequestV2(
-    int Ukprn,
+public abstract record GetVacanciesByEmployerAccountApiRequestV2(
+    string Endpoint,
+    long EmployerAccountId,
     string? SearchTerm = null,
     int Page = 1,
     int PageSize = 25,
@@ -16,7 +17,7 @@ public record GetVacanciesByUkprnApiRequestV2(
     {
         get
         {
-            var baseUrl = $"vacancies/provider/{Ukprn}/all";
+            var baseUrl = $"vacancies/employer/{EmployerAccountId}/{Endpoint}";
             var queryParams = new Dictionary<string, string>
             {
                 ["pageNumber"] = $"{Page}",

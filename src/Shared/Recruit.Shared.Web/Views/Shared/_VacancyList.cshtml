@@ -30,7 +30,7 @@
                 <th asp-show="@(Model.UserType is UserType.Provider)" class="govuk-table__header" scope="col">Employer</th>
                 <th asp-show="@(Model.UserType is UserType.Provider)" class="govuk-table__header" scope="col">Vacancy reference number</th>
 
-                <th class="govuk-table__header" scope="col">Applications</th>
+                <th asp-show="@Model.ShowApplicationsColumn" class="govuk-table__header" scope="col">Applications</th>
                 
                 <das-sortable-column-header 
                     route-data="@Model.RouteDictionary"
@@ -62,7 +62,7 @@
                             <govuk-tag-api-submitted asp-show="@vacancy.SourceOrigin == @SourceOrigin.Api && @Model.ShowSourceOrigin" class="app-tag" />
                         </div>
                     </td>
-                    <td asp-show="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">
+                    <td asp-show="@(Model.ShowApplicationsColumn && vacancy.CanShowVacancyApplicationsCount)" class="govuk-table__cell" data-label="Applications">
                         <div asp-show="@Model.ShowNewApplicationCounts">
                             <span asp-show="@vacancy.HasNoApplications">0</span>
                             <span asp-show="@vacancy.HasApplications">@vacancy.NoOfApplications</span>
@@ -72,7 +72,7 @@
                             <span asp-show="@vacancy.HasEmployerReviewedApplications">@vacancy.NoOfEmployerReviewedApplications reviewed</span>
                         </div>
                     </td>
-                    <td asp-hide="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">-</td>
+                    <td asp-show="@(Model.ShowApplicationsColumn && !vacancy.CanShowVacancyApplicationsCount)" class="govuk-table__cell" data-label="Applications">-</td>
                     <td class="govuk-table__cell" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
                     <td class="govuk-table__cell" data-label="Status">
                         <span class="govuk-tag app-tag app-tag--@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName(Model.UserType)</span>
