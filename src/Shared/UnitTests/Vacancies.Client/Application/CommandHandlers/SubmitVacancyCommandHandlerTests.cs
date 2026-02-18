@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Xunit;
 
@@ -160,7 +161,7 @@ public class SubmitVacancyCommandHandlerTests
         var mockRepository = new Mock<IVacancyRepository>();
         mockRepository.Setup(r => r.GetVacancyAsync(id)).ReturnsAsync(vacancy);
 
-        var mockMessaging = new Mock<IMessaging>();
+        var mockMediator = new Mock<IMediator>();
 
         var mockTimeProvider = new Mock<ITimeProvider>();
         mockTimeProvider.Setup(t => t.Now).Returns(now);
@@ -168,7 +169,7 @@ public class SubmitVacancyCommandHandlerTests
         var mockEmployerNameService = new Mock<IEmployerService>();
 
         var handler = new SubmitVacancyCommandHandler(
-            mockLogger.Object, mockRepository.Object, mockMessaging.Object, mockTimeProvider.Object, mockEmployerNameService.Object);
+            mockLogger.Object, mockRepository.Object,mockTimeProvider.Object, mockEmployerNameService.Object, mockMediator.Object);
 
         return handler;
     }

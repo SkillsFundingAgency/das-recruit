@@ -7,7 +7,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Xunit;
 
-namespace UnitTests.Employer.Web.Orchestrators.ManageNotificationsOrchestratorTests
+namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.ManageNotificationsOrchestratorTests
 {
     public class UpdateUserNotificationPreferencesAsyncTests
     {
@@ -16,13 +16,13 @@ namespace UnitTests.Employer.Web.Orchestrators.ManageNotificationsOrchestratorTe
         [Fact]
         public async Task GiveAllTheTypesAreUnselectedAndPersistedPreferencesAreEmpty_ThenReturnValidationError()
         {
-            var emptyPreferences = new UserNotificationPreferences() { NotificationTypes = NotificationTypes.None };
+            var emptyPreferences = new UserNotificationPreferences { NotificationTypes = NotificationTypes.None };
             _recruitVacancyClientMock.Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>(),It.IsAny<string>())).ReturnsAsync(emptyPreferences);
             var sut = GetSut();
             var result =await sut.UpdateUserNotificationPreferencesAsync(new ManageNotificationsEditModel(), new VacancyUser());
             result.Errors.HasErrors.Should().BeTrue();
             result.Errors.Errors.Count.Should().Be(1);
-            result.Errors.Errors.First().ErrorMessage.Should().Be("Choose when you’d like to receive emails");
+            result.Errors.Errors.First().ErrorMessage.Should().Be("Choose when you'd like to receive emails");
         }
         
         private ManageNotificationsOrchestrator GetSut()
