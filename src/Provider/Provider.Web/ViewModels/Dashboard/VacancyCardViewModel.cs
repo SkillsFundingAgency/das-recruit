@@ -10,7 +10,7 @@ public record VacancyCardViewModel
     public string Description { get; set; }
     public string RouteName { get; set; }
     public long Ukprn { get; set; }
-    public FilteringOptions Filter { get; set; }
+    public FilteringOptions? Filter { get; set; }
 
     public IReadOnlyCollection<VacancyCardTaskViewModel> Tasks { get; set; } = [];
 }

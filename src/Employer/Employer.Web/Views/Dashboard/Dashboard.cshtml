@@ -62,9 +62,8 @@
             Count = Model.VacancyCountDraft,
             HeadingText = $"{FilteringOptions.Draft} {Model.VacancyTextDraft}",
             Description = "Adverts that need completing and sending for review.",
-            RouteName = RouteNames.Vacancies_Get,
+            RouteName = RouteNames.VacanciesListDraft,
             EmployerAccountId = Model.EmployerAccountId,
-            Filter = FilteringOptions.Draft
         }))
         <div class="govuk-grid-column-one-third">
             <div class="app-card @GetCardStatus(Model.HasEmployerReviewPermission)">
