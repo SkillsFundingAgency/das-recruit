@@ -17,7 +17,7 @@
             HeadingText = $"{FilteringOptions.Draft} {Model.VacancyTextDraft}",
             Description = "Vacancies need completing and sending for review.",
             RouteName = RouteNames.VacanciesListDraft,
-            Ukprn = Model.Ukprn,
+            Ukprn = Model.Ukprn
         }))
         @(await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
         {
