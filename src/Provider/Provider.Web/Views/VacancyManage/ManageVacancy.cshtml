@@ -1,4 +1,6 @@
-﻿@model Esfa.Recruit.Provider.Web.ViewModels.VacancyManage.ManageVacancyViewModel
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@using Esfa.Recruit.Vacancies.Client.Domain.Extensions
+@model Esfa.Recruit.Provider.Web.ViewModels.VacancyManage.ManageVacancyViewModel
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-manage-vacancy";
@@ -78,7 +80,7 @@
                     Status
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <strong class="govuk-tag govuk-tag--green">@Model.Status.GetDisplayName() </strong>
+                    <strong class="@Model.Status.GetCssClassForVacancyStatus()">@Model.Status.GetDisplayName() </strong>
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a asp-show="@Model.CanShowCloseVacancyLink" asp-route="@RouteNames.CloseVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Change</a>
