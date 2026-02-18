@@ -18,8 +18,8 @@ public class ManageNotificationsOrchestrator(
     IMediator mediator)
     : EntityValidatingOrchestrator<UserNotificationPreferences, ManageNotificationsEditModel>(logger)
 {
-    private const string NotificationTypesIsRequiredForTheFirstTime = "Choose when you’d like to receive emails";
-    private readonly EntityValidationResult _notificationTypeIsRequiredForTheFirstTime = new EntityValidationResult
+    private const string NotificationTypesIsRequiredForTheFirstTime = "Choose when you'd like to receive emails";
+    private readonly EntityValidationResult _notificationTypeIsRequiredForTheFirstTime = new()
     {
         Errors =
         [
@@ -34,7 +34,7 @@ public class ManageNotificationsOrchestrator(
                 vacancyUser.DfEUserId)
             ?? await recruitVacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
 
-        if (persistedPreferences.NotificationTypes == NotificationTypes.None && editModel.HasAnySubscription == false)
+        if (persistedPreferences.NotificationTypes == NotificationTypes.None && !editModel.HasAnySubscription)
         {
             return new OrchestratorResponse(_notificationTypeIsRequiredForTheFirstTime);
         }
@@ -110,7 +110,7 @@ public class ManageNotificationsOrchestrator(
             }
             else
             {
-                return new OrchestratorResponse(new EntityValidationResult()
+                return new OrchestratorResponse(new EntityValidationResult
                 {
                     Errors = [new EntityValidationError(
                         1100,
@@ -130,7 +130,7 @@ public class ManageNotificationsOrchestrator(
         if (Enum.TryParse<NotificationScopeEx>(scopeText, out var scope))
         {
             preference.Scope = scope;
-            preference.Frequency = NotificationFrequencyEx.NotSet;
+            preference.Frequency = NotificationFrequencyEx.Immediately;
         }
         else
         {
@@ -138,14 +138,12 @@ public class ManageNotificationsOrchestrator(
         }
     }
 
-    public Task UnsubscribeUserNotificationsAsync(VacancyUser vacancyUser)
-    {
-        return UpdateUserNotificationPreferencesAsync(new ManageNotificationsEditModel(), vacancyUser);
-    }
+    public Task UnsubscribeUserNotificationsAsync(VacancyUser vacancyUser) =>
+        UpdateUserNotificationPreferencesAsync(new ManageNotificationsEditModel(), vacancyUser);
 
-    private UserNotificationPreferences GetDomainModel(ManageNotificationsEditModel sourceModel, string idamsUserId, string dfeUserId)
+    private static UserNotificationPreferences GetDomainModel(ManageNotificationsEditModel sourceModel, string idamsUserId, string dfeUserId)
     {            
-        var targetModel = new UserNotificationPreferences() { Id = idamsUserId, DfeUserId = dfeUserId};
+        var targetModel = new UserNotificationPreferences { Id = idamsUserId, DfeUserId = dfeUserId};
         if (!sourceModel.HasAnySubscription) return targetModel;
 
         targetModel.NotificationFrequency = sourceModel.IsApplicationSubmittedSelected ? sourceModel.NotificationFrequency : null;
@@ -163,9 +161,11 @@ public class ManageNotificationsOrchestrator(
 
     protected override EntityToViewModelPropertyMappings<UserNotificationPreferences, ManageNotificationsEditModel> DefineMappings()
     {
-        var mappings = new EntityToViewModelPropertyMappings<UserNotificationPreferences, ManageNotificationsEditModel>();
-        mappings.Add(n => n.NotificationScope, m => m.NotificationScope);
-        mappings.Add(n => n.NotificationFrequency, m => m.NotificationFrequency);
+        var mappings = new EntityToViewModelPropertyMappings<UserNotificationPreferences, ManageNotificationsEditModel>
+        {
+            {n => n.NotificationScope, m => m.NotificationScope},
+            {n => n.NotificationFrequency, m => m.NotificationFrequency}
+        };
         return mappings;
     }
 }
