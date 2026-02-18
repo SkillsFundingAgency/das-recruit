@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels;
+using Esfa.Recruit.Provider.Web.ViewModels.Vacancies;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
@@ -13,15 +13,25 @@ using Esfa.Recruit.Shared.Web.ViewModels.Alerts;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses.Vacancies;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
     public class VacanciesOrchestrator(
         IProviderVacancyClient providerVacancyClient,
-        IProviderRelationshipsService providerRelationshipsService)
+        IProviderRelationshipsService providerRelationshipsService,
+        ITrainingProviderService trainingProviderService,
+        IOuterApiClient outerApiClient)
     {
+        private const int MinPage = 1;
+        private const int MaxPage = 9999;
+        private static int ClampPage(int page) => Math.Clamp(page, MinPage, MaxPage);
         private const int VacanciesPerPage = 25;
 
         public async Task<VacanciesViewModel> GetVacanciesViewModelAsync(
@@ -94,7 +104,86 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             if (Enum.TryParse(typeof(FilteringOptions), filter, out var status))
                 return (FilteringOptions)status;
-            return FilteringOptions.All;
+            return FilteringOptions.Draft;
+        }
+        
+        private static Dictionary<string, string> GetRouteDictionary(int ukprn, string searchTerm, VacancySortColumn? sortColumn, ColumnSortOrder? sortOrder)
+        {
+            var result = new Dictionary<string, string> { ["ukprn"] = $"{ukprn}" };
+            if (sortColumn is not (null or VacancySortColumn.CreatedDate)) // ignore default
+            {
+                result.Add("sortColumn", $"{sortColumn}");
+                if (sortOrder is not null)
+                {
+                    // only order if the sort column is set
+                    result.Add("sortOrder", $"{sortOrder}");
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                result.Add("searchTerm", searchTerm);
+            }
+
+            return result;
+        }
+        
+        public async Task<ListAllVacanciesViewModel> ListAllVacanciesAsync(
+            int ukprn,
+            string userId,
+            int? page,
+            int pageSize,
+            string searchTerm,
+            VacancySortColumn? sortColumn,
+            ColumnSortOrder? sortOrder)
+        {
+            page = ClampPage(page ?? 1);
+            
+            var resultTask = outerApiClient.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(
+                new GetVacanciesByUkprnApiRequestV2(
+                    ukprn,
+                    searchTerm?.Trim(),
+                    page.Value,
+                    pageSize,
+                    sortColumn ?? VacancySortColumn.CreatedDate,
+                    sortOrder ?? ColumnSortOrder.Desc)
+            );
+            var alertsTask = trainingProviderService.GetProviderAlerts(ukprn, userId);
+            await Task.WhenAll(resultTask, alertsTask);
+            var result = resultTask.Result;
+            var alerts = alertsTask.Result;
+            var totalItems = Convert.ToInt32(result.PageInfo.TotalCount);
+            var routeDictionary = GetRouteDictionary(ukprn, searchTerm, sortColumn, sortOrder);
+            
+            return new ListAllVacanciesViewModel
+            {
+                Alerts = new AlertsViewModel(null,
+                    new WithdrawnVacanciesAlertViewModel
+                    {
+                        ClosedVacancies = alerts.WithdrawnVacanciesAlert.ClosedVacancies,
+                        Ukprn = ukprn
+                    },
+                    ukprn
+                ),
+                ListViewModel = new VacanciesListViewModel
+                {
+                    EditVacancyRoute = RouteNames.ProviderTaskListGet,
+                    ManageVacancyRoute = RouteNames.VacancyManage_Get,
+                    Pagination = new PaginationViewModel(totalItems, pageSize, page.Value, "Showing {0} to {1} of {2} vacancies"),
+                    RouteDictionary = routeDictionary,
+                    ShowEmployerReviewedApplicationCounts = false,
+                    ShowSourceOrigin = false,
+                    SortColumn = sortColumn,
+                    SortOrder = sortOrder,
+                    SubmitVacancyRoute = RouteNames.ProviderCheckYourAnswersGet,
+                    Vacancies = result.Data.Select(x => VacancyListItemViewModel.From(x, ukprn)).ToList(),
+                    UserType = UserType.Provider,
+                },
+                ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, totalItems, FilteringOptions.All, searchTerm, UserType.Provider),
+                SearchTerm = searchTerm,
+                TotalVacancies = (uint)totalItems,
+                Ukprn = ukprn,
+            };
         }
     }
 }

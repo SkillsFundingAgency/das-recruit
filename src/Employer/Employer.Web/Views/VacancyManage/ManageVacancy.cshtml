@@ -6,8 +6,7 @@
 }
 
 @section BackLink {
-    <a asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId"
-        class="govuk-back-link">Back</a>
+    <a asp-route="@RouteNames.VacanciesGetAll" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row" asp-show="@Model.ShowEmployerApplications">

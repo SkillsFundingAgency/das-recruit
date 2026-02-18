@@ -64,7 +64,6 @@
                 <label asp-for="Filter" class="govuk-label">Filter adverts by</label>
                 <select asp-for="Filter" class="govuk-select">
                     <optgroup label="Status">
-                        <option value="@FilteringOptions.All">all adverts</option>
                         <option value="@FilteringOptions.Live">live adverts</option>
                         <option value="@FilteringOptions.Referred">rejected adverts</option>
                         <option value="@FilteringOptions.Review">ready for review</option>
@@ -104,7 +103,7 @@
 </form>
 
 <h3 class="govuk-heading-m">
-    @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-!-font-size-19 govuk-link govuk-link--no-visited-state">Show all adverts</a>
+    @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.VacanciesGetAll" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-!-font-weight-regular govuk-!-font-size-19 govuk-link govuk-link--no-visited-state">Show all adverts</a>
 </h3>
 
 <p asp-hide="@Model.ShowResultsTable" class="govuk-body">No adverts match the criteria</p>

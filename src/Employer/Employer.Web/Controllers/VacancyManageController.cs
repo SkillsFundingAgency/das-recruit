@@ -106,7 +106,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             EnsureProposedChangesCookiesAreCleared(m.VacancyId);
 
-            return RedirectToRoute(RouteNames.Vacancies_Get, new {m.VacancyId, m.EmployerAccountId});
+            return RedirectToRoute(RouteNames.VacanciesGetAll, new {m.VacancyId, m.EmployerAccountId});
         }
 
         [HttpGet("cancel-vacancy-changes", Name = RouteNames.CancelVacancyChanges_Get)]
@@ -114,7 +114,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             EnsureProposedChangesCookiesAreCleared(vrm.VacancyId);
             
-            return RedirectToRoute(RouteNames.Vacancies_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
+            return RedirectToRoute(RouteNames.VacanciesGetAll, new {vrm.VacancyId, vrm.EmployerAccountId});
         }
 
         private void EnsureProposedChangesCookiesAreCleared(Guid vacancyId)
