@@ -16,9 +16,8 @@
             Count = Model.VacancyCountDraft,
             HeadingText = $"{FilteringOptions.Draft} {Model.VacancyTextDraft}",
             Description = "Vacancies need completing and sending for review.",
-            RouteName = RouteNames.Vacancies_Get,
+            RouteName = RouteNames.VacanciesListDraft,
             Ukprn = Model.Ukprn,
-            Filter = FilteringOptions.Draft
         }))
         @(await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
         {

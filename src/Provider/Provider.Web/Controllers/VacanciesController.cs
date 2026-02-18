@@ -47,6 +47,17 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
         return View("ListVacancies", vm);
     }
 
+    [HttpGet("review", Name = RouteNames.VacanciesListPendingEmployerReviewed)]
+    public async Task<IActionResult> ListPendingEmployerReviewedVacancies(
+        [FromRoute] int ukprn,
+        SortParams<VacancySortColumn> sortParams,
+        [FromQuery] int? page = 1,
+        [FromQuery] string searchTerm = null)
+    {
+        var vm = await GetVacanciesViewModel(FilteringOptions.Review, User.ToVacancyUser(), searchTerm, page, sortParams.SortColumn, sortParams.SortOrder);
+        return View("ListVacancies", vm);
+    }
+
     private async Task<ListVacanciesViewModel> GetVacanciesViewModel(
         FilteringOptions filteringOption,
         VacancyUser user,

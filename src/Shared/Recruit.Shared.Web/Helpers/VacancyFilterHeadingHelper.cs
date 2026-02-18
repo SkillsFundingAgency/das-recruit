@@ -11,9 +11,7 @@ namespace Esfa.Recruit.Shared.Web.Helpers
         {
             var vacancyWord = vacancyTerm.ToQuantity(totalVacancies, ShowQuantityAs.None);
 
-            var words = new List<string>();
-
-            words.Add(totalVacancies.ToString());
+            var words = new List<string> {totalVacancies.ToString()};
 
             switch(filteringOption)
             {
