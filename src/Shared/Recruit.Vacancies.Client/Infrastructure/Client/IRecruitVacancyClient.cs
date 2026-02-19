@@ -45,6 +45,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task SetApplicationReviewsStatus(long vacancyReference, IEnumerable<Guid> applicationReviewIds, VacancyUser user, ApplicationReviewStatus? status, Guid vacancyId, ApplicationReviewStatus? applicationReviewTemporaryStatus);
         Task SetApplicationReviewsPendingUnsuccessfulFeedback(VacancyUser user, ApplicationReviewStatus status, Guid vacancyId, string feedback);
         Task SetApplicationReviewsToUnsuccessful(IEnumerable<Guid> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user, Guid vacancyId);
-        Task <Domain.Entities.User> GetUsersDetailsByDfEUserId(string dfeUserId);
+        Task<Domain.Entities.User> GetUsersDetailsByDfEUserId(string dfeUserId);
     }
 }
