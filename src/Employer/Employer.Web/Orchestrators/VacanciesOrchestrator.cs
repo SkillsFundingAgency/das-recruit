@@ -101,10 +101,7 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
         return vm;
     }
 
-    private static int SanitizePage(int page, int totalVacancies)
-    {
-        return (page < 0 || page > (int)Math.Ceiling((double)totalVacancies / VacanciesPerPage)) ? 1 : page;
-    }
+    private static int SanitizePage(int page, int totalVacancies) => page < 0 || page > (int)Math.Ceiling((double)totalVacancies / VacanciesPerPage) ? 1 : page;
 
     private static FilteringOptions SanitizeFilter(string filter)
     {
@@ -223,28 +220,26 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
         {
             FilteringOptions.All => new GetAllVacanciesByEmployerAccountApiRequest(employerAccountId, searchTerm, page, pageSize, sortColumn, sortOrder),
             FilteringOptions.Draft => new GetDraftVacanciesByEmployerAccountApiRequest(employerAccountId, searchTerm, page, pageSize, sortColumn, sortOrder),
+            FilteringOptions.Submitted => new GetPendingDfEReviewVacanciesByEmployerAccountApiRequest(employerAccountId, searchTerm, page, pageSize, sortColumn, sortOrder),
             _ => throw new ArgumentOutOfRangeException(nameof(options), options, null)
         };
     }
 
-    private static string GetPageHeading(FilteringOptions filteringOption)
-    {
-        return filteringOption switch
+    private static string GetPageHeading(FilteringOptions filteringOption) =>
+        filteringOption switch
         {
             FilteringOptions.All => "All adverts",
             FilteringOptions.Draft => "Draft adverts",
+            FilteringOptions.Submitted => "Pending DfE review",
             _ => throw new ArgumentOutOfRangeException(nameof(filteringOption), filteringOption, null)
         };
-    }
-    
-    private static bool ShouldShowApplicationsColumn(FilteringOptions filteringOption)
-    {
-        return filteringOption switch
+
+    private static bool ShouldShowApplicationsColumn(FilteringOptions filteringOption) =>
+        filteringOption switch
         {
             FilteringOptions.All => true,
             FilteringOptions.Live => true,
             FilteringOptions.Closed => true,
             _ => false
         };
-    }
 }

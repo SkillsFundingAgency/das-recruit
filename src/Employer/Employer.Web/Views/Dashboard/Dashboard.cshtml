@@ -86,11 +86,10 @@
         @(await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
         {
             Count = Model.VacancyCountSubmitted,
-            HeadingText = @FilteringOptions.Submitted.GetDisplayName(UserType.Employer),
+            HeadingText = FilteringOptions.Submitted.GetDisplayName(UserType.Employer),
             Description = "Adverts that you've sent for review.",
-            RouteName = RouteNames.Vacancies_Get,
+            RouteName = RouteNames.VacanciesListPendingDfEReview,
             EmployerAccountId = Model.EmployerAccountId,
-            Filter = FilteringOptions.Submitted
         }))
     </div>
     <div class="govuk-grid-row app-card__row">

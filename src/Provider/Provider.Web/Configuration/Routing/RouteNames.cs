@@ -22,6 +22,7 @@ public static class RouteNames
     public const string VacanciesGetAll = nameof(VacanciesGetAll);
     public const string VacanciesListDraft = nameof(VacanciesListDraft);
     public const string VacanciesListPendingEmployerReviewed = nameof(VacanciesListPendingEmployerReviewed);
+    public const string VacanciesListPendingDfEReview = nameof(VacanciesListPendingDfEReview);
     public const string Dashboard_Account_Home = "Dashboard_Account_Home";
     public const string DeleteVacancy_Get = "DeleteVacancy_Get";
     public const string DeleteVacancy_Post = "DeleteVacancy_Post";
