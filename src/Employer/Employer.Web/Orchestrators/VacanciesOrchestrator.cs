@@ -196,7 +196,6 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
                 ManageVacancyRoute = RouteNames.VacancyManage_Get,
                 Pagination = new PaginationViewModel(totalItems, pageSize, page, "Showing {0} to {1} of {2} adverts"),
                 RouteDictionary = routeDictionary,
-                ShowApplicationsColumn = ShouldShowApplicationsColumn(filteringOption),
                 ShowEmployerReviewedApplicationCounts = false,
                 ShowSourceOrigin = false,
                 SortColumn = request.SortColumn,
@@ -234,17 +233,6 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
             FilteringOptions.All => "All adverts",
             FilteringOptions.Draft => "Draft adverts",
             _ => throw new ArgumentOutOfRangeException(nameof(filteringOption), filteringOption, null)
-        };
-    }
-    
-    private static bool ShouldShowApplicationsColumn(FilteringOptions filteringOption)
-    {
-        return filteringOption switch
-        {
-            FilteringOptions.All => true,
-            FilteringOptions.Live => true,
-            FilteringOptions.Closed => true,
-            _ => false
         };
     }
 }
