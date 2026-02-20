@@ -50,7 +50,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-!-margin-bottom-5">
-                <a asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.All" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
+                <a asp-route="@RouteNames.VacanciesGetAll" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
                     View all adverts (@Model.NumberOfVacancies)
                 </a>
             </div>
@@ -62,9 +62,8 @@
             Count = Model.VacancyCountDraft,
             HeadingText = $"{FilteringOptions.Draft} {Model.VacancyTextDraft}",
             Description = "Adverts that need completing and sending for review.",
-            RouteName = RouteNames.Vacancies_Get,
+            RouteName = RouteNames.VacanciesListDraft,
             EmployerAccountId = Model.EmployerAccountId,
-            Filter = FilteringOptions.Draft
         }))
         <div class="govuk-grid-column-one-third">
             <div class="app-card @GetCardStatus(Model.HasEmployerReviewPermission)">
