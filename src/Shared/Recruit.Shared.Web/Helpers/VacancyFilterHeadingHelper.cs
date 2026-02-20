@@ -11,9 +11,7 @@ namespace Esfa.Recruit.Shared.Web.Helpers
         {
             var vacancyWord = vacancyTerm.ToQuantity(totalVacancies, ShowQuantityAs.None);
 
-            var words = new List<string>();
-
-            words.Add(totalVacancies.ToString());
+            var words = new List<string> {totalVacancies.ToString()};
 
             switch(filteringOption)
             {
@@ -26,6 +24,11 @@ namespace Esfa.Recruit.Shared.Web.Helpers
                 case FilteringOptions.Referred:                
                     words.Add(filteringOption.GetDisplayName(userType).ToLowerInvariant());
                     words.Add(vacancyWord);
+                    break;
+                case FilteringOptions.Submitted:
+                    words.Add(vacancyWord);
+                    words.Add("pending DfE review"); /* custom wording for submitted vacancies as this is needs to be in lower case
+                                                      and is not the same as the display name for submitted vacancies which is "Pending DfE review" */
                     break;
                 default:
                     words.Add(vacancyWord);

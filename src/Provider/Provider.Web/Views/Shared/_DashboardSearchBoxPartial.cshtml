@@ -5,7 +5,7 @@
     ViewBag.Title = "Recruitment";
 
     var vacancyRouteModel = new VacancyRouteModel { Ukprn = Model.Ukprn };
-    var vacanciesSearchSuggestionsEndpointUrl = @Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, vacancyRouteModel.RouteDictionary, Context.Request.Scheme);
+    var vacanciesSearchSuggestionsEndpointUrl = Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, vacancyRouteModel.RouteDictionary, Context.Request.Scheme);
 }
 <div class="govuk-grid-row" asp-show="@Model.HasAnyVacancies">
     <div class="govuk-grid-column-one-half">

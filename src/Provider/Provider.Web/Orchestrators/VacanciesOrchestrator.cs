@@ -92,12 +92,10 @@ public class VacanciesOrchestrator(
         return vm;
     }
 
-    private int SanitizePage(int page, int totalVacancies)
-    {
-        return (page < 0 || page > (int)Math.Ceiling((double)totalVacancies / VacanciesPerPage)) ? 1 : page;
-    }
+    private static int SanitizePage(int page, int totalVacancies) 
+        => page < 0 || page > (int)Math.Ceiling((double)totalVacancies / VacanciesPerPage) ? 1 : page;
 
-    private FilteringOptions SanitizeFilter(string filter)
+    private static FilteringOptions SanitizeFilter(string filter)
     {
         if (Enum.TryParse(typeof(FilteringOptions), filter, out var status))
             return (FilteringOptions)status;
@@ -188,22 +186,23 @@ public class VacanciesOrchestrator(
         int page,
         int pageSize,
         VacancySortColumn sortColumn,
-        ColumnSortOrder sortOrder)
-    {
-        return options switch
+        ColumnSortOrder sortOrder) =>
+        options switch
         {
             FilteringOptions.All => new GetAllVacanciesByUkprnApiRequest(ukprn, searchTerm, page, pageSize, sortColumn, sortOrder),
             FilteringOptions.Draft => new GetDraftVacanciesByUkprnApiRequest(ukprn, searchTerm, page, pageSize, sortColumn, sortOrder),
+            FilteringOptions.Review => new GetPendingEmployerReviewedVacanciesByUkprnApiRequest(ukprn, searchTerm, page, pageSize, sortColumn, sortOrder),
+            FilteringOptions.Submitted => new GetPendingDfEReviewVacanciesByUkprnApiRequest(ukprn, searchTerm, page, pageSize, sortColumn, sortOrder),
             _ => throw new ArgumentOutOfRangeException(nameof(options), options, null)
         };
-    }
 
-    private static string GetPageHeading(FilteringOptions filteringOption)
-    {
-        return filteringOption switch
+    private static string GetPageHeading(FilteringOptions filteringOption) =>
+        filteringOption switch
         {
             FilteringOptions.All => "All vacancies",
             FilteringOptions.Draft => "Draft vacancies",
+            FilteringOptions.Review => "Pending employer review",
+            FilteringOptions.Submitted => "Pending DfE review",
             _ => throw new ArgumentOutOfRangeException(nameof(filteringOption), filteringOption, null)
         };
     }
