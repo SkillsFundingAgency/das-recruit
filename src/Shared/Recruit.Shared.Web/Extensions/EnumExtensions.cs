@@ -38,11 +38,8 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             return displayName ?? enumValue.ToString();
         }
 
-        public static bool IsInLiveVacancyOptions(this FilteringOptions enumValue)
-        {
-            return enumValue == FilteringOptions.ClosingSoon ||
-                   enumValue == FilteringOptions.ClosingSoonWithNoApplications;
-        }
+        public static bool IsInLiveVacancyOptions(this FilteringOptions enumValue) =>
+            enumValue is FilteringOptions.ClosingSoon or FilteringOptions.ClosingSoonWithNoApplications;
 
         private static readonly Dictionary<Enum, string> DisplayNames = new()
         {

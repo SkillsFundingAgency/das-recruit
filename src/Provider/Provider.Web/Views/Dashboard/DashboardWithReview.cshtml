@@ -32,9 +32,8 @@
             Count = Model.VacancyCountSubmitted,
             HeadingText = FilteringOptions.Submitted.GetDisplayName(UserType.Provider),
             Description = "Vacancies that have been sent for review.",
-            RouteName = RouteNames.Vacancies_Get,
+            RouteName = RouteNames.VacanciesListPendingDfEReview,
             Ukprn = Model.Ukprn,
-            Filter = FilteringOptions.Submitted
         }))
     </div>
     <div class="govuk-grid-row app-card__row">

@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies.S
         [TestCase("2 live adverts with 'nurse'", "Live","nurse", 2, VacancyStatus.Live)]
         [TestCase("1 live advert", "Live", "", 1, VacancyStatus.Live)]
         [TestCase("2 draft adverts with 'nurse'", "Draft", "nurse", 2, VacancyStatus.Draft)]
-        [TestCase("2 adverts pending dfe review with 'nurse'", "Submitted", "nurse", 2, VacancyStatus.Submitted)]
+        [TestCase("2 adverts pending DfE review with 'nurse'", "Submitted", "nurse", 2, VacancyStatus.Submitted)]
         [TestCase("2 rejected adverts", "Referred", "", 2, VacancyStatus.Referred)]
         [TestCase("2 closed adverts", "Closed", "", 2, VacancyStatus.Closed)]
         [TestCase("2 adverts closing soon with 'nurse'", "ClosingSoon", "nurse", 2, VacancyStatus.Live)]

@@ -193,6 +193,7 @@ public class VacanciesOrchestrator(
             FilteringOptions.All => new GetAllVacanciesByUkprnApiRequest(ukprn, searchTerm, page, pageSize, sortColumn, sortOrder),
             FilteringOptions.Draft => new GetDraftVacanciesByUkprnApiRequest(ukprn, searchTerm, page, pageSize, sortColumn, sortOrder),
             FilteringOptions.Review => new GetPendingEmployerReviewedVacanciesByUkprnApiRequest(ukprn, searchTerm, page, pageSize, sortColumn, sortOrder),
+            FilteringOptions.Submitted => new GetPendingDfEReviewVacanciesByUkprnApiRequest(ukprn, searchTerm, page, pageSize, sortColumn, sortOrder),
             _ => throw new ArgumentOutOfRangeException(nameof(options), options, null)
         };
 
@@ -202,6 +203,7 @@ public class VacanciesOrchestrator(
             FilteringOptions.All => "All vacancies",
             FilteringOptions.Draft => "Draft vacancies",
             FilteringOptions.Review => "Pending employer review",
+            FilteringOptions.Submitted => "Pending DfE review",
             _ => throw new ArgumentOutOfRangeException(nameof(filteringOption), filteringOption, null)
         };
 

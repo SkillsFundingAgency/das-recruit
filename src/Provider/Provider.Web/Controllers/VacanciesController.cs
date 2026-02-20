@@ -58,6 +58,17 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
         return View("ListVacancies", vm);
     }
 
+    [HttpGet("submitted", Name = RouteNames.VacanciesListPendingDfEReview)]
+    public async Task<IActionResult> ListPendingDfEReviewVacancies(
+        [FromRoute] int ukprn,
+        SortParams<VacancySortColumn> sortParams,
+        [FromQuery] int? page = 1,
+        [FromQuery] string searchTerm = null)
+    {
+        var vm = await GetVacanciesViewModel(FilteringOptions.Submitted, User.ToVacancyUser(), searchTerm, page, sortParams.SortColumn, sortParams.SortOrder);
+        return View("ListVacancies", vm);
+    }
+
     private async Task<ListVacanciesViewModel> GetVacanciesViewModel(
         FilteringOptions filteringOption,
         VacancyUser user,
