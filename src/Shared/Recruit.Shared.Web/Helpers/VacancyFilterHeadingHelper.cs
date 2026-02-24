@@ -9,11 +9,11 @@ namespace Esfa.Recruit.Shared.Web.Helpers
     {
         public static string GetFilterHeading(string vacancyTerm, int totalVacancies, FilteringOptions filteringOption, string searchTerm, UserType? userType = null)
         {
-            var vacancyWord = vacancyTerm.ToQuantity(totalVacancies, ShowQuantityAs.None);
+            var vacancyWord = totalVacancies is 1
+                ? vacancyTerm
+                : vacancyTerm.Pluralize();
 
-            var words = new List<string>();
-
-            words.Add(totalVacancies.ToString());
+            var words = new List<string> {totalVacancies.ToString()};
 
             switch(filteringOption)
             {

@@ -1,17 +1,15 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Orchestrators;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels.Vacancies;
 using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Employer.Web.Controllers;
@@ -19,7 +17,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers;
 [Route(RoutePaths.VacanciesRoutePath)]
 public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment) : Controller
 {
-    private const ColumnSortOrder DefaultSortOrder = ColumnSortOrder.Desc;
+    private const ColumnSortOrder DefaultSortOrder = ColumnSortOrder.Asc;
     private const int PageSize = 25;
     private const int MinPage = 1;
     private const int MaxPage = 9999;

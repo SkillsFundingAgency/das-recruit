@@ -169,7 +169,7 @@ public class VacanciesOrchestrator(
                 Pagination = new PaginationViewModel(totalItems, request.PageSize, request.Page, "Showing {0} to {1} of {2} vacancies"),
                 RouteDictionary = routeDictionary,
                 ShowEmployerReviewedApplicationCounts = false,
-                ShowSourceOrigin = false,
+                ShowSourceOrigin = true,
                 SortColumn = request.SortColumn,
                 SortOrder = request.SortOrder,
                 SubmitVacancyRoute = RouteNames.ProviderCheckYourAnswersGet,

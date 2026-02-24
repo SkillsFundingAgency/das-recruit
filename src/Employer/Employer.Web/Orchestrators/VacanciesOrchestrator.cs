@@ -197,7 +197,7 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
                 Pagination = new PaginationViewModel(totalItems, pageSize, page, "Showing {0} to {1} of {2} adverts"),
                 RouteDictionary = routeDictionary,
                 ShowEmployerReviewedApplicationCounts = false,
-                ShowSourceOrigin = false,
+                ShowSourceOrigin = true,
                 SortColumn = request.SortColumn,
                 SortOrder = request.SortOrder,
                 SubmitVacancyRoute = RouteNames.EmployerCheckYourAnswersGet,
@@ -205,6 +205,7 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
                 UserType = UserType.Employer,
             },
             PageHeading = pageHeading,
+            EmployerAccountId = hashedEmployerAccountId
         };
     }
     
