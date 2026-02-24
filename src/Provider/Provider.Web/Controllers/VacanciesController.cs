@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
@@ -23,7 +21,7 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
     private const int MinPage = 1;
     private const int MaxPage = 9999;
     private static int ClampPage(int page) => Math.Clamp(page, MinPage, MaxPage);
-    private const ColumnSortOrder DefaultSortOrder = ColumnSortOrder.Desc;
+    private const ColumnSortOrder DefaultSortOrder = ColumnSortOrder.Asc;
     
     [HttpGet("all", Name = RouteNames.VacanciesGetAll)]
     public async Task<IActionResult> ListAllVacancies(
