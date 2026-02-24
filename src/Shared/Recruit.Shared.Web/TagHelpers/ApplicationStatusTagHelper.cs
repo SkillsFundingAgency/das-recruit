@@ -14,6 +14,7 @@ public class ApplicationStatusTagHelper : RaaTagsTagHelper
     public new const string TagName = "govuk-tag-application-review-status";
     public ApplicationReviewStatus? ApplicationStatus { get; set; }
     public UserType? UserType { get; set; }
+    public bool IsWithdrawn { get; set; } = false;
 
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
@@ -50,6 +51,11 @@ public class ApplicationStatusTagHelper : RaaTagsTagHelper
 
     protected override Task<IHtmlContent> GetContent(TagHelperOutput output)
     {
+        if (IsWithdrawn)
+        {
+            return Task.FromResult<IHtmlContent>(new HtmlString("Withdrawn"));
+        }
+
         if (ApplicationStatus.HasValue)
         {
             var display = ApplicationStatus.GetDisplayName(UserType) ?? string.Empty;
