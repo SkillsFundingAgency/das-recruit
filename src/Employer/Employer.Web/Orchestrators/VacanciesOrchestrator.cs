@@ -234,4 +234,3 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
             _ => throw new ArgumentOutOfRangeException(nameof(filteringOption), filteringOption, null)
         };
     }
-}

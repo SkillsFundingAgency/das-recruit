@@ -47,7 +47,7 @@ public class VacanciesOrchestrator(
         int totalItems = Convert.ToInt32(dashboard.TotalVacancies);
 
         var vacancies = new List<VacancySummary>(dashboard.Vacancies ?? []);
-            
+
         page = SanitizePage(page, totalItems);
 
         var vacanciesVm = vacancies
@@ -55,9 +55,9 @@ public class VacanciesOrchestrator(
             .ToList();
 
         var pager = new PagerViewModel(
-            totalItems, 
+            totalItems,
             VacanciesPerPage,
-            page, 
+            page,
             "Showing {0} to {1} of {2} vacancies",
             RouteNames.Vacancies_Get,
             new Dictionary<string, string>
@@ -92,7 +92,7 @@ public class VacanciesOrchestrator(
         return vm;
     }
 
-    private static int SanitizePage(int page, int totalVacancies) 
+    private static int SanitizePage(int page, int totalVacancies)
         => page < 0 || page > (int)Math.Ceiling((double)totalVacancies / VacanciesPerPage) ? 1 : page;
 
     private static FilteringOptions SanitizeFilter(string filter)
@@ -101,7 +101,7 @@ public class VacanciesOrchestrator(
             return (FilteringOptions)status;
         return FilteringOptions.Draft;
     }
-        
+
     public async Task<ListVacanciesViewModel> ListVacanciesAsync(
         FilteringOptions filteringOption,
         int ukprn,
@@ -121,7 +121,7 @@ public class VacanciesOrchestrator(
 
         // this is our base route
         var baseRouteDictionary = new Dictionary<string, string> { ["ukprn"] = $"{ukprn}" };
-        
+
         // create a separate dict with search params included
         var routeDictionary = new Dictionary<string, string>(baseRouteDictionary);
         if (request.SortColumn is not (null or VacancySortColumn.CreatedDate)) // ignore default
@@ -138,7 +138,7 @@ public class VacanciesOrchestrator(
         {
             routeDictionary.Add("searchTerm", request.SearchTerm);
         }
-            
+
         var alerts = alertsTask.Result;
         return new ListVacanciesViewModel
         {
@@ -178,7 +178,7 @@ public class VacanciesOrchestrator(
             Ukprn = ukprn,
         };
     }
-    
+
     private static GetVacanciesByUkprnApiRequestV2 GetVacanciesListRequest(
         FilteringOptions options,
         int ukprn,
@@ -205,5 +205,4 @@ public class VacanciesOrchestrator(
             FilteringOptions.Submitted => "Pending DfE review",
             _ => throw new ArgumentOutOfRangeException(nameof(filteringOption), filteringOption, null)
         };
-    }
 }
