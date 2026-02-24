@@ -53,11 +53,7 @@
                             <a data-label="application_review" asp-route="@RouteNames.ApplicationReview_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancyId="@Model.VacancyId" asp-route-applicationReviewId="@application.ApplicationReviewId" class="govuk-link">@application.GetFriendlyId()</a>
                         </td>
                         <td class="govuk-table__cell" data-label="Name">@application.CandidateName</td>
-                        <td class="govuk-table__cell" data-label="Status">
-                            <govuk-status-tag application-status="@application.Status">
-                                @application.Status.GetDisplayName(Model.UserType)
-                            </govuk-status-tag>
-                        </td>
+                        <td class="govuk-table__cell" data-label="Status"><govuk-tag-application-review-status application-status="@application.Status" user-type="Model.UserType" /></td>
                         <td class="govuk-table__cell" data-label="Date applied">@application.SubmittedDate.AsGdsDate()</td>
                         <td class="govuk-table__cell" asp-show="@application.CanShowCandidateAppliedLocations" data-label="Locations">@application.CandidateAppliedLocations</td>
                     </tr>
@@ -65,9 +61,9 @@
                         <td class="govuk-table__cell" data-label="Application ID">@application.GetFriendlyId()</td>
                         <td class="govuk-table__cell" data-label="Name">Application withdrawn by candidate</td>
                         <td class="govuk-table__cell" data-label="Status">
-                            <govuk-status-tag application-status="@application.Status">
+                            <govuk-tag-application-review-status application-status="@application.Status">
                                 Withdrawn
-                            </govuk-status-tag>
+                            </govuk-tag-application-review-status>
                         </td>
                         <td class="govuk-table__cell" data-label="Date applied">@application.SubmittedDate.AsGdsDate()</td>
                         <td class="govuk-table__cell" asp-show="@application.CanShowCandidateAppliedLocations" data-label="Locations">@application.CandidateAppliedLocations</td>

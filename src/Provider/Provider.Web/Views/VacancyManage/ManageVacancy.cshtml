@@ -80,9 +80,7 @@
                     Status
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <govuk-status-tag vacancy-status="@Model.Status">
-                        @Model.Status.GetDisplayName()
-                    </govuk-status-tag>
+                    <govuk-tag-vacancy-status status="@Model.Status"/>
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a asp-show="@Model.CanShowCloseVacancyLink" asp-route="@RouteNames.CloseVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Change</a>

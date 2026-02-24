@@ -62,36 +62,3 @@ public class RaaTagsTagHelperTests: TagHelperTestsBase
         TagHelperOutput.AsString().Should().Be("""<strong class="govuk-tag--yellow govuk-tag">API submitted</strong>""");
     }
 }
-
-public class StatusTagHelperTests: TagHelperTestsBase
-{
-    [TestCase(VacancyStatus.Draft, "<strong class=\"govuk-tag govuk-tag--grey\">Draft</strong>")]
-    [TestCase(VacancyStatus.Submitted, "<strong class=\"govuk-tag govuk-tag--blue\">Submitted</strong>")]
-    [TestCase(VacancyStatus.Live, "<strong class=\"govuk-tag govuk-tag--turquoise\">Live</strong>")]
-    public async Task VacancyStatus_Renders_Canonical_Class(VacancyStatus status, string expected)
-    {
-        // Arrange
-        var sut = new StatusTagHelper { VacancyStatusValue = status };
-
-        // Act
-        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
-
-        // Assert
-        TagHelperOutput.AsString().Should().Be(expected);
-    }
-
-    [TestCase(ApplicationReviewStatus.New, "<strong class=\"govuk-tag govuk-tag--light-blue\">New</strong>")]
-    [TestCase(ApplicationReviewStatus.Unsuccessful, "<strong class=\"govuk-tag govuk-tag--orange\">Unsuccessful</strong>")]
-    [TestCase(ApplicationReviewStatus.Interviewing, "<strong class=\"govuk-tag govuk-tag--purple\">Interviewing</strong>")]
-    public async Task ApplicationStatus_Renders_Canonical_Class(ApplicationReviewStatus status, string expected)
-    {
-        // Arrange
-        var sut = new StatusTagHelper { ApplicationStatusValue = status };
-
-        // Act
-        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
-
-        // Assert
-        TagHelperOutput.AsString().Should().Be(expected);
-    }
-}
