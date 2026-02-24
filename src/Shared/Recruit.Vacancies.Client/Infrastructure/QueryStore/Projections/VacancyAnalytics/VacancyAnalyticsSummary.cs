@@ -1,11 +1,10 @@
+using System;
+
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics
 {
-    public class VacancyAnalyticsSummary : QueryProjectionBase
+    public class VacancyAnalyticsSummary
     {
-        public VacancyAnalyticsSummary() : base(QueryViewType.VacancyAnalyticsSummary.TypeName)
-        {
-        }
-
+        public DateTime LastUpdated { get; set; }
         public long VacancyReference { get; set; }
 
         public int NoOfApprenticeshipSearches { get; set; }
