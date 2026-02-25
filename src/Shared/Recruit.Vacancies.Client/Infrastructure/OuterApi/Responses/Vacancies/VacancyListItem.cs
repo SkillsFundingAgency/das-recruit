@@ -15,4 +15,5 @@ public record VacancyListItem(
     OwnerType? OwnerType,
     ApplicationMethod? ApplicationMethod,
     bool? HasSubmittedAdditionalQuestions,
+    string? TransferInfo,
     VacancyStatsItem? Stats);
