@@ -40,7 +40,11 @@ public class DasSortableColumnHeaderTagHelper(IUrlHelperFactory urlHelperFactory
         var action = ViewContext.RouteData.Values["action"] as string;
         var controller = ViewContext.RouteData.Values["controller"] as string;
         var urlHelper = urlHelperFactory.GetUrlHelper(contextAccessor.ActionContext!);
-        var nextSortOrder = GetNextSortOrder(ActiveSortOrder);
+        var sortOrder = ViewContext.HttpContext.Request.Query["sortOrder"].ToString();
+
+        var nextSortOrder = string.IsNullOrEmpty(sortOrder) 
+            ? ColumnSortOrder.Desc 
+            : GetNextSortOrder(ActiveSortOrder);
 
         var anchor = new TagBuilder("a");
         anchor.AddCssClass("govuk-link");

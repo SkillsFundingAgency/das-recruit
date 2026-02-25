@@ -21,7 +21,7 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
     private const int MinPage = 1;
     private const int MaxPage = 9999;
     private static int ClampPage(int page) => Math.Clamp(page, MinPage, MaxPage);
-    private const ColumnSortOrder DefaultSortOrder = ColumnSortOrder.Asc;
+    private const ColumnSortOrder DefaultSortOrder = ColumnSortOrder.Desc;
     
     [HttpGet("all", Name = RouteNames.VacanciesGetAll)]
     public async Task<IActionResult> ListAllVacancies(
