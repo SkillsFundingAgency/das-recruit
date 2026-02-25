@@ -25,6 +25,7 @@ public class VacancyListItemViewModel
     public SourceOrigin? SourceOrigin { get; set; }
     public VacancyStatus Status { get; set; }
     public long? VacancyReference { get; set; }
+    private string? TransferInfo { get; set; }
 
     // calculated fields
     public bool CanShowVacancyApplicationsCount => Status is VacancyStatus.Live or VacancyStatus.Closed &&
@@ -40,6 +41,7 @@ public class VacancyListItemViewModel
     public bool HasVacancyReference => VacancyReference is not null;
     public bool IsSubmittable => Status is VacancyStatus.Draft or VacancyStatus.Referred or VacancyStatus.Rejected;
     public int NoOfApplications => NoOfNewApplications + NoOfSuccessfulApplications + NoOfUnsuccessfulApplications;
+    public bool IsTransferredVacancy => !string.IsNullOrEmpty(TransferInfo);
 
     public static VacancyListItemViewModel From(VacancyListItem item, int ukprn)
     {
@@ -67,6 +69,7 @@ public class VacancyListItemViewModel
             Status = item.Status,
             Title = item.Title,
             VacancyReference = item.VacancyReference,
+            TransferInfo = item.TransferInfo
         };
     }
     
@@ -96,6 +99,7 @@ public class VacancyListItemViewModel
             Status = item.Status,
             Title = item.Title,
             VacancyReference = item.VacancyReference,
+            TransferInfo = item.TransferInfo
         };
     }
 }
