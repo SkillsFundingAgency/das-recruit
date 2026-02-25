@@ -32,19 +32,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         protected readonly TestProfanityListProvider MockProfanityListProvider;
         protected readonly Mock<IProviderRelationshipsService> MockProviderRelationshipsService;
         protected readonly Mock<ITrainingProviderService> MockTrainingProviderService;
-        protected readonly Mock<IExternalWebsiteHealthCheckService> MockExternalWebsiteHealthCheckService;
         protected ITimeProvider TimeProvider;
         protected readonly Mock<IFeature> Feature;
         
-        private IExternalWebsiteHealthCheckService _externalWebsiteHealthCheckService;
 
         protected VacancyValidationTestsBase()
         {
-            var externalWebsiteMessageHandler = new Mock<HttpMessageHandler>();
-            externalWebsiteMessageHandler.Protected()
-                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync((HttpRequestMessage _, CancellationToken _) => new HttpResponseMessage(HttpStatusCode.OK));
-            _externalWebsiteHealthCheckService = new ExternalWebsiteHealthCheckService(Mock.Of<ILogger<ExternalWebsiteHealthCheckService>>(), new HttpClient(externalWebsiteMessageHandler.Object));
             
             MockMinimumWageService = new Mock<IMinimumWageProvider>();
             MockApprenticeshipProgrammeProvider = new Mock<IApprenticeshipProgrammeProvider>();
@@ -93,7 +86,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                     Ukprn = 10000000,
                 }
             });
-            MockExternalWebsiteHealthCheckService = new Mock<IExternalWebsiteHealthCheckService>();
             TimeProvider = new CurrentUtcTimeProvider();
             Feature = new Mock<IFeature>();
         }
@@ -105,7 +97,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 var fluentValidator = new FluentVacancyValidator(TimeProvider, MockMinimumWageService.Object, 
                     MockApprenticeshipProgrammeProvider.Object, MockReferenceDataClient.Object, SanitizerService, 
                     MockTrainingProviderSummaryProvider.Object, MockTrainingProviderService.Object, MockBlockedOrganisationRepo.Object,
-                    MockProfanityListProvider, MockProviderRelationshipsService.Object, _externalWebsiteHealthCheckService);
+                    MockProfanityListProvider, MockProviderRelationshipsService.Object);
                 return new EntityValidator<Vacancy, VacancyRuleSet>(fluentValidator);
             }
         }
