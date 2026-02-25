@@ -162,7 +162,7 @@
                             <td asp-hide="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">-</td>
                             <td class="govuk-table__cell" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
                             <td class="govuk-table__cell" data-label="Status">
-                                <govuk-tag-vacancy-status status="@vacancy.Status" user-type="UserType.Employer" style="font-size:inherit;" />
+                                <govuk-tag-vacancy-status status="@vacancy.Status" user-type="UserType.Employer" class="app-tag" />
                             </td>
                             <td class="govuk-table__cell" data-label="Action">
                                 <a id="manage-@vacancy.Id" asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancyId="@vacancy.Id" class="govuk-link">Manage</a>
