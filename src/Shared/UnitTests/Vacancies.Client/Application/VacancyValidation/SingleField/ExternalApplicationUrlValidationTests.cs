@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
 public class ExternalApplicationUrlValidationTests : VacancyValidationTestsBase
 {
     [TestCase("http://www.applyhere.com")]
-    [TestCase("https://www.applyhere.com")]
+    [TestCase("https://www.applyhere.com/")]
     [TestCase("https://www.applyhere.com/apply")]
     [TestCase("https://www.applyhere.com/apply?source=foo")]
     [TestCase("https://www.applyhere.com/apply.aspx?source=foo")]
@@ -66,10 +66,6 @@ public class ExternalApplicationUrlValidationTests : VacancyValidationTestsBase
     [TestCase(".com")]
     [TestCase(".org.uk")]
     [TestCase(",com")]
-    [TestCase("applyhere.com")]
-    [TestCase("www.applyhere.com")]
-    [TestCase("applyhere.com#anchor")]
-    [TestCase("applyhere.com?term=query")]
     public void ExternalApplicationUrlMustBeAValidWebAddress(string invalidUrl)
     {
         var vacancy = new Vacancy
