@@ -9,7 +9,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVa
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Recruit.Vacancies.Client.Domain.Entities;
 
@@ -24,20 +23,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             _queryStore = queryStore;
             _timeProvider = timeProvider;
-        }
-
-        public Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference)
-        {
-            var key = QueryViewType.VacancyAnalyticsSummary.GetIdValue(vacancyReference);
-
-            return _queryStore.GetAsync<VacancyAnalyticsSummary>(QueryViewType.VacancyAnalyticsSummary.TypeName, key);
-        }
-
-        public Task<VacancyAnalyticsSummaryV2> GetVacancyAnalyticsSummaryV2Async(string vacancyReference)
-        {
-            var key = QueryViewType.VacancyAnalyticsSummaryV2.GetIdValue(vacancyReference);
-
-            return _queryStore.GetAsync<VacancyAnalyticsSummaryV2>(QueryViewType.VacancyAnalyticsSummaryV2.TypeName, key);
         }
 
         public Task UpdateEmployerDashboardAsync(string employerAccountId, IEnumerable<VacancySummary> vacancySummaries)
@@ -172,22 +157,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             //TODO
             return _queryStore.DeleteManyLessThanAsync<ProviderDashboard, DateTime>(QueryViewType.ProviderDashboard.TypeName, x => x.LastUpdated, oldestLastUpdatedDate);
-        }
-
-        public async Task UpsertVacancyAnalyticSummaryAsync(VacancyAnalyticsSummary summary)
-        {
-            summary.Id = QueryViewType.VacancyAnalyticsSummary.GetIdValue(summary.VacancyReference.ToString());
-            summary.LastUpdated = _timeProvider.Now;
-
-            await _queryStore.UpsertAsync(summary);
-        }
-        
-        public async Task UpsertVacancyAnalyticSummaryV2Async(VacancyAnalyticsSummaryV2 summary)
-        {
-            summary.Id = QueryViewType.VacancyAnalyticsSummaryV2.GetIdValue(summary.VacancyReference.ToString());
-            summary.LastUpdated = _timeProvider.Now;
-
-            await _queryStore.UpsertAsync(summary);
         }
 
         private string GetLiveVacancyId(long vacancyReference)

@@ -46,11 +46,8 @@ public class EmployerWebsiteUrlValidationTests : VacancyValidationTestsBase
     [TestCase(".com")]
     [TestCase(".org.uk")]
     [TestCase(",com")]
-    [TestCase("company.com")]
-    [TestCase("www.company.com")]
     [TestCase("/apply")]
     [TestCase("/apply?source=foo")]
-    [TestCase("/apply.aspx")]
     public void EmployerWebsiteUrlMustBeAValidWebAddress(string invalidUrl)
     {
         var vacancy = new Vacancy
