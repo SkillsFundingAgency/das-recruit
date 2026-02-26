@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers;
 [Route(RoutePaths.VacanciesRoutePath)]
 public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment) : Controller
 {
-    private const ColumnSortOrder DefaultSortOrder = ColumnSortOrder.Asc;
+    private const ColumnSortOrder DefaultSortOrder = ColumnSortOrder.Desc;
     private const int PageSize = 25;
     private const int MinPage = 1;
     private const int MaxPage = 9999;
