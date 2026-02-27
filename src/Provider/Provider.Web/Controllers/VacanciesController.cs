@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
@@ -22,55 +23,29 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
     private const int MaxPage = 9999;
     private static int ClampPage(int page) => Math.Clamp(page, MinPage, MaxPage);
     private const ColumnSortOrder DefaultSortOrder = ColumnSortOrder.Desc;
-    
-    [HttpGet("all", Name = RouteNames.VacanciesGetAll)]
-    public async Task<IActionResult> ListAllVacancies(
-        [FromRoute] int ukprn,
-        SortParams<VacancySortColumn> sortParams,
-        [FromQuery] int? page = 1,
-        [FromQuery] string searchTerm = null)
-    {
-        var vm = await GetVacanciesViewModel(FilteringOptions.All, User.ToVacancyUser(), searchTerm, page, sortParams.SortColumn, sortParams.SortOrder);
-        return View("ListVacancies", vm);
-    }
-    
-    [HttpGet("draft", Name = RouteNames.VacanciesListDraft)]
-    public async Task<IActionResult> ListDraftVacancies(
-        [FromRoute] int ukprn,
-        SortParams<VacancySortColumn> sortParams,
-        [FromQuery] int? page = 1,
-        [FromQuery] string searchTerm = null)
-    {
-        var vm = await GetVacanciesViewModel(FilteringOptions.Draft, User.ToVacancyUser(), searchTerm, page, sortParams.SortColumn, sortParams.SortOrder);
-        return View("ListVacancies", vm);
-    }
 
-    [HttpGet("review", Name = RouteNames.VacanciesListPendingEmployerReviewed)]
-    public async Task<IActionResult> ListPendingEmployerReviewedVacancies(
+    [HttpGet("{filter?}", Name = RouteNames.VacanciesGetAll)]
+    public async Task<IActionResult> ListVacancies(
         [FromRoute] int ukprn,
         SortParams<VacancySortColumn> sortParams,
+        [FromRoute] FilteringOptions filter = FilteringOptions.All,
         [FromQuery] int? page = 1,
-        [FromQuery] string searchTerm = null)
+        [FromQuery] string? searchTerm = null)
     {
-        var vm = await GetVacanciesViewModel(FilteringOptions.Review, User.ToVacancyUser(), searchTerm, page, sortParams.SortColumn, sortParams.SortOrder);
-        return View("ListVacancies", vm);
-    }
+        var vm = await GetVacanciesViewModel(filter,
+            User.ToVacancyUser(),
+            searchTerm,
+            page,
+            sortParams.SortColumn,
+            sortParams.SortOrder);
 
-    [HttpGet("submitted", Name = RouteNames.VacanciesListPendingDfEReview)]
-    public async Task<IActionResult> ListPendingDfEReviewVacancies(
-        [FromRoute] int ukprn,
-        SortParams<VacancySortColumn> sortParams,
-        [FromQuery] int? page = 1,
-        [FromQuery] string searchTerm = null)
-    {
-        var vm = await GetVacanciesViewModel(FilteringOptions.Submitted, User.ToVacancyUser(), searchTerm, page, sortParams.SortColumn, sortParams.SortOrder);
         return View("ListVacancies", vm);
     }
 
     private async Task<ListVacanciesViewModel> GetVacanciesViewModel(
         FilteringOptions filteringOption,
         VacancyUser user,
-        string searchTerm,
+        string? searchTerm,
         int? page,
         VacancySortColumn sortColumn,
         ColumnSortOrder? sortOrder)

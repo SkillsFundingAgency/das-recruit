@@ -15,6 +15,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy.Provider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses.Vacancies;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
@@ -189,10 +190,13 @@ public class VacanciesOrchestrator(
         ColumnSortOrder sortOrder) =>
         options switch
         {
-            FilteringOptions.All => new GetAllVacanciesByUkprnApiRequest(ukprn, searchTerm, page, pageSize, sortColumn, sortOrder),
-            FilteringOptions.Draft => new GetDraftVacanciesByUkprnApiRequest(ukprn, searchTerm, page, pageSize, sortColumn, sortOrder),
-            FilteringOptions.Review => new GetPendingEmployerReviewedVacanciesByUkprnApiRequest(ukprn, searchTerm, page, pageSize, sortColumn, sortOrder),
-            FilteringOptions.Submitted => new GetPendingDfEReviewVacanciesByUkprnApiRequest(ukprn, searchTerm, page, pageSize, sortColumn, sortOrder),
+            FilteringOptions.All => new GetVacanciesByUkprnAndStatusApiRequest(ukprn, searchTerm, page, pageSize, FilteringOptions.All, sortColumn, sortOrder),
+            FilteringOptions.Draft => new GetVacanciesByUkprnAndStatusApiRequest(ukprn, searchTerm, page, pageSize, FilteringOptions.Draft, sortColumn, sortOrder),
+            FilteringOptions.Review => new GetVacanciesByUkprnAndStatusApiRequest(ukprn, searchTerm, page, pageSize, FilteringOptions.Review, sortColumn, sortOrder),
+            FilteringOptions.Submitted => new GetVacanciesByUkprnAndStatusApiRequest(ukprn, searchTerm, page, pageSize, FilteringOptions.Submitted, sortColumn, sortOrder),
+            FilteringOptions.Live => new GetVacanciesByUkprnAndStatusApiRequest(ukprn, searchTerm, page, pageSize, FilteringOptions.Live, sortColumn, sortOrder),
+            FilteringOptions.Closed => new GetVacanciesByUkprnAndStatusApiRequest(ukprn, searchTerm, page, pageSize, FilteringOptions.Closed, sortColumn, sortOrder),
+            FilteringOptions.Referred => new GetVacanciesByUkprnAndStatusApiRequest(ukprn, searchTerm, page, pageSize, FilteringOptions.Referred, sortColumn, sortOrder),
             _ => throw new ArgumentOutOfRangeException(nameof(options), options, null)
         };
 
@@ -203,6 +207,9 @@ public class VacanciesOrchestrator(
             FilteringOptions.Draft => "Draft vacancies",
             FilteringOptions.Review => "Pending employer review",
             FilteringOptions.Submitted => "Pending DfE review",
+            FilteringOptions.Live => "Live vacancies",
+            FilteringOptions.Closed => "Closed vacancies",
+            FilteringOptions.Referred => "Rejected vacancies",
             _ => throw new ArgumentOutOfRangeException(nameof(filteringOption), filteringOption, null)
         };
 }

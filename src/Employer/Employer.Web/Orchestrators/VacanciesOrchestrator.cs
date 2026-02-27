@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.ViewModels.Alerts;
+using Esfa.Recruit.Employer.Web.ViewModels.Vacancies;
+using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
-using Esfa.Recruit.Employer.Web.ViewModels.Vacancies;
-using Esfa.Recruit.Employer.Web.ViewModels.Alerts;
-using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses.Vacancies;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using SFA.DAS.Encoding;
 
@@ -218,9 +219,12 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
         var employerAccountId = encodingService.Decode(hashedEmployerAccountId, EncodingType.AccountId);
         return options switch
         {
-            FilteringOptions.All => new GetAllVacanciesByEmployerAccountApiRequest(employerAccountId, searchTerm, page, pageSize, sortColumn, sortOrder),
-            FilteringOptions.Draft => new GetDraftVacanciesByEmployerAccountApiRequest(employerAccountId, searchTerm, page, pageSize, sortColumn, sortOrder),
-            FilteringOptions.Submitted => new GetPendingDfEReviewVacanciesByEmployerAccountApiRequest(employerAccountId, searchTerm, page, pageSize, sortColumn, sortOrder),
+            FilteringOptions.All => new GetVacanciesByEmployerAccountAndStatusApiRequest(employerAccountId, searchTerm, page, pageSize, FilteringOptions.All, sortColumn, sortOrder),
+            FilteringOptions.Draft => new GetVacanciesByEmployerAccountAndStatusApiRequest(employerAccountId, searchTerm, page, pageSize, FilteringOptions.Draft, sortColumn, sortOrder),
+            FilteringOptions.Submitted => new GetVacanciesByEmployerAccountAndStatusApiRequest(employerAccountId, searchTerm, page, pageSize, FilteringOptions.Submitted, sortColumn, sortOrder),
+            FilteringOptions.Live => new GetVacanciesByEmployerAccountAndStatusApiRequest(employerAccountId, searchTerm, page, pageSize, FilteringOptions.Live, sortColumn, sortOrder),
+            FilteringOptions.Closed => new GetVacanciesByEmployerAccountAndStatusApiRequest(employerAccountId, searchTerm, page, pageSize, FilteringOptions.Closed, sortColumn, sortOrder),
+            FilteringOptions.Referred => new GetVacanciesByEmployerAccountAndStatusApiRequest(employerAccountId, searchTerm, page, pageSize, FilteringOptions.Referred, sortColumn, sortOrder),
             _ => throw new ArgumentOutOfRangeException(nameof(options), options, null)
         };
     }
@@ -231,6 +235,10 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
             FilteringOptions.All => "All adverts",
             FilteringOptions.Draft => "Draft adverts",
             FilteringOptions.Submitted => "Pending DfE review",
+            FilteringOptions.Closed => "Closed adverts",
+            FilteringOptions.Live => "Live adverts",
+            FilteringOptions.Referred => "Rejected adverts",
+
             _ => throw new ArgumentOutOfRangeException(nameof(filteringOption), filteringOption, null)
         };
     }

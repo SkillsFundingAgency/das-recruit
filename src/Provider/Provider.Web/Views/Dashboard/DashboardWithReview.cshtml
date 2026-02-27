@@ -16,24 +16,27 @@
             Count = Model.VacancyCountDraft,
             HeadingText = $"{FilteringOptions.Draft} {Model.VacancyTextDraft}",
             Description = "Vacancies need completing and sending for review.",
-            RouteName = RouteNames.VacanciesListDraft,
-            Ukprn = Model.Ukprn
+            RouteName = RouteNames.VacanciesGetAll,
+            Ukprn = Model.Ukprn,
+            Filter = FilteringOptions.Draft
         }))
         @(await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
         {
             Count = Model.VacancyCountReview,
             HeadingText = FilteringOptions.Review.GetDisplayName(UserType.Provider),
             Description = "Vacancies that have been sent for review.",
-            RouteName = RouteNames.VacanciesListPendingEmployerReviewed,
+            RouteName = RouteNames.VacanciesGetAll,
             Ukprn = Model.Ukprn,
+            Filter = FilteringOptions.Review
         }))
         @(await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
         {
             Count = Model.VacancyCountSubmitted,
             HeadingText = FilteringOptions.Submitted.GetDisplayName(UserType.Provider),
             Description = "Vacancies that have been sent for review.",
-            RouteName = RouteNames.VacanciesListPendingDfEReview,
+            RouteName = RouteNames.VacanciesGetAll,
             Ukprn = Model.Ukprn,
+            Filter = FilteringOptions.Submitted
         }))
     </div>
     <div class="govuk-grid-row app-card__row">
@@ -42,7 +45,7 @@
             Count = Model.VacancyCountReferred,
             HeadingText = $"{FilteringOptions.Referred.GetDisplayName()} {Model.VacancyTextReferred}",
             Description = "Rejected vacancies will need to be edited and resubmitted.",
-            RouteName = RouteNames.Vacancies_Get,
+            RouteName = RouteNames.VacanciesGetAll,
             Ukprn = Model.Ukprn,
             Filter = FilteringOptions.Referred
         }))
@@ -51,7 +54,7 @@
             Count = Model.VacancyCountLive,
             HeadingText = $"{FilteringOptions.Live} {Model.VacancyTextLive}",
             Description = "Vacancies on Find an apprenticeship service.",
-            RouteName = RouteNames.Vacancies_Get,
+            RouteName = RouteNames.VacanciesGetAll,
             Ukprn = Model.Ukprn,
             Filter = FilteringOptions.Live,
             Tasks = new[]
@@ -104,7 +107,7 @@
             Count = Model.VacancyCountClosed,
             HeadingText = $"{FilteringOptions.Closed} {Model.VacancyTextClosed}",
             Description = "Vacancies that have passed the closing date. You can clone these vacancies to republish them.",
-            RouteName = RouteNames.Vacancies_Get,
+            RouteName = RouteNames.VacanciesGetAll,
             Ukprn = Model.Ukprn,
             Filter = FilteringOptions.Closed
         }))
