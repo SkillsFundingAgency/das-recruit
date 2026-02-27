@@ -4,6 +4,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses.Vacancies;
 using SFA.DAS.Encoding;
@@ -13,8 +14,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies;
 public class WhenListingVacancies
 {
     [Test]
-    [MoqInlineAutoData(FilteringOptions.All, typeof(GetAllVacanciesByEmployerAccountApiRequest))]
-    [MoqInlineAutoData(FilteringOptions.Draft, typeof(GetDraftVacanciesByEmployerAccountApiRequest))]
+    [MoqInlineAutoData(FilteringOptions.All, typeof(GetVacanciesByEmployerAccountAndStatusApiRequest))]
+    [MoqInlineAutoData(FilteringOptions.Draft, typeof(GetVacanciesByEmployerAccountAndStatusApiRequest))]
+    [MoqInlineAutoData(FilteringOptions.Submitted, typeof(GetVacanciesByEmployerAccountAndStatusApiRequest))]
+    [MoqInlineAutoData(FilteringOptions.Live, typeof(GetVacanciesByEmployerAccountAndStatusApiRequest))]
+    [MoqInlineAutoData(FilteringOptions.Closed, typeof(GetVacanciesByEmployerAccountAndStatusApiRequest))]
+    [MoqInlineAutoData(FilteringOptions.Referred, typeof(GetVacanciesByEmployerAccountAndStatusApiRequest))]
     public async Task Then_The_List_Vacancies_Query_Is_Constructed_Correctly(
         FilteringOptions filteringOption,
         Type expectedType,
@@ -55,6 +60,10 @@ public class WhenListingVacancies
     [Test]
     [MoqInlineAutoData(FilteringOptions.All, "All adverts")]
     [MoqInlineAutoData(FilteringOptions.Draft, "Draft adverts")]
+    [MoqInlineAutoData(FilteringOptions.Submitted, "Pending DfE review")]
+    [MoqInlineAutoData(FilteringOptions.Live, "Live adverts")]
+    [MoqInlineAutoData(FilteringOptions.Closed, "Closed adverts")]
+    [MoqInlineAutoData(FilteringOptions.Referred, "Rejected adverts")]
     public async Task Then_The_View_Is_Constructed_Correctly(
         FilteringOptions filteringOption,
         string expectedPageHeading,
