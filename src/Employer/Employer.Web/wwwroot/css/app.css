@@ -61,6 +61,11 @@
   font-size: inherit;
 }
 
+.app-tag--large {
+  max-width: max-content;
+  white-space: nowrap;
+}
+
 .app-tag--draft {
   color: #383f43;
   background: #eeefef;
