@@ -13,7 +13,7 @@ public class ApplicationStatusTagHelper : RaaTagsTagHelper
 {
     public new const string TagName = "govuk-tag-application-review-status";
     public ApplicationReviewStatus? ApplicationStatus { get; set; }
-    public UserType? UserType { get; set; }
+    public UserType? userType { get; set; }
     public bool IsWithdrawn { get; set; } = false;
 
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
@@ -31,17 +31,31 @@ public class ApplicationStatusTagHelper : RaaTagsTagHelper
 
     private string GetModifierClass()
     {
+        if (IsWithdrawn)
+        {
+            return "govuk-tag--grey";
+        }
+
         if (ApplicationStatus.HasValue)
         {
             return ApplicationStatus switch
             {
                 ApplicationReviewStatus.New => "govuk-tag--light-blue",
                 ApplicationReviewStatus.InReview => "govuk-tag--yellow",
-                ApplicationReviewStatus.Unsuccessful => "govuk-tag--orange",
-                ApplicationReviewStatus.EmployerUnsuccessful => "govuk-tag--orange",
-                ApplicationReviewStatus.Shared => "govuk-tag--yellow",
-                ApplicationReviewStatus.Interviewing => "govuk-tag--purple",
-                ApplicationReviewStatus.EmployerInterviewing => "govuk-tag--pink",
+                ApplicationReviewStatus.Unsuccessful => "govuk-tag--orange", // "Unsuccessful"
+                ApplicationReviewStatus.EmployerUnsuccessful => 
+                    userType == UserType.Employer 
+                        ? "govuk-tag--orange" // "Unsuccessful"
+                        : "govuk-tag--pink", // "Employer reviewed"
+                ApplicationReviewStatus.Shared => 
+                    userType == UserType.Employer 
+                        ? "govuk-tag--blue" // "Response needed"
+                        : "govuk-tag--yellow", // "Shared"
+                ApplicationReviewStatus.Interviewing => "govuk-tag--purple", // "Interviewing"
+                ApplicationReviewStatus.EmployerInterviewing => 
+                    userType == UserType.Employer 
+                        ? "govuk-tag--purple" // "Interviewing"
+                        : "govuk-tag--pink", // "Employer reviewed"
                 ApplicationReviewStatus.Successful => "govuk-tag--green",
                 _ => string.Empty
             };
@@ -58,7 +72,7 @@ public class ApplicationStatusTagHelper : RaaTagsTagHelper
 
         if (ApplicationStatus.HasValue)
         {
-            var display = ApplicationStatus.GetDisplayName(UserType) ?? string.Empty;
+            var display = ApplicationStatus.GetDisplayName(userType) ?? string.Empty;
             return Task.FromResult<IHtmlContent>(new HtmlString(display));
         }
 

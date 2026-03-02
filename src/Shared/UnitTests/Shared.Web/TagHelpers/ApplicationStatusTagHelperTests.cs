@@ -50,9 +50,9 @@ public class ApplicationStatusTagHelperTests : TagHelperTestsBase
     [TestCase(ApplicationReviewStatus.InReview, "govuk-tag--yellow", "In review")]
     [TestCase(ApplicationReviewStatus.Unsuccessful, "govuk-tag--orange", "Unsuccessful")]
     [TestCase(ApplicationReviewStatus.EmployerUnsuccessful, "govuk-tag--orange", "Unsuccessful")]
-    [TestCase(ApplicationReviewStatus.Shared, "govuk-tag--yellow", "Response Needed")]
+    [TestCase(ApplicationReviewStatus.Shared, "govuk-tag--blue", "Response needed")]
     [TestCase(ApplicationReviewStatus.Interviewing, "govuk-tag--purple", "Interviewing")]
-    [TestCase(ApplicationReviewStatus.EmployerInterviewing, "govuk-tag--pink", "Interviewing")]
+    [TestCase(ApplicationReviewStatus.EmployerInterviewing, "govuk-tag--purple", "Interviewing")]
     [TestCase(ApplicationReviewStatus.Successful, "govuk-tag--green", "Successful")]
     public async Task Applies_Correct_Modifier_And_Display_Text_For_Status_And_Employer_User(
         ApplicationReviewStatus status,
@@ -63,7 +63,7 @@ public class ApplicationStatusTagHelperTests : TagHelperTestsBase
         var sut = new ApplicationStatusTagHelper
         {
             ApplicationStatus = status,
-            UserType = UserType.Employer
+            userType = UserType.Employer
         };
 
         // Act
@@ -79,7 +79,7 @@ public class ApplicationStatusTagHelperTests : TagHelperTestsBase
     [TestCase(ApplicationReviewStatus.New, "govuk-tag--light-blue", "New")]
     [TestCase(ApplicationReviewStatus.InReview, "govuk-tag--yellow", "In review")]
     [TestCase(ApplicationReviewStatus.Unsuccessful, "govuk-tag--orange", "Unsuccessful")]
-    [TestCase(ApplicationReviewStatus.EmployerUnsuccessful, "govuk-tag--orange", "Employer reviewed")]
+    [TestCase(ApplicationReviewStatus.EmployerUnsuccessful, "govuk-tag--pink", "Employer reviewed")]
     [TestCase(ApplicationReviewStatus.Shared, "govuk-tag--yellow", "Shared")]
     [TestCase(ApplicationReviewStatus.Interviewing, "govuk-tag--purple", "Interviewing")]
     [TestCase(ApplicationReviewStatus.EmployerInterviewing, "govuk-tag--pink", "Employer reviewed")]
@@ -93,7 +93,7 @@ public class ApplicationStatusTagHelperTests : TagHelperTestsBase
         var sut = new ApplicationStatusTagHelper
         {
             ApplicationStatus = status,
-            UserType = UserType.Provider
+            userType = UserType.Provider
         };
 
         // Act
@@ -104,5 +104,30 @@ public class ApplicationStatusTagHelperTests : TagHelperTestsBase
 
         html.Should().Contain(expectedModifier, "each status maps to a specific GOV.UK tag modifier class");
         html.Should().Contain($">{expectedText}</strong>", "each status should render the correct display text");
+    }
+
+    [TestCase(UserType.Provider)]
+    [TestCase(UserType.Employer)]
+    public async Task Applies_Grey_Modifier_And_Withdrawn_Text_When_IsWithdrawn_Is_True(UserType userType)
+    {
+        // Arrange
+        var sut = new ApplicationStatusTagHelper
+        {
+            IsWithdrawn = true,
+            userType = userType,
+
+            ApplicationStatus = ApplicationReviewStatus.New
+        };
+
+        // Act
+        await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
+
+        // Assert
+        var html = TagHelperOutput.AsString();
+
+        html.Should().Contain("<strong", "the withdrawn status is still rendered as a GOV.UK tag");
+        html.Should().Contain("govuk-tag", "base tag class should always be applied");
+        html.Should().Contain("govuk-tag--grey", "withdrawn should always render as a grey tag");
+        html.Should().Contain(">Withdrawn</strong>", "withdrawn should always render the correct display text");
     }
 }
