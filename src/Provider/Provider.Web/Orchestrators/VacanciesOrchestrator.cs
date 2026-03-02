@@ -180,25 +180,21 @@ public class VacanciesOrchestrator(
         };
     }
 
-    private static GetVacanciesByUkprnApiRequestV2 GetVacanciesListRequest(
+    private static GetVacanciesByUkprnAndStatusApiRequest GetVacanciesListRequest(
         FilteringOptions options,
         int ukprn,
         string searchTerm,
         int page,
         int pageSize,
         VacancySortColumn sortColumn,
-        ColumnSortOrder sortOrder) =>
-        options switch
-        {
-            FilteringOptions.All => new GetVacanciesByUkprnAndStatusApiRequest(ukprn, searchTerm, page, pageSize, FilteringOptions.All, sortColumn, sortOrder),
-            FilteringOptions.Draft => new GetVacanciesByUkprnAndStatusApiRequest(ukprn, searchTerm, page, pageSize, FilteringOptions.Draft, sortColumn, sortOrder),
-            FilteringOptions.Review => new GetVacanciesByUkprnAndStatusApiRequest(ukprn, searchTerm, page, pageSize, FilteringOptions.Review, sortColumn, sortOrder),
-            FilteringOptions.Submitted => new GetVacanciesByUkprnAndStatusApiRequest(ukprn, searchTerm, page, pageSize, FilteringOptions.Submitted, sortColumn, sortOrder),
-            FilteringOptions.Live => new GetVacanciesByUkprnAndStatusApiRequest(ukprn, searchTerm, page, pageSize, FilteringOptions.Live, sortColumn, sortOrder),
-            FilteringOptions.Closed => new GetVacanciesByUkprnAndStatusApiRequest(ukprn, searchTerm, page, pageSize, FilteringOptions.Closed, sortColumn, sortOrder),
-            FilteringOptions.Referred => new GetVacanciesByUkprnAndStatusApiRequest(ukprn, searchTerm, page, pageSize, FilteringOptions.Referred, sortColumn, sortOrder),
-            _ => throw new ArgumentOutOfRangeException(nameof(options), options, null)
-        };
+        ColumnSortOrder sortOrder)
+    {
+        if (!Enum.IsDefined(typeof(FilteringOptions), options))
+            throw new ArgumentOutOfRangeException(nameof(options), options, null);
+
+        return new GetVacanciesByUkprnAndStatusApiRequest(
+            ukprn, searchTerm, page, pageSize, options, sortColumn, sortOrder);
+    }
 
     private static string GetPageHeading(FilteringOptions filteringOption) =>
         filteringOption switch

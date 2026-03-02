@@ -15,6 +15,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy.Employer;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy.Provider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses.Vacancies;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
@@ -207,7 +208,7 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
         };
     }
     
-    private GetVacanciesByEmployerAccountApiRequestV2 GetVacanciesListRequest(
+    private GetVacanciesByEmployerAccountAndStatusApiRequest GetVacanciesListRequest(
         FilteringOptions options,
         string hashedEmployerAccountId,
         string searchTerm,
@@ -217,16 +218,9 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
         ColumnSortOrder sortOrder)
     {
         var employerAccountId = encodingService.Decode(hashedEmployerAccountId, EncodingType.AccountId);
-        return options switch
-        {
-            FilteringOptions.All => new GetVacanciesByEmployerAccountAndStatusApiRequest(employerAccountId, searchTerm, page, pageSize, FilteringOptions.All, sortColumn, sortOrder),
-            FilteringOptions.Draft => new GetVacanciesByEmployerAccountAndStatusApiRequest(employerAccountId, searchTerm, page, pageSize, FilteringOptions.Draft, sortColumn, sortOrder),
-            FilteringOptions.Submitted => new GetVacanciesByEmployerAccountAndStatusApiRequest(employerAccountId, searchTerm, page, pageSize, FilteringOptions.Submitted, sortColumn, sortOrder),
-            FilteringOptions.Live => new GetVacanciesByEmployerAccountAndStatusApiRequest(employerAccountId, searchTerm, page, pageSize, FilteringOptions.Live, sortColumn, sortOrder),
-            FilteringOptions.Closed => new GetVacanciesByEmployerAccountAndStatusApiRequest(employerAccountId, searchTerm, page, pageSize, FilteringOptions.Closed, sortColumn, sortOrder),
-            FilteringOptions.Referred => new GetVacanciesByEmployerAccountAndStatusApiRequest(employerAccountId, searchTerm, page, pageSize, FilteringOptions.Referred, sortColumn, sortOrder),
-            _ => throw new ArgumentOutOfRangeException(nameof(options), options, null)
-        };
+        return !Enum.IsDefined(typeof(FilteringOptions), options) 
+            ? throw new ArgumentOutOfRangeException(nameof(options), options, null) 
+            : new GetVacanciesByEmployerAccountAndStatusApiRequest(employerAccountId, searchTerm, page, pageSize, options, sortColumn, sortOrder);
     }
 
     private static string GetPageHeading(FilteringOptions filteringOption) =>
