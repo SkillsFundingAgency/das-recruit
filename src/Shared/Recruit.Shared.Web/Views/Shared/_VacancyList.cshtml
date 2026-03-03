@@ -60,7 +60,7 @@
                         <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
                         <div class="govuk-!-margin-top-1">
                             <govuk-tag-api-submitted asp-show="@vacancy.SourceOrigin == @SourceOrigin.Api && @Model.ShowSourceOrigin" class="app-tag" />
-                            <govuk-tag-transferred-from-provider asp-show="@vacancy.IsTransferredVacancy" class="app-tag"/>
+                            <govuk-tag-transferred-from-provider asp-show="@vacancy.IsTransferredVacancy" class="app-tag--large"/>
                         </div>
                     </td>
                     <td asp-show="@(vacancy.CanShowVacancyApplicationsCount)" class="govuk-table__cell" data-label="Applications">
