@@ -204,7 +204,7 @@ public class VacanciesOrchestrator(
             throw new ArgumentOutOfRangeException(nameof(options), options, null);
 
         return ApplicationListOptions.Contains(options)
-            ? await GetVacanciesListForApplications(options, ukprn, searchTerm, page, pageSize, sortColumn, sortOrder)
+            ? await GetVacanciesListIncludingApplicationsAsync(options, ukprn, searchTerm, page, pageSize, sortColumn, sortOrder)
             : await GetVacanciesList(options, ukprn, searchTerm, page, pageSize, sortColumn, sortOrder);
     }
 
@@ -220,7 +220,7 @@ public class VacanciesOrchestrator(
         return await outerApiClient.Get<PagedDataResponse<IEnumerable<VacancyListItem>>>(request);
     }
 
-    private async Task<PagedDataResponse<IEnumerable<VacancyListItem>>> GetVacanciesListForApplications(FilteringOptions options,
+    private async Task<PagedDataResponse<IEnumerable<VacancyListItem>>> GetVacanciesListIncludingApplicationsAsync(FilteringOptions options,
         int ukprn,
         string searchTerm,
         int page,
