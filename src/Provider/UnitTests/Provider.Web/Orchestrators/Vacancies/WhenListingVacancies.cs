@@ -4,6 +4,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy.Provider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses.Vacancies;
 using NUnit.Framework;
@@ -13,8 +14,13 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies;
 public class WhenListingVacancies
 {
     [Test]
-    [MoqInlineAutoData(FilteringOptions.All, typeof(GetAllVacanciesByUkprnApiRequest))]
-    [MoqInlineAutoData(FilteringOptions.Draft, typeof(GetDraftVacanciesByUkprnApiRequest))]
+    [MoqInlineAutoData(FilteringOptions.All, typeof(GetVacanciesByUkprnAndStatusApiRequest))]
+    [MoqInlineAutoData(FilteringOptions.Draft, typeof(GetVacanciesByUkprnAndStatusApiRequest))]
+    [MoqInlineAutoData(FilteringOptions.Review, typeof(GetVacanciesByUkprnAndStatusApiRequest))]
+    [MoqInlineAutoData(FilteringOptions.Submitted, typeof(GetVacanciesByUkprnAndStatusApiRequest))]
+    [MoqInlineAutoData(FilteringOptions.Live, typeof(GetVacanciesByUkprnAndStatusApiRequest))]
+    [MoqInlineAutoData(FilteringOptions.Closed, typeof(GetVacanciesByUkprnAndStatusApiRequest))]
+    [MoqInlineAutoData(FilteringOptions.Referred, typeof(GetVacanciesByUkprnAndStatusApiRequest))]
     public async Task Then_The_List_Vacancies_Query_Is_Constructed_Correctly(
         FilteringOptions filteringOption,
         Type expectedType,
@@ -49,6 +55,11 @@ public class WhenListingVacancies
     [Test]
     [MoqInlineAutoData(FilteringOptions.All, "All vacancies")]
     [MoqInlineAutoData(FilteringOptions.Draft, "Draft vacancies")]
+    [MoqInlineAutoData(FilteringOptions.Review, "Pending employer review")]
+    [MoqInlineAutoData(FilteringOptions.Submitted, "Pending DfE review")]
+    [MoqInlineAutoData(FilteringOptions.Live, "Live vacancies")]
+    [MoqInlineAutoData(FilteringOptions.Closed, "Closed vacancies")]
+    [MoqInlineAutoData(FilteringOptions.Referred, "Rejected vacancies")]
     public async Task Then_The_View_Is_Constructed_Correctly(
         FilteringOptions filteringOption,
         string expectedPageHeading,

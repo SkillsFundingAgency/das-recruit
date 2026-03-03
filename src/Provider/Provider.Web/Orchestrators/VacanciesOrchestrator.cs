@@ -15,6 +15,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy.Provider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses.Vacancies;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
@@ -47,7 +48,7 @@ public class VacanciesOrchestrator(
         int totalItems = Convert.ToInt32(dashboard.TotalVacancies);
 
         var vacancies = new List<VacancySummary>(dashboard.Vacancies ?? []);
-            
+
         page = SanitizePage(page, totalItems);
 
         var vacanciesVm = vacancies
@@ -55,9 +56,9 @@ public class VacanciesOrchestrator(
             .ToList();
 
         var pager = new PagerViewModel(
-            totalItems, 
+            totalItems,
             VacanciesPerPage,
-            page, 
+            page,
             "Showing {0} to {1} of {2} vacancies",
             RouteNames.Vacancies_Get,
             new Dictionary<string, string>
@@ -92,18 +93,16 @@ public class VacanciesOrchestrator(
         return vm;
     }
 
-    private int SanitizePage(int page, int totalVacancies)
-    {
-        return (page < 0 || page > (int)Math.Ceiling((double)totalVacancies / VacanciesPerPage)) ? 1 : page;
-    }
+    private static int SanitizePage(int page, int totalVacancies)
+        => page < 0 || page > (int)Math.Ceiling((double)totalVacancies / VacanciesPerPage) ? 1 : page;
 
-    private FilteringOptions SanitizeFilter(string filter)
+    private static FilteringOptions SanitizeFilter(string filter)
     {
         if (Enum.TryParse(typeof(FilteringOptions), filter, out var status))
             return (FilteringOptions)status;
         return FilteringOptions.Draft;
     }
-        
+
     public async Task<ListVacanciesViewModel> ListVacanciesAsync(
         FilteringOptions filteringOption,
         int ukprn,
@@ -123,7 +122,7 @@ public class VacanciesOrchestrator(
 
         // this is our base route
         var baseRouteDictionary = new Dictionary<string, string> { ["ukprn"] = $"{ukprn}" };
-        
+
         // create a separate dict with search params included
         var routeDictionary = new Dictionary<string, string>(baseRouteDictionary);
         if (request.SortColumn is not (null or VacancySortColumn.CreatedDate)) // ignore default
@@ -140,7 +139,7 @@ public class VacanciesOrchestrator(
         {
             routeDictionary.Add("searchTerm", request.SearchTerm);
         }
-            
+
         var alerts = alertsTask.Result;
         return new ListVacanciesViewModel
         {
@@ -180,8 +179,8 @@ public class VacanciesOrchestrator(
             Ukprn = ukprn,
         };
     }
-    
-    private static GetVacanciesByUkprnApiRequestV2 GetVacanciesListRequest(
+
+    private static GetVacanciesByUkprnAndStatusApiRequest GetVacanciesListRequest(
         FilteringOptions options,
         int ukprn,
         string searchTerm,
@@ -190,21 +189,23 @@ public class VacanciesOrchestrator(
         VacancySortColumn sortColumn,
         ColumnSortOrder sortOrder)
     {
-        return options switch
-        {
-            FilteringOptions.All => new GetAllVacanciesByUkprnApiRequest(ukprn, searchTerm, page, pageSize, sortColumn, sortOrder),
-            FilteringOptions.Draft => new GetDraftVacanciesByUkprnApiRequest(ukprn, searchTerm, page, pageSize, sortColumn, sortOrder),
-            _ => throw new ArgumentOutOfRangeException(nameof(options), options, null)
-        };
+        if (!Enum.IsDefined(typeof(FilteringOptions), options))
+            throw new ArgumentOutOfRangeException(nameof(options), options, null);
+
+        return new GetVacanciesByUkprnAndStatusApiRequest(
+            ukprn, searchTerm, page, pageSize, options, sortColumn, sortOrder);
     }
 
-    private static string GetPageHeading(FilteringOptions filteringOption)
-    {
-        return filteringOption switch
+    private static string GetPageHeading(FilteringOptions filteringOption) =>
+        filteringOption switch
         {
             FilteringOptions.All => "All vacancies",
             FilteringOptions.Draft => "Draft vacancies",
+            FilteringOptions.Review => "Pending employer review",
+            FilteringOptions.Submitted => "Pending DfE review",
+            FilteringOptions.Live => "Live vacancies",
+            FilteringOptions.Closed => "Closed vacancies",
+            FilteringOptions.Referred => "Rejected vacancies",
             _ => throw new ArgumentOutOfRangeException(nameof(filteringOption), filteringOption, null)
         };
-    }
 }

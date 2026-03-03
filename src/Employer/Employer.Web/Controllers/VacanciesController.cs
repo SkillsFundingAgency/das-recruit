@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
@@ -17,31 +18,28 @@ namespace Esfa.Recruit.Employer.Web.Controllers;
 [Route(RoutePaths.VacanciesRoutePath)]
 public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment) : Controller
 {
-    private const ColumnSortOrder DefaultSortOrder = ColumnSortOrder.Desc;
     private const int PageSize = 25;
     private const int MinPage = 1;
     private const int MaxPage = 9999;
     private static int ClampPage(int page) => Math.Clamp(page, MinPage, MaxPage);
-    
-    [HttpGet("all", Name = RouteNames.VacanciesGetAll)]
-    public async Task<IActionResult> ListAllVacancies(
+    private const ColumnSortOrder DefaultSortOrder = ColumnSortOrder.Desc;
+
+    [HttpGet("{filter?}", Name = RouteNames.VacanciesGetAll)]
+    public async Task<IActionResult> ListVacancies(
         [FromRoute] string employerAccountId,
         SortParams<VacancySortColumn> sortParams,
+        [FromRoute] FilteringOptions filter = FilteringOptions.All,
         [FromQuery] int? page = 1,
-        [FromQuery] string searchTerm = null)
+        [FromQuery] string? searchTerm = null)
     {
-        var vm = await GetVacanciesViewModel(FilteringOptions.All, User.ToVacancyUser(), employerAccountId, searchTerm, page, sortParams.SortColumn, sortParams.SortOrder);
-        return View("ListVacancies", vm);
-    }
-    
-    [HttpGet("draft", Name = RouteNames.VacanciesListDraft)]
-    public async Task<IActionResult> ListDraftVacancies(
-        [FromRoute] string employerAccountId,
-        SortParams<VacancySortColumn> sortParams,
-        [FromQuery] int? page = 1,
-        [FromQuery] string searchTerm = null)
-    {
-        var vm = await GetVacanciesViewModel(FilteringOptions.Draft, User.ToVacancyUser(), employerAccountId, searchTerm, page, sortParams.SortColumn, sortParams.SortOrder);
+        var vm = await GetVacanciesViewModel(filter,
+            User.ToVacancyUser(),
+            employerAccountId,
+            searchTerm,
+            page,
+            sortParams.SortColumn,
+            sortParams.SortOrder);
+
         return View("ListVacancies", vm);
     }
     
@@ -49,7 +47,7 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
         FilteringOptions filteringOption,
         VacancyUser user,
         string hashedEmployerAccountId,
-        string searchTerm,
+        string? searchTerm,
         int? page,
         VacancySortColumn sortColumn,
         ColumnSortOrder? sortOrder)

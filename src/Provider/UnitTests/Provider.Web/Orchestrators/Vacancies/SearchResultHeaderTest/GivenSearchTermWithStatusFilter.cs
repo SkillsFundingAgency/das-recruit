@@ -37,7 +37,7 @@ public class GivenSearchTermWithStatusFilter : SearchResultHeaderTestBase
     [TestCase("2 live vacancies with 'nurse'", FilteringOptions.Live, "nurse", 2, VacancyStatus.Live)]
     [TestCase("1 live vacancy", FilteringOptions.Live, "", 1, VacancyStatus.Live)]
     [TestCase("2 draft vacancies with 'nurse'", FilteringOptions.Draft, "nurse", 2, VacancyStatus.Draft)]
-    [TestCase("2 vacancies pending dfe review with 'nurse'", FilteringOptions.Submitted, "nurse", 2, VacancyStatus.Submitted)]
+    [TestCase("2 vacancies pending DfE review with 'nurse'", FilteringOptions.Submitted, "nurse", 2, VacancyStatus.Submitted)]
     [TestCase("2 rejected vacancies", FilteringOptions.Referred, "", 2, VacancyStatus.Referred)]
     [TestCase("2 closed vacancies", FilteringOptions.Closed, "", 2, VacancyStatus.Closed)]
     [TestCase("2 vacancies closing soon with 'nurse'", FilteringOptions.ClosingSoon, "nurse", 2, VacancyStatus.Live)]

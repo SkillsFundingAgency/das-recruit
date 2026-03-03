@@ -1,22 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.ViewModels.Alerts;
+using Esfa.Recruit.Employer.Web.ViewModels.Vacancies;
+using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
-using Esfa.Recruit.Employer.Web.ViewModels.Vacancies;
-using Esfa.Recruit.Employer.Web.ViewModels.Alerts;
-using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy.Employer;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy.Provider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses.Vacancies;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using SFA.DAS.Encoding;
 
@@ -101,10 +103,7 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
         return vm;
     }
 
-    private static int SanitizePage(int page, int totalVacancies)
-    {
-        return (page < 0 || page > (int)Math.Ceiling((double)totalVacancies / VacanciesPerPage)) ? 1 : page;
-    }
+    private static int SanitizePage(int page, int totalVacancies) => page < 0 || page > (int)Math.Ceiling((double)totalVacancies / VacanciesPerPage) ? 1 : page;
 
     private static FilteringOptions SanitizeFilter(string filter)
     {
@@ -209,7 +208,7 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
         };
     }
     
-    private GetVacanciesByEmployerAccountApiRequestV2 GetVacanciesListRequest(
+    private GetVacanciesByEmployerAccountAndStatusApiRequest GetVacanciesListRequest(
         FilteringOptions options,
         string hashedEmployerAccountId,
         string searchTerm,
@@ -219,21 +218,21 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
         ColumnSortOrder sortOrder)
     {
         var employerAccountId = encodingService.Decode(hashedEmployerAccountId, EncodingType.AccountId);
-        return options switch
-        {
-            FilteringOptions.All => new GetAllVacanciesByEmployerAccountApiRequest(employerAccountId, searchTerm, page, pageSize, sortColumn, sortOrder),
-            FilteringOptions.Draft => new GetDraftVacanciesByEmployerAccountApiRequest(employerAccountId, searchTerm, page, pageSize, sortColumn, sortOrder),
-            _ => throw new ArgumentOutOfRangeException(nameof(options), options, null)
-        };
+        return !Enum.IsDefined(typeof(FilteringOptions), options) 
+            ? throw new ArgumentOutOfRangeException(nameof(options), options, null) 
+            : new GetVacanciesByEmployerAccountAndStatusApiRequest(employerAccountId, searchTerm, page, pageSize, options, sortColumn, sortOrder);
     }
 
-    private static string GetPageHeading(FilteringOptions filteringOption)
-    {
-        return filteringOption switch
+    private static string GetPageHeading(FilteringOptions filteringOption) =>
+        filteringOption switch
         {
             FilteringOptions.All => "All adverts",
             FilteringOptions.Draft => "Draft adverts",
+            FilteringOptions.Submitted => "Pending DfE review",
+            FilteringOptions.Closed => "Closed adverts",
+            FilteringOptions.Live => "Live adverts",
+            FilteringOptions.Referred => "Rejected adverts",
+
             _ => throw new ArgumentOutOfRangeException(nameof(filteringOption), filteringOption, null)
         };
     }
-}
