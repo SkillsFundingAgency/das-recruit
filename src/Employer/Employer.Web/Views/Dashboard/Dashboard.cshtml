@@ -130,7 +130,7 @@
         @(await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
         {
             Count = Model.NoOfNewApplications,
-            HeadingText = $"Shared {@Model.ApplicationTextLive}",
+            HeadingText = $"New {@Model.ApplicationTextLive}",
             Description = "Applications from Find an apprenticeship service.",
             RouteName = RouteNames.Vacancies_Get,
             EmployerAccountId = Model.EmployerAccountId,
