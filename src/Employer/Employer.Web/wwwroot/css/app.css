@@ -61,6 +61,11 @@
   font-size: inherit;
 }
 
+.app-tag--transferred {
+    color: #144e81;
+    background: #d2e2f1;
+}
+
 /* Vacancy preview */
 
 .app-preview-wrap {

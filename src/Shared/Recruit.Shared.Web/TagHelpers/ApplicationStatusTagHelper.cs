@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Esfa.Recruit.Shared.Web.TagHelpers;
 
-[HtmlTargetElement(TagName)]
+[HtmlTargetElement(ApplicationStatusTagHelper.TagName)]
 public class ApplicationStatusTagHelper : RaaTagsTagHelper
 {
     public new const string TagName = "govuk-tag-application-review-status";
