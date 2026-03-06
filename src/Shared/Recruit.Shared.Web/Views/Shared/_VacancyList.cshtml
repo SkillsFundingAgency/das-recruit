@@ -97,8 +97,11 @@
                             };
                         }
 
-                        <a id="task-list-@vacancy.Id" asp-route="@actionRoute" asp-all-route-data="@vacancy.RouteDictionary" class="govuk-link">
-                            @GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span>
+                        <a id="manage-@vacancy.Id" asp-route="@actionRoute" asp-all-route-data="@vacancy.RouteDictionary" class="govuk-link">
+                            @GetLinkText(vacancy)
+                            <span class="govuk-visually-hidden">
+                                @vacancy.Title
+                            </span>
                         </a>
                     </td>
                 </tr>
