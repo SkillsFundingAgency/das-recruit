@@ -3,20 +3,6 @@
 @using Esfa.Recruit.Vacancies.Client.Domain.Extensions
 @using Esfa.Recruit.Vacancies.Client.Domain.Models
 @model VacanciesListViewModel
-
-@{
-    string GetLinkText(VacancyListItemViewModel vacancySummary)
-    {
-        return vacancySummary.Status switch
-        {
-            VacancyStatus.Referred or VacancyStatus.Rejected => "Edit and resubmit",
-            VacancyStatus.Draft => "Edit and submit",
-            VacancyStatus.Review => "Review",
-            _ => "Manage"
-        };
-    }
-}
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <table class="govuk-table das-table--condensed das-table--responsive">
@@ -63,11 +49,16 @@
                             <govuk-tag-transferred-from-provider asp-show="@vacancy.IsTransferredVacancy" class="app-tag--large"/>
                         </div>
                     </td>
-                    <td asp-show="@(vacancy.CanShowVacancyApplicationsCount)" class="govuk-table__cell" data-label="Applications">
+                    <td asp-show="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">
                         <div asp-show="@Model.ShowNewApplicationCounts">
                             <span asp-show="@vacancy.HasNoApplications">0</span>
                             <span asp-show="@vacancy.HasApplications">@vacancy.NoOfApplications</span>
                             <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold">(@vacancy.NoOfNewApplications new)</span>
+                        </div>
+                        <div asp-show="@Model.ShowSharedApplicationCounts">
+                            <span asp-show="@vacancy.HasNoSharedApplications">0</span>
+                            <span asp-show="@vacancy.HasSharedApplications">@vacancy.NoOfAllSharedApplications</span>
+                            <span asp-show="@vacancy.HasNewSharedApplications" class="govuk-!-font-weight-bold"> (@vacancy.NoOfSharedApplications new)</span>
                         </div>
                         <div asp-show="@Model.ShowEmployerReviewedApplicationCounts">
                             <span asp-show="@vacancy.HasEmployerReviewedApplications">@vacancy.NoOfEmployerReviewedApplications reviewed</span>
@@ -91,9 +82,8 @@
                                 }
                             };
                         }
-
                         <a id="manage-@vacancy.Id" asp-route="@actionRoute" asp-all-route-data="@vacancy.RouteDictionary" class="govuk-link">
-                            @GetLinkText(vacancy)
+                            @vacancy.ActionBtnText
                             <span class="govuk-visually-hidden">
                                 @vacancy.Title
                             </span>
@@ -103,7 +93,6 @@
             }
             </tbody>
         </table>
-
         <div asp-show="@Model.Pagination.Show" class="das-pagination-container">
             <div class="das-pagination__summary">@Model.Pagination.Caption</div>
             <govuk-pagination
