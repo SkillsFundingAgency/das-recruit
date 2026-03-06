@@ -63,11 +63,16 @@
                             <govuk-tag-transferred-from-provider asp-show="@vacancy.IsTransferredVacancy" class="app-tag--large"/>
                         </div>
                     </td>
-                    <td asp-show="@(vacancy.CanShowVacancyApplicationsCount)" class="govuk-table__cell" data-label="Applications">
+                    <td asp-show="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">
                         <div asp-show="@Model.ShowNewApplicationCounts">
                             <span asp-show="@vacancy.HasNoApplications">0</span>
                             <span asp-show="@vacancy.HasApplications">@vacancy.NoOfApplications</span>
                             <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold">(@vacancy.NoOfNewApplications new)</span>
+                        </div>
+                        <div asp-show="@Model.ShowSharedApplicationCounts">
+                            <span asp-show="@vacancy.HasNoSharedApplications">0</span>
+                            <span asp-show="@vacancy.HasSharedApplications">@vacancy.NoOfAllSharedApplications</span>
+                            <span asp-show="@vacancy.HasNewSharedApplications" class="govuk-!-font-weight-bold"> (@vacancy.NoOfSharedApplications new)</span>
                         </div>
                         <div asp-show="@Model.ShowEmployerReviewedApplicationCounts">
                             <span asp-show="@vacancy.HasEmployerReviewedApplications">@vacancy.NoOfEmployerReviewedApplications reviewed</span>

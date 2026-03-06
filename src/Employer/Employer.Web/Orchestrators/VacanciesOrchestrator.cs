@@ -198,6 +198,7 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
                 SubmitVacancyRoute = RouteNames.EmployerCheckYourAnswersGet,
                 Vacancies = result.Data.Select(x => VacancyListItemViewModel.From(x, hashedEmployerAccountId)).ToList(),
                 UserType = UserType.Employer,
+                Filter = filteringOption,
             },
             PageHeading = pageHeading,
             EmployerAccountId = hashedEmployerAccountId
@@ -295,6 +296,7 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
             FilteringOptions.Live => "Live adverts",
             FilteringOptions.Referred => "Rejected adverts",
             FilteringOptions.NewApplications => "Adverts with new applications",
+            FilteringOptions.NewSharedApplications or FilteringOptions.AllSharedApplications => "Adverts with shared applications",
             _ => throw new ArgumentOutOfRangeException(nameof(filteringOption), filteringOption, null)
         };
 }

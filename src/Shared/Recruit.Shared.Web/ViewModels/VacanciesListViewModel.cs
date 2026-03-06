@@ -11,11 +11,13 @@ public class VacanciesListViewModel
     public PaginationViewModel Pagination { get; set; }
     public required Dictionary<string, string> RouteDictionary { get; set; }
     public bool ShowEmployerReviewedApplicationCounts { get; set; }
-    public bool ShowNewApplicationCounts => !ShowEmployerReviewedApplicationCounts;
+    public bool ShowNewApplicationCounts => !ShowSharedApplicationCounts && !ShowEmployerReviewedApplicationCounts;
+    public bool ShowSharedApplicationCounts => Filter is FilteringOptions.NewSharedApplications or FilteringOptions.AllSharedApplications;
     public bool ShowSourceOrigin { get; set; }
     public string SubmitVacancyRoute { get; set; }
     public List<VacancyListItemViewModel> Vacancies { get; set; }
     public UserType UserType { get; set; }
     public VacancySortColumn? SortColumn { get; set; }
     public ColumnSortOrder? SortOrder { get; set; }
+    public FilteringOptions Filter { get; set; }
 }
