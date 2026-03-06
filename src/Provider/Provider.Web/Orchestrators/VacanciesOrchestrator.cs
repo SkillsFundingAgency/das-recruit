@@ -171,7 +171,7 @@ public class VacanciesOrchestrator(
                 SortColumn = sortColumn,
                 SortOrder = sortOrder,
                 SubmitVacancyRoute = RouteNames.ProviderCheckYourAnswersGet,
-                Vacancies = result.Data.Select(x => VacancyListItemViewModel.From(x, ukprn)).ToList(),
+                Vacancies = result.Data.Select(x => VacancyListItemViewModel.From(x, ukprn, filteringOption)).ToList(),
                 UserType = UserType.Provider,
             },
             PageHeading = pageHeading,

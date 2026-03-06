@@ -3,20 +3,6 @@
 @using Esfa.Recruit.Vacancies.Client.Domain.Extensions
 @using Esfa.Recruit.Vacancies.Client.Domain.Models
 @model VacanciesListViewModel
-
-@{
-    string GetLinkText(VacancyListItemViewModel vacancySummary)
-    {
-        return vacancySummary.Status switch
-        {
-            VacancyStatus.Referred or VacancyStatus.Rejected => "Edit and resubmit",
-            VacancyStatus.Draft => "Edit and submit",
-            VacancyStatus.Review => "Review",
-            _ => "Manage"
-        };
-    }
-}
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <table class="govuk-table das-table--condensed das-table--responsive">
@@ -96,9 +82,8 @@
                                 }
                             };
                         }
-
                         <a id="manage-@vacancy.Id" asp-route="@actionRoute" asp-all-route-data="@vacancy.RouteDictionary" class="govuk-link">
-                            @GetLinkText(vacancy)
+                            @vacancy.ActionBtnText
                             <span class="govuk-visually-hidden">
                                 @vacancy.Title
                             </span>
@@ -108,7 +93,6 @@
             }
             </tbody>
         </table>
-
         <div asp-show="@Model.Pagination.Show" class="das-pagination-container">
             <div class="das-pagination__summary">@Model.Pagination.Caption</div>
             <govuk-pagination
