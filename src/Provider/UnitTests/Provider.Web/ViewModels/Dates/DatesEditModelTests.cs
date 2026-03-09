@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Dates;
-using FluentAssertions;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Xunit;
 using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ValidationMessages.DateValidationMessages;
 

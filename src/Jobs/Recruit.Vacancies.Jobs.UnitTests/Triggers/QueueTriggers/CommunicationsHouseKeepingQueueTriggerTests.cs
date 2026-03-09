@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers;
 using Microsoft.Extensions.Logging;
-using Moq;
 using Newtonsoft.Json;
 using Xunit;
 

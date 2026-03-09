@@ -1,4 +1,3 @@
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview.Requests;
 using NUnit.Framework;
 

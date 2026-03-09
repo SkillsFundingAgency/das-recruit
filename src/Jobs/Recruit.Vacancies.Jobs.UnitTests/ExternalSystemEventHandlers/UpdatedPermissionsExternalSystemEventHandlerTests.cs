@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AutoFixture;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Queues;
@@ -11,9 +10,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderRelationships.Messages.Events;
 using SFA.DAS.ProviderRelationships.Types.Models;

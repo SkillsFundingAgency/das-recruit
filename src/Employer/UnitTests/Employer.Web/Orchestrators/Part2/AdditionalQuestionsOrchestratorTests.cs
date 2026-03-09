@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.AdditionalQuestions;

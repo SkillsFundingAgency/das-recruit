@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using Esfa.Recruit.Shared.Web.ViewModels.Skills;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
-using Xunit;
 using System.Linq;
 using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Shared.Web.ViewModels.Skills;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Orchestrators
 {

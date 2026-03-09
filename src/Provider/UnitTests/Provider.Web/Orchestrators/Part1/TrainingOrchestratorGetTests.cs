@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
@@ -10,10 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
-using FluentAssertions;
-using Moq;
 using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
 {
@@ -78,7 +73,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
         {
             // Arrange
             var ukprn = 12345678;
-            var vacancyId = System.Guid.NewGuid();
+            var vacancyId = Guid.NewGuid();
 
             var expectedProgrammes = new List<ApprenticeshipProgramme>
             {

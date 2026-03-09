@@ -4,7 +4,6 @@ using Esfa.Recruit.Provider.Web.ViewModels.Part2.AdditionalQuestions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
-using FluentAssertions;
 using NUnit.Framework;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Mappings;

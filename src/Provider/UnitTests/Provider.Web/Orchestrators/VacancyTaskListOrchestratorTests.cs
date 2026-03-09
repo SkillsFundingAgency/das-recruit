@@ -1,25 +1,9 @@
-using System.Collections.Generic;
 using System.Linq;
-using AutoFixture.NUnit3;
-using Esfa.Recruit.Provider.Web;
-using Esfa.Recruit.Provider.Web.Configuration;
-using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
-using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
-using Microsoft.Extensions.Options;
 using NUnit.Framework;
-using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators;
 

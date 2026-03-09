@@ -1,15 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Provider.Web.TagHelpers;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Moq;
 using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.TagHelpers.FieldReviewHelper
 {

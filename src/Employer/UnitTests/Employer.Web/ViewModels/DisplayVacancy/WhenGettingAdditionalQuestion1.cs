@@ -1,8 +1,4 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
-
-namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.DisplayVacancy;
+﻿namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.DisplayVacancy;
 
 public class WhenGettingAdditionalQuestion1
 {

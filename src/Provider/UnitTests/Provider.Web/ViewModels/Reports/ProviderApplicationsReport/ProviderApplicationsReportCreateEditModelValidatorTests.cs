@@ -1,9 +1,6 @@
-﻿using System;
-using Esfa.Recruit.Provider.Web.ViewModels.Reports;
+﻿using Esfa.Recruit.Provider.Web.ViewModels.Reports;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
-using FluentAssertions;
-using Moq;
 using Xunit;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Reports.ProviderApplicationsReport

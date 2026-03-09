@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AutoFixture;
 using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
@@ -10,7 +9,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Jobs.Jobs;
-using Moq;
 using Xunit;
 
 namespace Recruit.Vacancies.Jobs.UnitTests.Jobs

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using Esfa.Recruit.Provider.Web.Orchestrators;
+﻿using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.ViewModels.DeleteVacancy;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
-using Moq;
 using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.DeleteVacancyOrchestratorTests
 {

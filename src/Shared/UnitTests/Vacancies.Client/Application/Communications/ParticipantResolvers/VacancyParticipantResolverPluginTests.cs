@@ -1,15 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using AutoFixture;
 using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantResolverPlugins;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
 using Xunit;
 
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Communications

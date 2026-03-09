@@ -1,17 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using AutoFixture;
-using AutoFixture.DataAnnotations;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web.TagHelpers;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.TagHelpers
 {

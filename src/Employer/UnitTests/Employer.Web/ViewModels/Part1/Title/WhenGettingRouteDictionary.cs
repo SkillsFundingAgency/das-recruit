@@ -1,8 +1,4 @@
-﻿using System;
-using AutoFixture.NUnit3;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
-using FluentAssertions;
-using NUnit.Framework;
+﻿using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Title;
 

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
-using FluentAssertions;
-using Moq;
 using Xunit;
 
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services

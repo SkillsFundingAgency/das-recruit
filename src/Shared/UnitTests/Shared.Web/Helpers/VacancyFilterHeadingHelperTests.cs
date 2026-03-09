@@ -1,6 +1,5 @@
 ﻿using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
 using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Helpers

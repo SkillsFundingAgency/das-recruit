@@ -1,7 +1,5 @@
 using System;
 using System.Linq;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;

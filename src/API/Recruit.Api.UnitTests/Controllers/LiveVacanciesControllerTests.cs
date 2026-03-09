@@ -1,5 +1,6 @@
 ﻿using System;
-using AutoFixture.NUnit3;
+using System.Collections.Generic;
+using System.Threading;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using FluentAssertions.Execution;
 using MediatR;
@@ -7,9 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Api.Queries;
 using SFA.DAS.Testing.AutoFixture;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers;
 public class LiveVacanciesControllerTests

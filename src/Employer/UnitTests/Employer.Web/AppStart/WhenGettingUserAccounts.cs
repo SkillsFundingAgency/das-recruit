@@ -1,5 +1,4 @@
 using System.Linq;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web.AppStart;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;

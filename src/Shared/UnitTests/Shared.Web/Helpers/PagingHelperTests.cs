@@ -1,5 +1,4 @@
 using Esfa.Recruit.Shared.Web.Helpers;
-using FluentAssertions;
 using Xunit;
 
 namespace Esfa.Recruit.UnitTests.Shared.Web.Helpers

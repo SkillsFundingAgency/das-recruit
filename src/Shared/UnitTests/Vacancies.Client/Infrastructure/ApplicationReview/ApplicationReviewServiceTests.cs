@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Requests;
@@ -225,7 +224,7 @@ internal class ApplicationReviewServiceTests
         // Arrange
         var apiResponse = new GetApplicationReviewByIdApiResponse
         {
-            ApplicationReview = new Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Responses.ApplicationReview
+            ApplicationReview = new Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Responses.ApplicationReview
             {
                 Id = applicationReviewId,
                 CandidateId = Guid.NewGuid(),
@@ -243,7 +242,7 @@ internal class ApplicationReviewServiceTests
                 HasEverBeenEmployerInterviewing = false,
                 AdditionalQuestion1 = "Q1",
                 AdditionalQuestion2 = "Q2",
-                Application = new Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Responses.Application
+                Application = new Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Responses.Application
                 {
                     Id = Guid.NewGuid(),
                     CandidateId = Guid.NewGuid(),

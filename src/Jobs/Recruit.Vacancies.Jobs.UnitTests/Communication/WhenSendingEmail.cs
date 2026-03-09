@@ -1,11 +1,7 @@
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Vacancies.Jobs.Communication;
-using Moq;
 using NServiceBus;
 using NUnit.Framework;
 using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace Recruit.Vacancies.Jobs.UnitTests.Communication;
 

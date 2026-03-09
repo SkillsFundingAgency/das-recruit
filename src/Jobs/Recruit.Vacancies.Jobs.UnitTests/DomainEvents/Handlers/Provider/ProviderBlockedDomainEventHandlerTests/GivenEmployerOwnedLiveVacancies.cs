@@ -1,11 +1,9 @@
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
-using Moq;
 using Newtonsoft.Json;
 using Xunit;
 

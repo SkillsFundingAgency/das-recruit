@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Domain;

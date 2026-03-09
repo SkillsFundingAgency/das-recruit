@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
@@ -8,7 +7,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers;
 using Microsoft.Extensions.Logging;
-using Moq;
 using Newtonsoft.Json;
 using Xunit;
 

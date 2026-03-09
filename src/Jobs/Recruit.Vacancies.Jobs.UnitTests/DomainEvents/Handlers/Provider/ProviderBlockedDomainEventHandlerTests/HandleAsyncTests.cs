@@ -8,7 +8,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers.Provider.ProviderBlockedDomainEventHandlerTests;
-using Moq;
 using Newtonsoft.Json;
 using Xunit;
 

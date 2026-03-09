@@ -1,18 +1,13 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Reports;
 using Microsoft.Extensions.Logging;
-using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.Reports
 {

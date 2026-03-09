@@ -1,17 +1,13 @@
-using Xunit;
-using Moq;
-using Microsoft.Extensions.Logging;
+using System.Threading;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
-using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using System.Threading.Tasks;
-using System.Threading;
-using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
-using FluentAssertions;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Microsoft.Extensions.Logging;
+using Xunit;
 
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
 {

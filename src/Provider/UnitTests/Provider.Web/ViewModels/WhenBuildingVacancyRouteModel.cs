@@ -1,7 +1,4 @@
-using System;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Provider.Web.RouteModel;
-using FluentAssertions;
 using NUnit.Framework;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels

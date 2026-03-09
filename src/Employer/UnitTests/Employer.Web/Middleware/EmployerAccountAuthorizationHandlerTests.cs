@@ -1,22 +1,14 @@
 using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web.Authorization;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Middleware;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
-using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
-using Moq;
 using Newtonsoft.Json;
-using NUnit.Framework;
 using SFA.DAS.GovUK.Auth.Employer;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Middleware;
 

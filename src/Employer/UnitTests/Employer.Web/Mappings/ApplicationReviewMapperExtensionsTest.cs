@@ -1,5 +1,4 @@
-﻿using AutoFixture.NUnit3;
-using Esfa.Recruit.Employer.Web.Mappings.Extensions;
+﻿using Esfa.Recruit.Employer.Web.Mappings.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Mappings

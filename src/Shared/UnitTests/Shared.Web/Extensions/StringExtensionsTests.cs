@@ -1,6 +1,5 @@
-﻿using Xunit;
-using Esfa.Recruit.Shared.Web.Extensions;
-using FluentAssertions;
+﻿using Esfa.Recruit.Shared.Web.Extensions;
+using Xunit;
 
 namespace Esfa.Recruit.Shared.Web.UnitTests.Extensions
 {

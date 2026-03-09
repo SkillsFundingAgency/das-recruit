@@ -1,5 +1,4 @@
-﻿using Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web;
+﻿using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;

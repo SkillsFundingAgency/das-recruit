@@ -1,15 +1,13 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
+using FluentAssertions.Execution;
+using SFA.DAS.Recruit.Api.Helpers;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Api.Queries;
 using SFA.DAS.Testing.AutoFixture;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Threading;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
-using FluentAssertions.Execution;
-using System.Linq;
-using SFA.DAS.Recruit.Api.Helpers;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Queries;
 public class GetAllLiveVacanciesQueryHandlerTests

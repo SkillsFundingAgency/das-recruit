@@ -12,6 +12,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
+using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1;
 
@@ -103,7 +104,7 @@ public class LegalEntityOrchestratorTests
             ShortDescription = "Test Short Description",
             LegalEntityName = "legal name",
             EmployerNameOption = EmployerNameOption.RegisteredName,
-            EmployerLocation = new Recruit.Vacancies.Client.Domain.Entities.Address
+            EmployerLocation = new Address
             {
                 Postcode = "AB1 2XZ"
             },

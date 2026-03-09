@@ -1,14 +1,15 @@
 using System;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Mappers;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Api.Queries;
+using VacancySummary = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancySummary;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Queries
 {
@@ -34,14 +35,14 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             _providerVacancyClient = new Mock<IProviderVacancyClient>();
             
             var vacancySummaryFixture = new Fixture();
-            var vacancySummariesEmployer = vacancySummaryFixture.Build<Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancySummary>()
+            var vacancySummariesEmployer = vacancySummaryFixture.Build<VacancySummary>()
                 .CreateMany(6).ToList();
             
-            var vacancySummariesProvider = vacancySummaryFixture.Build<Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancySummary>()
+            var vacancySummariesProvider = vacancySummaryFixture.Build<VacancySummary>()
                 .CreateMany(8).ToList();
             
             _employerVacancyClient.Setup(
-                x => x.GetDashboardAsync(ValidEmployerAccountId, "", 1, 25, "", "", FilteringOptions.All, null)).ReturnsAsync(new Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer.EmployerDashboard
+                x => x.GetDashboardAsync(ValidEmployerAccountId, "", 1, 25, "", "", FilteringOptions.All, null)).ReturnsAsync(new EmployerDashboard
             {
                 Vacancies = vacancySummariesEmployer
             });
@@ -50,7 +51,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
 
             _providerVacancyClient.Setup(
                 x => x.GetDashboardAsync(ValidUkprn, ValidUserId, 1, 25, "", "", FilteringOptions.All, null)).ReturnsAsync(
-                new Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider.ProviderDashboard
+                new ProviderDashboard
                 {
                     Vacancies = vacancySummariesProvider
                 });

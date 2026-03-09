@@ -2,7 +2,6 @@ using System.Linq;
 using System.Security.Claims;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Extensions;
-using FluentAssertions;
 using Xunit;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Extensions

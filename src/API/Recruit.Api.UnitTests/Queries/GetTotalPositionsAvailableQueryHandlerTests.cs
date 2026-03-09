@@ -1,6 +1,4 @@
 using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using SFA.DAS.Recruit.Api.Queries;
 using SFA.DAS.Testing.AutoFixture;

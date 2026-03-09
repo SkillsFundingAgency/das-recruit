@@ -1,4 +1,4 @@
-using AutoFixture;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Recruit.Api.Configuration;
 using SFA.DAS.Recruit.Api.Mappers;
@@ -9,14 +9,14 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
     {
         private const string ValidEmployerAccountId = "MYJR4X";
         private VacancySummaryMapper _sut;
-        private Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancySummary _vacancySummaryProjection;
+        private VacancySummary _vacancySummaryProjection;
 
         [SetUp]
         public void Setup()
         {
             var vacancySummaryFixture = new Fixture();
             _vacancySummaryProjection = vacancySummaryFixture
-                                        .Build<Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancySummary>()
+                                        .Build<VacancySummary>()
                                         .With(vsp => vsp.EmployerAccountId, ValidEmployerAccountId)
                                         .Create();
 
