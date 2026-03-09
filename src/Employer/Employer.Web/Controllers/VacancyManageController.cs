@@ -32,7 +32,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             [FromQuery] string sortColumn,
             [FromQuery] string sortOrder,
             [FromQuery] string locationFilter = "All",
-            [FromQuery] int page = 1)
+            [FromQuery] int page = 1,
+            [FromQuery] FilteringOptions filteringOptions = FilteringOptions.All)
         {
             EnsureProposedChangesCookiesAreCleared(vrm.VacancyId);
 
@@ -65,6 +66,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 viewModel.ApplicationReviewsUnsuccessfulBannerHeader = TempData[TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage].ToString();
             }
 
+            viewModel.FilteringOptions = filteringOptions;
             return View(viewModel);
         }
 

@@ -66,6 +66,7 @@ public class VacancyListItemViewModel
             {
                 ["ukprn"] = $"{ukprn}",
                 ["vacancyId"] = $"{item.Id}",
+                ["filteringOptions"] = $"{filteringOptions}"
             },
             SourceOrigin = item.SourceOrigin,
             Status = item.Status,
@@ -97,6 +98,7 @@ public class VacancyListItemViewModel
             {
                 ["employerAccountId"] = $"{employerAccountId}",
                 ["vacancyId"] = $"{item.Id}",
+                ["filteringOptions"] = $"{filteringOptions}"
             },
             SourceOrigin = item.SourceOrigin,
             Status = item.Status,
@@ -115,7 +117,6 @@ public class VacancyListItemViewModel
             {
                 VacancyStatus.Referred or VacancyStatus.Rejected => "Edit and resubmit",
                 VacancyStatus.Draft => "Edit and submit",
-                VacancyStatus.Review => "Review",
                 _ => "Manage"
             }
         };
