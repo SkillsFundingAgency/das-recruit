@@ -11,7 +11,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Employer.Web.Controllers;
 
@@ -74,73 +73,5 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
         }
         
         return vm;
-    }
-
-    [HttpGet("", Name = RouteNames.Vacancies_Get)]
-    public async Task<IActionResult> Vacancies([FromRoute] string employerAccountId, [FromQuery] string filter, [FromQuery] int page = 1, [FromQuery] string searchTerm = "")
-    {
-        // TODO: Comment back in for late stage testing - leave in so testers can compare data on the new to old page
-        // var blocked = new List<string> {"all", "draft"};
-        // if (string.IsNullOrWhiteSpace(filter) || blocked.Any(x => filter.Equals(x, StringComparison.CurrentCultureIgnoreCase)))
-        // {
-        //     return RedirectToRoute(RouteNames.VacanciesGetAll, new { employerAccountId });
-        // }
-        
-        if (string.IsNullOrWhiteSpace(filter) && string.IsNullOrWhiteSpace(searchTerm))
-            TryGetFiltersFromCookie(out filter, out searchTerm);
-
-        if (string.IsNullOrWhiteSpace(filter) == false || string.IsNullOrWhiteSpace(searchTerm) == false)
-            SaveFiltersInCookie(filter, searchTerm);
-
-        var vm = await orchestrator.GetVacanciesViewModelAsync(employerAccountId, filter, page, User.ToVacancyUser(), searchTerm);
-
-        if (TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
-            vm.WarningMessage = TempData[TempDataKeys.DashboardErrorMessage].ToString();
-
-        if (TempData.ContainsKey(TempDataKeys.DashboardInfoMessage))
-            vm.InfoMessage = TempData[TempDataKeys.DashboardInfoMessage].ToString();
-
-        vm.ShowReferredFromMaBackLink = ShowReferredFromMaBackLink();
-        return View(vm);
-    }
-
-    private void SaveFiltersInCookie(string filter, string search)
-    {
-        var value = JsonConvert.SerializeObject(new FilterCookie(filter, search));
-        Response.Cookies.SetSessionCookie(hostingEnvironment, CookieNames.DashboardFilter, value);
-    }
-
-    private void TryGetFiltersFromCookie(out string filter, out string search)
-    {
-        filter = string.Empty;
-        search = string.Empty;
-        var cookieValue = Request.Cookies.GetCookie(CookieNames.DashboardFilter);
-        if (string.IsNullOrWhiteSpace(cookieValue)) return;
-        try
-        {
-            var values = JsonConvert.DeserializeObject<FilterCookie>(cookieValue);
-            filter = values.Filter;
-            search = values.SearchTerm;
-        }
-        catch (JsonException)
-        {
-            //As the cookie value was initially set as string, we need to handle the deserialization in a try/catch block.
-        }
-    }
-
-    private class FilterCookie
-    {
-        public string Filter { get; }
-        public string SearchTerm { get; }
-        public FilterCookie(string filter, string searchTerm)
-        {
-            Filter = filter;
-            SearchTerm = searchTerm;
-        }
-    }
-
-    private bool ShowReferredFromMaBackLink()
-    {
-        return Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
     }
 }
