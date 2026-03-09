@@ -18,6 +18,7 @@ using SFA.DAS.Employer.Shared.UI;
 using SFA.DAS.GovUK.Auth.Authentication;
 using Microsoft.FeatureManagement;
 using Microsoft.Extensions.Configuration;
+using PolicyNames = Esfa.Recruit.Employer.Web.Middleware.PolicyNames;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
