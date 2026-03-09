@@ -61,6 +61,11 @@
   font-size: inherit;
 }
 
+.app-tag--large {
+  max-width: max-content;
+  white-space: nowrap;
+}
+
 .app-tag--draft {
   color: #383f43;
   background: #eeefef;
@@ -622,4 +627,14 @@ dd.govuk-summary-list__value .faa-user-content:first-child {
       width: 50%;
     }
   }
+}
+
+.das-sortable-column-header {
+    display: flex !important;
+}
+
+.das-pagination-container {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
 }
