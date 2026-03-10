@@ -29,7 +29,8 @@ public class VacancyListItemViewModel
 
     // calculated fields
     public bool CanShowVacancyApplicationsCount => Status is VacancyStatus.Live or VacancyStatus.Closed &&
-                                                   ApplicationMethod is Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughFindAnApprenticeship or Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughFindATraineeship;
+                                                   ApplicationMethod is Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughFindAnApprenticeship
+                                                       or Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughFindATraineeship;
 
     public bool HasApplications => NoOfApplications > 0;
     public bool HasEmployerReviewedApplications => NoOfEmployerReviewedApplications > 0;
@@ -42,8 +43,9 @@ public class VacancyListItemViewModel
     public bool IsSubmittable => Status is VacancyStatus.Draft or VacancyStatus.Referred or VacancyStatus.Rejected;
     public int NoOfApplications => NoOfNewApplications + NoOfSuccessfulApplications + NoOfUnsuccessfulApplications;
     public bool IsTransferredVacancy => !string.IsNullOrEmpty(TransferInfo);
+    public string ActionBtnText { get; set; }
 
-    public static VacancyListItemViewModel From(VacancyListItem item, int ukprn)
+    public static VacancyListItemViewModel From(VacancyListItem item, int ukprn, FilteringOptions filteringOptions)
     {
         return new VacancyListItemViewModel
         {
@@ -64,16 +66,18 @@ public class VacancyListItemViewModel
             {
                 ["ukprn"] = $"{ukprn}",
                 ["vacancyId"] = $"{item.Id}",
+                ["filteringOptions"] = $"{filteringOptions}"
             },
             SourceOrigin = item.SourceOrigin,
             Status = item.Status,
             Title = item.Title,
             VacancyReference = item.VacancyReference,
-            TransferInfo = item.TransferInfo
+            TransferInfo = item.TransferInfo,
+            ActionBtnText = GetLinkText(filteringOptions, item.Status)
         };
     }
     
-    public static VacancyListItemViewModel From(VacancyListItem item, string employerAccountId)
+    public static VacancyListItemViewModel From(VacancyListItem item, string employerAccountId, FilteringOptions filteringOptions)
     {
         return new VacancyListItemViewModel
         {
@@ -94,12 +98,26 @@ public class VacancyListItemViewModel
             {
                 ["employerAccountId"] = $"{employerAccountId}",
                 ["vacancyId"] = $"{item.Id}",
+                ["filteringOptions"] = $"{filteringOptions}"
             },
             SourceOrigin = item.SourceOrigin,
             Status = item.Status,
             Title = item.Title,
             VacancyReference = item.VacancyReference,
-            TransferInfo = item.TransferInfo
+            TransferInfo = item.TransferInfo,
+            ActionBtnText = GetLinkText(filteringOptions, item.Status)
         };
     }
+
+    private static string GetLinkText(FilteringOptions filteringOptions, VacancyStatus status) =>
+        filteringOptions switch
+        {
+            FilteringOptions.AllSharedApplications or FilteringOptions.NewSharedApplications => "Review",
+            _ => status switch
+            {
+                VacancyStatus.Referred or VacancyStatus.Rejected => "Edit and resubmit",
+                VacancyStatus.Draft => "Edit and submit",
+                _ => "Manage"
+            }
+        };
 }

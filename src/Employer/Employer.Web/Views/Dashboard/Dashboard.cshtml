@@ -133,7 +133,7 @@
             Count = Model.NoOfNewApplications,
             HeadingText = $"New {@Model.ApplicationTextLive}",
             Description = "Applications from Find an apprenticeship service.",
-            RouteName = RouteNames.Vacancies_Get,
+            RouteName = RouteNames.VacanciesGetAll,
             EmployerAccountId = Model.EmployerAccountId,
             Filter = FilteringOptions.NewApplications,
             Tasks = new[]
@@ -153,7 +153,7 @@
             Count = Model.NoOfSharedApplications,
             HeadingText = $"Shared {@Model.SharedApplicationsText}",
             Description = "Applications your training provider needs feedback on.",
-            RouteName = RouteNames.Vacancies_Get,
+            RouteName = RouteNames.VacanciesGetAll,
             EmployerAccountId = Model.EmployerAccountId,
             Filter = FilteringOptions.NewSharedApplications,
             Tasks = new[]
@@ -162,7 +162,7 @@
                 {
                     Show = Model.ShowAllSharedApplications,
                     Filter = FilteringOptions.AllSharedApplications,
-                    Text = "View all shared applications"
+                    Text = "View all shared applications",
                 }
             }
         }))    

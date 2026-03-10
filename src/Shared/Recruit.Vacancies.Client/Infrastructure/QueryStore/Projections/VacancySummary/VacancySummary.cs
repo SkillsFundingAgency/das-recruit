@@ -30,6 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
         public string TransferInfoProviderName { get; set; }
         public TransferReason? TransferInfoReason { get; set; }
         public DateTime? TransferInfoTransferredDate { get; set; }
+        public string TransferInfo { get; set; }
         public string TrainingProviderName { get; set; }
         public int NoOfNewApplications { get; set; }
         public int NoOfSuccessfulApplications { get; set; }
@@ -41,7 +42,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
         public bool IsTraineeship { get; set; }
         public bool IsTaskListCompleted { get; set; }
         public bool? HasChosenProviderContactDetails { get; set; }
+        public bool? HasSubmittedAdditionalQuestions { get; set; }
         public ApprenticeshipTypes? ApprenticeshipType { get; set; }
         public SourceOrigin? SourceOrigin { get; set; }
+        public OwnerType? OwnerType { get; set; }
     }
 }
