@@ -48,7 +48,7 @@ public class VacancyStatusTagHelperTests : TagHelperTestsBase
 
     [TestCase(VacancyStatus.Draft, "govuk-tag--grey", "Draft" )]
     [TestCase(VacancyStatus.Review, "govuk-tag--blue", "Ready for review" )]
-    [TestCase(VacancyStatus.Submitted, "govuk-tag--blue", "Pending review" )]
+    [TestCase(VacancyStatus.Submitted, "govuk-tag--blue", "Pending DfE review" )]
     [TestCase(VacancyStatus.Referred, "govuk-tag--red", "Rejected by DfE" )]
     [TestCase(VacancyStatus.Rejected, "govuk-tag--red", "Rejected by employer" )]
     [TestCase(VacancyStatus.Live, "govuk-tag--turquoise", "Live" )]
