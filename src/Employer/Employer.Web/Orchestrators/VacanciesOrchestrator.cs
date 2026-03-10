@@ -215,6 +215,7 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
             FilteringOptions.NewApplications => "Adverts with new applications",
             FilteringOptions.NewSharedApplications or FilteringOptions.AllSharedApplications => "Adverts with shared applications",
             FilteringOptions.Transferred => "Adverts transferred from provider",
-            _ => throw new ArgumentOutOfRangeException(nameof(filteringOption), filteringOption, null)
+            FilteringOptions.AllApplications => "Adverts with applications",
+            _ => "Adverts"
         };
 }

@@ -195,8 +195,9 @@ public class VacanciesOrchestrator(
             FilteringOptions.Live => "Live vacancies",
             FilteringOptions.Closed => "Closed vacancies",
             FilteringOptions.Referred => "Rejected vacancies",
+            FilteringOptions.AllApplications => "Vacancies with applications",
             FilteringOptions.NewApplications => "Vacancies with new applications",
             FilteringOptions.EmployerReviewedApplications => "Employer reviewed applications",
-            _ => throw new ArgumentOutOfRangeException(nameof(filteringOption), filteringOption, null)
+            _ => "Vacancies"
         };
 }
