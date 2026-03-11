@@ -98,8 +98,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         services.ConfigureJobServices(context.Configuration);
 
                         services.AddDasNServiceBus(context.Configuration);
-                        services.AddApplicationInsightsTelemetryWorkerService(context.Configuration);
-                        string instrumentationKey = context.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
+                        var instrumentationKey = context.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
                         if (!string.IsNullOrEmpty(instrumentationKey))
                         {
                             services.AddOpenTelemetryRegistration(instrumentationKey);

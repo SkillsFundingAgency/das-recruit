@@ -1,7 +1,5 @@
-﻿using System;
-using Esfa.Recruit.Shared.Web.Extensions;
+﻿using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
 using Xunit;
 
 namespace Esfa.Recruit.Shared.Web.UnitTests.Extensions

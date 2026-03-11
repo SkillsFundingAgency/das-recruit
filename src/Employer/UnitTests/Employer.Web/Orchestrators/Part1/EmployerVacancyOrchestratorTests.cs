@@ -1,4 +1,3 @@
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 

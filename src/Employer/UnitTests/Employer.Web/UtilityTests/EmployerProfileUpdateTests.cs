@@ -1,4 +1,3 @@
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Shared.Web.Models;

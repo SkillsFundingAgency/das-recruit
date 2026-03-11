@@ -1,5 +1,6 @@
 using System.Linq;
 using Esfa.Recruit.Employer.Web.Mappings;
+using Esfa.Recruit.Employer.Web.TagHelpers;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
@@ -16,7 +17,7 @@ public class WhenShowingReviewField
     [MoqInlineAutoData(VacancyStatus.Live, false)]
     [MoqInlineAutoData(VacancyStatus.Closed, false)]
     [MoqInlineAutoData(VacancyStatus.Approved, false)]
-    public async Task Then_Checks_Status_To_Determine_If_Field_Is_Shown(VacancyStatus vacancyStatus, bool expected,  DisplayVacancyViewModelMapper mapper, Vacancy vacancy, Esfa.Recruit.Employer.Web.TagHelpers.FieldReviewHelper helper)
+    public async Task Then_Checks_Status_To_Determine_If_Field_Is_Shown(VacancyStatus vacancyStatus, bool expected,  DisplayVacancyViewModelMapper mapper, Vacancy vacancy, FieldReviewHelper helper)
     {
         //Arrange
         vacancy.Status = vacancyStatus;

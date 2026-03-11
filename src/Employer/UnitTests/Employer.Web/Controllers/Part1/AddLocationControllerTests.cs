@@ -1,5 +1,4 @@
-﻿using AutoFixture.NUnit3;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
+﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Controllers.Part1;
 using Esfa.Recruit.Employer.Web.Models.AddLocation;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.AddLocation;

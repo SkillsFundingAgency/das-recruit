@@ -1,8 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using Esfa.Recruit.Provider.Web.Mappings.Extensions;
-using FluentAssertions;
+﻿using Esfa.Recruit.Provider.Web.Mappings.Extensions;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using NUnit.Framework;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Mappings;

@@ -80,10 +80,7 @@ namespace Esfa.Recruit.Provider.Web
 
             services.AddMvcService(_hostingEnvironment, _loggerFactory, _configuration);
             services.AddDataProtection(_configuration, _hostingEnvironment, applicationName: "das-provider");
-
-            services.AddApplicationInsightsTelemetry(_configuration);
             services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
-
             services.AddProviderUiServiceRegistration(_configuration);
 
     #if DEBUG

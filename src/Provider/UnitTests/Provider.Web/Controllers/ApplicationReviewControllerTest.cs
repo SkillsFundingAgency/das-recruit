@@ -1,24 +1,19 @@
-﻿using System;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using AutoFixture;
+﻿using System.Security.Claims;
 using Esfa.Recruit.Provider.Web.Configuration;
-using Esfa.Recruit.Provider.Web.Controllers;
-using Esfa.Recruit.Provider.Web.Orchestrators;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Provider.Web.Extensions;
-using Esfa.Recruit.Provider.Web.RouteModel;
-using Newtonsoft.Json;
+using Esfa.Recruit.Provider.Web.Controllers;
 using Esfa.Recruit.Provider.Web.Models;
+using Esfa.Recruit.Provider.Web.Orchestrators;
+using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Newtonsoft.Json;
+using NUnit.Framework;
 using ApplicationReviewViewModel = Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers

@@ -1,28 +1,21 @@
-﻿using System.Threading.Tasks;
-using AutoFixture;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using Esfa.Recruit.Provider.Web.Configuration;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Controllers;
+using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.Orchestrators;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
-using System.Collections.Generic;
-using System.Linq;
-using System;
-using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Provider.Web.Configuration;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
-using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using System.Net.Http;
-using Microsoft.Azure.Amqp.Transaction;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using static Esfa.Recruit.Vacancies.Client.Application.Communications.CommunicationConstants.DataItemKeys;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 {

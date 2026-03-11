@@ -1,5 +1,4 @@
-﻿using AutoFixture.NUnit3;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
+﻿using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Reports;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses.Reports;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Report;

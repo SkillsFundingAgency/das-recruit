@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Xunit;
 

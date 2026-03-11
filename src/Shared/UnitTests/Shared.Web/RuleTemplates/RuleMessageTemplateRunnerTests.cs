@@ -1,6 +1,5 @@
 ﻿using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Vacancies.Client.Application.Rules;
-using FluentAssertions;
 using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.RuleTemplates

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -12,6 +10,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.MultipleLocations;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1;

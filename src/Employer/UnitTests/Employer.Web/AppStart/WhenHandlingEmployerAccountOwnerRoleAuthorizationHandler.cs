@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web.Interfaces;
 using Esfa.Recruit.Employer.Web.Middleware;
 using Microsoft.AspNetCore.Authorization;

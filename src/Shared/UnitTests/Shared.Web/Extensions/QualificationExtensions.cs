@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
 using NUnit.Framework;
 
 namespace Esfa.Recruit.Shared.Web.UnitTests.Extensions;

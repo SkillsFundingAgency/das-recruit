@@ -52,11 +52,8 @@ namespace SFA.DAS.Recruit.Api
             
             MongoDbConventions.RegisterMongoConventions();
 
-            services.AddHealthChecks()
-                    .AddMongoDb(Configuration.GetConnectionString("MongoDb"))
-                    .AddApplicationInsightsPublisher();
+            services.AddHealthChecks();
 
-            services.AddApplicationInsightsTelemetry(Configuration);
             if (!string.IsNullOrEmpty(Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!))
             {
                 // This service will collect and send telemetry data to Azure Monitor.

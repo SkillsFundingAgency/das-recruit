@@ -1,12 +1,10 @@
 ﻿using System.Linq;
-using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
-using Xunit;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
-using Moq;
+using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Xunit;
 
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
 {

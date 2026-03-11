@@ -1,17 +1,10 @@
-using Esfa.Recruit.Provider.Web.Orchestrators;
-using Xunit;
-using System.Threading.Tasks;
-using System.Linq;
-using FluentAssertions;
-using Moq;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
-using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using System.Linq;
+using Esfa.Recruit.Provider.Web.Orchestrators;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
+using Xunit;
 
 namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
 {

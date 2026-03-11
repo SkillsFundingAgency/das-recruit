@@ -1,5 +1,4 @@
 ﻿using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
-using FluentAssertions;
 using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.ViewModels;

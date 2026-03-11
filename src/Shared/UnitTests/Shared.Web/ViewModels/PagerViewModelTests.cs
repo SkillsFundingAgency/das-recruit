@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using FluentAssertions;
 using Xunit;
 
 namespace Esfa.Recruit.UnitTests.Shared.Web.ViewModels

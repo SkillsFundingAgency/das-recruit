@@ -1,7 +1,5 @@
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
 using NUnit.Framework;
 
 namespace Esfa.Recruit.UnitTests.Shared.Web.ViewModels

@@ -1,6 +1,4 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.DisplayVacancy;
 
