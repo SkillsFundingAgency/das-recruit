@@ -101,7 +101,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         var instrumentationKey = context.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
                         if (!string.IsNullOrEmpty(instrumentationKey))
                         {
-                            services.AddApplicationInsightsTelemetryWorkerService(context.Configuration);
                             services.AddOpenTelemetryRegistration(instrumentationKey);
                         }
                     })
