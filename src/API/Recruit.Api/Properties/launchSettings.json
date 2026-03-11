@@ -3,9 +3,11 @@
   "profiles": {
     "Recruit.Api": {
       "commandName": "Project",
+      "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_Environment": "Development"
-      }
+      },
+      "applicationUrl": "https://localhost:5040/"
     }
   }
 }
