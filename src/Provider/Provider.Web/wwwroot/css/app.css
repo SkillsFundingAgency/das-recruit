@@ -62,6 +62,8 @@
 
 .app-tag {
   font-size: inherit;
+  white-space: nowrap;
+  max-width: max-content;
 }
 
 .app-tag--transferred {
