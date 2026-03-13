@@ -102,8 +102,7 @@
                     Status
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <strong
-                        class="govuk-tag app-tag--@Model.Status.ToString().ToLower()">@Model.Status.GetDisplayName()</strong>
+                    <govuk-tag-vacancy-status status="@Model.Status" user-type="UserType.Employer" />
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a asp-show="@Model.CanShowCloseVacancyLink" asp-route="@RouteNames.CloseVacancy_Get"

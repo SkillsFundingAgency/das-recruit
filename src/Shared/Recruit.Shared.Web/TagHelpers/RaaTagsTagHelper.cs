@@ -41,7 +41,7 @@ public class RaaTagsTagHelper : TagHelper
     }
 }
 
-[HtmlTargetElement(TagName)]
+[HtmlTargetElement(FoundationTagTagHelper.TagName)]
 public class FoundationTagTagHelper : RaaTagsTagHelper
 {
     public new const string TagName = "govuk-tag-foundation";
@@ -58,7 +58,7 @@ public class FoundationTagTagHelper : RaaTagsTagHelper
     }
 }
 
-[HtmlTargetElement(TagName)]
+[HtmlTargetElement(ApiSubmittedTagHelper.TagName)]
 public class ApiSubmittedTagHelper : RaaTagsTagHelper
 {
     public new const string TagName = "govuk-tag-api-submitted";

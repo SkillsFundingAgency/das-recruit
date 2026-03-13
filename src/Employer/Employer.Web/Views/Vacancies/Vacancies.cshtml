@@ -130,7 +130,7 @@
                                 <div>
                                     @vacancy.Title
                                     <div asp-show="@vacancy.IsTransferred">
-                                        <span class="tag tag-transferred">Transferred</span>
+                                        <span class="app-tag app-tag-transferred">Transferred</span>
                                     </div>
                                 </div>
                                 <govuk-tag-foundation asp-show="@(vacancy.ApprenticeshipType == ApprenticeshipTypes.Foundation)" class="govuk-!-margin-top-2 govuk-!-margin-bottom-1 app-tag"/>
@@ -160,7 +160,7 @@
                             <td asp-hide="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">-</td>
                             <td class="govuk-table__cell" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
                             <td class="govuk-table__cell" data-label="Status">
-                                <span class="govuk-tag app-tag app-tag--@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName(UserType.Employer)</span>
+                                <govuk-tag-vacancy-status status="@vacancy.Status" user-type="UserType.Employer" class="app-tag" />
                             </td>
                             <td class="govuk-table__cell" data-label="Action">
                                 <a id="manage-@vacancy.Id" asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancyId="@vacancy.Id" class="govuk-link">Manage</a>
