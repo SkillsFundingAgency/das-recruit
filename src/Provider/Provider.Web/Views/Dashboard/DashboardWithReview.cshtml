@@ -6,8 +6,8 @@
     ViewBag.Title = "Recruitment dashboard";
     var vacancyRouteModel = new VacancyRouteModel { Ukprn = Model.Ukprn };
 }
+<partial name="_AnalyticsSurveyBannerPartial" model="@OwnerType.Provider" />
 <partial asp-hide="@Model.HasAnyVacancies" name="_ProviderNoVacanciesContent" model="@vacancyRouteModel" />
-<partial name="@PartialNames.DashboardAnalyticsSurveyPartial" model="@OwnerType.Provider" />
 <div asp-show="@Model.HasAnyVacancies">
     <partial name="@PartialNames.Alerts" for="Alerts" />
     <partial name="@PartialNames.DashboardSearchBoxPartial" for="@Model" />
