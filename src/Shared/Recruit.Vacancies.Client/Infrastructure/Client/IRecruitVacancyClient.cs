@@ -12,7 +12,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public interface IRecruitVacancyClient
     {
-        Task AssignVacancyNumber(Guid vacancyId);
         Task UserSignedInAsync(VacancyUser user, UserType userType);
         Task<Vacancy> GetVacancyAsync(Guid vacancyId);
         Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference);
@@ -21,7 +20,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user);
         Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync(bool includePlaceholderProgramme = false);
         Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId, bool includePlaceholderProgramme = false);
-        Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference, bool vacancySharedByProvider = false);
         Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider = false);
         Task<List<VacancyApplication>> GetVacancyApplicationsForSelectedIdsAsync(List<Guid> applicationReviewIds);
         Task<List<VacancyApplication>> GetVacancyApplicationsForReferenceAndStatus(Guid vacancyId, ApplicationReviewStatus status);

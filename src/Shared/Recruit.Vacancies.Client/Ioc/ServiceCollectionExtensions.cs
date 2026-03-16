@@ -155,7 +155,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             // Projection services
             services.AddTransient<IEditVacancyInfoProjectionService, EditVacancyInfoProjectionService>();
             services.AddTransient<IVacancyApplicationsProjectionService, VacancyApplicationsProjectionService>();
-            services.AddTransient<IBlockedOrganisationsProjectionService, BlockedOrganisationsProjectionService>();
 
             // Reference Data Providers
             services.AddTransient<IMinimumWageProvider, NationalMinimumWageProvider>();
@@ -218,13 +217,11 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IEmployerProfileRepository, MongoDbEmployerProfileRepository>();
             services.AddTransient<IReportRepository, MongoDbReportRepository>();
             services.AddTransient<IUserNotificationPreferencesRepository, MongoDbUserNotificationPreferencesRepository>();
-            services.AddTransient<IBlockedOrganisationRepository, MongoDbBlockedOrganisationRepository>();
-
+            
             //Queries
             services.AddTransient<IVacancyQuery, SqlVacancyQuery>(); // replaces MongoDbVacancyRepository
             services.AddTransient<IVacancyReviewQuery, MongoDbVacancyReviewRepository>();
             services.AddTransient<IApplicationReviewQuery, MongoDbApplicationReviewRepository>();
-            services.AddTransient<IBlockedOrganisationQuery, MongoDbBlockedOrganisationRepository>();
 
             services.AddTransient<IQueryStoreReader, QueryStoreClient>();
             services.AddTransient<IQueryStoreWriter, QueryStoreClient>();

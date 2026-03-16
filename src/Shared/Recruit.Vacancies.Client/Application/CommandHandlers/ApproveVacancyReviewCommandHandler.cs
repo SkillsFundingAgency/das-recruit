@@ -9,7 +9,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
@@ -25,7 +24,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly IMessaging _messaging;
         private readonly AbstractValidator<VacancyReview> _vacancyReviewValidator;
         private readonly ITimeProvider _timeProvider;
-        private readonly IBlockedOrganisationQuery _blockedOrganisationQuery;
         private readonly ICommunicationQueueService _communicationQueueService;
 
         public ApproveVacancyReviewCommandHandler(ILogger<ApproveVacancyReviewCommandHandler> logger,
@@ -35,7 +33,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                                         IMessaging messaging,
                                         AbstractValidator<VacancyReview> vacancyReviewValidator,
                                         ITimeProvider timeProvider,
-                                        IBlockedOrganisationQuery blockedOrganisationQuery, 
                                         ICommunicationQueueService communicationQueueService)
         {
             _logger = logger;
@@ -45,7 +42,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _messaging = messaging;
             _vacancyReviewValidator = vacancyReviewValidator;
             _timeProvider = timeProvider;
-            _blockedOrganisationQuery = blockedOrganisationQuery;
             _communicationQueueService = communicationQueueService;
         }
 
@@ -106,9 +102,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     ClosureReason.TransferredByEmployer : ClosureReason.TransferredByQa;
             }
 
-            if(await HasProviderBeenBlockedSinceReviewWasCreatedAsync(vacancy))
-                return ClosureReason.BlockedByQa;
-
             return null;
         }
 
@@ -124,12 +117,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private bool HasVacancyBeenTransferredSinceReviewWasCreated(VacancyReview review, Vacancy vacancy)
         {
             return review.VacancySnapshot.TransferInfo == null && vacancy.TransferInfo != null;
-        }
-
-        private async Task<bool> HasProviderBeenBlockedSinceReviewWasCreatedAsync(Vacancy vacancy)
-        {
-            var blockedProvider = await _blockedOrganisationQuery.GetByOrganisationIdAsync(vacancy.TrainingProvider.Ukprn.ToString());
-            return blockedProvider?.BlockedStatus == BlockedStatus.Blocked;
         }
 
         private Task CloseVacancyAsync(Vacancy vacancy, ClosureReason closureReason)
