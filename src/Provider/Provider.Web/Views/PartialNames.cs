@@ -26,5 +26,6 @@ namespace Esfa.Recruit.Provider.Web.Views
 
         public const string DashboardNavigationPartial = "_DashboardNavigationPartial";
         public const string DashboardSearchBoxPartial = "_DashboardSearchBoxPartial";
+        public const string DashboardAnalyticsSurveyPartial = "_AnalyticsSurveyPartial";
     }
 }
