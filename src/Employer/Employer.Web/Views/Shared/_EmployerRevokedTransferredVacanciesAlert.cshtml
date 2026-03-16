@@ -7,6 +7,7 @@
         <span class="govuk-!-font-weight-bold">@Model.ProviderNamesCaption</span> after you turned off their permissions.
     </p>
     <p class="das-notification__body">Live adverts transferred from the provider are now closed and any adverts sent for review are in draft.</p>
+    <p class="das-notification__body">You can clone closed adverts if you want to republish them.</p>
     <form asp-route="@RouteNames.Alerts_Dismiss_Post" asp-route-employerAccountId="@Model.EmployerAccountId">
         <p class="das-notification__body">
             @{ string returnUrl = ViewContext.HttpContext.Request.Path + ViewContext.HttpContext.Request.QueryString; }
