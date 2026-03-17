@@ -79,21 +79,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if (closureReason != null)
             {
                 await CloseVacancyAsync(vacancy, closureReason.Value);
-                await SendNotificationToEmployerAsync(vacancy.TrainingProvider.Ukprn.GetValueOrDefault(), vacancy.EmployerAccountId);
                 return Unit.Value;
             }
 
             await PublishVacancyReviewApprovedEventAsync(message, review);    
             return Unit.Value;
         }
-
-        private Task SendNotificationToEmployerAsync(long ukprn, string employerAccountId)
-        {
-            var communicationRequest = CommunicationRequestFactory.GetProviderBlockedEmployerNotificationForLiveVacanciesRequest(ukprn, employerAccountId);
-
-            return _communicationQueueService.AddMessageAsync(communicationRequest);
-        }
-
+        
         private async Task<ClosureReason?> TryGetReasonToCloseVacancy(VacancyReview review, Vacancy vacancy)
         {
             if (HasVacancyBeenTransferredSinceReviewWasCreated(review, vacancy))

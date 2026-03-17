@@ -17,9 +17,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
                 case CommunicationConstants.RequestType.VacancyWithdrawnByQa:
                     templateId = CommunicationConstants.TemplateIds.VacancyWithdrawnByQa;
                     break;
-                case CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForTransferredVacancies:
-                    templateId = CommunicationConstants.TemplateIds.ProviderBlockedEmployerNotificationForTransferredVacancies;
-                    break;
                 default:
                     throw new NotImplementedException($"Template for request type {message.RequestType} is not defined.");
             }

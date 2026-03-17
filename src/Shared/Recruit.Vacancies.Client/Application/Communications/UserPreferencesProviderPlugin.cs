@@ -16,7 +16,6 @@ public class UserPreferencesProviderPlugin : IUserPreferencesProvider
         switch (requestType)
         {
             case CommunicationConstants.RequestType.VacancyWithdrawnByQa:
-            case CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForTransferredVacancies:
                 SetPreferencesForMandatoryOrganisationEmailNotification(userPref);
                 return userPref;
             default:
