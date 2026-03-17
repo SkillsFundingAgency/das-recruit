@@ -154,7 +154,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
             // Projection services
             services.AddTransient<IEditVacancyInfoProjectionService, EditVacancyInfoProjectionService>();
-            services.AddTransient<IVacancyApplicationsProjectionService, VacancyApplicationsProjectionService>();
 
             // Reference Data Providers
             services.AddTransient<IMinimumWageProvider, NationalMinimumWageProvider>();
@@ -184,17 +183,9 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
             services.AddTransient<MongoDbCollectionChecker>();
             //Repositories
-            //----------------------------------------------------------------------------------------
-            // WARNING: Do not change the order of these registrations
-            //----------------------------------------------------------------------------------------
             services.AddKeyedTransient<IVacancyRepository, SqlVacancyRepository>("sql");
-            services.AddKeyedTransient<IVacancyRepository, MongoDbVacancyRepository>("mongo");
-            services.AddTransient<IVacancyRepository, MigrationVacancyRepository>();
-            //----------------------------------------------------------------------------------------
             
             services.AddTransient<IVacancyReviewRepository, VacancyReviewService>();
-            services.AddTransient<IVacancyReviewRepository, MongoDbVacancyReviewRepository>();
-            services.AddTransient<IVacancyReviewRepositoryRunner, VacancyReviewRepositoryRunner>();
 
             
             services.AddTransient<IUserRepository, MongoDbUserRepository>();
@@ -204,12 +195,8 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             
 
             services.AddTransient<IApplicationWriteRepository, ApplicationReviewService>();
-            services.AddTransient<IApplicationWriteRepository, MongoDbApplicationReviewRepository>();
             
             services.AddTransient<ISqlDbRepository, ApplicationReviewService>();
-            services.AddTransient<IMongoDbRepository, MongoDbApplicationReviewRepository>();
-
-            services.AddTransient<IApplicationReviewRepository, MongoDbApplicationReviewRepository>();
 
             services.AddTransient<IApplicationReviewRepositoryRunner, ApplicationReviewRepositoryRunner>();
 
@@ -220,8 +207,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             
             //Queries
             services.AddTransient<IVacancyQuery, SqlVacancyQuery>(); // replaces MongoDbVacancyRepository
-            services.AddTransient<IVacancyReviewQuery, MongoDbVacancyReviewRepository>();
-            services.AddTransient<IApplicationReviewQuery, MongoDbApplicationReviewRepository>();
 
             services.AddTransient<IQueryStoreReader, QueryStoreClient>();
             services.AddTransient<IQueryStoreWriter, QueryStoreClient>();

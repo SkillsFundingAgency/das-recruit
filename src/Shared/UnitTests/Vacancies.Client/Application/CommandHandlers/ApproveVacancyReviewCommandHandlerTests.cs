@@ -20,18 +20,18 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
     {
         private readonly Guid _existingReviewId;
         private readonly Fixture _autoFixture = new Fixture();
-        private readonly Mock<IVacancyReviewRepositoryRunner> _mockVacancyReviewRepository;
         private readonly Mock<IVacancyReviewQuery> _mockVacancyReviewQuery;
         private readonly Mock<IVacancyRepository> _mockVacancyRepository;
         private readonly Mock<ITimeProvider> _mockTimeProvider;
         private readonly Mock<IMessaging> _mockMessaging;
         private readonly ApproveVacancyReviewCommandHandler _sut;
         private readonly Mock<ICommunicationQueueService> _mockCommunicationQueueService;
+        private readonly Mock<IVacancyReviewRepository> _mockVacancyReviewRepository;
 
         public ApproveVacancyReviewCommandHandlerTests()
         {
             _existingReviewId = Guid.NewGuid();
-            _mockVacancyReviewRepository = new Mock<IVacancyReviewRepositoryRunner>();
+            _mockVacancyReviewRepository = new Mock<IVacancyReviewRepository>();
             _mockVacancyRepository = new Mock<IVacancyRepository>();
 
             _mockMessaging = new Mock<IMessaging>();

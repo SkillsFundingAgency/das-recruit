@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         private readonly ILogger<CreateVacancyReviewCommandHandler> _logger;
         private readonly IVacancyRepository _vacancyRepository;
-        private readonly IVacancyReviewRepositoryRunner _vacancyReviewRepositoryRunner;
+        private readonly IVacancyReviewRepository _vacancyReviewRepository;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly IVacancyService _vacancyService;
         private readonly ITimeProvider _time;
@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         public CreateVacancyReviewCommandHandler(
             ILogger<CreateVacancyReviewCommandHandler> logger,
             IVacancyRepository vacancyRepository,
-            IVacancyReviewRepositoryRunner vacancyReviewRepositoryRunner,
+            IVacancyReviewRepository vacancyReviewRepository,
             IVacancyReviewQuery vacancyReviewQuery, 
             IVacancyService vacancyService, 
             ITimeProvider time,
@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             _logger = logger;
             _vacancyRepository = vacancyRepository;
-            _vacancyReviewRepositoryRunner = vacancyReviewRepositoryRunner;
+            _vacancyReviewRepository = vacancyReviewRepository;
             _vacancyReviewQuery = vacancyReviewQuery;
             _vacancyService = vacancyService;
             _time = time;
@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             var review = BuildNewReview(vacancy, previousReviews.Count, slaDeadline, updatedFields, previousReviews.OrderByDescending(c=>c.SubmissionCount).FirstOrDefault());
 
-            await _vacancyReviewRepositoryRunner.CreateAsync(review);
+            await _vacancyReviewRepository.CreateAsync(review);
 
             await _vacancyService.PerformRulesCheckAsync(review.Id);
             

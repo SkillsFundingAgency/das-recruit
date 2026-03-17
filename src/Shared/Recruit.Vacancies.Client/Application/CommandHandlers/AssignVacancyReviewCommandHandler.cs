@@ -15,20 +15,20 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     public class AssignVacanyReviewCommandHandler: IRequestHandler<AssignVacancyReviewCommand, Unit>
     {
         private readonly ILogger<AssignVacancyReviewCommand> _logger;
-        private readonly IVacancyReviewRepositoryRunner _vacancyReviewRepositoryRunner;
+        private readonly IVacancyReviewRepository _vacancyReviewRepository;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly ITimeProvider _time;
         private readonly INextVacancyReviewService _nextVacancyReviewService;
 
         public AssignVacanyReviewCommandHandler(
             ILogger<AssignVacancyReviewCommand> logger,
-            IVacancyReviewRepositoryRunner vacancyReviewRepositoryRunner, 
+            IVacancyReviewRepository vacancyReviewRepository, 
             ITimeProvider timeProvider,
             INextVacancyReviewService nextVacancyReviewService,
             IVacancyReviewQuery vacancyReviewQuery)
         {
             _logger = logger;
-            _vacancyReviewRepositoryRunner = vacancyReviewRepositoryRunner;
+            _vacancyReviewRepository = vacancyReviewRepository;
             _time = timeProvider;
             _nextVacancyReviewService = nextVacancyReviewService;
             _vacancyReviewQuery = vacancyReviewQuery;
@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             review.ReviewedByUser = message.User;
             review.ReviewedDate = _time.Now;
 
-            await _vacancyReviewRepositoryRunner.UpdateAsync(review);
+            await _vacancyReviewRepository.UpdateAsync(review);
             return Unit.Value;
         }
 

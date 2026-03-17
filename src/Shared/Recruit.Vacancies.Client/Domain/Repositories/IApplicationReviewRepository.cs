@@ -21,10 +21,9 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
             long vacancyReference);
     }
 
-    public interface IMongoDbRepository : IApplicationReadRepository;
     public interface ISqlDbRepository : IApplicationReadRepository;
 
-    public interface IApplicationReviewRepository : IMongoDbRepository, ISqlDbRepository
+    public interface IApplicationReviewRepository : ISqlDbRepository
     {
         Task CreateAsync(ApplicationReview review);
         Task<ApplicationReview> GetAsync(long vacancyReference, Guid candidateId);

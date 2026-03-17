@@ -11,11 +11,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
     {
         private readonly ILogger<VacancyReviewTransferService> _logger;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
-        private readonly IVacancyReviewRepositoryRunner _vacancyReviewRepository;
+        private readonly IVacancyReviewRepository _vacancyReviewRepository;
         private readonly ITimeProvider _timeProvider;
 
         public VacancyReviewTransferService(ILogger<VacancyReviewTransferService> logger, IVacancyReviewQuery vacancyReviewQuery,
-            IVacancyReviewRepositoryRunner vacancyReviewRepository, ITimeProvider timeProvider)
+            IVacancyReviewRepository vacancyReviewRepository, ITimeProvider timeProvider)
         {
             _logger = logger;
             _vacancyReviewQuery = vacancyReviewQuery;

@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         private readonly ILogger<ApproveVacancyReviewCommandHandler> _logger;
         private readonly IVacancyRepository _vacancyRepository;
-        private readonly IVacancyReviewRepositoryRunner _vacancyReviewRepositoryRunner;
+        private readonly IVacancyReviewRepository _vacancyReviewRepositoryRunner;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly IMessaging _messaging;
         private readonly AbstractValidator<VacancyReview> _vacancyReviewValidator;
@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly ICommunicationQueueService _communicationQueueService;
 
         public ApproveVacancyReviewCommandHandler(ILogger<ApproveVacancyReviewCommandHandler> logger,
-                                        IVacancyReviewRepositoryRunner vacancyReviewRepositoryRunner,
+                                        IVacancyReviewRepository vacancyReviewRepositoryRunner,
                                         IVacancyReviewQuery vacancyReviewQuery,
                                         IVacancyRepository vacancyRepository,
                                         IMessaging messaging,
