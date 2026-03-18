@@ -4,6 +4,10 @@
     var labelTxt = Model == OwnerType.Employer 
     ? "advert"
     : "vacancy";
+    var surveyUrl = Model == OwnerType.Employer
+    ? "https://dferesearch.fra1.qualtrics.com/jfe/form/SV_3OiVvoxVFegKIdM?"
+    : "https://dferesearch.fra1.qualtrics.com/jfe/form/SV_e5uTVS95WhLOVPo?";
+
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -19,7 +23,7 @@
                 </p>
                 <p class="govuk-body">
                     Tell us what you think about @labelTxt analytics by
-                    <a href="https://dferesearch.fra1.qualtrics.com/jfe/form/SV_e5uTVS95WhLOVPo?" rel="noopener" target="_blank" class="govuk-link">
+                    <a href="@surveyUrl" rel="noopener" target="_blank" class="govuk-link">
                         completing a short survey.
                     </a>
                 </p>
