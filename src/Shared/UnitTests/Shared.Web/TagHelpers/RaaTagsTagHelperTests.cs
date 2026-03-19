@@ -72,6 +72,6 @@ public class RaaTagsTagHelperTests: TagHelperTestsBase
         await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
 
         // assert
-        TagHelperOutput.AsString().Should().Be("""<strong class="govuk-tag--pink govuk-tag">Transferred from provider</strong>""");
+        TagHelperOutput.AsString().Should().Be("""<strong class="govuk-tag--purple govuk-tag">Transferred from provider</strong>""");
     }
 }
