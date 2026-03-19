@@ -7,7 +7,7 @@
     </p>
     <p class="das-notification__body">Any transferred live adverts have been closed. Transferred adverts pending review have been returned to draft.</p>
     <p class="das-notification__body">If you need to discuss this further, you can contact our helpdesk on @RecruitViewConstants.HelpdeskPhoneNumber.</p>
-    <form asp-route="@RouteNames.Alerts_Dismiss_Post" asp-route-employerAccountId="@Model.EmployerAccountId">
+    <form asp-action="DismissAlert" asp-controller="Alerts" asp-route-employerAccountId="@Model.EmployerAccountId" method="post">
         <p class="das-notification__body">
             @{ string returnUrl = ViewContext.HttpContext.Request.Path + ViewContext.HttpContext.Request.QueryString; }
             <input name="@nameof(AlertDismissalEditModel.ReturnUrl)" value="@returnUrl" type="hidden" />
