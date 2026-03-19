@@ -31,10 +31,14 @@
 }
 else
 {
-    <h3 class="govuk-heading-s">
-        @Model.NoResultsHeadingText
-    </h3>
-    <p class="govuk-body">
-        @Model.NoResultsLabelText
-    </p>
+    <div class="govuk-grid-row govuk-!-padding-top-7 govuk-!-padding-bottom-9">
+        <div class="govuk-grid-column-full">
+            <h3 class="govuk-heading-s">
+                @Model.NoResultsHeadingText
+            </h3>
+            <p class="govuk-body">
+                @Model.NoResultsLabelText
+            </p>
+        </div>
+    </div>
 }

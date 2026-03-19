@@ -136,7 +136,7 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
         FilteringOptions.EmployerReviewedApplications,
         FilteringOptions.NewSharedApplications,
         FilteringOptions.AllSharedApplications,
-        FilteringOptions.Dashboard
+        FilteringOptions.Dashboard,
     ];
 
     private async Task<PagedDataResponse<IEnumerable<VacancyListItem>>> GetVacancies(FilteringOptions options,
@@ -215,6 +215,7 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
             FilteringOptions.Submitted => ("Pending DfE review", "pending DfE review adverts"),
             FilteringOptions.Closed => ("Closed adverts", "closed adverts"),
             FilteringOptions.Live => ("Live adverts", "live adverts"),
+            FilteringOptions.Review => ("Ready for review", "adverts ready for review"),
             FilteringOptions.Referred => ("Rejected adverts", "rejected adverts"),
             FilteringOptions.NewApplications => ("Adverts with new applications", "adverts with new applications"),
             FilteringOptions.NewSharedApplications or FilteringOptions.AllSharedApplications => ("Adverts with shared applications", "adverts with shared applications"),
