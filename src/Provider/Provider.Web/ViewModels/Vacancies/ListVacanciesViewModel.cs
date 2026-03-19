@@ -13,4 +13,5 @@ public class ListVacanciesViewModel
     public bool HasInfo => !string.IsNullOrEmpty(InfoMessage);
     public required VacanciesListViewModel ListViewModel { get; set; }
     public required VacanciesListSearchFilterViewModel FilterViewModel { get; set; }
+    public string NoVacanciesLabelText => $"There are no {PageHeading.ToLower()} vacancies in your account.";
 }
