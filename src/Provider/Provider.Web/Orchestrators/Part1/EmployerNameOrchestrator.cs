@@ -107,7 +107,7 @@ public class EmployerNameOrchestrator(
                     {
                         NewTradingName = model.NewTradingName,
                         EmployerIdentityOption = EmployerIdentityOption.NewTradingName
-                    }, profile, null, user);
+                    }, profile, null);
                 }
                 return Task.FromResult(new OrchestratorResponse(true));
             });

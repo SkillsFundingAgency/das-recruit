@@ -373,12 +373,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return employerProfileService.GetAsync(employerAccountId, accountLegalEntityPublicHashedId);
         }
 
-        public Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user)
+        public Task UpdateEmployerProfileAsync(EmployerProfile employerProfile)
         {
             var command = new UpdateEmployerProfileCommand
             {
                 Profile = employerProfile,
-                User = user
             };
 
             return messaging.SendCommandAsync(command);

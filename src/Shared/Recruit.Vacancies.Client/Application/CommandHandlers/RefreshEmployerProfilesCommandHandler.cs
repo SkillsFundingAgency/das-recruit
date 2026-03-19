@@ -38,13 +38,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
                     if (profiles.All(x => x.AccountLegalEntityPublicHashedId != accountLegalEntityPublicHashedId))
                     { 
-                        var currentTime = time.Now;
-
                         // Create new profile
                         var newProfile = new EmployerProfile
                         {
                             EmployerAccountId = message.EmployerAccountId,
-                            CreatedDate = currentTime,
                             AccountLegalEntityPublicHashedId = selectedOrganisation.AccountLegalEntityPublicHashedId
                         };
 

@@ -82,19 +82,12 @@ public class EmployerProfileService(ILogger<EmployerProfileService> logger,
 
     public async Task UpdateAsync(Domain.Entities.EmployerProfile profile)
     {
-        logger.LogTrace("Posting Employer Provider details to Outer Api");
+        logger.LogTrace("Patching Employer Provider details to Outer Api");
 
         var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-        var legalEntityId = encodingService.Decode(profile.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
-
         await retryPolicy.Execute(_ => outerApiClient.Post(
-                new PostEmployerProfileRequest(legalEntityId, new PostEmployerProfileRequest.PostEmployerProfileRequestData
-                {
-                    AccountId = Convert.ToInt32(profile.EmployerAccountId),
-                    AboutOrganisation = profile.AboutOrganisation,
-                    TradingName = profile.TradingName
-                })),
+                new PatchEmployerProfileRequest(ToEmployerProfile(profile))),
             new Dictionary<string, object>
             {
                 {
@@ -116,6 +109,7 @@ public class EmployerProfileService(ILogger<EmployerProfileService> logger,
     private static List<Address> MapOtherLocations(List<EmployerProfileAddress> sourceAddresses) =>
         sourceAddresses.ConvertAll(source => new Address
         {
+            Id = source.Id,
             AddressLine1 = source.AddressLine1,
             AddressLine2 = source.AddressLine2,
             AddressLine3 = source.AddressLine3,
@@ -124,4 +118,31 @@ public class EmployerProfileService(ILogger<EmployerProfileService> logger,
             Latitude = source.Latitude,
             Longitude = source.Longitude
         });
+
+    private Domain.EmployerProfiles.EmployerProfile ToEmployerProfile(Domain.Entities.EmployerProfile source)
+    {
+        var accountId = encodingService.Decode(source.EmployerAccountId, EncodingType.AccountId);
+        var accountLegalEntityId = encodingService.Decode(source.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
+        var addresses = source.OtherLocations != null ? MapOtherLocations(source.OtherLocations) : [];
+
+        return new Domain.EmployerProfiles.EmployerProfile(accountLegalEntityId, accountId, source.AboutOrganisation,
+            source.TradingName, addresses);
+    }
+
+    private static List<EmployerProfileAddress> MapOtherLocations(IList<Address> sourceAddresses)
+    {
+        if (sourceAddresses == null || sourceAddresses.Count == 0)
+            return [];
+
+        return sourceAddresses.Select(source => new EmployerProfileAddress(
+            source.Id,
+            source.AddressLine1,
+            source.AddressLine2,
+            source.AddressLine3,
+            source.AddressLine4,
+            source.Postcode,
+            source.Latitude,
+            source.Longitude
+        )).ToList();
+    }
 }
