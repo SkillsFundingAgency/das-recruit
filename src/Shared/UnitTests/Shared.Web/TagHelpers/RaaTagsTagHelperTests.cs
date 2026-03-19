@@ -1,4 +1,6 @@
-﻿using Esfa.Recruit.Shared.Web.TagHelpers;
+﻿using System.Linq;
+using Esfa.Recruit.Shared.Web.TagHelpers;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.TagHelpers;
@@ -70,6 +72,6 @@ public class RaaTagsTagHelperTests: TagHelperTestsBase
         await sut.ProcessAsync(TagHelperContext, TagHelperOutput);
 
         // assert
-        TagHelperOutput.AsString().Should().Be("""<strong class="govuk-tag--pink govuk-tag">Transferred from provider</strong>""");
+        TagHelperOutput.AsString().Should().Be("""<strong class="govuk-tag--purple govuk-tag">Transferred from provider</strong>""");
     }
 }
