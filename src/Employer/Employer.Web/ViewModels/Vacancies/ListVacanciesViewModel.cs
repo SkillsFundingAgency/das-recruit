@@ -15,5 +15,6 @@ public class ListVacanciesViewModel
     public required VacanciesListViewModel ListViewModel { get; set; }
     public required VacanciesListSearchFilterViewModel FilterViewModel { get; set; }
     public bool ShowReferredFromMaBackLink { get; set; }
-    public string NoVacanciesLabelText => $"There are no {PageHeading.ToLower()} adverts in your account.";
+    public string NoResultsHeadingText { get; set; }
+    public string NoResultsLabelText { get; set; }
 }

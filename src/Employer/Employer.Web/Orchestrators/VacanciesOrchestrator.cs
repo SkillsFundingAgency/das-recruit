@@ -41,6 +41,8 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
     {
         var alertsTask = employerAccountProvider.GetEmployerAlerts(hashedEmployerAccountId, userId);
         var pageHeading = GetPageHeading(filteringOption);
+        var noResultsMessage = GetNoResultsMessage(filteringOption);
+        var noResultsHeading = GetNoResultsHeading(filteringOption);
         var result = await GetVacancies(filteringOption, hashedEmployerAccountId, searchTerm, page, pageSize, sortColumn, sortOrder);
         var totalItems = Convert.ToInt32(result.PageInfo.TotalCount);
 
@@ -118,7 +120,9 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
                 Filter = filteringOption,
             },
             PageHeading = pageHeading,
-            EmployerAccountId = hashedEmployerAccountId
+            EmployerAccountId = hashedEmployerAccountId,
+            NoResultsHeadingText = noResultsHeading,
+            NoResultsLabelText = noResultsMessage,
         };
     }
 
@@ -203,19 +207,31 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
             : new GetVacanciesByEmployerAccountAndStatusApiRequest(employerAccountId, searchTerm, page, pageSize, options, sortColumn, sortOrder);
     }
 
-    private static string GetPageHeading(FilteringOptions filteringOption) =>
+    private static (string Heading, string Description) GetAdvertText(FilteringOptions filteringOption) =>
         filteringOption switch
         {
-            FilteringOptions.All => "All adverts",
-            FilteringOptions.Draft => "Draft adverts",
-            FilteringOptions.Submitted => "Pending DfE review",
-            FilteringOptions.Closed => "Closed adverts",
-            FilteringOptions.Live => "Live adverts",
-            FilteringOptions.Referred => "Rejected adverts",
-            FilteringOptions.NewApplications => "Adverts with new applications",
-            FilteringOptions.NewSharedApplications or FilteringOptions.AllSharedApplications => "Adverts with shared applications",
-            FilteringOptions.Transferred => "Adverts transferred from provider",
-            FilteringOptions.AllApplications => "Adverts with applications",
-            _ => "Adverts"
+            FilteringOptions.All => ("All adverts", "adverts"),
+            FilteringOptions.Draft => ("Draft adverts", "draft adverts"),
+            FilteringOptions.Submitted => ("Pending DfE review", "pending DfE review adverts"),
+            FilteringOptions.Closed => ("Closed adverts", "closed adverts"),
+            FilteringOptions.Live => ("Live adverts", "live adverts"),
+            FilteringOptions.Referred => ("Rejected adverts", "rejected adverts"),
+            FilteringOptions.NewApplications => ("Adverts with new applications", "adverts with new applications"),
+            FilteringOptions.NewSharedApplications or FilteringOptions.AllSharedApplications => ("Adverts with shared applications", "adverts with shared applications"),
+            FilteringOptions.Transferred => ("Adverts transferred from provider", "adverts transferred from provider"),
+            FilteringOptions.AllApplications => ("Adverts with applications", "adverts with applications"),
+            _ => ("Adverts", "adverts")
         };
+
+    private static string GetPageHeading(FilteringOptions filteringOption) =>
+        GetAdvertText(filteringOption).Heading;
+
+    private static string GetAdvertDescription(FilteringOptions filteringOption) =>
+        GetAdvertText(filteringOption).Description;
+
+    private static string GetNoResultsMessage(FilteringOptions filteringOption) =>
+        $"There are no {GetAdvertDescription(filteringOption)} in your account";
+
+    private static string GetNoResultsHeading(FilteringOptions filteringOption) =>
+        $"0 {GetAdvertDescription(filteringOption)}";
 }

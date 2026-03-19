@@ -40,6 +40,8 @@ public class VacanciesOrchestrator(
         var alertsTask = trainingProviderService.GetProviderAlerts(ukprn, userId);
 
         var pageHeading = GetPageHeading(filteringOption);
+        var noResultsMessage = GetNoResultsMessage(filteringOption);
+        var noResultsHeading = GetNoResultsHeading(filteringOption);
         var result = await GetVacancies(filteringOption, ukprn, searchTerm, page, pageSize, sortColumn, sortOrder);
         var totalItems = Convert.ToInt32(result.PageInfo.TotalCount);
         
@@ -99,6 +101,8 @@ public class VacanciesOrchestrator(
             },
             PageHeading = pageHeading,
             Ukprn = ukprn,
+            NoResultsHeadingText = noResultsHeading,
+            NoResultsLabelText = noResultsMessage,
         };
     }
 
@@ -185,19 +189,31 @@ public class VacanciesOrchestrator(
             ukprn, searchTerm, page, pageSize, options, sortColumn, sortOrder);
     }
 
-    private static string GetPageHeading(FilteringOptions filteringOption) =>
+    private static (string Heading, string Description) GetVacancyText(FilteringOptions filteringOption) =>
         filteringOption switch
         {
-            FilteringOptions.All => "All vacancies",
-            FilteringOptions.Draft => "Draft vacancies",
-            FilteringOptions.Review => "Pending employer review",
-            FilteringOptions.Submitted => "Pending DfE review",
-            FilteringOptions.Live => "Live vacancies",
-            FilteringOptions.Closed => "Closed vacancies",
-            FilteringOptions.Referred => "Rejected vacancies",
-            FilteringOptions.AllApplications => "Vacancies with applications",
-            FilteringOptions.NewApplications => "Vacancies with new applications",
-            FilteringOptions.EmployerReviewedApplications => "Employer reviewed applications",
-            _ => "Vacancies"
+            FilteringOptions.All => ("All vacancies", "vacancies"),
+            FilteringOptions.Draft => ("Draft vacancies", "draft vacancies"),
+            FilteringOptions.Review => ("Pending employer review", "pending employer review"),
+            FilteringOptions.Submitted => ("Pending DfE review", "pending DfE review"),
+            FilteringOptions.Live => ("Live vacancies", "live vacancies"),
+            FilteringOptions.Closed => ("Closed vacancies", "closed vacancies"),
+            FilteringOptions.Referred => ("Rejected vacancies", "rejected vacancies"),
+            FilteringOptions.AllApplications => ("Vacancies with applications", "vacancies with applications"),
+            FilteringOptions.NewApplications => ("Vacancies with new applications", "vacancies with new applications"),
+            FilteringOptions.EmployerReviewedApplications => ("Employer reviewed applications", "employer reviewed applications"),
+            _ => ("Vacancies", "vacancies")
         };
+
+    private static string GetPageHeading(FilteringOptions filteringOption) =>
+        GetVacancyText(filteringOption).Heading;
+
+    private static string GetVacanciesDescription(FilteringOptions filteringOption) =>
+        GetVacancyText(filteringOption).Description;
+
+    private static string GetNoResultsMessage(FilteringOptions filteringOption) =>
+        $"There are no {GetVacanciesDescription(filteringOption)} in your account";
+
+    private static string GetNoResultsHeading(FilteringOptions filteringOption) =>
+        $"0 {GetVacanciesDescription(filteringOption)}";
 }
