@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.EmployerProfiles;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.EmployerProfiles;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses.EmployerProfiles;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Encoding;
 
@@ -16,24 +14,29 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerProfile;
 
 public class EmployerProfileService(ILogger<EmployerProfileService> logger,
     IOuterApiClient outerApiClient,
-    EncodingService encodingService) : IEmployerProfileService
+    IEncodingService encodingService) : IEmployerProfileService
 {
     public async Task CreateAsync(Domain.Entities.EmployerProfile profile)
     {
-        logger.LogTrace("Getting employer profile Details from Outer Api");
+        logger.LogTrace("Posting Employer Provider details to Outer Api");
 
         var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-        var result = await retryPolicy.Execute(_ =>
-                outerApiClient.Get<GetProviderResponseItem>(new GetProviderRequest(ukprn)),
+        var legalEntityId = encodingService.Decode(profile.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
+
+        await retryPolicy.Execute(_ => outerApiClient.Post(
+                new PostEmployerProfileRequest(legalEntityId, new PostEmployerProfileRequest.PostEmployerProfileRequestData
+                {
+                    AccountId = Convert.ToInt32(profile.EmployerAccountId),
+                    AboutOrganisation = profile.AboutOrganisation,
+                    TradingName = profile.TradingName
+                })),
             new Dictionary<string, object>
             {
                 {
                     "apiCall", "EmployerProfile"
                 }
             });
-
-        return result;
     }
 
     public async Task<IList<Domain.Entities.EmployerProfile>> GetEmployerProfilesForEmployerAsync(
@@ -45,7 +48,7 @@ public class EmployerProfileService(ILogger<EmployerProfileService> logger,
 
         var accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
         var result = await retryPolicy.Execute(_ =>
-                outerApiClient.Get<List<Domain.EmployerProfiles.EmployerProfile>>(new GetEmployerProfilesByAccountIdRequest(accountId)),
+                outerApiClient.Get<GetEmployerProfilesByAccountIdResponse>(new GetEmployerProfilesByAccountIdRequest(accountId)),
             new Dictionary<string, object>
             {
                 {
@@ -53,7 +56,7 @@ public class EmployerProfileService(ILogger<EmployerProfileService> logger,
                 }
             });
 
-        return result.Select(MapEmployerProfile).ToList();
+        return result.EmployerProfiles.Select(MapEmployerProfile).ToList();
     }
 
     public async Task<Domain.Entities.EmployerProfile> GetAsync(string hashedAccountId,
@@ -63,9 +66,10 @@ public class EmployerProfileService(ILogger<EmployerProfileService> logger,
 
         var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-        var accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
+        var legalEntityId = encodingService.Decode(accountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
+
         var result = await retryPolicy.Execute(_ =>
-                outerApiClient.Get<Domain.EmployerProfiles.EmployerProfile>(new GetEmployerProfilesByAccountIdRequest(accountId)),
+                outerApiClient.Get<GetEmployerProfilesByLegalEntityIdResponse>(new GetEmployerProfileByLegalEntityIdRequest(legalEntityId)),
             new Dictionary<string, object>
             {
                 {
@@ -73,22 +77,43 @@ public class EmployerProfileService(ILogger<EmployerProfileService> logger,
                 }
             });
 
-        return result.Select(MapEmployerProfile).ToList();
+        return MapEmployerProfile(result.EmployerProfile);
     }
 
-    public async Task UpdateAsync(Domain.Entities.EmployerProfile profile) => throw new NotImplementedException();
+    public async Task UpdateAsync(Domain.Entities.EmployerProfile profile)
+    {
+        logger.LogTrace("Posting Employer Provider details to Outer Api");
 
-    private static Domain.Entities.EmployerProfile MapEmployerProfile(Domain.EmployerProfiles.EmployerProfile source) =>
+        var retryPolicy = PollyRetryPolicy.GetPolicy();
+
+        var legalEntityId = encodingService.Decode(profile.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
+
+        await retryPolicy.Execute(_ => outerApiClient.Post(
+                new PostEmployerProfileRequest(legalEntityId, new PostEmployerProfileRequest.PostEmployerProfileRequestData
+                {
+                    AccountId = Convert.ToInt32(profile.EmployerAccountId),
+                    AboutOrganisation = profile.AboutOrganisation,
+                    TradingName = profile.TradingName
+                })),
+            new Dictionary<string, object>
+            {
+                {
+                    "apiCall", "EmployerProfile"
+                }
+            });
+    }
+
+    private Domain.Entities.EmployerProfile MapEmployerProfile(Domain.EmployerProfiles.EmployerProfile source) =>
         new()
         {
-            EmployerAccountId = source.AccountId.ToString(),
-            AccountLegalEntityPublicHashedId = source.AccountLegalEntityId.ToString(),
+            EmployerAccountId = encodingService.Encode(source.AccountId, EncodingType.AccountId),
+            AccountLegalEntityPublicHashedId = encodingService.Encode(source.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
             AboutOrganisation = source.AboutOrganisation,
             TradingName = source.TradingName,
-            OtherLocations = source.Addresses != null ? MapOtherLocations(source.Addresses) : new List<Address>()
+            OtherLocations = source.Addresses != null ? MapOtherLocations(source.Addresses) : []
         };
 
-    private static IList<Address> MapOtherLocations(List<EmployerProfileAddress> sourceAddresses) =>
+    private static List<Address> MapOtherLocations(List<EmployerProfileAddress> sourceAddresses) =>
         sourceAddresses.ConvertAll(source => new Address
         {
             AddressLine1 = source.AddressLine1,

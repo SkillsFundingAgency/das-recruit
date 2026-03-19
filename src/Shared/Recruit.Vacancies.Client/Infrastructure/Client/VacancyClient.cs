@@ -18,6 +18,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employ
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerProfile;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Report;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancyAnalytics;
@@ -38,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IEmployerAccountProvider employerAccountProvider,
         IVacancyReviewQuery vacancyReviewQuery,
         IVacancyService vacancyService,
-        IEmployerProfileRepository employerProfileRepository,
+        IEmployerProfileService employerProfileService,
         IUserRepository userRepository,
         IUserRepositoryRunner userWriteRepository,
         IEmployerService employerService,
@@ -369,7 +370,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
         {
-            return employerProfileRepository.GetAsync(employerAccountId, accountLegalEntityPublicHashedId);
+            return employerProfileService.GetAsync(employerAccountId, accountLegalEntityPublicHashedId);
         }
 
         public Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user)

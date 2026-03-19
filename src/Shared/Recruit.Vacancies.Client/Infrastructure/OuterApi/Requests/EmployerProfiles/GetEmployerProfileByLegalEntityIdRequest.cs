@@ -2,5 +2,5 @@
 
 public record GetEmployerProfileByLegalEntityIdRequest(long AccountLegalEntityId) : IGetApiRequest
 {
-    public string GetUrl => $"employer//profiles/{AccountLegalEntityId}";
+    public string GetUrl => $"employer/profiles/{AccountLegalEntityId}";
 }
