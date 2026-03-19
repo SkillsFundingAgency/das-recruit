@@ -1,0 +1,33 @@
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@model Esfa.Recruit.Vacancies.Client.Domain.Entities.OwnerType
+@{
+    var labelTxt = Model == OwnerType.Employer 
+    ? "advert"
+    : "vacancy";
+    var surveyUrl = Model == OwnerType.Employer
+    ? "https://dferesearch.fra1.qualtrics.com/jfe/form/SV_3OiVvoxVFegKIdM?"
+    : "https://dferesearch.fra1.qualtrics.com/jfe/form/SV_e5uTVS95WhLOVPo?";
+
+}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                    Important
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <p class="govuk-notification-banner__heading">
+                    Help improve @labelTxt analytics
+                </p>
+                <p class="govuk-body">
+                    Tell us what you think about @labelTxt analytics by
+                    <a href="@surveyUrl" rel="noopener" target="_blank" class="govuk-link">
+                        completing a short survey.
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
