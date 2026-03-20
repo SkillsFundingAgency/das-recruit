@@ -2,7 +2,7 @@
 @model Esfa.Recruit.Provider.Web.ViewModels.Vacancies.ListVacanciesViewModel
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancies";
-    ViewBag.Title = Model.PageHeading;
+    ViewBag.Title = $"{Model.PageHeading} vacancies";
 }
 <partial name="@PartialNames.Alerts" for="Alerts" />
 <div asp-show="@Model.HasWarning" class="das-notification das-notification--warning">

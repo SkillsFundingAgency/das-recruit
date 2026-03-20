@@ -212,7 +212,7 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
         {
             FilteringOptions.All => ("All adverts", "adverts"),
             FilteringOptions.Draft => ("Draft adverts", "draft adverts"),
-            FilteringOptions.Submitted => ("Pending DfE review", "pending DfE review adverts"),
+            FilteringOptions.Submitted => ("Pending DfE review", "adverts pending DfE review"),
             FilteringOptions.Closed => ("Closed adverts", "closed adverts"),
             FilteringOptions.Live => ("Live adverts", "live adverts"),
             FilteringOptions.Review => ("Ready for review", "adverts ready for review"),

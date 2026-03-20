@@ -194,7 +194,7 @@ public class VacanciesOrchestrator(
         {
             FilteringOptions.All => ("All vacancies", "vacancies"),
             FilteringOptions.Draft => ("Draft vacancies", "draft vacancies"),
-            FilteringOptions.Review => ("Pending employer review", "pending employer review vacancies"),
+            FilteringOptions.Review => ("Pending employer review", "vacancies pending employer review"),
             FilteringOptions.Submitted => ("Pending DfE review", "pending DfE review vacancies"),
             FilteringOptions.Live => ("Live vacancies", "live vacancies"),
             FilteringOptions.Closed => ("Closed vacancies", "closed vacancies"),

@@ -2,7 +2,7 @@
 @model Esfa.Recruit.Employer.Web.ViewModels.Vacancies.ListVacanciesViewModel
 @{
     ViewBag.Vpv = "/recruitment/employer/page-vacancies";
-    ViewBag.Title = Model.PageHeading;
+    ViewBag.Title = $"{Model.PageHeading} adverts";
 }
 <partial name="@PartialNames.Alerts" for="Alerts" />
 <div asp-show="@Model.HasWarning" class="das-notification das-notification--warning">
