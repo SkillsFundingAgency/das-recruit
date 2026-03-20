@@ -45,8 +45,8 @@
                     <td class="govuk-table__cell" data-label="Vacancy reference number">
                         <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
                         <div class="govuk-!-margin-top-1">
-                            <govuk-tag-api-submitted asp-show="@vacancy.SourceOrigin == @SourceOrigin.Api && @Model.ShowSourceOrigin" class="app-tag" />
-                            <govuk-tag-transferred-from-provider asp-show="@vacancy.IsTransferredVacancy" class="app-tag--large"/>
+                            <govuk-tag-api-submitted asp-show="@vacancy.SourceOrigin == @SourceOrigin.Api && @Model.ShowSourceOrigin" class="app-tag govuk-!-margin-top-1" />
+                            <govuk-tag-transferred-from-provider asp-show="@vacancy.IsTransferredVacancy" class="app-tag govuk-!-margin-top-1"/>
                         </div>
                     </td>
                     <td asp-show="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">
@@ -67,7 +67,7 @@
                     <td asp-show="@(!vacancy.CanShowVacancyApplicationsCount)" class="govuk-table__cell" data-label="Applications">-</td>
                     <td class="govuk-table__cell" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
                     <td class="govuk-table__cell" data-label="Status">
-                        <span class="govuk-tag app-tag app-tag--@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName(Model.UserType)</span>
+                        <govuk-tag-vacancy-status status="@vacancy.Status" user-type="Model.UserType" class="app-tag"/>
                     </td>
                     <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Action">
                         @{

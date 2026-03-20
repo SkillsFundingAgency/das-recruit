@@ -1,4 +1,6 @@
-﻿using Esfa.Recruit.Shared.Web.TagHelpers;
+﻿using System.Linq;
+using Esfa.Recruit.Shared.Web.TagHelpers;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.TagHelpers;
