@@ -200,7 +200,7 @@ public class VacanciesOrchestrator(
             FilteringOptions.Closed => ("Closed vacancies", "closed vacancies"),
             FilteringOptions.Referred => ("Rejected vacancies", "rejected vacancies"),
             FilteringOptions.AllApplications => ("Vacancies with applications", "vacancies with applications"),
-            FilteringOptions.NewApplications => ("Vacancies with new applications", "vacancies with new applications"),
+            FilteringOptions.NewApplications => ("Vacancies with new applications", "new applications"),
             FilteringOptions.EmployerReviewedApplications => ("Employer reviewed applications", "employer reviewed applications"),
             _ => ("Vacancies", "vacancies")
         };
