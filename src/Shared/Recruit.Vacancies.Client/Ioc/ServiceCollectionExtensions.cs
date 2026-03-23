@@ -183,7 +183,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
             services.AddTransient<MongoDbCollectionChecker>();
             //Repositories
-            services.AddKeyedTransient<IVacancyRepository, SqlVacancyRepository>("sql");
+            services.AddTransient<IVacancyRepository, SqlVacancyRepository>();
             
             services.AddTransient<IVacancyReviewRepository, VacancyReviewService>();
 
@@ -207,6 +207,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             
             //Queries
             services.AddTransient<IVacancyQuery, SqlVacancyQuery>(); // replaces MongoDbVacancyRepository
+            services.AddTransient<IVacancyReviewQuery, VacancyReviewService>();
 
             services.AddTransient<IQueryStoreReader, QueryStoreClient>();
             services.AddTransient<IQueryStoreWriter, QueryStoreClient>();

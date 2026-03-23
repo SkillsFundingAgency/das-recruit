@@ -12,7 +12,10 @@ using SFA.DAS.Encoding;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 
-public class VacancyReviewService(IOuterApiClient outerApiClient, IEncodingService encodingService, IFeature feature) : IVacancyReviewRepository, IVacancyReviewQuery
+public class VacancyReviewService(IOuterApiClient outerApiClient,
+    IEncodingService encodingService,
+    IFeature feature)
+    : IVacancyReviewRepository, IVacancyReviewQuery
 {
     public async Task CreateAsync(Domain.Entities.VacancyReview vacancyReview)
     {
