@@ -1,59 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Events;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
-using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.VacancyComparer;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class CreateVacancyReviewCommandHandler: IRequestHandler<CreateVacancyReviewCommand, Unit>
+    public class CreateVacancyReviewCommandHandler(
+        ILogger<CreateVacancyReviewCommandHandler> logger,
+        IVacancyRepository vacancyRepository,
+        IVacancyReviewRepository vacancyReviewRepository,
+        IVacancyReviewQuery vacancyReviewQuery,
+        IVacancyService vacancyService,
+        ITimeProvider time,
+        ISlaService slaService,
+        IVacancyComparerService vacancyComparerService)
+        : IRequestHandler<CreateVacancyReviewCommand, Unit>
     {
-        private readonly ILogger<CreateVacancyReviewCommandHandler> _logger;
-        private readonly IVacancyRepository _vacancyRepository;
-        private readonly IVacancyReviewRepository _vacancyReviewRepository;
-        private readonly IVacancyReviewQuery _vacancyReviewQuery;
-        private readonly IVacancyService _vacancyService;
-        private readonly ITimeProvider _time;
-        private readonly ISlaService _slaService;
-        private readonly IVacancyComparerService _vacancyComparerService;
-
-        public CreateVacancyReviewCommandHandler(
-            ILogger<CreateVacancyReviewCommandHandler> logger,
-            IVacancyRepository vacancyRepository,
-            IVacancyReviewRepository vacancyReviewRepository,
-            IVacancyReviewQuery vacancyReviewQuery, 
-            IVacancyService vacancyService, 
-            ITimeProvider time,
-            ISlaService slaService,
-            IVacancyComparerService vacancyComparerService)
-        {
-            _logger = logger;
-            _vacancyRepository = vacancyRepository;
-            _vacancyReviewRepository = vacancyReviewRepository;
-            _vacancyReviewQuery = vacancyReviewQuery;
-            _vacancyService = vacancyService;
-            _time = time;
-            _slaService = slaService;
-            _vacancyComparerService = vacancyComparerService;
-        }
-
         public async Task<Unit> Handle(CreateVacancyReviewCommand message, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Creating vacancy review for vacancy {vacancyReference}.", message.VacancyReference);
+            logger.LogInformation("Creating vacancy review for vacancy {vacancyReference}.", message.VacancyReference);
 
-            var vacancyTask = _vacancyRepository.GetVacancyAsync(message.VacancyReference);
-            var previousReviewsTask = _vacancyReviewQuery.GetForVacancyAsync(message.VacancyReference);
+            var vacancyTask = vacancyRepository.GetVacancyAsync(message.VacancyReference);
+            var previousReviewsTask = vacancyReviewQuery.GetForVacancyAsync(message.VacancyReference);
 
             await Task.WhenAll(vacancyTask, previousReviewsTask);
 
@@ -64,19 +41,19 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             var activePreviousReview = previousReviews.FirstOrDefault(r => r.Status != ReviewStatus.Closed);
             if (activePreviousReview != null)
             {
-                _logger.LogWarning($"Cannot create review for vacancy {message.VacancyReference} as an active review {activePreviousReview.Id} already exists.");
+                logger.LogWarning("Cannot create review for vacancy {MessageVacancyReference} as an active review {Guid} already exists.", message.VacancyReference, activePreviousReview.Id);
                 return Unit.Value;
             }
 
-            var slaDeadline = await _slaService.GetSlaDeadlineAsync(vacancy.SubmittedDate.Value);
+            var slaDeadline = await slaService.GetSlaDeadlineAsync(vacancy.SubmittedDate.GetValueOrDefault());
 
             var updatedFields = GetUpdatedFields(vacancy, previousReviews);
 
             var review = BuildNewReview(vacancy, previousReviews.Count, slaDeadline, updatedFields, previousReviews.OrderByDescending(c=>c.SubmissionCount).FirstOrDefault());
 
-            await _vacancyReviewRepository.CreateAsync(review);
+            await vacancyReviewRepository.CreateAsync(review);
 
-            await _vacancyService.PerformRulesCheckAsync(review.Id);
+            await vacancyService.PerformRulesCheckAsync(review.Id);
             
             return Unit.Value;
         }
@@ -86,10 +63,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             var review = new VacancyReview
             {
                 Id = Guid.NewGuid(),
-                VacancyReference = vacancy.VacancyReference.Value,
+                VacancyReference = vacancy.VacancyReference.GetValueOrDefault(),
                 Title = vacancy.Title,
                 Status = ReviewStatus.New,    
-                CreatedDate = _time.Now,
+                CreatedDate = time.Now,
                 SubmittedByUser = vacancy.SubmittedByUser,
                 SubmissionCount = previousReviewCount + 1,
                 SlaDeadline = slaDeadline,
@@ -107,7 +84,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if(previousReview == null)
                 return new List<string>();
 
-            var comparison = _vacancyComparerService.Compare(vacancy, previousReview.VacancySnapshot);
+            var comparison = vacancyComparerService.Compare(vacancy, previousReview.VacancySnapshot);
 
             return comparison.Fields
                 .Where(f => f.AreEqual == false)
