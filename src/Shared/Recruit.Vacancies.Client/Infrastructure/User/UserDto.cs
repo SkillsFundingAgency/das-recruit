@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using SFA.DAS.Encoding;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 
@@ -11,7 +13,7 @@ public class UserDto
     public required string Email { get; set; }
     public DateTime CreatedDate { get; set; }
     public DateTime LastSignedInDate { get; set; }
-    public IList<string> EmployerAccountIds { get; set; } = new List<string>();
+    public IList<long> EmployerAccountIds { get; set; } = [];
     public long? Ukprn { get; set; }
     public DateTime? TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn { get; set; }
     public DateTime? ClosedVacanciesBlockedProviderAlertDismissedOn { get; set; }
@@ -19,8 +21,9 @@ public class UserDto
     public DateTime? ClosedVacanciesWithdrawnByQaAlertDismissedOn { get; set; }
     public string? DfEUserId { get; set; }
     
-    public static explicit operator UserDto(Domain.Entities.User source)
+    public static UserDto From(Domain.Entities.User source, IEncodingService encodingService)
     {
+        var employerAccountIds = source.EmployerAccountIds.Select(x => encodingService.Decode(x, EncodingType.AccountId)).ToList();
         return new UserDto
         {
             Name = source.Name,
@@ -30,7 +33,7 @@ public class UserDto
             CreatedDate = source.CreatedDate,
             LastSignedInDate = source.LastSignedInDate,
             Ukprn = source.Ukprn,
-            EmployerAccountIds = source.EmployerAccountIds,
+            EmployerAccountIds = employerAccountIds,
             DfEUserId = source.DfEUserId,
             ClosedVacanciesBlockedProviderAlertDismissedOn = source.ClosedVacanciesBlockedProviderAlertDismissedOn,
             TransferredVacanciesBlockedProviderAlertDismissedOn = source.TransferredVacanciesBlockedProviderAlertDismissedOn,
