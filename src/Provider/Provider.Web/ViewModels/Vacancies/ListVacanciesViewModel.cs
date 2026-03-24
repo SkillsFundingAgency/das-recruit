@@ -13,4 +13,6 @@ public class ListVacanciesViewModel
     public bool HasInfo => !string.IsNullOrEmpty(InfoMessage);
     public required VacanciesListViewModel ListViewModel { get; set; }
     public required VacanciesListSearchFilterViewModel FilterViewModel { get; set; }
+    public string NoResultsHeadingText { get; set; }
+    public string NoResultsLabelText { get; set; }
 }

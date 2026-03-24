@@ -32,6 +32,13 @@ namespace Esfa.Recruit.Shared.Web.Helpers
                     words.Add("pending DfE review"); /* custom wording for submitted vacancies as this is needs to be in lower case
                                                       and is not the same as the display name for submitted vacancies which is "Pending DfE review" */
                     break;
+                case FilteringOptions.EmployerReviewedApplications:
+                    words.Add(totalVacancies == 1
+                        ? "employer reviewed application"
+                        : "employer reviewed applications");
+                       /* custom wording for employer reviewed applications as this is needs to be in lower case
+                                                      and is not the same as the display name for employer reviewed applications which is employer reviewed applications */
+                    break;
                 default:
                     words.Add(vacancyWord);
                     words.Add(filteringOption.GetDisplayName(userType).ToLowerInvariant());
