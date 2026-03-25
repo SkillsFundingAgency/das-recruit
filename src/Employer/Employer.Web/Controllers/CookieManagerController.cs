@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (IsValidReturnUrl(returnUrl))
                 return Redirect(returnUrl);
 
-            return RedirectToRoute(RouteNames.Vacancies_Get);
+            return RedirectToRoute(RouteNames.VacanciesGetAll);
         }
 
         private bool IsValidReturnUrl(string returnUrl)
