@@ -82,7 +82,7 @@ public class TransferredFromProviderTagHelper : RaaTagsTagHelper
 
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
-        output.AddClass("govuk-tag--pink", HtmlEncoder.Default);
+        output.AddClass("govuk-tag--purple", HtmlEncoder.Default);
         await base.ProcessAsync(context, output);
     }
 

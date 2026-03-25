@@ -17,6 +17,7 @@
 {
     <a asp-hide="@Model.HasAnyVacancies" asp-route="@RouteNames.Dashboard_Account_Home" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-back-link">Back</a>
 }
+<partial name="_AnalyticsSurveyBannerPartial" model="@OwnerType.Employer" />
 <partial asp-hide="@Model.HasAnyVacancies" name="_NoVacanciesContent" model="@(new VacancyRouteModel { EmployerAccountId = Model.EmployerAccountId })" />
 <div asp-show="@Model.HasAnyVacancies">
     <partial name="@PartialNames.Alerts" for="Alerts" />
@@ -71,7 +72,7 @@
                 <div class="app-card__content">
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.VacancyCountReview</span>
-                        <a asp-show="@Model.HasEmployerReviewPermission" asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.Review" class="govuk-link govuk-link--no-visited-state">
+                        <a asp-show="@Model.HasEmployerReviewPermission" asp-route="@RouteNames.VacanciesGetAll" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.Review" class="govuk-link govuk-link--no-visited-state">
                             @FilteringOptions.Review @Model.VacancyTextReview
                         </a>
                         <span asp-hide="@Model.HasEmployerReviewPermission">@FilteringOptions.Review @Model.VacancyTextReview</span>

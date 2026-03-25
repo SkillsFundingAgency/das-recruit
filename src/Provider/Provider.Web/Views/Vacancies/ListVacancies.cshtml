@@ -2,7 +2,7 @@
 @model Esfa.Recruit.Provider.Web.ViewModels.Vacancies.ListVacanciesViewModel
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancies";
-    ViewBag.Title = Model.PageHeading;
+    ViewBag.Title = $"{Model.PageHeading} vacancies";
 }
 <partial name="@PartialNames.Alerts" for="Alerts" />
 <div asp-show="@Model.HasWarning" class="das-notification das-notification--warning">
@@ -30,5 +30,14 @@
 }
 else
 {
-    <p class="govuk-body">No vacancies match the criteria</p>
+    <div class="govuk-grid-row govuk-!-padding-top-7 govuk-!-padding-bottom-9">
+        <div class="govuk-grid-column-full">
+            <h3 class="govuk-heading-s">
+                @Model.NoResultsHeadingText
+            </h3>
+            <p class="gov-body das-!-color-dark-grey">
+                @Model.NoResultsLabelText
+            </p>
+        </div>
+    </div>
 }
