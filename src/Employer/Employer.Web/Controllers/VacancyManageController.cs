@@ -32,7 +32,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             [FromQuery] string sortColumn,
             [FromQuery] string sortOrder,
             [FromQuery] string locationFilter = "All",
-            [FromQuery] int page = 1)
+            [FromQuery] int page = 1,
+            [FromQuery] FilteringOptions filteringOptions = FilteringOptions.All)
         {
             EnsureProposedChangesCookiesAreCleared(vrm.VacancyId);
 
@@ -65,6 +66,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 viewModel.ApplicationReviewsUnsuccessfulBannerHeader = TempData[TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage].ToString();
             }
 
+            viewModel.FilteringOptions = filteringOptions;
             return View(viewModel);
         }
 
@@ -106,7 +108,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             EnsureProposedChangesCookiesAreCleared(m.VacancyId);
 
-            return RedirectToRoute(RouteNames.Vacancies_Get, new {m.VacancyId, m.EmployerAccountId});
+            return RedirectToRoute(RouteNames.VacanciesGetAll, new {m.VacancyId, m.EmployerAccountId});
         }
 
         [HttpGet("cancel-vacancy-changes", Name = RouteNames.CancelVacancyChanges_Get)]
@@ -114,7 +116,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             EnsureProposedChangesCookiesAreCleared(vrm.VacancyId);
             
-            return RedirectToRoute(RouteNames.Vacancies_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
+            return RedirectToRoute(RouteNames.VacanciesGetAll, new {vrm.VacancyId, vrm.EmployerAccountId});
         }
 
         private void EnsureProposedChangesCookiesAreCleared(Guid vacancyId)

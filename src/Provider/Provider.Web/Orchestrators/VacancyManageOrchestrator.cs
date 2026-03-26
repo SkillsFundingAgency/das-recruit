@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             {
                 Title = vacancy.Title,
                 Status = vacancy.Status,
-                VacancyReference = vacancy.VacancyReference.Value.ToString(),
+                VacancyReference = vacancy.VacancyReference.GetValueOrDefault().ToString(),
                 Ukprn = vacancyRouteModel.Ukprn,
                 VacancyId = vacancyRouteModel.VacancyId,
                 ApprenticeshipType = vacancy.GetApprenticeshipType(),
@@ -76,8 +76,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 viewModel.WithdrawnDate = vacancy.ClosedDate?.AsGdsDate();
             }
 
-            var vacancyApplications = await client.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, sortColumn, sortOrder);
-            int totalUnfilteredApplicationsCount = vacancyApplications?.Count ?? 0;
+            var vacancyApplications = await client.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.GetValueOrDefault(), sortColumn, sortOrder);
+            var totalUnfilteredApplicationsCount = vacancyApplications?.Count ?? 0;
 
             var applications = string.IsNullOrEmpty(locationFilter)
                                || locationFilter.Equals("All", StringComparison.CurrentCultureIgnoreCase)

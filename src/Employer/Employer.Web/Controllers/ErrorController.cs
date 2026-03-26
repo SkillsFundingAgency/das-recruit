@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 {
                     _logger.LogWarning(exception, "Exception on path: {route}", routeWhereExceptionOccurred);
                     AddDashboardMessage(exception.Message);
-                    return RedirectToRoute(RouteNames.Vacancies_Get, new { EmployerAccountId = employerAccountId });
+                    return RedirectToRoute(RouteNames.VacanciesGetAll, new { EmployerAccountId = employerAccountId });
                 }
 
                 if (exception is InvalidRouteForVacancyException invalidRouteException)
