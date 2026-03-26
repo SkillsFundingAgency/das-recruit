@@ -7,7 +7,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Services.NextVacancyReview;
 using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Application.Services.Reports;
 using Esfa.Recruit.Vacancies.Client.Application.Services.VacancyComparer;
@@ -106,7 +105,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
         {
             // Configuration
             services.AddSingleton(configuration);
-            services.Configure<NextVacancyReviewServiceConfiguration>(o => o.VacancyReviewAssignationTimeoutMinutes = configuration.GetValue<int>("RecruitConfiguration:VacancyReviewAssignationTimeoutMinutes"));
             services.Configure<OuterApiConfiguration>(configuration.GetSection("OuterApiConfiguration"));
 
             // Domain services
@@ -117,7 +115,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IVacancyService, VacancyService>();
             services.AddTransient<IVacancyTransferService, VacancyTransferService>();
             services.AddTransient<IVacancyReviewTransferService, VacancyReviewTransferService>();
-            services.AddTransient<INextVacancyReviewService, NextVacancyReviewService>();
             services.AddTransient<IVacancyComparerService, VacancyComparerService>();
             services.AddTransient<ICache, Cache>();
             services.AddTransient<IHtmlSanitizerService, HtmlSanitizerService>();

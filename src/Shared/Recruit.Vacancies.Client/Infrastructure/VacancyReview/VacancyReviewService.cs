@@ -48,14 +48,28 @@ public class VacancyReviewService(IOuterApiClient outerApiClient,
 
     public async Task<Domain.Entities.VacancyReview> GetLatestReviewByReferenceAsync(long vacancyReference)
     {
-        var result = await outerApiClient.Get<GetVacancyReviewListResponse>(new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference, "latest"));
+        var result = await outerApiClient.Get<GetVacancyReviewListResponse>(new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference));
         
         if (result == null)
         {
             return null;
         }
-        
-        return (Domain.Entities.VacancyReview)result.VacancyReviews.FirstOrDefault();
+
+        var filtered = result.VacancyReviews
+            .Where(r =>
+                r.VacancyReference == vacancyReference &&
+                (
+                    r.ManualOutcome == null ||
+                    (
+                        r.ManualOutcome != ManualQaOutcome.Transferred.ToString() &&
+                        r.ManualOutcome != ManualQaOutcome.Blocked.ToString()
+                    )
+                )
+            )
+            .OrderByDescending(r => r.CreatedDate)
+            .FirstOrDefault();
+
+        return (Domain.Entities.VacancyReview)filtered;
     }
 
     public async Task<List<Domain.Entities.VacancyReview>> GetByStatusAsync(ReviewStatus status)
@@ -66,13 +80,20 @@ public class VacancyReviewService(IOuterApiClient outerApiClient,
 
     public async Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
     {
-        var result = await outerApiClient.Get<GetVacancyReviewResponse>(new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference, "latestReferred"));
+        var result = await outerApiClient.Get<GetVacancyReviewListResponse>(new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference, ReviewStatus.Closed));
         
         if (result == null)
         {
             return null;
         }
-        
-        return (Domain.Entities.VacancyReview)result.VacancyReview;
+
+        var filtered = result.VacancyReviews
+            .Where(r =>
+                r.Status == ReviewStatus.Closed.ToString() &&
+                r.ManualOutcome == ManualQaOutcome.Referred.ToString())
+            .OrderByDescending(r => r.ClosedDate)
+            .FirstOrDefault();
+
+        return (Domain.Entities.VacancyReview)filtered;
     }
 }

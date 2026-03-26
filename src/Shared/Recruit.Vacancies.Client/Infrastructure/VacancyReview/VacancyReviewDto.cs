@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 public class VacancyReviewDto
 {
     public Guid Id { get; init; }
-    public long VacancyReference { get; init; }
+    public long VacancyReference { get; set; }
     public required string VacancyTitle { get; init; }
     public required DateTime CreatedDate { get; init; }
     public required DateTime SlaDeadLine { get; init; }

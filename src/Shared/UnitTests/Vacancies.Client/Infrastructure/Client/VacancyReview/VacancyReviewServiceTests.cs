@@ -106,9 +106,13 @@ public class VacancyReviewServiceTests
         [Frozen] Mock<IOuterApiClient> outerApiClient,
         VacancyReviewService service)
     {
+        vacancyDto.ManualOutcome = null;
         vacancyDto.Status = ReviewStatus.PendingReview.ToString();
+        vacancyDto.VacancyReference = vacancyReference;
+
         UpdateToValidVacancyDto(vacancyDto, vacancy);
-        var expectedRequest = new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference,"latest");
+
+        var expectedRequest = new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference);
         outerApiClient
             .Setup(
                 x => x.Get<GetVacancyReviewListResponse>(It.Is<GetVacancyReviewByVacancyReferenceAndReviewStatusRequest>(c => 
@@ -129,7 +133,7 @@ public class VacancyReviewServiceTests
         [Frozen] Mock<IOuterApiClient> outerApiClient,
         VacancyReviewService service)
     {
-        var expectedRequest = new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference, "latest");
+        var expectedRequest = new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference);
         outerApiClient
             .Setup(
                 x => x.Get<GetVacancyReviewListResponse>(It.Is<GetVacancyReviewByVacancyReferenceAndReviewStatusRequest>(c => 
@@ -219,14 +223,15 @@ public class VacancyReviewServiceTests
         [Frozen] Mock<IOuterApiClient> outerApiClient,
         VacancyReviewService service)
     {
-        vacancyDto.Status = ReviewStatus.PendingReview.ToString();
+        vacancyDto.ManualOutcome = null;
+        vacancyDto.Status = ReviewStatus.Closed.ToString();
         UpdateToValidVacancyDto(vacancyDto, vacancy);
-        var expectedRequest = new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference,"latestReferred");
+        var expectedRequest = new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference, ReviewStatus.Closed);
         outerApiClient
             .Setup(
-                x => x.Get<GetVacancyReviewResponse>(It.Is<GetVacancyReviewByVacancyReferenceAndReviewStatusRequest>(c => 
+                x => x.Get<GetVacancyReviewListResponse>(It.Is<GetVacancyReviewByVacancyReferenceAndReviewStatusRequest>(c => 
                     c.GetUrl == expectedRequest.GetUrl)))
-            .ReturnsAsync(new GetVacancyReviewResponse{ VacancyReview = vacancyDto});
+            .ReturnsAsync(new GetVacancyReviewListResponse { VacancyReviews = [vacancyDto]});
         
         var actual = await service.GetCurrentReferredVacancyReviewAsync(vacancyReference);
         
@@ -242,12 +247,12 @@ public class VacancyReviewServiceTests
         [Frozen] Mock<IOuterApiClient> outerApiClient,
         VacancyReviewService service)
     {
-        var expectedRequest = new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference, "latestReferred");
+        var expectedRequest = new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference, ReviewStatus.Closed);
         outerApiClient
             .Setup(
-                x => x.Get<GetVacancyReviewResponse>(It.Is<GetVacancyReviewByVacancyReferenceAndReviewStatusRequest>(c => 
+                x => x.Get<GetVacancyReviewListResponse>(It.Is<GetVacancyReviewByVacancyReferenceAndReviewStatusRequest>(c => 
                     c.GetUrl == expectedRequest.GetUrl)))
-            .ReturnsAsync((GetVacancyReviewResponse)null);
+            .ReturnsAsync((GetVacancyReviewListResponse)null);
         
         var actual = await service.GetCurrentReferredVacancyReviewAsync(vacancyReference);
         
