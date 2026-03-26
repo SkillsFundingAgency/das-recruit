@@ -8,30 +8,24 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
 {
-    public class RePublishEventToEventStoreEventHandler :
-                                            INotificationHandler<DraftVacancyUpdatedEvent>,
-                                            INotificationHandler<VacancySubmittedEvent>,
-                                            INotificationHandler<VacancyReviewedEvent>,
-                                            INotificationHandler<VacancyRejectedEvent>,
-                                            INotificationHandler<VacancyReviewApprovedEvent>,
-                                            INotificationHandler<VacancyReviewReferredEvent>,
-                                            INotificationHandler<SetupEmployerEvent>,
-                                            INotificationHandler<SetupProviderEvent>,
-                                            INotificationHandler<VacancyReviewCreatedEvent>,
-                                            INotificationHandler<VacancyClosedEvent>,
-                                            INotificationHandler<LiveVacancyUpdatedEvent>,
-                                            INotificationHandler<ApplicationSubmittedEvent>,
-                                            INotificationHandler<ApplicationWithdrawnEvent>
+    public class RePublishEventToEventStoreEventHandler(
+        ILogger<RePublishEventToEventStoreEventHandler> logger,
+        IEventStore eventStore)
+        :
+            INotificationHandler<DraftVacancyUpdatedEvent>,
+            INotificationHandler<VacancySubmittedEvent>,
+            INotificationHandler<VacancyReviewedEvent>,
+            INotificationHandler<VacancyRejectedEvent>,
+            INotificationHandler<VacancyReviewApprovedEvent>,
+            INotificationHandler<VacancyReviewReferredEvent>,
+            INotificationHandler<SetupEmployerEvent>,
+            INotificationHandler<SetupProviderEvent>,
+            INotificationHandler<VacancyReviewCreatedEvent>,
+            INotificationHandler<VacancyClosedEvent>,
+            INotificationHandler<LiveVacancyUpdatedEvent>,
+            INotificationHandler<ApplicationSubmittedEvent>,
+            INotificationHandler<ApplicationWithdrawnEvent>
     {
-        private readonly ILogger<RePublishEventToEventStoreEventHandler> _logger;
-        private readonly IEventStore _eventStore;
-
-        public RePublishEventToEventStoreEventHandler(ILogger<RePublishEventToEventStoreEventHandler> logger, IEventStore eventStore)
-        {
-            _logger = logger;
-            _eventStore = eventStore;
-        }
-
         public Task Handle(VacancySubmittedEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
 
@@ -70,9 +64,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
             => HandleUsingEventStore(notification);
         private async Task HandleUsingEventStore(IEvent @event)
         {
-            _logger.LogInformation("Re-publishing event {eventType} to event store", @event.GetType().Name);
+            logger.LogInformation("Re-publishing event {eventType} to event store", @event.GetType().Name);
 
-            await _eventStore.Add(@event);
+            await eventStore.Add(@event);
         }
     }
 }
