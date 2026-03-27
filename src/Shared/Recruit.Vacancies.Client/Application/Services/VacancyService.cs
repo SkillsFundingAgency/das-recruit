@@ -18,22 +18,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
         private readonly IVacancyRepository _vacancyRepository;
         private readonly ITimeProvider _timeProvider;
         private readonly IMessaging _messaging;
-        private readonly RuleSet<Vacancy> _vacancyRuleSet;
-        private readonly IVacancyReviewRepositoryRunner _vacancyReviewRepository;
-        private readonly IVacancyReviewQuery _vacancyReviewQuery;
 
         public VacancyService(
             ILogger<VacancyService> logger, IVacancyRepository vacancyRepository, 
-            ITimeProvider timeProvider, IMessaging messaging,
-            RuleSet<Vacancy> vacancyRuleSet, IVacancyReviewRepositoryRunner vacancyReviewRepository,IVacancyReviewQuery vacancyReviewQuery)
+            ITimeProvider timeProvider, IMessaging messaging)
         {
             _logger = logger;
             _vacancyRepository = vacancyRepository;
             _timeProvider = timeProvider;
             _messaging = messaging;
-            _vacancyRuleSet = vacancyRuleSet;
-            _vacancyReviewRepository = vacancyReviewRepository;
-            _vacancyReviewQuery = vacancyReviewQuery;
         }
 
         public async Task CloseExpiredVacancy(Guid vacancyId)
@@ -53,22 +46,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
                 VacancyReference = vacancy.VacancyReference.Value,
                 VacancyId = vacancy.Id
             });
-        }
-
-        public async Task PerformRulesCheckAsync(Guid reviewId)
-        {
-            var review = await _vacancyReviewQuery.GetAsync(reviewId);
-            var outcome = await _vacancyRuleSet.EvaluateAsync(review.VacancySnapshot);
-            review.AutomatedQaOutcome = outcome;
-            review.Status = ReviewStatus.PendingReview;
-            review.AutomatedQaOutcomeIndicators =
-                outcome
-                    .RuleOutcomes
-                    .SelectMany(o => o.Details)
-                    .Where(s => s.Score > 0) //Eventually this should be check against threshold for that rule
-                    .Select(r => new RuleOutcomeIndicator {RuleOutcomeId = r.Id, IsReferred = true})
-                    .ToList();
-            await _vacancyReviewRepository.UpdateAsync(review);
         }
     }
 }

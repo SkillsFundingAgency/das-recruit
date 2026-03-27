@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Events;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using MediatR;
 using System.Threading;
@@ -23,7 +21,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IVacancyReviewRepositoryRunner _vacancyReviewRepositoryRunner;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
-        private readonly IVacancyService _vacancyService;
         private readonly ITimeProvider _time;
         private readonly ISlaService _slaService;
         private readonly IVacancyComparerService _vacancyComparerService;
@@ -33,7 +30,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             IVacancyRepository vacancyRepository,
             IVacancyReviewRepositoryRunner vacancyReviewRepositoryRunner,
             IVacancyReviewQuery vacancyReviewQuery, 
-            IVacancyService vacancyService, 
             ITimeProvider time,
             ISlaService slaService,
             IVacancyComparerService vacancyComparerService)
@@ -42,7 +38,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _vacancyRepository = vacancyRepository;
             _vacancyReviewRepositoryRunner = vacancyReviewRepositoryRunner;
             _vacancyReviewQuery = vacancyReviewQuery;
-            _vacancyService = vacancyService;
             _time = time;
             _slaService = slaService;
             _vacancyComparerService = vacancyComparerService;
@@ -76,8 +71,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _vacancyReviewRepositoryRunner.CreateAsync(review);
 
-            await _vacancyService.PerformRulesCheckAsync(review.Id);
-            
             return Unit.Value;
         }
 
