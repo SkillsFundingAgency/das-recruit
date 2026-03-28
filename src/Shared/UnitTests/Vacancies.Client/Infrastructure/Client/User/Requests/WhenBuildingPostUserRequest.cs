@@ -17,6 +17,6 @@ public class WhenBuildingPostUserRequest
                 .Excluding(x => x.UserType)
                 .Excluding(x=>x.Id)
             );
-        ((UserDto)actual.Data).UserType.Should().Be(user.UserType.ToString());
+        ((UserDto)actual.Data).UserType.Should().Be(user.UserType);
     }
 }

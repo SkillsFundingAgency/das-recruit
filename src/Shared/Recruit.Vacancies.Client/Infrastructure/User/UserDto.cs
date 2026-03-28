@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 
 public class UserDto
 {
+    public Guid Id { get; set; }
     public string? IdamsUserId { get; set; } 
-    public required string UserType { get; set; }
+    public required UserType UserType { get; set; }
     public required string Name { get; set; }
     public required string Email { get; set; }
     public DateTime CreatedDate { get; set; }
@@ -19,13 +21,13 @@ public class UserDto
     public DateTime? ClosedVacanciesWithdrawnByQaAlertDismissedOn { get; set; }
     public string? DfEUserId { get; set; }
     
-    public static explicit operator UserDto(Domain.Entities.User source)
-    {
-        return new UserDto
+    public static explicit operator UserDto(Domain.Entities.User source) =>
+        new()
         {
+            Id = source.Id,
             Name = source.Name,
             IdamsUserId = source.IdamsUserId,
-            UserType = source.UserType.ToString(),
+            UserType = source.UserType,
             Email = source.Email,
             CreatedDate = source.CreatedDate,
             LastSignedInDate = source.LastSignedInDate,
@@ -37,5 +39,4 @@ public class UserDto
             ClosedVacanciesWithdrawnByQaAlertDismissedOn = source.ClosedVacanciesWithdrawnByQaAlertDismissedOn,
             TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn = source.TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn
         };
-    }
 }

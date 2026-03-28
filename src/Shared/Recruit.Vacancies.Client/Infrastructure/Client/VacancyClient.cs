@@ -22,7 +22,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Report;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 using FluentValidation;
 using FluentValidation.Results;
 
@@ -40,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IVacancyService vacancyService,
         IEmployerProfileRepository employerProfileRepository,
         IUserRepository userRepository,
-        IUserRepositoryRunner userWriteRepository,
+        IUserWriteRepository userWriteRepository,
         IEmployerService employerService,
         IReportService reportService,
         IProviderReportService providerReportService,
