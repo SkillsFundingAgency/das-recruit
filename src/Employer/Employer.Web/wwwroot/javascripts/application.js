@@ -35,7 +35,7 @@ if (selectFields.length > 0) {
   for (var s = 0; s < selectFields.length; s++) {
     accessibleAutocomplete.enhanceSelectElement({
       selectElement: selectFields[s],
-      minLength: 2,
+      minLength: 5,
       autoselect: true,
       defaultValue: "",
       displayMenu: "overlay",

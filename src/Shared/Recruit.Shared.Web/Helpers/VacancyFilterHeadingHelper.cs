@@ -9,11 +9,11 @@ namespace Esfa.Recruit.Shared.Web.Helpers
     {
         public static string GetFilterHeading(string vacancyTerm, int totalVacancies, FilteringOptions filteringOption, string searchTerm, UserType? userType = null)
         {
-            var vacancyWord = vacancyTerm.ToQuantity(totalVacancies, ShowQuantityAs.None);
+            var vacancyWord = totalVacancies is 1
+                ? vacancyTerm
+                : vacancyTerm.Pluralize();
 
-            var words = new List<string>();
-
-            words.Add(totalVacancies.ToString());
+            var words = new List<string> {totalVacancies.ToString()};
 
             switch(filteringOption)
             {
@@ -26,6 +26,18 @@ namespace Esfa.Recruit.Shared.Web.Helpers
                 case FilteringOptions.Referred:                
                     words.Add(filteringOption.GetDisplayName(userType).ToLowerInvariant());
                     words.Add(vacancyWord);
+                    break;
+                case FilteringOptions.Submitted:
+                    words.Add(vacancyWord);
+                    words.Add("pending DfE review"); /* custom wording for submitted vacancies as this is needs to be in lower case
+                                                      and is not the same as the display name for submitted vacancies which is "Pending DfE review" */
+                    break;
+                case FilteringOptions.EmployerReviewedApplications:
+                    words.Add(totalVacancies == 1
+                        ? "employer reviewed application"
+                        : "employer reviewed applications");
+                       /* custom wording for employer reviewed applications as this is needs to be in lower case
+                                                      and is not the same as the display name for employer reviewed applications which is employer reviewed applications */
                     break;
                 default:
                     words.Add(vacancyWord);
