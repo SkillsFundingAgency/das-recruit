@@ -112,6 +112,15 @@
             Ukprn = Model.Ukprn,
             Filter = FilteringOptions.Closed
         }))
+        @(await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
+        {
+            Count = 0,
+            HeadingText = "Archived vacancies",
+            Description = "Vacancies that you’ve archived. You can clone these vacancies to republish them.",
+            RouteName = RouteNames.VacanciesGetAll,
+            Ukprn = Model.Ukprn,
+            Filter = FilteringOptions.Archived
+        }))
     </div>
     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
     <partial name="@PartialNames.DashboardNavigationPartial" />

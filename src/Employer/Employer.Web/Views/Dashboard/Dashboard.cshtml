@@ -176,6 +176,15 @@
             EmployerAccountId = Model.EmployerAccountId,
             Filter = FilteringOptions.Closed
         }))
+        @(await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
+        {
+            Count = 0,
+            HeadingText = "Archived adverts",
+            Description = "Adverts that you’ve archived. You can clone these adverts to republish them.",
+            RouteName = RouteNames.VacanciesGetAll,
+            EmployerAccountId = Model.EmployerAccountId,
+            Filter = FilteringOptions.Archived
+        }))
     </div>
     <hr class="govuk-grid-column-full govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
     <div class="govuk-grid-row">

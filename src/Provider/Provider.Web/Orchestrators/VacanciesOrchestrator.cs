@@ -116,7 +116,7 @@ public class VacanciesOrchestrator(
         FilteringOptions.EmployerReviewedApplications,
         FilteringOptions.NewSharedApplications,
         FilteringOptions.AllSharedApplications,
-        FilteringOptions.Dashboard
+        FilteringOptions.Dashboard,
     ];
 
     private async Task<PagedDataResponse<IEnumerable<VacancyListItem>>> GetVacancies(FilteringOptions options,
@@ -202,6 +202,7 @@ public class VacanciesOrchestrator(
             FilteringOptions.AllApplications => ("Vacancies with applications", "vacancies with applications"),
             FilteringOptions.NewApplications => ("Vacancies with new applications", "new applications"),
             FilteringOptions.EmployerReviewedApplications => ("Employer reviewed applications", "employer reviewed applications"),
+            FilteringOptions.Archived => ("Archived vacancies", "archived vacancies"),
             _ => ("Vacancies", "vacancies")
         };
 

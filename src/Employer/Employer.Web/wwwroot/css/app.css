@@ -576,6 +576,14 @@ span.govuk-error-message:empty {
     white-space: pre-line;
 }
 
+.raa-archive-card {
+    background: #f3f2f1;
+}
+
+    .raa-archive-card .raa-archive-card-heading {
+        margin-top: 40px !important;
+    }
+
 .das-inset-text-pink {
   border-left: 10px solid rgb(248.7,225.15,235.95) !important;
 }
