@@ -34,6 +34,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Reports;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerProfile;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
@@ -151,6 +152,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IOuterApiGeocodeService, OuterApiGeocodeService>();
             services.AddTransient<ILocationsService, LocationsService>();
             services.AddTransient<IProviderReportService, ProviderReportService>();
+            services.AddTransient<IEmployerProfileService, EmployerProfileService>();
 
             // Projection services
             services.AddTransient<IEditVacancyInfoProjectionService, EditVacancyInfoProjectionService>();
@@ -215,7 +217,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IApplicationReviewRepositoryRunner, ApplicationReviewRepositoryRunner>();
 
 
-            services.AddTransient<IEmployerProfileRepository, MongoDbEmployerProfileRepository>();
             services.AddTransient<IReportRepository, MongoDbReportRepository>();
             services.AddTransient<IUserNotificationPreferencesRepository, MongoDbUserNotificationPreferencesRepository>();
             services.AddTransient<IBlockedOrganisationRepository, MongoDbBlockedOrganisationRepository>();
