@@ -1,18 +1,11 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerProfile;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Services
 {
-    public class EmployerService : IEmployerService
+    public class EmployerService(IEmployerProfileService employerProfileService) : IEmployerService
     {
-        private readonly IEmployerProfileRepository _employerProfileRepository;
-
-        public EmployerService(IEmployerProfileRepository employerProfileRepository)
-        {
-            _employerProfileRepository = employerProfileRepository;
-        }
-
         public async Task<string> GetEmployerNameAsync(Vacancy vacancy)
         {
             if (!vacancy.CanEmployerEdit)
@@ -23,7 +16,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
 
             if (vacancy.EmployerNameOption == EmployerNameOption.TradingName) 
             {
-                var profile = await _employerProfileRepository.GetAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
+                var profile = await employerProfileService.GetAsync(vacancy.EmployerAccountId,
+                    vacancy.AccountLegalEntityPublicHashedId);
+
                 return profile.TradingName;
             }
 
@@ -35,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             if (!vacancy.CanGetEmployerProfileAboutOrganisation)
                 return vacancy.EmployerDescription;
 
-            var profile = await _employerProfileRepository.GetAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
+            var profile = await employerProfileService.GetAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
             return profile?.AboutOrganisation ?? string.Empty;
         }
     }

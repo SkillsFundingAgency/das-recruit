@@ -45,5 +45,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public string ApplicationReviewsUnsuccessfulBannerHeader { get; internal set; }
         public bool CanShowApplicationsUnsuccessfulBanner => !string.IsNullOrEmpty(ApplicationReviewsUnsuccessfulBannerHeader);
         public ApprenticeshipTypes ApprenticeshipType { get; internal set; }
+        public FilteringOptions FilteringOptions { get; internal set; }
     }
 }
