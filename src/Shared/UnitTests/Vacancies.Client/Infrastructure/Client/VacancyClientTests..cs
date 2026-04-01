@@ -65,51 +65,6 @@ public class VacancyClientTests
     }
 
     [Test, MoqAutoData]
-    public async Task GetVacancyApplicationsSortedAsync_UsesSqlDbRepository_WhenMongoMigrationEnabled_AndNotShared(
-        long vacancyReference,
-        Recruit.Vacancies.Client.Domain.Entities.ApplicationReview applicationReview,
-        [Frozen] Mock<ISqlDbRepository> sqlDbRepositoryMock,
-        [Greedy] VacancyClient vacancyClient)
-    {
-        var expected = new List<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview> { applicationReview };
-        sqlDbRepositoryMock.Setup(r => r.GetForSharedVacancyAsync(vacancyReference))
-            .ReturnsAsync(expected);
-        var result = await vacancyClient.GetVacancyApplicationsAsync(vacancyReference, true);
-
-        result.Should().ContainSingle();
-        sqlDbRepositoryMock.Verify(r => r.GetForSharedVacancyAsync(vacancyReference), Times.Once);
-    }
-
-    [Test, MoqAutoData]
-    public async Task GetVacancyApplicationsSortedAsync_UsesSqlDbRepository_ForShared_WhenMongoMigrationEnabled(
-        long vacancyReference,
-        Recruit.Vacancies.Client.Domain.Entities.ApplicationReview applicationReview,
-        [Frozen] Mock<ISqlDbRepository> sqlDbRepositoryMock,
-        [Greedy] VacancyClient vacancyClient)
-    {
-        var expected = new List<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview> { applicationReview };
-        sqlDbRepositoryMock.Setup(r => r.GetForSharedVacancyAsync(vacancyReference))
-            .ReturnsAsync(expected);
-        var result = await vacancyClient.GetVacancyApplicationsAsync(vacancyReference, true);
-
-        result.Should().ContainSingle();
-        sqlDbRepositoryMock.Verify(r => r.GetForSharedVacancyAsync(vacancyReference), Times.Once);
-    }
-
-    [Test, MoqAutoData]
-    public async Task GetVacancyApplicationsAsync_ReturnsEmptyList_WhenNullReturned(long vacancyReference,
-        Recruit.Vacancies.Client.Domain.Entities.ApplicationReview applicationReview,
-        [Frozen] Mock<ISqlDbRepository> sqlDbRepositoryMock,
-        [Greedy] VacancyClient vacancyClient)
-    {
-        sqlDbRepositoryMock.Setup(r => r.GetForSharedVacancyAsync(vacancyReference))
-            .ReturnsAsync((List<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview>)null);
-        var result = await vacancyClient.GetVacancyApplicationsAsync(vacancyReference, true);
-
-        result.Should().BeEmpty();
-    }
-
-    [Test, MoqAutoData]
     public async Task GetApplicationReviewAsync_UsesSqlDbRepository_WhenMongoMigrationEnabled(
         Guid applicationReviewId,
         Recruit.Vacancies.Client.Domain.Entities.ApplicationReview applicationReview,

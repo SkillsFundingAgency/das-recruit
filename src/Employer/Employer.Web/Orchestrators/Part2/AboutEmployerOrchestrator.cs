@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.AboutEmployer;
@@ -90,12 +89,12 @@ public class AboutEmployerOrchestrator(
             async v =>    
             {
                 await vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
-                await UpdateEmployerProfileAsync(vacancy, m.EmployerDescription, user);
+                await UpdateEmployerProfileAsync(vacancy, m.EmployerDescription);
             }
         );
     }
 
-    private async Task UpdateEmployerProfileAsync(Vacancy vacancy, string employerDescription, VacancyUser user)
+    private async Task UpdateEmployerProfileAsync(Vacancy vacancy, string employerDescription)
     {
         var employerProfile =
             await vacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
@@ -109,16 +108,16 @@ public class AboutEmployerOrchestrator(
         if (employerProfile.AboutOrganisation != employerDescription)
         {
             employerProfile.AboutOrganisation = employerDescription;
-            await vacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
         }
     }
 
     protected override EntityToViewModelPropertyMappings<Vacancy, AboutEmployerEditModel> DefineMappings()
     {
-        var mappings = new EntityToViewModelPropertyMappings<Vacancy, AboutEmployerEditModel>();
-
-        mappings.Add(e => e.EmployerDescription, vm => vm.EmployerDescription);
-        mappings.Add(e => e.EmployerWebsiteUrl, vm => vm.EmployerWebsiteUrl);
+        var mappings = new EntityToViewModelPropertyMappings<Vacancy, AboutEmployerEditModel>
+        {
+            {e => e.EmployerDescription, vm => vm.EmployerDescription},
+            {e => e.EmployerWebsiteUrl, vm => vm.EmployerWebsiteUrl}
+        };
 
         return mappings;
     }

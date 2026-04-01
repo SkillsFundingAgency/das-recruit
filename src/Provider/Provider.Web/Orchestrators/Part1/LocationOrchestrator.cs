@@ -1,115 +1,31 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Esfa.Recruit.Provider.Web.Mappings;
-using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Location;
-using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Shared.Web.Models;
+using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
-using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using System;
-using System.Collections.Generic;
-using Esfa.Recruit.Provider.Web.Models;
-using Esfa.Recruit.Shared.Web.Models;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
-    public class LocationOrchestrator : VacancyValidatingOrchestrator<LocationEditModel>
+    public class LocationOrchestrator(
+        IProviderVacancyClient providerVacancyClient,
+        IRecruitVacancyClient recruitVacancyClient,
+        ILogger<LocationOrchestrator> logger,
+        IGetAddressesClient getAddressesClient,
+        IUtility utility)
+        : VacancyValidatingOrchestrator<LocationEditModel>(logger)
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerAddress;
-        private readonly IProviderVacancyClient _providerVacancyClient;
-        private readonly IRecruitVacancyClient _recruitVacancyClient;
-        private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IGetAddressesClient _getAddressesClient;
-        private readonly IUtility _utility;
-
-        public LocationOrchestrator(IProviderVacancyClient providerVacancyClient,
-            IRecruitVacancyClient recruitVacancyClient, ILogger<LocationOrchestrator> logger, IReviewSummaryService reviewSummaryService, IGetAddressesClient getAddressesClient, IUtility utility)
-            : base(logger)
-        {
-            _providerVacancyClient = providerVacancyClient;
-            _recruitVacancyClient = recruitVacancyClient;
-            _reviewSummaryService = reviewSummaryService;
-            _getAddressesClient = getAddressesClient;
-            _utility = utility;
-        }
-
-        public async Task<VacancyEmployerInfoModel> GetVacancyEmployerInfoModelAsync(VacancyRouteModel vrm)
-        {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Location_Get);
-
-            var model = new VacancyEmployerInfoModel()
-            {
-                VacancyId = vacancy.Id,
-                AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId
-            };
-
-            if (vacancy.EmployerNameOption.HasValue)
-            {
-                model.EmployerIdentityOption = vacancy.EmployerNameOption.Value.ConvertToModelOption();
-                model.AnonymousName = vacancy.IsAnonymous ? vacancy.EmployerName : null;
-                model.AnonymousReason = vacancy.IsAnonymous ? vacancy.AnonymousReason : null;
-            }
-
-            return model;
-        }
-
-        public async Task<LocationViewModel> GetLocationViewModelAsync(
-            VacancyRouteModel vrm, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
-        {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Location_Get);
-
-            var accountLegalEntityPublicHashedId = !string.IsNullOrEmpty(employerInfoModel?.AccountLegalEntityPublicHashedId)
-                ? employerInfoModel.AccountLegalEntityPublicHashedId : vacancy.AccountLegalEntityPublicHashedId;
-
-            var vm = new LocationViewModel
-            {
-                Title = vacancy.Title,
-                PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                IsAnonymousVacancy = (employerInfoModel?.EmployerIdentityOption == null)
-                    ? vacancy.IsAnonymous
-                    : employerInfoModel.EmployerIdentityOption == EmployerIdentityOption.Anonymous,
-                VacancyId = vrm.VacancyId,
-                Ukprn = vrm.Ukprn,
-                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
-            };
-
-            var employerProfile =
-                await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, accountLegalEntityPublicHashedId);
-
-            var allLocations = await GetAllAvailableLocationsAsync(employerProfile, vacancy, vrm.Ukprn);
-
-            vm.AvailableLocations = allLocations.Select(a => a.ToAddressString()).ToList();
-
-            var hasLegalEntityChanged = employerInfoModel?.HasLegalEntityChanged ?? false;
-
-            if (vacancy.EmployerLocation != null && hasLegalEntityChanged == false)
-            {
-                var matchingAddress = GetMatchingAddress(vacancy.EmployerLocation.ToAddressString(), allLocations);
-                if (matchingAddress == null)
-                {
-                    vm.SelectedLocation = LocationViewModel.UseOtherLocationConst;
-                    vm.SetLocation(vacancy.EmployerLocation);
-                }
-                else
-                {
-                    vm.SelectedLocation = matchingAddress.ToAddressString();
-                }
-            }
-
-            if (vacancy.Status == VacancyStatus.Referred)
-            {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
-                    ReviewFieldMappingLookups.GetLocationFieldIndicators());
-            }
-            return vm;
-        }
 
         public async Task<OrchestratorResponse> PostLocationEditModelAsync(
             LocationEditModel locationEditModel, VacancyUser user, long ukprn,
@@ -118,12 +34,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             if (string.IsNullOrEmpty(locationEditModel.SelectedLocation))
                 return new OrchestratorResponse(false);
 
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(locationEditModel, RouteNames.Location_Post);
+            var vacancy = await utility.GetAuthorisedVacancyForEditAsync(locationEditModel, RouteNames.Location_Post);
             var accountLegalEntityPublicHashedId = !string.IsNullOrEmpty(employerInfoModel?.AccountLegalEntityPublicHashedId)
                 ? employerInfoModel.AccountLegalEntityPublicHashedId : vacancy.AccountLegalEntityPublicHashedId;
 
-            var employerVacancyInfoTask = _providerVacancyClient.GetProviderEmployerVacancyDataAsync(ukprn, vacancy.EmployerAccountId);
-            var employerProfileTask = _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, accountLegalEntityPublicHashedId);
+            var employerVacancyInfoTask = providerVacancyClient.GetProviderEmployerVacancyDataAsync(ukprn, vacancy.EmployerAccountId);
+            var employerProfileTask = recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, accountLegalEntityPublicHashedId);
             await Task.WhenAll(employerProfileTask, employerVacancyInfoTask);
 
             var employerVacancyInfo = employerVacancyInfoTask.Result;
@@ -228,17 +144,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             return await ValidateAndExecute(
                 vacancy,
-                v => _recruitVacancyClient.Validate(v, ValidationRules),
+                v => recruitVacancyClient.Validate(v, ValidationRules),
                 async v =>
                 {
-                    await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
-                    await UpdateEmployerProfileAsync(employerInfoModel, employerProfile, matchingAddress == null ? vacancy.EmployerLocation : null, user);
+                    await recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+                    await UpdateEmployerProfileAsync(employerInfoModel, employerProfile, matchingAddress == null ? vacancy.EmployerLocation : null);
                 });
         }
 
         public async Task<GetAddressesListResponse> GetAddresses(string searchTerm)
         {
-            var addresses = await _getAddressesClient.GetAddresses(searchTerm);
+            var addresses = await getAddressesClient.GetAddresses(searchTerm);
             return addresses;
         }
 
@@ -263,7 +179,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         }
 
         private async Task UpdateEmployerProfileAsync(VacancyEmployerInfoModel employerInfoModel,
-            EmployerProfile employerProfile, Address address, VacancyUser user)
+            EmployerProfile employerProfile, Address address)
         {
             var updateProfile = false;
             if (employerInfoModel != null && employerInfoModel.EmployerIdentityOption == EmployerIdentityOption.NewTradingName)
@@ -278,13 +194,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             }
             if (updateProfile)
             {
-                await _recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
+                await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile);
             }
         }
 
         private async Task<List<Address>> GetAllAvailableLocationsAsync(EmployerProfile employerProfile, Vacancy vacancy, long ukprn)
         {
-            var providerData = await _providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn);
+            var providerData = await providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn);
             var employerInfo = providerData.Employers.Single(e => e.EmployerAccountId == vacancy.EmployerAccountId);
             var legalEntity = employerInfo.LegalEntities.First(l => l.AccountLegalEntityPublicHashedId == employerProfile.AccountLegalEntityPublicHashedId);
             var locations = new List<Address>();
