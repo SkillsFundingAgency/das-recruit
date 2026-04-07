@@ -23,11 +23,12 @@ public class EmployerProfileService(ILogger<EmployerProfileService> logger,
         var retryPolicy = PollyRetryPolicy.GetPolicy();
 
         var legalEntityId = encodingService.Decode(profile.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
-
+        var accountId = encodingService.Decode(profile.EmployerAccountId, EncodingType.AccountId);
+        
         await retryPolicy.Execute(_ => outerApiClient.Post(
                 new PostEmployerProfileRequest(legalEntityId, new PostEmployerProfileRequest.PostEmployerProfileRequestData
                 {
-                    AccountId = Convert.ToInt32(profile.EmployerAccountId),
+                    AccountId = accountId,
                     AboutOrganisation = profile.AboutOrganisation,
                     TradingName = profile.TradingName
                 })),
