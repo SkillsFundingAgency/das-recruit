@@ -9,9 +9,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
-using Esfa.Recruit.Vacancies.Client.Application.Communications;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
@@ -26,7 +23,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly AbstractValidator<VacancyReview> _vacancyReviewValidator;
         private readonly ITimeProvider _timeProvider;
         private readonly IBlockedOrganisationQuery _blockedOrganisationQuery;
-        private readonly ICommunicationQueueService _communicationQueueService;
 
         public ApproveVacancyReviewCommandHandler(ILogger<ApproveVacancyReviewCommandHandler> logger,
                                         IVacancyReviewRepositoryRunner vacancyReviewRepositoryRunner,
@@ -35,8 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                                         IMessaging messaging,
                                         AbstractValidator<VacancyReview> vacancyReviewValidator,
                                         ITimeProvider timeProvider,
-                                        IBlockedOrganisationQuery blockedOrganisationQuery, 
-                                        ICommunicationQueueService communicationQueueService)
+                                        IBlockedOrganisationQuery blockedOrganisationQuery)
         {
             _logger = logger;
             _vacancyRepository = vacancyRepository;
@@ -46,7 +41,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _vacancyReviewValidator = vacancyReviewValidator;
             _timeProvider = timeProvider;
             _blockedOrganisationQuery = blockedOrganisationQuery;
-            _communicationQueueService = communicationQueueService;
         }
 
         public async Task<Unit> Handle(ApproveVacancyReviewCommand message, CancellationToken cancellationToken)
@@ -83,19 +77,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if (closureReason != null)
             {
                 await CloseVacancyAsync(vacancy, closureReason.Value);
-                await SendNotificationToEmployerAsync(vacancy.TrainingProvider.Ukprn.GetValueOrDefault(), vacancy.EmployerAccountId);
                 return Unit.Value;
             }
 
             await PublishVacancyReviewApprovedEventAsync(message, review);    
             return Unit.Value;
-        }
-
-        private Task SendNotificationToEmployerAsync(long ukprn, string employerAccountId)
-        {
-            var communicationRequest = CommunicationRequestFactory.GetProviderBlockedEmployerNotificationForLiveVacanciesRequest(ukprn, employerAccountId);
-
-            return _communicationQueueService.AddMessageAsync(communicationRequest);
         }
 
         private async Task<ClosureReason?> TryGetReasonToCloseVacancy(VacancyReview review, Vacancy vacancy)

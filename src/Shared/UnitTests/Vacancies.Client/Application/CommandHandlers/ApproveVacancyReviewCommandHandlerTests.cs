@@ -1,25 +1,16 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
-using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
 using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.CommandHandlers
@@ -36,7 +27,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
         private readonly Mock<IMessaging> _mockMessaging;
         private readonly Mock<IBlockedOrganisationQuery> _mockBlockedOrganisationQuery;
         private readonly ApproveVacancyReviewCommandHandler _sut;
-        private readonly Mock<ICommunicationQueueService> _mockCommunicationQueueService;
         private const long BlockedProviderUkprn = 12345678;
         private const string EmployerAccountId = "EMPLOYERACCOUNTID";
 
@@ -54,12 +44,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
 
             _mockBlockedOrganisationQuery = new Mock<IBlockedOrganisationQuery>();
 
-            _mockCommunicationQueueService = new Mock<ICommunicationQueueService>();
             _mockVacancyReviewQuery = new Mock<IVacancyReviewQuery>();
 
             _sut = new ApproveVacancyReviewCommandHandler(Mock.Of<ILogger<ApproveVacancyReviewCommandHandler>>(), _mockVacancyReviewRepository.Object,
                                                         _mockVacancyReviewQuery.Object, _mockVacancyRepository.Object, _mockMessaging.Object, mockValidator, 
-                                                        _mockTimeProvider.Object, _mockBlockedOrganisationQuery.Object, _mockCommunicationQueueService.Object);
+                                                        _mockTimeProvider.Object, _mockBlockedOrganisationQuery.Object);
         }
 
         [Theory]
@@ -113,7 +102,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             existingVacancy.Status.Should().Be(VacancyStatus.Closed);
             existingVacancy.ClosureReason.Should().Be(expectedClosureReason);
             _mockVacancyRepository.Verify(x => x.UpdateAsync(existingVacancy), Times.Once);
-            _mockCommunicationQueueService.Verify(c => c.AddMessageAsync(It.Is<CommunicationRequest>(r => r.RequestType == CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForLiveVacancies)));
         }
 
         [Fact]
@@ -157,7 +145,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             existingVacancy.Status.Should().Be(VacancyStatus.Closed);
             existingVacancy.ClosureReason.Should().Be(ClosureReason.BlockedByQa);
             _mockVacancyRepository.Verify(x => x.UpdateAsync(existingVacancy), Times.Once);
-            _mockCommunicationQueueService.Verify(c => c.AddMessageAsync(It.Is<CommunicationRequest>(r => r.RequestType == CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForLiveVacancies)));
         }
     }
 }
