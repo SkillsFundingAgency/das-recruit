@@ -55,7 +55,6 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
             filteringOption,
             hashedEmployerAccountId,
             (int?)user.Ukprn,
-            user.UserId,
             searchTerm?.Trim(),
             ClampPage(page ?? MinPage),
             PageSize,

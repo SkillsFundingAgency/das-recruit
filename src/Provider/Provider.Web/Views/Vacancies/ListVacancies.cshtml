@@ -4,7 +4,6 @@
     ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancies";
     ViewBag.Title = $"{Model.PageHeading} vacancies";
 }
-<partial name="@PartialNames.Alerts" for="Alerts" />
 <div asp-show="@Model.HasWarning" class="das-notification das-notification--warning">
     <p class="das-notification__body">@Model.WarningMessage</p>
 </div>
