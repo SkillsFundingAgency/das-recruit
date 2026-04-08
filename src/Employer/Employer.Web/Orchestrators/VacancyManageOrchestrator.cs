@@ -20,25 +20,25 @@ using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
-    public class VacancyManageOrchestrator : EntityValidatingOrchestrator<Vacancy, ProposedChangesEditModel>
+    public class VacancyManageOrchestrator(
+        ILogger<VacancyManageOrchestrator> logger,
+        DisplayVacancyViewModelMapper vacancyDisplayMapper,
+        IRecruitVacancyClient vacancyClient,
+        IUtility utility)
+        : EntityValidatingOrchestrator<Vacancy, ProposedChangesEditModel>(logger)
     {
-        private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate | VacancyRuleSet.MinimumWage;
-        private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
-        private readonly IRecruitVacancyClient _client;
-        private readonly IUtility _utility;
-
-        public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient vacancyClient,  IUtility utility) : base(logger)
-        {
-            _vacancyDisplayMapper = vacancyDisplayMapper;
-            _client = vacancyClient;
-            _utility = utility;
-        }
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate |
+                                                       VacancyRuleSet.StartDate |
+                                                       VacancyRuleSet.TrainingProgramme |
+                                                       VacancyRuleSet.StartDateEndDate |
+                                                       VacancyRuleSet.TrainingExpiryDate |
+                                                       VacancyRuleSet.MinimumWage;
 
         public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
+            var vacancy = await vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
-            _utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
+            utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             return vacancy;
         }
@@ -77,7 +77,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 viewModel.WithdrawnDate = vacancy.ClosedDate?.AsGdsDate();
             }
             
-            var vacancyApplications = await _client.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, sortColumn, sortOrder, vacancy.CanEmployerReviewApplications);
+            var vacancyApplications = await vacancyClient.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, sortColumn, sortOrder, vacancy.CanEmployerReviewApplications);
             var totalUnfilteredApplicationsCount = vacancyApplications?.Count ?? 0;
 
             if (vacancy.CanEmployerReviewApplications && vacancyApplications is { Count: 0 })
@@ -136,7 +136,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vacancy = await GetVacancy(vrm);
 
             var viewModel = new EditVacancyViewModel();
-            await _vacancyDisplayMapper.MapFromVacancyAsync(viewModel, vacancy);
+            await vacancyDisplayMapper.MapFromVacancyAsync(viewModel, vacancy);
 
             if (proposedClosingDate.HasValue)
                 viewModel.ProposedClosingDate = proposedClosingDate;
@@ -161,8 +161,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             
             return await ValidateAndExecute(
                 vacancy, 
-                v => _client.Validate(v, ValdationRules),
-                v => _client.UpdatePublishedVacancyAsync(vacancy, user, updateKind)
+                v => vacancyClient.Validate(v, ValidationRules),
+                v => vacancyClient.UpdatePublishedVacancyAsync(vacancy, user, updateKind)
             );
         }
 

@@ -18,6 +18,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employ
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerProfile;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Report;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancyAnalytics;
@@ -38,9 +39,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IEmployerAccountProvider employerAccountProvider,
         IVacancyReviewQuery vacancyReviewQuery,
         IVacancyService vacancyService,
-        IEmployerProfileRepository employerProfileRepository,
+        IEmployerProfileService employerProfileService,
         IUserRepository userRepository,
-        IUserRepositoryRunner userWriteRepository,
         IEmployerService employerService,
         IReportService reportService,
         IProviderReportService providerReportService,
@@ -234,9 +234,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendCommandAsync(command);
         }
 
-        public Task<EmployerEditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId)
+        public async Task<EmployerEditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId)
         {
-            return reader.GetEmployerVacancyDataAsync(employerAccountId);
+            var legalEntities = await employerAccountProvider.GetEmployerLegalEntitiesAsync(employerAccountId);
+            return new EmployerEditVacancyInfo
+            {
+                Id = QueryViewType.EditVacancyInfo.GetIdValue(employerAccountId),
+                LegalEntities = legalEntities,
+                LastUpdated = timeProvider.Now
+            };
         }
 
         public EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules)
@@ -270,17 +276,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     ? await sqlDbRepository.GetForSharedVacancySortedAsync(vacancyReference, sortColumn, sortOrder)
                     : await sqlDbRepository.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder);
             
-            return applicationReviews == null
-                ? []
-                : applicationReviews.Select(c => (VacancyApplication)c).ToList();
-        }
-
-        public async Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference, bool vacancySharedByProvider = false)
-        {
-            var applicationReviews = vacancySharedByProvider
-                    ? await sqlDbRepository.GetForSharedVacancyAsync(vacancyReference)
-                    : await sqlDbRepository.GetForVacancyAsync<Domain.Entities.ApplicationReview>(vacancyReference);
-
             return applicationReviews == null
                 ? []
                 : applicationReviews.Select(c => (VacancyApplication)c).ToList();
@@ -369,15 +364,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
         {
-            return employerProfileRepository.GetAsync(employerAccountId, accountLegalEntityPublicHashedId);
+            return employerProfileService.GetAsync(employerAccountId, accountLegalEntityPublicHashedId);
         }
 
-        public Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user)
+        public Task UpdateEmployerProfileAsync(EmployerProfile employerProfile)
         {
             var command = new UpdateEmployerProfileCommand
             {
                 Profile = employerProfile,
-                User = user
             };
 
             return messaging.SendCommandAsync(command);
@@ -455,15 +449,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return Task.CompletedTask;
         }
 
-        public Task WithdrawApplicationAsync(long vacancyReference, Guid candidateId)
-        {
-            return messaging.SendCommandAsync(new WithdrawApplicationCommand
-            {
-                VacancyReference = vacancyReference,
-                CandidateId = candidateId
-            });
-        }
-
         public Task PerformRulesCheckAsync(Guid reviewId)
         {
             return vacancyService.PerformRulesCheckAsync(reviewId);
@@ -487,11 +472,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return userRepository.GetAsync(userId);
         }
 
-        public Task UpsertUserDetails(Domain.Entities.User user)
-        {
-            return userWriteRepository.UpsertUserAsync(user);
-        }
-        
         public Task<Domain.Entities.User> GetUsersDetailsByDfEUserId(string dfeUserId)
         {
             return userRepository.GetByDfEUserId(dfeUserId);

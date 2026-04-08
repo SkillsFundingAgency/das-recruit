@@ -8,12 +8,10 @@
         public const string FullVacancyView = "FullVacancyView";
         public const string MissingPermissions = "MissingPermissions";
         public const string PageNotFound = "PageNotFound";
-        public const string VacancyPreview = "VacancyPreview";
         public const string CloseVacancyView = "Close";
         public const string Training = "Training";
         public const string ApplicationWithdrawn = "ApplicationWithdrawn";
-        public const string DashboardWithReview = "DashboardWithReview";
-        public const string DashboardNoReview = "DashboardNoReview";
+        public const string Dashboard = "Dashboard";
         public const string AdvertPreview = "AdvertPreview";
     }
 }
