@@ -33,7 +33,7 @@ public class WhenBuildingPostUserRequest
                 .Excluding(x => x.Id)
                 .Excluding(x => x.EmployerAccountIds)
             );
-        userDto.UserType.Should().Be(user.UserType.ToString());
+        userDto.UserType.Should().Be(user.UserType);
         userDto.EmployerAccountIds.Should().BeEquivalentTo(employerAccountIds);
     }
 }
