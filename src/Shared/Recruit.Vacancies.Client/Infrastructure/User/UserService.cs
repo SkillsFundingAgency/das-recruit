@@ -11,12 +11,11 @@ using SFA.DAS.Encoding;
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 
 public class UserService(IOuterApiClient outerApiClient, IEncodingService encodingService) :
-    IUserRepository,
-    IUserWriteRepository
+    IUserRepository, IUserWriteRepository
 {
     public async Task UpsertUserAsync(Domain.Entities.User user)
     {
-        var request = new PostUserRequest(user.Id, (UserDto)user);
+        var request = new PostUserRequest(user.Id, UserDto.From(user, encodingService));
 
         await outerApiClient.Post(request, false);
     }
@@ -71,7 +70,7 @@ public class UserService(IOuterApiClient outerApiClient, IEncodingService encodi
 
         return response.User == null ? null : MapUser(response.User);
     }
-
+    
     private static Domain.Entities.User MapUser(UserDto source) =>
         new()
         {
@@ -83,7 +82,7 @@ public class UserService(IOuterApiClient outerApiClient, IEncodingService encodi
             CreatedDate = source.CreatedDate,
             LastSignedInDate = source.LastSignedInDate,
             Ukprn = source.Ukprn,
-            EmployerAccountIds = source.EmployerAccountIds,
+            EmployerAccountIds = source.EmployerAccountIds.Select(x => x.ToString()).ToList(),
             DfEUserId = source.DfEUserId,
             ClosedVacanciesBlockedProviderAlertDismissedOn = source.ClosedVacanciesBlockedProviderAlertDismissedOn,
             TransferredVacanciesBlockedProviderAlertDismissedOn = source.TransferredVacanciesBlockedProviderAlertDismissedOn,
