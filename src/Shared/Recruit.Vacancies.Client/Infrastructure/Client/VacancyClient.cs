@@ -23,7 +23,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Report;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 using FluentValidation;
 using FluentValidation.Results;
 
