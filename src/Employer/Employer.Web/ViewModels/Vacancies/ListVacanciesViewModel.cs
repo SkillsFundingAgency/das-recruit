@@ -5,7 +5,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Vacancies;
 
 public class ListVacanciesViewModel
 {
-    public AlertsViewModel Alerts { get; set; }
     public string WarningMessage { get; set; }
     public string InfoMessage { get; set; }
     public required string PageHeading { get; set; }
