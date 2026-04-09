@@ -108,6 +108,7 @@ public class AboutEmployerOrchestrator(
         if (employerProfile.AboutOrganisation != employerDescription)
         {
             employerProfile.AboutOrganisation = employerDescription;
+            await vacancyClient.UpdateEmployerProfileAsync(employerProfile);
         }
     }
 
