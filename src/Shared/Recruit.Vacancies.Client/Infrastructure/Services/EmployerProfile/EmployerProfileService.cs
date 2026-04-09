@@ -59,17 +59,30 @@ public class EmployerProfileService(ILogger<EmployerProfileService> logger,
     public async Task<Domain.Entities.EmployerProfile> GetAsync(string employerAccountId,
         string accountLegalEntityPublicHashedId)
     {
-        logger.LogTrace("Getting employer profile Details from Outer Api");
+        logger.LogTrace("Getting employer profile details from Outer API");
 
         var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-        var legalEntityId = encodingService.Decode(accountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
+        var legalEntityId = encodingService.Decode(accountLegalEntityPublicHashedId,
+            EncodingType.PublicAccountLegalEntityId);
 
-        var result = await retryPolicy.Execute(_ =>
-                outerApiClient.Get<GetEmployerProfilesByLegalEntityIdResponse>(new GetEmployerProfileByLegalEntityIdRequest(legalEntityId)),
+        var result = await retryPolicy.Execute(_ => outerApiClient.Get<GetEmployerProfilesByLegalEntityIdResponse>(
+                new GetEmployerProfileByLegalEntityIdRequest(legalEntityId)),
             _apiLoggingContext);
 
-        return MapEmployerProfile(result.EmployerProfile);
+        if (result?.EmployerProfile != null)
+            return MapEmployerProfile(result.EmployerProfile);
+
+        logger.LogInformation("No employer profile found for LegalEntityId {LegalEntityId}, creating new profile", legalEntityId);
+
+        var newProfile = new Domain.Entities.EmployerProfile
+        {
+            AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId,
+            EmployerAccountId = employerAccountId
+        };
+
+        await CreateAsync(newProfile);
+        return newProfile;
     }
 
     public async Task UpdateAsync(Domain.Entities.EmployerProfile profile)
