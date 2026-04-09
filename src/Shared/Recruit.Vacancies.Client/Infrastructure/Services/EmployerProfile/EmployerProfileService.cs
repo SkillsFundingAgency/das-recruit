@@ -56,7 +56,7 @@ public class EmployerProfileService(ILogger<EmployerProfileService> logger,
         return result.EmployerProfiles.Select(MapEmployerProfile).ToList();
     }
 
-    public async Task<Domain.Entities.EmployerProfile> GetAsync(string hashedAccountId,
+    public async Task<Domain.Entities.EmployerProfile> GetAsync(string employerAccountId,
         string accountLegalEntityPublicHashedId)
     {
         logger.LogTrace("Getting employer profile Details from Outer Api");
