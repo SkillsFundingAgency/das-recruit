@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.EmployerProfiles;
@@ -16,6 +15,13 @@ public class EmployerProfileService(ILogger<EmployerProfileService> logger,
     IOuterApiClient outerApiClient,
     IEncodingService encodingService) : IEmployerProfileService
 {
+    private readonly Dictionary<string, object> _apiLoggingContext = new()
+    {
+        {
+            "apiCall", "EmployerProfile"
+        }
+    };
+
     public async Task CreateAsync(Domain.Entities.EmployerProfile profile)
     {
         logger.LogTrace("Posting Employer Provider details to Outer Api");
@@ -32,12 +38,7 @@ public class EmployerProfileService(ILogger<EmployerProfileService> logger,
                     AboutOrganisation = profile.AboutOrganisation,
                     TradingName = profile.TradingName
                 })),
-            new Dictionary<string, object>
-            {
-                {
-                    "apiCall", "EmployerProfile"
-                }
-            });
+            _apiLoggingContext);
     }
 
     public async Task<IList<Domain.Entities.EmployerProfile>> GetEmployerProfilesForEmployerAsync(
@@ -50,35 +51,38 @@ public class EmployerProfileService(ILogger<EmployerProfileService> logger,
         var accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
         var result = await retryPolicy.Execute(_ =>
                 outerApiClient.Get<GetEmployerProfilesByAccountIdResponse>(new GetEmployerProfilesByAccountIdRequest(accountId)),
-            new Dictionary<string, object>
-            {
-                {
-                    "apiCall", "EmployerProfile"
-                }
-            });
+            _apiLoggingContext);
 
         return result.EmployerProfiles.Select(MapEmployerProfile).ToList();
     }
 
-    public async Task<Domain.Entities.EmployerProfile> GetAsync(string hashedAccountId,
+    public async Task<Domain.Entities.EmployerProfile> GetAsync(string employerAccountId,
         string accountLegalEntityPublicHashedId)
     {
-        logger.LogTrace("Getting employer profile Details from Outer Api");
+        logger.LogTrace("Getting employer profile details from Outer API");
 
         var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-        var legalEntityId = encodingService.Decode(accountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
+        var legalEntityId = encodingService.Decode(accountLegalEntityPublicHashedId,
+            EncodingType.PublicAccountLegalEntityId);
 
-        var result = await retryPolicy.Execute(_ =>
-                outerApiClient.Get<GetEmployerProfilesByLegalEntityIdResponse>(new GetEmployerProfileByLegalEntityIdRequest(legalEntityId)),
-            new Dictionary<string, object>
-            {
-                {
-                    "apiCall", "EmployerProfile"
-                }
-            });
+        var result = await retryPolicy.Execute(_ => outerApiClient.Get<GetEmployerProfilesByLegalEntityIdResponse>(
+                new GetEmployerProfileByLegalEntityIdRequest(legalEntityId)),
+            _apiLoggingContext);
 
-        return MapEmployerProfile(result.EmployerProfile);
+        if (result?.EmployerProfile != null)
+            return MapEmployerProfile(result.EmployerProfile);
+
+        logger.LogInformation("No employer profile found for LegalEntityId {LegalEntityId}, creating new profile", legalEntityId);
+
+        var newProfile = new Domain.Entities.EmployerProfile
+        {
+            AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId,
+            EmployerAccountId = employerAccountId
+        };
+
+        await CreateAsync(newProfile);
+        return newProfile;
     }
 
     public async Task UpdateAsync(Domain.Entities.EmployerProfile profile)
@@ -89,12 +93,7 @@ public class EmployerProfileService(ILogger<EmployerProfileService> logger,
 
         await retryPolicy.Execute(_ => outerApiClient.Post(
                 new PatchEmployerProfileRequest(ToEmployerProfile(profile))),
-            new Dictionary<string, object>
-            {
-                {
-                    "apiCall", "EmployerProfile"
-                }
-            });
+            _apiLoggingContext);
     }
 
     private Domain.Entities.EmployerProfile MapEmployerProfile(Domain.EmployerProfiles.EmployerProfile source) =>

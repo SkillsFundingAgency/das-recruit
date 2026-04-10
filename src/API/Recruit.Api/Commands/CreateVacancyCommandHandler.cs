@@ -214,6 +214,7 @@ public class CreateVacancyCommandHandler(
                 draftVacancyFromRequest.EmployerAccountId,
                 draftVacancyFromRequest.AccountLegalEntityPublicHashedId);
             employerProfile.TradingName = draftVacancyFromRequest.EmployerName;
+            await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile);
         }
             
         if (requiresEmployerReview)

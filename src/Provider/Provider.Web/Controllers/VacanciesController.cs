@@ -52,7 +52,6 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
         var vm = await orchestrator.ListVacanciesAsync(
             filteringOption,
             (int)user.Ukprn!.Value,
-            user.UserId,
             searchTerm?.Trim(),
             ClampPage(page ?? MinPage),
             PageSize,
