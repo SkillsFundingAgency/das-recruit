@@ -9,7 +9,6 @@ using SFA.DAS.Recruit.Api.Commands;
 using SFA.DAS.Recruit.Api.Extensions;
 using SFA.DAS.Recruit.Api.Mappers;
 using SFA.DAS.Recruit.Api.Models;
-using SFA.DAS.Recruit.Api.Queries;
 
 namespace SFA.DAS.Recruit.Api.Controllers;
 
@@ -61,14 +60,6 @@ public class VacanciesController(IMediator mediator) : ApiControllerBase
         {
             validationError.Field = validationError.Field.RegexReplaceWithGroups(fieldMapping.Key, fieldMapping.Value);
         }
-    }
-
-    // GET api/vacancies
-    [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] string employerAccountId, ulong? ukprn, uint pageSize = 25, uint pageNo = 1)
-    {
-        var resp = await mediator.Send(new GetVacanciesQuery(employerAccountId.Trim().ToUpper(), (long?)ukprn, (int)pageSize, (int)pageNo));
-        return GetApiResponse(resp);
     }
 
     [HttpPost]

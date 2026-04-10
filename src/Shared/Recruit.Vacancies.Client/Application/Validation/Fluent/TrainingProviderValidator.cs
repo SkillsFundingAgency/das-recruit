@@ -11,7 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     {
         private const int UkprnLength = 8;
 
-        public TrainingProviderValidator(long ruleId, ITrainingProviderSummaryProvider trainingProviderSummaryProvider, IBlockedOrganisationQuery blockedOrganisationRepo)
+        public TrainingProviderValidator(long ruleId, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
         {
             RuleFor(tp => tp.Ukprn.ToString())
                 .NotEmpty()
@@ -26,8 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             When(tp => tp.Ukprn.ToString().Length == UkprnLength, () =>
             {
                 RuleFor(tp => tp)
-                    .TrainingProviderMustExistInRoatp(trainingProviderSummaryProvider)
-                    .TrainingProviderMustNotBeBlocked(blockedOrganisationRepo);
+                    .TrainingProviderMustExistInRoatp(trainingProviderSummaryProvider);
             });
         }
     }
