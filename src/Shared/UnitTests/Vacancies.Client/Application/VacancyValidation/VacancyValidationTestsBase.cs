@@ -28,7 +28,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         protected readonly Mock<IReferenceDataClient> MockReferenceDataClient;
         protected readonly IHtmlSanitizerService SanitizerService;
         protected readonly Mock<ITrainingProviderSummaryProvider> MockTrainingProviderSummaryProvider;
-        protected readonly Mock<IBlockedOrganisationQuery> MockBlockedOrganisationRepo;
         protected readonly TestProfanityListProvider MockProfanityListProvider;
         protected readonly Mock<IProviderRelationshipsService> MockProviderRelationshipsService;
         protected readonly Mock<ITrainingProviderService> MockTrainingProviderService;
@@ -75,7 +74,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
             MockTrainingProviderSummaryProvider.Setup(x => x.GetAsync(10000000))
                 .ReturnsAsync(new TrainingProviderSummary());
-            MockBlockedOrganisationRepo = new Mock<IBlockedOrganisationQuery>();
             MockProfanityListProvider = new TestProfanityListProvider();
             MockProviderRelationshipsService = new Mock<IProviderRelationshipsService>();
             MockTrainingProviderService = new Mock<ITrainingProviderService>();
@@ -96,7 +94,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             {
                 var fluentValidator = new FluentVacancyValidator(TimeProvider, MockMinimumWageService.Object, 
                     MockApprenticeshipProgrammeProvider.Object, MockReferenceDataClient.Object, SanitizerService, 
-                    MockTrainingProviderSummaryProvider.Object, MockTrainingProviderService.Object, MockBlockedOrganisationRepo.Object,
+                    MockTrainingProviderSummaryProvider.Object, MockTrainingProviderService.Object, 
                     MockProfanityListProvider, MockProviderRelationshipsService.Object);
                 return new EntityValidator<Vacancy, VacancyRuleSet>(fluentValidator);
             }

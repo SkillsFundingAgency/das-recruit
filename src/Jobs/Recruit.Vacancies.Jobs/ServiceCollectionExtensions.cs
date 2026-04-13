@@ -48,7 +48,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancySubmittedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyRejectedHandler>();
-            services.AddScoped<IDomainEventHandler<IEvent>, ProviderBlockedOnVacancyDomainEventHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, LiveVacancyChangedDateHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, LiveVacancyWithdrawnHandler>();
 
@@ -65,8 +64,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             // Provider
             services.AddScoped<IDomainEventHandler<IEvent>, SetupProviderHandler>();
-            services.AddScoped<IDomainEventHandler<IEvent>, ProviderBlockedDomainEventHandler>();
-            services.AddScoped<IDomainEventHandler<IEvent>, ProviderBlockedOnLegalEntityDomainEventHandler>();
 
             RegisterCommunicationsService(services, configuration);
             RegisterDasEncodingService(services, configuration);
