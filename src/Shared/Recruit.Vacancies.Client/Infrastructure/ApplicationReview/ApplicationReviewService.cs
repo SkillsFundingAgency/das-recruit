@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
     public class ApplicationReviewService(
         IOuterApiClient outerApiClient,
         ILogger<ApplicationReviewService> logger) : IApplicationWriteRepository,
-        ISqlDbRepository
+        IApplicationReadRepository
     {
         public async Task UpdateAsync(Domain.Entities.ApplicationReview applicationReview)
         {

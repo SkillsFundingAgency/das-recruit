@@ -21,10 +21,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
             long vacancyReference);
     }
 
-    public interface ISqlDbRepository : IApplicationReadRepository
-    {
-    }
-
     public interface IApplicationWriteRepository
     {
         Task UpdateAsync(ApplicationReview applicationReview);
