@@ -189,7 +189,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
             services.AddTransient<IApplicationWriteRepository, ApplicationReviewService>();
             
-            services.AddTransient<ISqlDbRepository, ApplicationReviewService>();
+            services.AddTransient<IApplicationReadRepository, ApplicationReviewService>();
 
             services.AddTransient<IApplicationReviewRepositoryRunner, ApplicationReviewRepositoryRunner>();
 
