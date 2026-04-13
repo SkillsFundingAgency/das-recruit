@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 public class VacancyReviewDto
 {
     public Guid Id { get; init; }
-    public long VacancyReference { get; init; }
+    public long VacancyReference { get; set; }
     public required string VacancyTitle { get; init; }
     public required DateTime CreatedDate { get; init; }
     public required DateTime SlaDeadLine { get; init; }
@@ -89,7 +89,7 @@ public class VacancyReviewDto
         {
             return null;
         }
-        
+
         return new Domain.Entities.VacancyReview
         {
             Id = source.Id,
@@ -98,20 +98,32 @@ public class VacancyReviewDto
             CreatedDate = source.CreatedDate,
             SlaDeadline = source.SlaDeadLine,
             ReviewedDate = source.ReviewedDate,
-            Status = Enum.Parse<ReviewStatus>(source.Status),
+            Status = Enum.Parse<ReviewStatus>(source.Status),  
             SubmissionCount = source.SubmissionCount,
-            ReviewedByUser = new VacancyUser{Email = source.ReviewedByUserEmail},
-            SubmittedByUser = new VacancyUser{Email = source.SubmittedByUserEmail},
+            ReviewedByUser = new VacancyUser { Email = source.ReviewedByUserEmail },
+            SubmittedByUser = new VacancyUser { Email = source.SubmittedByUserEmail },
             ClosedDate = source.ClosedDate,
-            ManualOutcome = Enum.Parse<ManualQaOutcome>(source.ManualOutcome),
+            ManualOutcome = Enum.TryParse<ManualQaOutcome>(source.ManualOutcome, out var manualOutcome)
+                ? manualOutcome
+                : default,
             ManualQaComment = source.ManualQaComment,
-            ManualQaFieldIndicators = source.ManualQaFieldIndicators.Select(c=>new ManualQaFieldIndicator{IsChangeRequested = true, FieldIdentifier = c}).ToList(),
-            AutomatedQaOutcome = new RuleSetOutcome{Decision =  Enum.Parse<RuleSetDecision>(source.AutomatedQaOutcome)},
-            AutomatedQaOutcomeIndicators = new List<RuleOutcomeIndicator>{new()
+            ManualQaFieldIndicators = source.ManualQaFieldIndicators
+                .Select(c => new ManualQaFieldIndicator { IsChangeRequested = true, FieldIdentifier = c })
+                .ToList(),
+            AutomatedQaOutcome = new RuleSetOutcome
             {
-                IsReferred = !string.IsNullOrEmpty(source.AutomatedQaOutcomeIndicators),
-                RuleOutcomeId = Guid.NewGuid()
-            }},
+                Decision = Enum.TryParse<RuleSetDecision>(source.AutomatedQaOutcome, out var ruleSetDecision)
+                    ? ruleSetDecision
+                    : default
+            },
+            AutomatedQaOutcomeIndicators = new List<RuleOutcomeIndicator>
+            {
+                new()
+                {
+                    IsReferred = !string.IsNullOrEmpty(source.AutomatedQaOutcomeIndicators),
+                    RuleOutcomeId = Guid.NewGuid()
+                }
+            },
             DismissedAutomatedQaOutcomeIndicators = source.DismissedAutomatedQaOutcomeIndicators,
             UpdatedFieldIdentifiers = source.UpdatedFieldIdentifiers,
             VacancySnapshot = JsonConvert.DeserializeObject<Vacancy>(source.VacancySnapshot)

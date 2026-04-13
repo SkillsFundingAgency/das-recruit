@@ -7,19 +7,14 @@ namespace Esfa.Recruit.Shared.Web.Extensions
     public static class StringExtensions
     {
         private static readonly IFormatProvider _ukCulture = new CultureInfo("en-GB");
-        private const int incodeLength = 3;
-        
-        public static string ToDateQueryString(this string value)
-        {
-            return value.Replace("/", string.Empty);
-        }
+        private const int IncodeLength = 3;
         
         public static string AsPostcode(this string postcode)
         {
-            if (postcode?.Length > incodeLength)
+            if (postcode?.Length > IncodeLength)
             {
                 postcode = postcode.ToUpper().Replace(" ", "");
-                postcode = postcode.Insert(postcode.Length - incodeLength, " ");
+                postcode = postcode.Insert(postcode.Length - IncodeLength, " ");
             }
 
             return postcode;
@@ -72,12 +67,6 @@ namespace Esfa.Recruit.Shared.Web.Extensions
         public static string RemoveOxfordComma(this string text)
         {
             return text.Replace(", and ", " and ");
-        }
-		
-        public static bool IsEqualWithoutSymbols(this string source, string target)
-        {
-            if (target == null) return false;
-            return String.Compare(source, target, CultureInfo.CurrentCulture, CompareOptions.IgnoreCase | CompareOptions.IgnoreSymbols) == 0;
         }
     }
 }

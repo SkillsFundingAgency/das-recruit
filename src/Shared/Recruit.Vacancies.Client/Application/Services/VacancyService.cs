@@ -19,13 +19,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
         private readonly ITimeProvider _timeProvider;
         private readonly IMessaging _messaging;
         private readonly RuleSet<Vacancy> _vacancyRuleSet;
-        private readonly IVacancyReviewRepositoryRunner _vacancyReviewRepository;
+        private readonly IVacancyReviewRepository _vacancyReviewRepository;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
 
         public VacancyService(
             ILogger<VacancyService> logger, IVacancyRepository vacancyRepository, 
             ITimeProvider timeProvider, IMessaging messaging,
-            RuleSet<Vacancy> vacancyRuleSet, IVacancyReviewRepositoryRunner vacancyReviewRepository,IVacancyReviewQuery vacancyReviewQuery)
+            RuleSet<Vacancy> vacancyRuleSet, IVacancyReviewRepository vacancyReviewRepository,IVacancyReviewQuery vacancyReviewQuery)
         {
             _logger = logger;
             _vacancyRepository = vacancyRepository;

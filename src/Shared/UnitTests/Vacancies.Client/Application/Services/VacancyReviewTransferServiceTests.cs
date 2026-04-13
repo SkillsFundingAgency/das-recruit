@@ -16,14 +16,14 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
     public class VacancyReviewTransferServiceTests
     {
         private readonly Fixture _autoFixture = new Fixture();
-        private readonly Mock<IVacancyReviewRepositoryRunner> _mockVacancyReviewRepository;
+        private readonly Mock<IVacancyReviewRepository> _mockVacancyReviewRepository;
         private readonly Mock<IVacancyReviewQuery> _mockVacancyReviewQuery;
         private readonly Mock<ITimeProvider> _mockTimeProvider;
         private VacancyReviewTransferService _sut;
 
         public VacancyReviewTransferServiceTests()
         {
-            _mockVacancyReviewRepository = new Mock<IVacancyReviewRepositoryRunner>();
+            _mockVacancyReviewRepository = new Mock<IVacancyReviewRepository>();
             _mockVacancyReviewQuery = new Mock<IVacancyReviewQuery>();
             _mockTimeProvider = new Mock<ITimeProvider>();
             _mockTimeProvider.Setup(t => t.Now).Returns(DateTime.Now);

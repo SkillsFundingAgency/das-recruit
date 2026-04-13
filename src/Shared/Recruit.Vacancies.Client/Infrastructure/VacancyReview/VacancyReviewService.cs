@@ -12,38 +12,10 @@ using SFA.DAS.Encoding;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 
-public interface IVacancyReviewRepositoryRunner
-{
-    Task CreateAsync(Domain.Entities.VacancyReview vacancy);
-    Task UpdateAsync(Domain.Entities.VacancyReview review);
-}
-
-public class VacancyReviewRepositoryRunner : IVacancyReviewRepositoryRunner
-{
-    private readonly IEnumerable<IVacancyReviewRepository> _vacancyReviewResolver;
-
-    public VacancyReviewRepositoryRunner(IEnumerable<IVacancyReviewRepository> vacancyReviewResolver)
-    {
-        _vacancyReviewResolver = vacancyReviewResolver;
-    }
-
-    public async Task UpdateAsync(Domain.Entities.VacancyReview vacancyReview)
-    {
-        foreach (var vacancyReviewResolver in _vacancyReviewResolver)
-        {
-            await vacancyReviewResolver.UpdateAsync(vacancyReview);
-        }
-    }
-    public async Task CreateAsync(Domain.Entities.VacancyReview vacancyReview)
-    {
-        foreach (var vacancyReviewResolver in _vacancyReviewResolver)
-        {
-            await vacancyReviewResolver.CreateAsync(vacancyReview);
-        }
-    }
-}
-
-public class VacancyReviewService(IOuterApiClient outerApiClient, IEncodingService encodingService, IFeature feature) : IVacancyReviewRepository, IVacancyReviewQuery
+public class VacancyReviewService(IOuterApiClient outerApiClient,
+    IEncodingService encodingService,
+    IFeature feature)
+    : IVacancyReviewRepository, IVacancyReviewQuery
 {
     public async Task CreateAsync(Domain.Entities.VacancyReview vacancyReview)
     {
@@ -68,17 +40,6 @@ public class VacancyReviewService(IOuterApiClient outerApiClient, IEncodingServi
         await outerApiClient.Post(new PostVacancyReviewRequest(review.Id,VacancyReviewDto.MapVacancyReviewDto(review, encodingService)), false);
     }
 
-    public Task<List<VacancyReviewSummary>> GetActiveAsync()
-    {
-        //NOTE: WILL NOT IMPLEMENT. To implement as a more efficient query in GetVacancyReviewByFilterRequest
-        throw new NotImplementedException();
-    }
-
-    public async Task<GetVacancyReviewSummaryResponse> GetVacancyReviewSummary()
-    {
-        return await outerApiClient.Get<GetVacancyReviewSummaryResponse>(new GetVacancyReviewSummaryRequest());
-    }
-
     public async Task<List<Domain.Entities.VacancyReview>> GetForVacancyAsync(long vacancyReference)
     {
         var result = await outerApiClient.Get<GetVacancyReviewListResponse>(new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference));
@@ -87,14 +48,28 @@ public class VacancyReviewService(IOuterApiClient outerApiClient, IEncodingServi
 
     public async Task<Domain.Entities.VacancyReview> GetLatestReviewByReferenceAsync(long vacancyReference)
     {
-        var result = await outerApiClient.Get<GetVacancyReviewListResponse>(new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference, "latest"));
+        var result = await outerApiClient.Get<GetVacancyReviewListResponse>(new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference));
         
         if (result == null)
         {
             return null;
         }
-        
-        return (Domain.Entities.VacancyReview)result.VacancyReviews.FirstOrDefault();
+
+        var filtered = result.VacancyReviews
+            .Where(r =>
+                r.VacancyReference == vacancyReference &&
+                (
+                    r.ManualOutcome == null ||
+                    (
+                        r.ManualOutcome != ManualQaOutcome.Transferred.ToString() &&
+                        r.ManualOutcome != ManualQaOutcome.Blocked.ToString()
+                    )
+                )
+            )
+            .OrderByDescending(r => r.CreatedDate)
+            .FirstOrDefault();
+
+        return (Domain.Entities.VacancyReview)filtered;
     }
 
     public async Task<List<Domain.Entities.VacancyReview>> GetByStatusAsync(ReviewStatus status)
@@ -103,54 +78,22 @@ public class VacancyReviewService(IOuterApiClient outerApiClient, IEncodingServi
         return result.VacancyReviews.Select(c=>(Domain.Entities.VacancyReview)c).ToList();
     }
 
-    public async Task<List<Domain.Entities.VacancyReview>> GetVacancyReviewsInProgressAsync(DateTime getExpiredAssignationDateTime)
-    {
-        var result = await outerApiClient.Get<GetVacancyReviewListResponse>(new GetVacancyReviewByFilterRequest(expiredAssignationDateTime:getExpiredAssignationDateTime));
-        return result.VacancyReviews.Select(c=>(Domain.Entities.VacancyReview)c).ToList();
-    }
-
-    public async Task<int> GetApprovedCountAsync(string submittedByUserId)
-    {
-        var result = await outerApiClient.Get<GetVacancyReviewCountResponse>(new GetVacancyReviewCountByUserFilterRequest(submittedByUserId));
-        return result.Count;
-    }
-
-    public async Task<int> GetApprovedFirstTimeCountAsync(string submittedByUserId)
-    {
-        // GETVacancyReviewCountByAccountLegalEntityPublicHashedId
-        // where status closed
-        // ManualOutcome approved
-        // EmployerNameOption anonymous
-        var result = await outerApiClient.Get<GetVacancyReviewCountResponse>(new GetVacancyReviewCountByUserFilterRequest(submittedByUserId, true));
-        return result.Count;
-    }
-
-    public async Task<List<Domain.Entities.VacancyReview>> GetAssignedForUserAsync(string userId, DateTime assignationExpiryDateTime)
-    {
-        var result =
-            await outerApiClient.Get<GetVacancyReviewListResponse>(
-                new GetVacancyReviewsAssignedToUserRequest(userId, assignationExpiryDateTime));
-        return result.VacancyReviews.Select(c=>(Domain.Entities.VacancyReview)c).ToList();
-    }
-
     public async Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
     {
-        var result = await outerApiClient.Get<GetVacancyReviewResponse>(new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference, "latestReferred"));
+        var result = await outerApiClient.Get<GetVacancyReviewListResponse>(new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference, ReviewStatus.Closed));
         
         if (result == null)
         {
             return null;
         }
-        
-        return (Domain.Entities.VacancyReview)result.VacancyReview;
-    }
 
-    public async Task<int> GetAnonymousApprovedCountAsync(string accountLegalEntityPublicHashedId)
-    {
-        var accountLegalEntity =
-            encodingService.Decode(accountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
-        // this is just used as a flag so can just return 1 or zero
-        var result = await outerApiClient.Get<GetVacancyReviewCountResponse>(new GetAnonymousApprovedCountByAccountLegalEntity(accountLegalEntity));
-        return result.Count;
+        var filtered = result.VacancyReviews
+            .Where(r =>
+                r.Status == ReviewStatus.Closed.ToString() &&
+                r.ManualOutcome == ManualQaOutcome.Referred.ToString())
+            .OrderByDescending(r => r.ClosedDate)
+            .FirstOrDefault();
+
+        return (Domain.Entities.VacancyReview)filtered;
     }
 }
