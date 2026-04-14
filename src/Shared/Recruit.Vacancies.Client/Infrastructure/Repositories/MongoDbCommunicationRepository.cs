@@ -37,16 +37,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<IEnumerable<CommunicationMessage>> GetManyAsync(IEnumerable<Guid> msgIds)
-        {
-            var filter = Builders<CommunicationMessage>.Filter.In(cm => cm.Id, msgIds);
-            var collection = GetCollection<CommunicationMessage>();
-            var result = await RetryPolicy.ExecuteAsync(_ =>
-                collection.FindAsync(filter),
-                new Context(nameof(GetManyAsync)));
-            return await result.ToListAsync();
-        }
-
         public Task UpdateAsync(CommunicationMessage commMsg)
         {
             var filter = Builders<CommunicationMessage>.Filter.Eq(cm => cm.Id, commMsg.Id);
@@ -54,37 +44,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return RetryPolicy.ExecuteAsync(_ =>
                 collection.ReplaceOneAsync(filter, commMsg),
                 new Context(nameof(UpdateAsync)));
-        }
-
-        public async Task<IEnumerable<CommunicationMessage>> GetScheduledMessagesSinceAsync(string requestType, DeliveryFrequency frequency, DateTime from, DateTime to)
-        {
-            var builder = Builders<CommunicationMessage>.Filter;
-            var filter = builder.Eq(cm => cm.RequestType, requestType) &
-                        builder.Eq(cm => cm.Frequency, frequency) &
-                        builder.Eq(cm => cm.Status, CommunicationMessageStatus.Pending) &
-                        builder.Gte(cm => cm.RequestDateTime, from) &
-                        builder.Lte(cm => cm.RequestDateTime, to);
-            var collection = GetCollection<CommunicationMessage>();
-            var result = await RetryPolicy.ExecuteAsync(_ =>
-                collection.FindAsync(filter),
-                new Context(nameof(GetScheduledMessagesSinceAsync)));
-            return await result.ToListAsync();
-        }
-
-        public Task UpdateScheduledMessagesAsSentAsync(IEnumerable<Guid> msgIds, Guid aggregatedMessageId)
-        {
-            var builder = Builders<CommunicationMessage>.Filter;
-            var filter = builder.Ne(cm => cm.Frequency, DeliveryFrequency.Immediate) &
-                        builder.In(cm => cm.Id, msgIds);
-            var collection = GetCollection<CommunicationMessage>();
-
-            var updateDef = new UpdateDefinitionBuilder<CommunicationMessage>()
-                                .Set(cm => cm.Status, CommunicationMessageStatus.Sent)
-                                .Set(cm => cm.AggregatedMessageId, aggregatedMessageId);
-
-            return RetryPolicy.ExecuteAsync(_ =>
-                collection.UpdateManyAsync(filter, updateDef),
-                new Context(nameof(UpdateScheduledMessagesAsSentAsync)));
         }
 
         public Task HardDelete(DateTime dispatchDateTime)

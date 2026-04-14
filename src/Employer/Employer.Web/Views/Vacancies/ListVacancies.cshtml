@@ -4,7 +4,6 @@
     ViewBag.Vpv = "/recruitment/employer/page-vacancies";
     ViewBag.Title = $"{Model.PageHeading} adverts";
 }
-<partial name="@PartialNames.Alerts" for="Alerts" />
 <div asp-show="@Model.HasWarning" class="das-notification das-notification--warning">
     <p class="das-notification__body">@Model.WarningMessage</p>
 </div>

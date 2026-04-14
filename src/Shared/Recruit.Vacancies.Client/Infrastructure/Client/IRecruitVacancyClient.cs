@@ -12,7 +12,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public interface IRecruitVacancyClient
     {
-        Task AssignVacancyNumber(Guid vacancyId);
         Task UserSignedInAsync(VacancyUser user, UserType userType);
         Task<Vacancy> GetVacancyAsync(Guid vacancyId);
         Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference);

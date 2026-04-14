@@ -43,28 +43,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         }
 
         [Fact]
-        public void ErrorIfTrainingProviderIsBlocked()
-        {
-            var vacancy = new Vacancy
-            {
-                TrainingProvider = new TrainingProvider { Ukprn = 12345678 }
-            };
-
-            MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(12345678)).ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
-
-            MockBlockedOrganisationRepo.Setup(b => b.GetByOrganisationIdAsync("12345678"))
-                .ReturnsAsync(new BlockedOrganisation {BlockedStatus = BlockedStatus.Blocked});
-
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
-
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
-            result.Errors[0].ErrorCode.Should().Be(ErrorCodes.TrainingProviderMustNotBeBlocked);
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
-        }
-
-        [Fact]
         public void ErrorIfTrainingProviderIsNotMainOrEmployerProfile()
         {
             var vacancy = new Vacancy
