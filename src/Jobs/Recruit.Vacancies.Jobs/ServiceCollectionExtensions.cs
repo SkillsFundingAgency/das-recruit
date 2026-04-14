@@ -44,7 +44,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<IDomainEventHandler<IEvent>, VacancySubmittedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyRejectedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, LiveVacancyChangedDateHandler>();
-            services.AddScoped<IDomainEventHandler<IEvent>, LiveVacancyWithdrawnHandler>();
 
             // VacancyReview
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewApprovedHandler>();
