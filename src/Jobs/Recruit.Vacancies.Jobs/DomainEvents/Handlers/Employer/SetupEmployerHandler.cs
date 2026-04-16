@@ -8,43 +8,35 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Employer
 {
-    public class SetupEmployerHandler : DomainEventHandler,  IDomainEventHandler<SetupEmployerEvent>
+    public class SetupEmployerHandler(
+        ILogger<SetupEmployerHandler> logger,
+        IJobsVacancyClient client,
+        IEditVacancyInfoProjectionService projectionService)
+        : DomainEventHandler(logger), IDomainEventHandler<SetupEmployerEvent>
     {
-        private readonly ILogger<SetupEmployerHandler> _logger;
-        private readonly IJobsVacancyClient _client;
-        private readonly IEditVacancyInfoProjectionService _projectionService;
-
-        public SetupEmployerHandler(ILogger<SetupEmployerHandler> logger, IJobsVacancyClient client, IEditVacancyInfoProjectionService projectionService) : base(logger)
-        {
-            _logger = logger;
-            _client = client;
-            _projectionService = projectionService;
-        }
-
         public async Task HandleAsync(string eventPayload)
         {
             var @event = DeserializeEvent<SetupEmployerEvent>(eventPayload);
 
             try
             {
-                _logger.LogInformation($"Processing {nameof(SetupEmployerEvent)} for Account: {{AccountId}}", @event.EmployerAccountId);
+                logger.LogInformation($"Processing {nameof(SetupEmployerEvent)} for Account: {{AccountId}}", @event.EmployerAccountId);
 
-                var legalEntities = (await _client.GetEmployerLegalEntitiesAsync(@event.EmployerAccountId)).ToList();
+                var legalEntities = (await client.GetEmployerLegalEntitiesAsync(@event.EmployerAccountId)).ToList();
 
-                var vacancyDataTask =  _projectionService.UpdateEmployerVacancyDataAsync(@event.EmployerAccountId, legalEntities);
+                var vacancyDataTask = projectionService.UpdateEmployerVacancyDataAsync(@event.EmployerAccountId, legalEntities);
 
-                var employerProfilesTask = _client.RefreshEmployerProfiles(@event.EmployerAccountId, legalEntities.Select(x => x.AccountLegalEntityPublicHashedId));
+                var employerProfilesTask = client.RefreshEmployerProfiles(@event.EmployerAccountId, legalEntities.Select(x => x.AccountLegalEntityPublicHashedId));
 
                 await Task.WhenAll(vacancyDataTask, employerProfilesTask);
 
-                _logger.LogInformation($"Finished Processing {nameof(SetupEmployerEvent)} for Account: {{AccountId}}", @event.EmployerAccountId);
+                logger.LogInformation($"Finished Processing {nameof(SetupEmployerEvent)} for Account: {{AccountId}}", @event.EmployerAccountId);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unable to process {eventBody}", @event);
+                logger.LogError(ex, "Unable to process {eventBody}", @event);
                 throw;
             }
         }
     }
 }
-

@@ -12,7 +12,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public interface IRecruitVacancyClient
     {
-        Task AssignVacancyNumber(Guid vacancyId);
         Task UserSignedInAsync(VacancyUser user, UserType userType);
         Task<Vacancy> GetVacancyAsync(Guid vacancyId);
         Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference);
@@ -29,7 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<string> GetEmployerNameAsync(Vacancy vacancy);
         Task<string> GetEmployerDescriptionAsync(Vacancy vacancy);
         Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, string accountLegalEntityPublicHashedId);
-        Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user);
+        Task UpdateEmployerProfileAsync(EmployerProfile employerProfile);
         Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference);
         Task<Domain.Entities.User> GetUsersDetailsAsync(string userId);
         Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string vacancyUserId, string dfeUserId = null);

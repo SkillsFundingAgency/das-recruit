@@ -45,7 +45,7 @@ public class WhenListingVacancies
             .Returns(employerAccountId);
 
         // act
-        await sut.ListVacanciesAsync(filteringOption, hashedEmployerAccountId, ukprn, userId, "foo", 5, 50, VacancySortColumn.ClosingDate, ColumnSortOrder.Asc);
+        await sut.ListVacanciesAsync(filteringOption, hashedEmployerAccountId, ukprn, "foo", 5, 50, VacancySortColumn.ClosingDate, ColumnSortOrder.Asc);
 
         // assert
         capturedRequest.Should().NotBeNull();
@@ -89,7 +89,7 @@ public class WhenListingVacancies
             .Returns(employerAccountId);
 
         // act
-        var result = await sut.ListVacanciesAsync(filteringOption, hashedEmployerAccountId, ukprn, userId, "foo", 5, 50, VacancySortColumn.ClosingDate, ColumnSortOrder.Asc);
+        var result = await sut.ListVacanciesAsync(filteringOption, hashedEmployerAccountId, ukprn, "foo", 5, 50, VacancySortColumn.ClosingDate, ColumnSortOrder.Asc);
 
         // assert
         result.Should().NotBeNull();

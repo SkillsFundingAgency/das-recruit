@@ -458,10 +458,6 @@ public class WhenCreatingVacancy
                 command.Vacancy.AccountLegalEntityPublicHashedId)).ReturnsAsync(employerProfile);
             
         await handler.Handle(command, CancellationToken.None);
-            
-        recruitVacancyClient.Verify(x=>x.UpdateEmployerProfileAsync(It.Is<EmployerProfile>(c=>
-            c.TradingName.Equals(command.Vacancy.EmployerName)
-        ),It.IsAny<VacancyUser>()), Times.Once);
     }
 
     [Test, MoqAutoData]

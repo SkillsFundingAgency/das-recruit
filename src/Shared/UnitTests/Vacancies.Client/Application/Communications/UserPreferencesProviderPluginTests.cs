@@ -15,10 +15,6 @@ public class UserPreferencesProviderPluginTests
 
     [Theory]
     [InlineData(RequestType.VacancyWithdrawnByQa, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
-    [InlineData(RequestType.ProviderBlockedProviderNotification, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
-    [InlineData(RequestType.ProviderBlockedEmployerNotificationForTransferredVacancies, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
-    [InlineData(RequestType.ProviderBlockedEmployerNotificationForLiveVacancies, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
-    [InlineData(RequestType.ProviderBlockedEmployerNotificationForPermissionOnly, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
     public async Task WhenUserPreferenceIsNotSet(string requestType, DeliveryChannelPreferences channel, DeliveryFrequency frequency)
     {
         _repositoryMock
@@ -47,10 +43,6 @@ public class UserPreferencesProviderPluginTests
 
     [Theory]
     [InlineData(RequestType.VacancyWithdrawnByQa)]
-    [InlineData(RequestType.ProviderBlockedProviderNotification)]
-    [InlineData(RequestType.ProviderBlockedEmployerNotificationForTransferredVacancies)]
-    [InlineData(RequestType.ProviderBlockedEmployerNotificationForLiveVacancies)]
-    [InlineData(RequestType.ProviderBlockedEmployerNotificationForPermissionOnly)]
     public async Task WhenRequestTypeIsOfHighSeverity_ShouldReturnImmediateEmailPreferenceIrrespectiveToUserPreference(string requestType)
     {
         var userPref = _fixture

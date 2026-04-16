@@ -21,9 +21,7 @@ using SFA.DAS.Encoding;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators;
 
-public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
-    IEmployerAccountProvider employerAccountProvider,
-    IOuterApiClient outerApiClient,
+public class VacanciesOrchestrator(IOuterApiClient outerApiClient,
     IEncodingService encodingService)
 {
     private const int VacanciesPerPage = 25;
@@ -32,14 +30,12 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
         FilteringOptions filteringOption,
         string hashedEmployerAccountId,
         int? ukprn,
-        string userId,
         string? searchTerm = null,
         int page = 1,
         int pageSize = VacanciesPerPage,
         VacancySortColumn sortColumn = VacancySortColumn.CreatedDate,
         ColumnSortOrder sortOrder = ColumnSortOrder.Desc)
     {
-        var alertsTask = employerAccountProvider.GetEmployerAlerts(hashedEmployerAccountId, userId);
         var pageHeading = GetPageHeading(filteringOption);
         var noResultsMessage = GetNoResultsMessage(filteringOption);
         var noResultsHeading = GetNoResultsHeading(filteringOption);
@@ -63,37 +59,9 @@ public class VacanciesOrchestrator(IEmployerVacancyClient vacancyClient,
         {
             routeDictionary.Add("searchTerm", searchTerm);
         }
-
-        var alerts = await alertsTask;
+        
         return new ListVacanciesViewModel
         {
-            Alerts = new AlertsViewModel(
-                new EmployerTransferredVacanciesAlertViewModel
-                {
-                    EmployerAccountId = hashedEmployerAccountId,
-                    TransferredVacanciesCount = alerts.EmployerRevokedTransferredVacanciesAlert.TransferredVacanciesCount,
-                    TransferredVacanciesProviderNames = alerts.EmployerRevokedTransferredVacanciesAlert.TransferredVacanciesProviderNames,
-
-                },
-                new EmployerTransferredVacanciesAlertViewModel
-                {
-                    EmployerAccountId = hashedEmployerAccountId,
-                    TransferredVacanciesCount = alerts.BlockedProviderTransferredVacanciesAlert.TransferredVacanciesCount,
-                    TransferredVacanciesProviderNames = alerts.BlockedProviderTransferredVacanciesAlert.TransferredVacanciesProviderNames
-                },
-                new BlockedProviderAlertViewModel
-                {
-                    EmployerAccountId = hashedEmployerAccountId,
-                    BlockedProviderNames = alerts.BlockedProviderAlert.BlockedProviderNames,
-                    ClosedVacancies = alerts.BlockedProviderAlert.ClosedVacancies,
-                },
-                new WithdrawnVacanciesAlertViewModel
-                {
-                    EmployerAccountId = hashedEmployerAccountId,
-                    ClosedVacancies = alerts.WithDrawnByQaVacanciesAlert.ClosedVacancies,
-                    Ukprn = ukprn.GetValueOrDefault()
-                }
-            ),
             FilterViewModel = new VacanciesListSearchFilterViewModel
             {
                 ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, totalItems, filteringOption, searchTerm, UserType.Employer),

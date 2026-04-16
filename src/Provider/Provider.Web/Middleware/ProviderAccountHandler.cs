@@ -22,18 +22,16 @@ namespace Esfa.Recruit.Provider.Web.Middleware
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IProviderVacancyClient _client;
-        private readonly IBlockedOrganisationQuery _blockedOrganisationsRepo;
         private readonly ITempDataProvider _tempDataProvider;
         private readonly Predicate<Claim> _ukprnClaimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier) 
                                                                             || c.Type.Equals(ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier);
         private readonly IDictionary<string, object> _dict = new Dictionary<string, object>();
         private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
 
-        public ProviderAccountHandler(IWebHostEnvironment hostingEnvironment, IProviderVacancyClient client, IBlockedOrganisationQuery blockedOrganisationsRepo, ITempDataProvider tempDataProvider, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
+        public ProviderAccountHandler(IWebHostEnvironment hostingEnvironment, IProviderVacancyClient client, ITempDataProvider tempDataProvider, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
         {
             _hostingEnvironment = hostingEnvironment;
             _client = client;
-            _blockedOrganisationsRepo = blockedOrganisationsRepo;
             _tempDataProvider = tempDataProvider;
             _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
         }
@@ -52,16 +50,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
                 {
                     if (HasDoneOncePerAuthorizedSessionActions(context) == false)
                     {
-                        var isProviderBlocked = await HasBeenBlockedOnRecruit(ukprnFromClaim);
-
-                        if (isProviderBlocked == false)
-                        {
-                            SetOncePerAuthorizedSessionActionsCompleted(context);
-                        }
-                        else
-                        {
-                            context.Fail();
-                        }
+                        SetOncePerAuthorizedSessionActionsCompleted(context);
                     }
 
                     if (context.HasFailed)
@@ -75,16 +64,6 @@ namespace Esfa.Recruit.Provider.Web.Middleware
                     }
                 }
             }
-        }
-
-        private async Task<bool> HasBeenBlockedOnRecruit(string ukprnFromClaim)
-        {
-            var bo = await _blockedOrganisationsRepo.GetByOrganisationIdAsync(ukprnFromClaim);
-            var isBlocked = (bo == null || bo.BlockedStatus == BlockedStatus.Unblocked) == false;
-
-            _dict.Add(TempDataKeys.IsBlockedProvider, isBlocked);
-
-            return isBlocked;
         }
 
         private bool HasServiceAuthorization(AuthorizationHandlerContext context)

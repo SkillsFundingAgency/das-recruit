@@ -26,10 +26,6 @@ public static class CommunicationConstants
     public static class RequestType
     {
         public const string VacancyWithdrawnByQa = nameof(VacancyWithdrawnByQa);
-        public const string ProviderBlockedProviderNotification = nameof(ProviderBlockedProviderNotification);
-        public const string ProviderBlockedEmployerNotificationForTransferredVacancies = nameof(ProviderBlockedEmployerNotificationForTransferredVacancies);
-        public const string ProviderBlockedEmployerNotificationForLiveVacancies = nameof(ProviderBlockedEmployerNotificationForLiveVacancies);
-        public const string ProviderBlockedEmployerNotificationForPermissionOnly = nameof(ProviderBlockedEmployerNotificationForPermissionOnly);
     }
 
     public static class DataItemKeys
@@ -52,19 +48,10 @@ public static class CommunicationConstants
         {
             public const string ProviderName = "provider-name";
         }
-
-        public static class Employer
-        {
-            public const string VacanciesTransferredCountText = "vacancies-transferred-count-text";
-        }
     }
 
     public static class TemplateIds
     {
         public const string VacancyWithdrawnByQa = "RecruitV2_VacancyWithdrawnByQa";
-        public const string ProviderBlockedProviderNotification = "RecruitV2_ProviderBlocked_ProviderNotification";
-        public const string ProviderBlockedEmployerNotificationForTransferredVacancies = "RecruitV2_ProviderBlocked_EmployerNotification_ForTransferredVacancies";
-        public const string ProviderBlockedEmployerNotificationForLiveVacancies = "RecruitV2_ProviderBlocked_EmployerNotification_ForLiveVacancies";
-        public const string ProviderBlockedEmployerNotificationForPermissionsOnly = "RecruitV2_ProviderBlocked_EmployerNotification_ForPermissionsOnly";        
     }
 }

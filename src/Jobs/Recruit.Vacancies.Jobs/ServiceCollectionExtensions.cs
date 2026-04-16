@@ -36,15 +36,9 @@ namespace Esfa.Recruit.Vacancies.Jobs
             // Add Jobs
             services.AddScoped<DomainEventsQueueTrigger>();
             services.AddScoped<VacancyStatusQueueTrigger>();
-            services.AddScoped<TransferVacanciesFromProviderQueueTrigger>();
-            services.AddScoped<TransferVacancyToLegalEntityQueueTrigger>();
             services.AddScoped<TransferVacanciesFromEmployerReviewToQAReviewQueueTrigger>();
             services.AddScoped<UpdateProvidersQueueTrigger>();
-
             services.AddScoped<TransferVacanciesFromEmployerReviewToQAReviewJob>();
-            services.AddScoped<TransferVacanciesFromProviderJob>();
-            services.AddScoped<TransferVacancyToLegalEntityJob>();
-
             services.AddScoped<INotificationService, NotificationService>();
             
             // Domain Event Queue Handlers
@@ -54,14 +48,12 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancySubmittedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyRejectedHandler>();
-            services.AddScoped<IDomainEventHandler<IEvent>, ProviderBlockedOnVacancyDomainEventHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, LiveVacancyChangedDateHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, LiveVacancyWithdrawnHandler>();
 
             // VacancyReview
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewApprovedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewReferredHandler>();
-            services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewCreatedHandler>();
 
             // Application
             services.AddScoped<IDomainEventHandler<IEvent>, ApplicationSubmittedDomainEventHandler>();
@@ -71,8 +63,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             // Provider
             services.AddScoped<IDomainEventHandler<IEvent>, SetupProviderHandler>();
-            services.AddScoped<IDomainEventHandler<IEvent>, ProviderBlockedDomainEventHandler>();
-            services.AddScoped<IDomainEventHandler<IEvent>, ProviderBlockedOnLegalEntityDomainEventHandler>();
 
             RegisterCommunicationsService(services, configuration);
             RegisterDasEncodingService(services, configuration);

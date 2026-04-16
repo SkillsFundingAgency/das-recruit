@@ -7,15 +7,10 @@ using Esfa.Recruit.Shared.Web.Extensions;
 
 namespace Esfa.Recruit.Shared.Web.Orchestrators
 {
-    public abstract class EntityValidatingOrchestrator<TEntity, TEditModel>
+    public abstract class EntityValidatingOrchestrator<TEntity, TEditModel>(ILogger logger)
     {
-        protected readonly ILogger Logger;
+        protected readonly ILogger Logger = logger;
 
-        protected EntityValidatingOrchestrator(ILogger logger)
-        {
-            Logger = logger;
-        }
-        
         protected abstract EntityToViewModelPropertyMappings<TEntity, TEditModel> DefineMappings();
 
         protected async Task<OrchestratorResponse> ValidateAndExecute(TEntity entity, Func<TEntity, EntityValidationResult> validationFunc, Func<TEntity, Task> action)

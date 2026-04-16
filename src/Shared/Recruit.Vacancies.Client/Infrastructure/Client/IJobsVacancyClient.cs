@@ -15,7 +15,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task EnsureVacancyIsGeocodedAsync(Guid vacancyId);
         Task ReferVacancyAsync(long vacancyReference);
         Task CreateApplicationReviewAsync(Domain.Entities.Application application);
-        Task PerformRulesCheckAsync(Guid reviewId);
         Task RefreshEmployerProfiles(string employerAccountId, IEnumerable<string> accountLegalEntityPublicHashedIds);
         Task UpdateUserAccountAsync(string idamsUserId);
         Task UpdateProviders();

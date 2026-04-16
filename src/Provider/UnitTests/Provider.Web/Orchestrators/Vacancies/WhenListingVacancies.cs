@@ -40,7 +40,7 @@ public class WhenListingVacancies
             .ReturnsAsync(vacanciesResponse);
 
         // act
-        await sut.ListVacanciesAsync(filteringOption, ukprn, userId, "foo", 5, 50, VacancySortColumn.ClosingDate, ColumnSortOrder.Asc);
+        await sut.ListVacanciesAsync(filteringOption, ukprn, "foo", 5, 50, VacancySortColumn.ClosingDate, ColumnSortOrder.Asc);
 
         // assert
         capturedRequest.Should().NotBeNull();
@@ -79,11 +79,10 @@ public class WhenListingVacancies
             .ReturnsAsync(vacanciesResponse);
 
         // act
-        var result = await sut.ListVacanciesAsync(filteringOption, ukprn, userId, "foo", 5, 50, VacancySortColumn.ClosingDate, ColumnSortOrder.Asc);
+        var result = await sut.ListVacanciesAsync(filteringOption, ukprn, "foo", 5, 50, VacancySortColumn.ClosingDate, ColumnSortOrder.Asc);
 
         // assert
         result.Should().NotBeNull();
-        result.Alerts.TransferredVacanciesAlert.Should().BeNull();
         result.Ukprn.Should().Be(ukprn);
         result.PageHeading.Should().Be(expectedPageHeading);
         result.FilterViewModel.SearchTerm.Should().Be("foo");

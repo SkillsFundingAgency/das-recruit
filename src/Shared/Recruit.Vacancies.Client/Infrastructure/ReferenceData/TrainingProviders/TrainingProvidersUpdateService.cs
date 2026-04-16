@@ -12,46 +12,36 @@ using Polly;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders
 {
-    public class TrainingProvidersUpdateService : ITrainingProvidersUpdateService
+    public class TrainingProvidersUpdateService(
+        ILogger<TrainingProvidersUpdateService> logger,
+        IReferenceDataWriter referenceDataWriter,
+        IOuterApiClient outerApiClient)
+        : ITrainingProvidersUpdateService
     {
-        private readonly ILogger<TrainingProvidersUpdateService> _logger;
-        private readonly IReferenceDataWriter _referenceDataWriter;
-        private readonly IOuterApiClient _outerApiClient;
-
-        public TrainingProvidersUpdateService(
-            ILogger<TrainingProvidersUpdateService> logger, 
-            IReferenceDataWriter referenceDataWriter, 
-            IOuterApiClient outerApiClient)
-        {
-            _logger = logger;
-            _referenceDataWriter = referenceDataWriter;
-            _outerApiClient = outerApiClient;
-        }
-        
         public async Task UpdateProviders()
         {
             try
             {
                 var providersTask = await GetProviders();
 
-                await _referenceDataWriter.UpsertReferenceData(new TrainingProviders {
+                await referenceDataWriter.UpsertReferenceData(new TrainingProviders {
                     Data = providersTask.ToList()
                 });
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Failed to get providers from api");
+                logger.LogError(e, "Failed to get providers from api");
                 throw;
             }
         }
 
         private async Task<IEnumerable<TrainingProvider>> GetProviders()
         {
-            _logger.LogTrace("Getting Providers from Outer Api");
+            logger.LogTrace("Getting Providers from Outer Api");
 
             var retryPolicy = GetApiRetryPolicy();
 
-            var result = await retryPolicy.Execute(context => _outerApiClient.Get<GetProvidersResponse>(new GetProvidersRequest()), new Dictionary<string, object>() { { "apiCall", "Providers" } });
+            var result = await retryPolicy.Execute(context => outerApiClient.Get<GetProvidersResponse>(new GetProvidersRequest()), new Dictionary<string, object> { { "apiCall", "Providers" } });
 
             // logic to filter only Training provider with Main & Employer Profiles and Status Id not equal to "Not Currently Starting New Apprentices"
             return result.Providers
@@ -71,8 +61,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
                     TimeSpan.FromSeconds(1),
                     TimeSpan.FromSeconds(2),
                     TimeSpan.FromSeconds(4)
-                }, (exception, timeSpan, retryCount, context) => {
-                    _logger.LogWarning($"Error connecting to Outer Api for {context["apiCall"]}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");    
+                }, (_, timeSpan, retryCount, context) => {
+                    logger.LogWarning("Error connecting to Outer Api for {O}. Retrying in {TimeSpanSeconds} secs...attempt: {RetryCount}", context["apiCall"], timeSpan.Seconds, retryCount);    
                 });
         }
     }

@@ -21,24 +21,19 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators;
 
-public class VacanciesOrchestrator(
-    ITrainingProviderService trainingProviderService,
-    IOuterApiClient outerApiClient)
+public class VacanciesOrchestrator(IOuterApiClient outerApiClient)
 {
     private const int VacanciesPerPage = 25;
     
     public async Task<ListVacanciesViewModel> ListVacanciesAsync(
         FilteringOptions filteringOption,
         int ukprn,
-        string userId,
         string? searchTerm = null,
         int page = 1,
         int pageSize = VacanciesPerPage,
         VacancySortColumn sortColumn = VacancySortColumn.CreatedDate,
         ColumnSortOrder sortOrder = ColumnSortOrder.Desc)
     {
-        var alertsTask = trainingProviderService.GetProviderAlerts(ukprn, userId);
-
         var pageHeading = GetPageHeading(filteringOption);
         var noResultsMessage = GetNoResultsMessage(filteringOption);
         var noResultsHeading = GetNoResultsHeading(filteringOption);
@@ -63,18 +58,9 @@ public class VacanciesOrchestrator(
         {
             routeDictionary.Add("searchTerm", searchTerm);
         }
-
-        var alerts = alertsTask.Result;
+        
         return new ListVacanciesViewModel
         {
-            Alerts = new AlertsViewModel(null,
-                new WithdrawnVacanciesAlertViewModel
-                {
-                    ClosedVacancies = alerts.WithdrawnVacanciesAlert.ClosedVacancies,
-                    Ukprn = ukprn
-                },
-                ukprn
-            ),
             FilterViewModel = new VacanciesListSearchFilterViewModel
             {
                 ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, totalItems, filteringOption, searchTerm, UserType.Provider),
