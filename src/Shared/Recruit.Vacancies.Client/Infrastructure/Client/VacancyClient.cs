@@ -448,11 +448,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return Task.CompletedTask;
         }
 
-        public Task PerformRulesCheckAsync(Guid reviewId)
-        {
-            return vacancyService.PerformRulesCheckAsync(reviewId);
-        }
-
         public Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
         {
             return vacancyReviewQuery.GetCurrentReferredVacancyReviewAsync(vacancyReference);

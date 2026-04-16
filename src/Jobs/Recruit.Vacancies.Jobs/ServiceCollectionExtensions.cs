@@ -54,7 +54,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             // VacancyReview
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewApprovedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewReferredHandler>();
-            services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewCreatedHandler>();
 
             // Application
             services.AddScoped<IDomainEventHandler<IEvent>, ApplicationSubmittedDomainEventHandler>();
