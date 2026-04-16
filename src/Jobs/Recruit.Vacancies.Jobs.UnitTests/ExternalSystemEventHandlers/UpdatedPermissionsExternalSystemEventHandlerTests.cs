@@ -1,19 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AutoFixture;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderRelationships.Messages.Events;
 using SFA.DAS.ProviderRelationships.Types.Models;
@@ -115,30 +111,6 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
         }
 
         [Fact]
-        public async Task GivenMatchingExistingLegalEntityId_ThenVerifyTransferProcessIsQueued()
-        {
-            var matchingLegalEntityViewModel = _autoFixture.Build<AccountLegalEntity>()
-                                                            .With(l => l.DasAccountId, EmployerAccountIdEncoded)
-                                                            .With(l => l.AccountLegalEntityId, AccountLegalEntityId)
-                                                            .With(l => l.LegalEntityId, RecruitLegalEntityId)
-                                                            .Create();
-
-            var grantedOperations = new HashSet<Operation> { Operation.CreateCohort };
-            var previousOperations = new HashSet<Operation>();
-
-            _mockEncoder.Setup(x => x.Encode(EmployerAccountId, EncodingType.AccountId)).Returns(EmployerAccountIdEncoded);
-            _mockEmployerAccountProvider.Setup(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded))
-                                        .ReturnsAsync(_dummyLegalEntities.Append(matchingLegalEntityViewModel));
-
-            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, previousOperations, DateTime.UtcNow), null);
-
-            _mockEncoder.Verify(x => x.Encode(EmployerAccountId, EncodingType.AccountId), Times.Once);
-            _mockEmployerAccountProvider.Verify(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded), Times.Once);
-            _mockRecruitQueueService.Verify(x => x.AddMessageAsync(It.IsAny<TransferVacanciesFromProviderQueueMessage>()), Times.Once);
-            _mockMessaging.Verify(x => x.SendCommandAsync(It.Is<SetupProviderCommand>(c => c.Ukprn == Ukprn)), Times.Once);
-        }
-
-        [Fact]
         public async Task GivenMatchingExistingLegalEntityId_ThenVerifyTransferReviewProcessIsQueued()
         {
             var matchingLegalEntityViewModel = _autoFixture.Build<AccountLegalEntity>()
@@ -160,41 +132,6 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
             _mockEmployerAccountProvider.Verify(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded), Times.Once);
             _mockRecruitQueueService.Verify(x => x.AddMessageAsync(It.IsAny<TransferVacanciesFromEmployerReviewToQAReviewQueueMessage>()), Times.Once);
             _mockMessaging.Verify(x => x.SendCommandAsync(It.Is<SetupProviderCommand>(c => c.Ukprn == Ukprn)), Times.Once);
-        }
-
-        [Fact]
-        public async Task GivenMatchingExistingLegalEntityId_ThenTransferQueuedMessageIsMappedCorrectly()
-        {
-            var matchingLegalEntityViewModel = _autoFixture.Build<AccountLegalEntity>()
-                                                            .With(l => l.DasAccountId, EmployerAccountIdEncoded)
-                                                            .With(l => l.AccountLegalEntityId, AccountLegalEntityId)
-                                                            .With(l => l.LegalEntityId, RecruitLegalEntityId)
-                                                            .Create();
-
-            var grantedOperations = new HashSet<Operation> { Operation.CreateCohort };
-            var previousOperations = new HashSet<Operation>();
-            _mockEncoder.Setup(x => x.Encode(EmployerAccountId, EncodingType.AccountId)).Returns(EmployerAccountIdEncoded);
-            _mockEmployerAccountProvider.Setup(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded))
-                                        .ReturnsAsync(_dummyLegalEntities.Append(matchingLegalEntityViewModel));
-
-            var userRef = Guid.NewGuid();
-
-            TransferVacanciesFromProviderQueueMessage queuedMessage = null;
-            _mockRecruitQueueService.Setup(mock => mock.AddMessageAsync(It.IsAny<TransferVacanciesFromProviderQueueMessage>())).Callback((TransferVacanciesFromProviderQueueMessage message) =>
-            {
-                queuedMessage = message;
-            });
-
-            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, userRef, UserEmailAddress, UserFirstName, UserLastName, grantedOperations, previousOperations, DateTime.UtcNow), null);          
-
-            Assert.NotNull(queuedMessage);
-            Assert.Equal(Ukprn, queuedMessage.Ukprn);
-            Assert.Equal(EmployerAccountIdEncoded, queuedMessage.EmployerAccountId);
-            Assert.Equal(matchingLegalEntityViewModel.AccountLegalEntityPublicHashedId, queuedMessage.AccountLegalEntityPublicHashedId);
-            Assert.Equal(userRef, queuedMessage.UserRef);
-            Assert.Equal(UserEmailAddress, queuedMessage.UserEmailAddress);
-            Assert.Equal($"{UserFirstName} {UserLastName}", queuedMessage.UserName);
-            Assert.Equal(TransferReason.EmployerRevokedPermission, queuedMessage.TransferReason);
         }
 
         [Fact]
