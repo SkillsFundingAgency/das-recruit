@@ -700,6 +700,7 @@ dd.govuk-summary-list__value .faa-user-content:first-child {
 
 .raa-archive-card {
     background: #f3f2f1;
+    border: none;
 }
 
     .raa-archive-card .raa-archive-card-heading {

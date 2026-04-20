@@ -578,6 +578,7 @@ span.govuk-error-message:empty {
 
 .raa-archive-card {
     background: #f3f2f1;
+    border: none;
 }
 
     .raa-archive-card .raa-archive-card-heading {
