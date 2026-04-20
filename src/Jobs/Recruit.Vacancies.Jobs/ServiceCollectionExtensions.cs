@@ -36,15 +36,9 @@ namespace Esfa.Recruit.Vacancies.Jobs
             // Add Jobs
             services.AddScoped<DomainEventsQueueTrigger>();
             services.AddScoped<VacancyStatusQueueTrigger>();
-            services.AddScoped<TransferVacanciesFromProviderQueueTrigger>();
-            services.AddScoped<TransferVacancyToLegalEntityQueueTrigger>();
             services.AddScoped<TransferVacanciesFromEmployerReviewToQAReviewQueueTrigger>();
             services.AddScoped<UpdateProvidersQueueTrigger>();
-
             services.AddScoped<TransferVacanciesFromEmployerReviewToQAReviewJob>();
-            services.AddScoped<TransferVacanciesFromProviderJob>();
-            services.AddScoped<TransferVacancyToLegalEntityJob>();
-
             services.AddScoped<INotificationService, NotificationService>();
             
             // Domain Event Queue Handlers
