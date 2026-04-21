@@ -189,6 +189,7 @@ public class VacanciesOrchestrator(IOuterApiClient outerApiClient,
             FilteringOptions.NewSharedApplications or FilteringOptions.AllSharedApplications => ("Adverts with shared applications", "adverts with shared applications"),
             FilteringOptions.Transferred => ("Adverts transferred from provider", "adverts transferred from provider"),
             FilteringOptions.AllApplications => ("Adverts with applications", "adverts with applications"),
+            FilteringOptions.Archived => ("Archived adverts", "archived adverts"),
             _ => ("Adverts", "adverts")
         };
 

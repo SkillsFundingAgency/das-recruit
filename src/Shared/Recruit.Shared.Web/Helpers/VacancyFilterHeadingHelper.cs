@@ -23,7 +23,8 @@ namespace Esfa.Recruit.Shared.Web.Helpers
                 case FilteringOptions.Closed:
                 case FilteringOptions.Draft:
                 case FilteringOptions.Live:
-                case FilteringOptions.Referred:                
+                case FilteringOptions.Referred:
+                case FilteringOptions.Archived:
                     words.Add(filteringOption.GetDisplayName(userType).ToLowerInvariant());
                     words.Add(vacancyWord);
                     break;
