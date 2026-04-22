@@ -19,13 +19,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         public async Task<Unit> Handle(CloneVacancyCommand message, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Cloning new vacancy with id: {vacancyId} from vacancy with id: {clonedVacancyId}", message.IdOfVacancyToClone, message.NewVacancyId);
+            logger.LogInformation("Cloning new vacancy with id: {vacancyId} from vacancy with id: {clonedVacancyId}",
+                                  message.IdOfVacancyToClone,
+                                  message.NewVacancyId);
 
             var vacancy = await repository.GetVacancyAsync(message.IdOfVacancyToClone);
 
             if (vacancy.Status != VacancyStatus.Submitted && vacancy.Status != VacancyStatus.Live && vacancy.Status != VacancyStatus.Closed && vacancy.Status != VacancyStatus.Review)
             {
-                logger.LogError($"Unable to clone vacancy {{vacancyId}} due to it having a status of {vacancy.Status}.", message.IdOfVacancyToClone);
+                logger.LogError("Unable to clone vacancy {vacancyId} due to it having a status of {VacancyStatus}.", message.IdOfVacancyToClone, vacancy.Status);
                 
                 throw new InvalidStateException($"Vacancy is not in correct state to be cloned. Current State: {vacancy.Status}");
             }
