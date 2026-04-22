@@ -19,7 +19,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         IVacancyRepository vacancyRepository,
         IVacancyReviewRepository vacancyReviewRepository,
         IVacancyReviewQuery vacancyReviewQuery,
-        IVacancyService vacancyService,
         ITimeProvider time,
         ISlaService slaService,
         IVacancyComparerService vacancyComparerService)
@@ -53,8 +52,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await vacancyReviewRepository.CreateAsync(review);
 
-            await vacancyService.PerformRulesCheckAsync(review.Id);
-            
             return Unit.Value;
         }
 
