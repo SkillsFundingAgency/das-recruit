@@ -11,6 +11,7 @@
         public const string VacancyDatesCannotBeEdited = "The dates of advert '{0}' can't be edited.";
         public const string CannotCloneVacancyWithSameDates = "The advert '{0}' has a closing date or start date that is in the past.";
         public const string VacancyNotAvailableForReject = "The advert '{0}' cannot be rejected.";
-        public const string VacancyNotAvailableForArchive = "The advert '{0}' cannot be archived.";
+        public const string AdvertNotAvailableForArchive = "The advert '{0}' cannot be archived.";
+        public const string VacancyNotAvailableForArchive = "The vacancy '{0}' cannot be archived.";
     }
 }

@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Provider.Web.ViewModels.ArchiveVacancy;
+using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels.ArchiveVacancy;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
-namespace Esfa.Recruit.Provider.Web.Orchestrators;
+namespace Esfa.Recruit.Employer.Web.Orchestrators;
 
 public class ArchiveVacancyOrchestrator(IProviderVacancyClient client,
     IRecruitVacancyClient vacancyClient,
@@ -14,12 +14,12 @@ public class ArchiveVacancyOrchestrator(IProviderVacancyClient client,
 {
     public async Task<ArchiveViewModel> GetArchiveViewModelAsync(VacancyRouteModel vrm)
     {
-        var vacancy = await vacancyClient.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
+        var vacancy = await vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
-        utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
+        utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
         if (!vacancy.CanArchive)
-            throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForArchive, vacancy.Title));
+            throw new InvalidStateException(string.Format(ErrorMessages.AdvertNotAvailableForArchive, vacancy.Title));
 
         var vm = new ArchiveViewModel
         {
@@ -27,7 +27,7 @@ public class ArchiveVacancyOrchestrator(IProviderVacancyClient client,
             Status = vacancy.Status,
             VacancyReference = vacancy.VacancyReference,
             EmployerName = vacancy.EmployerName,
-            Ukprn = vrm.Ukprn,
+            EmployerAccountId = vrm.EmployerAccountId,
             VacancyId = vrm.VacancyId
         };
 
@@ -36,21 +36,21 @@ public class ArchiveVacancyOrchestrator(IProviderVacancyClient client,
 
     public async Task<ArchiveViewModel> ArchiveVacancyAsync(ArchiveEditModel m, VacancyUser user)
     {
-        var vacancy = await vacancyClient.GetVacancyAsync(m.VacancyId.GetValueOrDefault());
+        var vacancy = await vacancyClient.GetVacancyAsync(m.VacancyId);
 
-        utility.CheckAuthorisedAccess(vacancy, m.Ukprn);
+        utility.CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
 
         if (!vacancy.CanArchive)
-            throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForArchive, vacancy.Title));
+            throw new InvalidStateException(string.Format(ErrorMessages.AdvertNotAvailableForArchive, vacancy.Title));
 
         var vm = new ArchiveViewModel
         {
             Title = vacancy.Title,
             Status = vacancy.Status,
             EmployerName = vacancy.EmployerName,
-            VacancyReference = vacancy.VacancyReference,
-            Ukprn = m.Ukprn,
-            VacancyId = m.VacancyId
+            EmployerAccountId = vacancy.EmployerAccountId,
+            VacancyId = vacancy.Id,
+            VacancyReference = vacancy.VacancyReference
         };
         await client.ArchiveVacancyAsync(vacancy.Id, user);
         return vm;

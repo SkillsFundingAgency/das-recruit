@@ -10,6 +10,8 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
 
         public const string VacancyArchived = "'{0}(VAC{1})' has been archived.";
 
+        public const string AdvertArchived = "'{0}(VAC{1})' has been archived.";
+
         public const string AdvertDeleted = "Advert VAC{0} - '{1}' has been deleted.";
 
         public const string VacancyClosed = "Vacancy VAC{0} - '{1}' has been closed.";

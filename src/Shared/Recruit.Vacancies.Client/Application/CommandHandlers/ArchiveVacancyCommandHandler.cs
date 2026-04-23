@@ -9,8 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 
-public class ArchiveVacancyCommandHandler(
-    ILogger<ArchiveVacancyCommandHandler> logger,
+public class ArchiveVacancyCommandHandler(ILogger<ArchiveVacancyCommandHandler> logger,
     IVacancyRepository repository,
     ITimeProvider timeProvider)
     : IRequestHandler<ArchiveVacancyCommand, Unit>
