@@ -1,0 +1,43 @@
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.ArchiveVacancy.ArchiveViewModel
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="@PartialNames.ValidationSummary" model="new ValidationSummaryViewModel { ModelState = ViewData.ModelState }" />
+        <h1 class="govuk-heading-l">Do you want to archive this vacancy?</h1>
+        <div class="govuk-body">
+            <p>You've responded to every applicant and can archive this vacancy.</p>
+        </div>
+        <div class="das-pane">
+            <h3 class="govuk-heading-s">@Model.Title</h3>
+            <div class="govuk-!-margin-bottom-3">
+                <span class="govuk-body-xs">@Model.EmployerName</span>
+            </div>
+            <div class="govuk-!-margin-bottom-3">
+                <span class="govuk-body-xs">@Model.VacancyReference</span>
+            </div>
+        </div>
+        <div class="govuk-inset-text">
+            This vacancy will be moved from closed to archived. You can clone an archived vacancy to list it again.
+        </div>
+        <form asp-route="@RouteNames.ArchiveVacancy_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
+            <input type="hidden" name="Status" value="@Model.Status"/>
+            <div esfa-validation-marker-for="ConfirmArchive" class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <span esfa-validation-message-for="ConfirmArchive" class="govuk-error-message"></span>
+                    <div class="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input asp-for="@Model.ConfirmArchive" type="radio" value="true" class="govuk-radios__input" id="archive-yes"/>
+                            <label class="govuk-label govuk-radios__label" for="archive-yes">Yes, archive this vacancy now</label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input asp-for="@Model.ConfirmArchive" type="radio" value="false" class="govuk-radios__input" id="archive-no"/>
+                            <label class="govuk-label govuk-radios__label" for="archive-no">No, don't archive this vacancy</label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="govuk-form-group">
+                <input type="submit" value="Submit" class="govuk-button"/>
+            </div>
+        </form>
+    </div>
+</div> 

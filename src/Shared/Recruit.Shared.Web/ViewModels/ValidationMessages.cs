@@ -45,6 +45,11 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
             public const string SelectionRequired = "Select yes if you want to delete this advert";
         }
 
+        public static class ArchiveVacancyConfirmationMessages
+        {
+            public const string SelectionRequired = "Select yes if you want to archive this advert";
+        }
+
         public static class CloseVacancyConfirmationMessages
         {
             public const string SelectionRequired = "Select yes if you want to close this advert on Find an apprenticeship";
