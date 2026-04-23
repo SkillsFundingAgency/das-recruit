@@ -47,6 +47,11 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
 
         public static class ArchiveVacancyConfirmationMessages
         {
+            public const string SelectionRequired = "Select yes if you want to archive this vacancy";
+        }
+
+        public static class ArchiveAdvertConfirmationMessages
+        {
             public const string SelectionRequired = "Select yes if you want to archive this advert";
         }
 
