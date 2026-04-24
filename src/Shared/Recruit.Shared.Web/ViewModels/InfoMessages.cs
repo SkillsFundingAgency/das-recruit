@@ -8,9 +8,9 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
 
         public const string VacancyDeleted = "Vacancy VAC{0} - '{1}' has been deleted.";
 
-        public const string VacancyArchived = "'{0}(VAC{1})' has been archived.";
+        public const string VacancyArchived = "'{0}(VAC{1})' has been <a href='{2}' class='govuk-link govuk-link govuk-link--no-visited-state'>archived</a>.";
 
-        public const string AdvertArchived = "'{0}(VAC{1})' has been archived.";
+        public const string AdvertArchived = "'{0}(VAC{1})' has been <a href='{2}' class='govuk-link govuk-link govuk-link--no-visited-state'>archived</a>.";
 
         public const string AdvertDeleted = "Advert VAC{0} - '{1}' has been deleted.";
 

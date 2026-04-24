@@ -37,7 +37,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             var vm = await orchestrator.ArchiveVacancyAsync(m, User.ToVacancyUser());
 
-            TempData.Add(TempDataKeys.DashboardInfoMessage, string.Format(InfoMessages.AdvertArchived, vm.Title, vm.VacancyReference));
+            var archivePageUrl = Url.RouteUrl(RouteNames.VacanciesGetAll, new
+            {
+                EmployerAccountId = m.EmployerAccountId,
+                filter = FilteringOptions.Archived
+            });
+            TempData.Add(TempDataKeys.DashboardInfoMessage, string.Format(InfoMessages.AdvertArchived, vm.Title, vm.VacancyReference, archivePageUrl));
 
             return RedirectToRoute(RouteNames.VacanciesGetAll, new {
                 EmployerAccountId = m.EmployerAccountId,

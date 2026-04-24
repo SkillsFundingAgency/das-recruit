@@ -8,7 +8,9 @@
     <p class="das-notification__body">@Model.WarningMessage</p>
 </div>
 <govuk-banner asp-show="@Model.HasInfo" type="BannerStyle.Success">
-    <govuk-banner-heading>@Model.InfoMessage</govuk-banner-heading>
+    <govuk-banner-heading>
+        @Html.Raw(Model.InfoMessage)
+    </govuk-banner-heading>
 </govuk-banner>
 @section BackLink
 {
@@ -19,6 +21,12 @@
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.PageHeading</h1>
     </div>
 </div>
+@if (Model.FilteringOptions == FilteringOptions.Closed)
+{
+    <div class="govuk-inset-text">
+        Closed vacancies can be archived when all applicants have received their outcome.
+    </div>    
+}
 @if (Model is { ListViewModel.Vacancies.Count: > 0 } || !string.IsNullOrWhiteSpace(Model.FilterViewModel.SearchTerm))
 {
     <partial name="_VacanciesListSearchFilter" model="@Model.FilterViewModel" />

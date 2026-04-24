@@ -9,7 +9,9 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Primitives;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers;
 
@@ -22,6 +24,7 @@ public class ArchiveVacancyControllerTests
         string email,
         ArchiveEditModel model,
         Vacancy vacancy,
+        string redirectUrl,
         [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
         ArchiveVacancyOrchestrator orchestrator)
     {
@@ -29,17 +32,29 @@ public class ArchiveVacancyControllerTests
         vacancy.Status = VacancyStatus.Closed;
         vacancy.IsDeleted = false;
 
+        var mockUrlHelper = new Mock<IUrlHelper>();
+        mockUrlHelper
+            .Setup(x => x.RouteUrl(It.IsAny<UrlRouteContext>()))
+            .Returns(redirectUrl);
+        var httpContextMock = new Mock<HttpContext>();
+        httpContextMock.Setup(ctx => ctx.Request.Headers.Referer).Returns(new StringValues(redirectUrl));
+
         var controller = new ArchiveVacancyController(orchestrator)
         {
             TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
         };
+        controller.Url = mockUrlHelper.Object;
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = httpContextMock.Object
+        };
+
         var user = new ClaimsPrincipal(new ClaimsIdentity(
-            new[]
-            {
+            [
                 new Claim(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier,userId),
                 new Claim(EmployerRecruitClaims.IdamsUserDisplayNameClaimTypeIdentifier,userName),
                 new Claim(EmployerRecruitClaims.IdamsUserEmailClaimTypeIdentifier,email)
-            }
+            ]
         ));
         controller.ControllerContext = new ControllerContext
         {
@@ -53,6 +68,6 @@ public class ArchiveVacancyControllerTests
         Assert.That(actual, Is.Not.Null);
         actual.RouteName.Should().Be(RouteNames.VacanciesGetAll);
         Assert.That(controller.TempData.ContainsKey(TempDataKeys.DashboardInfoMessage), Is.True);
-        Assert.That(string.Format(InfoMessages.AdvertArchived, vacancy.Title, vacancy.VacancyReference), Is.EqualTo(controller.TempData[TempDataKeys.DashboardInfoMessage]));
+        Assert.That(string.Format(InfoMessages.AdvertArchived, vacancy.Title, vacancy.VacancyReference, redirectUrl), Is.EqualTo(controller.TempData[TempDataKeys.DashboardInfoMessage]));
     }
 }
