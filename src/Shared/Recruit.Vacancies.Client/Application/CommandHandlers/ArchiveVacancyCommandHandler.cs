@@ -28,7 +28,7 @@ public class ArchiveVacancyCommandHandler(ILogger<ArchiveVacancyCommandHandler> 
 
         if (!vacancy.CanArchive)
         {
-            logger.LogWarning("Unable to archive vacancy {vacancyId} due to vacancy having a status of {VacancyStatus}.", vacancy.Status, message.VacancyId);
+            logger.LogWarning("Unable to archive vacancy {vacancyId} due to vacancy having a status of {VacancyStatus}.", message.VacancyId, vacancy.Status);
             return Unit.Value;
         }
 
