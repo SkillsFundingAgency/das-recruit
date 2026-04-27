@@ -11,7 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         [Test, MoqAutoData]
         public async Task GetVacancyApplicationsSortedAsync_ReturnsEmptyList_WhenNoApplications(
             long vacancyReference,
-            [Frozen] Mock<ISqlDbRepository> mockAppReviewRepo,
+            [Frozen] Mock<IApplicationReadRepository> mockAppReviewRepo,
             [Greedy] VacancyClient vacancyClient)
         {
             // Arrange

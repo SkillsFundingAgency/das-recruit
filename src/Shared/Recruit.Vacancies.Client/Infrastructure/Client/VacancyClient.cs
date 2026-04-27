@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         ITimeProvider timeProvider,
         ITrainingProviderService trainingProviderService,
         IVacancyAnalyticsService vacancyAnalyticsService,
-        ISqlDbRepository sqlDbRepository)
+        IApplicationReadRepository applicationReadRepository)
         : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -266,14 +266,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<Domain.Entities.ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId)
         {
-            return await sqlDbRepository.GetAsync(applicationReviewId);
+            return await applicationReadRepository.GetAsync(applicationReviewId);
         }
 
         public async Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider = false)
         {
             var applicationReviews = vacancySharedByProvider
-                    ? await sqlDbRepository.GetForSharedVacancySortedAsync(vacancyReference, sortColumn, sortOrder)
-                    : await sqlDbRepository.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder);
+                    ? await applicationReadRepository.GetForSharedVacancySortedAsync(vacancyReference, sortColumn, sortOrder)
+                    : await applicationReadRepository.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder);
             
             return applicationReviews == null
                 ? []
@@ -283,7 +283,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public async Task<List<VacancyApplication>> GetVacancyApplicationsForSelectedIdsAsync(List<Guid> applicationReviewIds)
         {
             var applicationReviews =
-                await sqlDbRepository.GetAllForSelectedIdsAsync<Domain.Entities.ApplicationReview>(applicationReviewIds);
+                await applicationReadRepository.GetAllForSelectedIdsAsync<Domain.Entities.ApplicationReview>(applicationReviewIds);
 
             return applicationReviews == null
                 ? []
@@ -294,7 +294,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var vacancy = await repository.GetVacancyAsync(vacancyId);
             var applicationReviews =
-                await sqlDbRepository.GetAllForVacancyWithTemporaryStatus(vacancy.VacancyReference!.Value!, status);
+                await applicationReadRepository.GetAllForVacancyWithTemporaryStatus(vacancy.VacancyReference!.Value!, status);
 
             return applicationReviews == null
                 ? []
@@ -446,11 +446,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             //return messaging.SendCommandAsync(new CreateApplicationReviewCommand { Application = application });
             return Task.CompletedTask;
-        }
-
-        public Task PerformRulesCheckAsync(Guid reviewId)
-        {
-            return vacancyService.PerformRulesCheckAsync(reviewId);
         }
 
         public Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)

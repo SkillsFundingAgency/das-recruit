@@ -114,8 +114,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             // Application Service
             services.AddTransient<ISlaService, SlaService>();
             services.AddTransient<IVacancyService, VacancyService>();
-            services.AddTransient<IVacancyTransferService, VacancyTransferService>();
-            services.AddTransient<IVacancyReviewTransferService, VacancyReviewTransferService>();
             services.AddTransient<IVacancyComparerService, VacancyComparerService>();
             services.AddTransient<ICache, Cache>();
             services.AddTransient<IHtmlSanitizerService, HtmlSanitizerService>();
@@ -191,7 +189,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
             services.AddTransient<IApplicationWriteRepository, ApplicationReviewService>();
             
-            services.AddTransient<ISqlDbRepository, ApplicationReviewService>();
+            services.AddTransient<IApplicationReadRepository, ApplicationReviewService>();
 
             services.AddTransient<IApplicationReviewRepositoryRunner, ApplicationReviewRepositoryRunner>();
 

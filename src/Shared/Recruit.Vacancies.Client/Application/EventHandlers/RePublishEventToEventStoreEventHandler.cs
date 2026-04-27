@@ -20,7 +20,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
             INotificationHandler<VacancyReviewReferredEvent>,
             INotificationHandler<SetupEmployerEvent>,
             INotificationHandler<SetupProviderEvent>,
-            INotificationHandler<VacancyReviewCreatedEvent>,
             INotificationHandler<VacancyClosedEvent>,
             INotificationHandler<LiveVacancyUpdatedEvent>,
             INotificationHandler<ApplicationSubmittedEvent>,
@@ -48,9 +47,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
             => HandleUsingEventStore(notification);
 
         public Task Handle(SetupProviderEvent notification, CancellationToken cancellationToken)
-            => HandleUsingEventStore(notification);
-
-        public Task Handle(VacancyReviewCreatedEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
 
         public Task Handle(VacancyClosedEvent notification, CancellationToken cancellationToken)

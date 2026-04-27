@@ -16,7 +16,7 @@ public class VacancyClientTests
         SortColumn sortColumn,
         SortOrder sortOrder,
         Recruit.Vacancies.Client.Domain.Entities.ApplicationReview applicationReview,
-        [Frozen] Mock<ISqlDbRepository> sqlDbRepositoryMock,
+        [Frozen] Mock<IApplicationReadRepository> sqlDbRepositoryMock,
         [Greedy] VacancyClient vacancyClient)
     {
         var expected = new List<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview> { applicationReview };
@@ -35,7 +35,7 @@ public class VacancyClientTests
         SortColumn sortColumn,
         SortOrder sortOrder,
         Recruit.Vacancies.Client.Domain.Entities.ApplicationReview applicationReview,
-        [Frozen] Mock<ISqlDbRepository> sqlDbRepositoryMock,
+        [Frozen] Mock<IApplicationReadRepository> sqlDbRepositoryMock,
         [Greedy] VacancyClient vacancyClient)
     {
         var expected = new List<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview> { applicationReview };
@@ -54,7 +54,7 @@ public class VacancyClientTests
         SortColumn sortColumn,
         SortOrder sortOrder,
         Recruit.Vacancies.Client.Domain.Entities.ApplicationReview applicationReview,
-        [Frozen] Mock<ISqlDbRepository> sqlDbRepositoryMock,
+        [Frozen] Mock<IApplicationReadRepository> sqlDbRepositoryMock,
         [Greedy] VacancyClient vacancyClient)
     {
         sqlDbRepositoryMock.Setup(r => r.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder))
@@ -68,7 +68,7 @@ public class VacancyClientTests
     public async Task GetApplicationReviewAsync_UsesSqlDbRepository_WhenMongoMigrationEnabled(
         Guid applicationReviewId,
         Recruit.Vacancies.Client.Domain.Entities.ApplicationReview applicationReview,
-        [Frozen] Mock<ISqlDbRepository> sqlDbRepositoryMock,
+        [Frozen] Mock<IApplicationReadRepository> sqlDbRepositoryMock,
         [Greedy] VacancyClient vacancyClient)
     {
         applicationReview.Application.ApplicationId = applicationReviewId;
