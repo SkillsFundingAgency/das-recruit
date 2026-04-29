@@ -56,7 +56,6 @@ public class CloneVacancyCommandHandlerTests
         var handler = new CloneVacancyCommandHandler(
             Mock.Of<ILogger<CloneVacancyCommandHandler>>(),
             mockRepository.Object,
-            Mock.Of<IMessaging>(),
             mockTimeProvider.Object
         );
 
@@ -85,7 +84,6 @@ public class CloneVacancyCommandHandlerTests
         var handler = new CloneVacancyCommandHandler(
             Mock.Of<ILogger<CloneVacancyCommandHandler>>(),
             mockRepository.Object,
-            Mock.Of<IMessaging>(),
             mockTimeProvider.Object
         );
 

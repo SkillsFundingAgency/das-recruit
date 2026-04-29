@@ -1,40 +1,25 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Domain.Events;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
-using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using MediatR;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 
-public class CreateProviderOwnedVacancyCommandHandler: IRequestHandler<CreateProviderOwnedVacancyCommand, Unit>
+public class CreateProviderOwnedVacancyCommandHandler(
+    ILogger<CreateProviderOwnedVacancyCommandHandler> logger,
+    IVacancyRepository repository,
+    ITimeProvider timeProvider)
+    : IRequestHandler<CreateProviderOwnedVacancyCommand, Unit>
 {
-    private readonly ILogger<CreateProviderOwnedVacancyCommandHandler> _logger;
-    private readonly IVacancyRepository _repository;
-    private readonly IMessaging _messaging;
-    private readonly ITimeProvider _timeProvider;
-
-    public CreateProviderOwnedVacancyCommandHandler(
-        ILogger<CreateProviderOwnedVacancyCommandHandler> logger,
-        IVacancyRepository repository, 
-        IMessaging messaging, 
-        ITimeProvider timeProvider)
-    {
-        _logger = logger;
-        _repository = repository;
-        _messaging = messaging;
-        _timeProvider = timeProvider;
-    }
-
     public async Task<Unit> Handle(CreateProviderOwnedVacancyCommand message, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Creating vacancy with id {vacancyId}.", message.VacancyId);
+        logger.LogInformation("Creating vacancy with id {vacancyId}.", message.VacancyId);
 
-        var now = _timeProvider.Now;
+        var now = timeProvider.Now;
 
         var vacancy = new Vacancy
         {
@@ -55,12 +40,8 @@ public class CreateProviderOwnedVacancyCommandHandler: IRequestHandler<CreatePro
             ApplicationMethod = null
         };
 
-        await _repository.CreateAsync(vacancy);
-
-        await _messaging.PublishEvent(new VacancyCreatedEvent
-        {
-            VacancyId = vacancy.Id
-        });
+        await repository.CreateAsync(vacancy);
+       
         return Unit.Value;
     }
 }

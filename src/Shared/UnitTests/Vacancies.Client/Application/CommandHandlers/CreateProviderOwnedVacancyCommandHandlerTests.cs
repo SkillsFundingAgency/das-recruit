@@ -4,8 +4,6 @@ using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Events;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
@@ -19,7 +17,6 @@ public class CreateProviderOwnedVacancyCommandHandlerTests
         DateTime createdDate,
         CreateProviderOwnedVacancyCommand command,
         [Frozen] Mock<ITimeProvider> timeProvider,
-        [Frozen] Mock<IMessaging> messaging,
         [Frozen] Mock<IVacancyRepository> vacancyRepository)
     {
         //Arrange
@@ -27,7 +24,6 @@ public class CreateProviderOwnedVacancyCommandHandlerTests
         var handler = new CreateProviderOwnedVacancyCommandHandler(
             Mock.Of<ILogger<CreateProviderOwnedVacancyCommandHandler>>(), 
             vacancyRepository.Object, 
-            messaging.Object, 
             timeProvider.Object);
             
         //Act
@@ -52,8 +48,5 @@ public class CreateProviderOwnedVacancyCommandHandlerTests
                     && c.AccountLegalEntityPublicHashedId.Equals(command.AccountLegalEntityPublicHashedId)
                     && c.LegalEntityName.Equals(command.LegalEntityName)
             )), Times.Once);
-        messaging.Verify(x=>x.PublishEvent(
-            It.Is<VacancyCreatedEvent>(c=>c.VacancyId.Equals(command.VacancyId))));
-            
     }
 }
