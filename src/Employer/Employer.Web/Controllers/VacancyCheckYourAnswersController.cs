@@ -81,6 +81,16 @@ public class VacancyCheckYourAnswersController(VacancyCheckYourAnswersOrchestrat
     [HttpPost("check-answers", Name = RouteNames.EmployerCheckYourAnswersSubmitPost)]
     public async Task<IActionResult> CheckYourAnswers(SubmitEditModel m)
     {
+        if (!ModelState.IsValid)
+        {
+            var viewModel = await orchestrator.GetVacancyTaskListModel(m);
+            viewModel.SoftValidationErrors = null;
+            viewModel.HasUserConfirmation = m.HasUserConfirmation;
+            viewModel.ValidationErrors = new ValidationSummaryViewModel
+                {ModelState = ModelState, OrderedFieldNames = viewModel.OrderedFieldNames};
+            return View(viewModel);
+        }
+
         var response = await orchestrator.SubmitVacancyAsync(m, User.ToVacancyUser());
         
         if (!response.Success)
@@ -99,10 +109,11 @@ public class VacancyCheckYourAnswersController(VacancyCheckYourAnswersOrchestrat
             throw new Exception("Unknown submit state");
         }
         
-        var viewModel = await orchestrator.GetVacancyTaskListModel(m);
-        viewModel.SoftValidationErrors = null;
-        viewModel.ValidationErrors = new ValidationSummaryViewModel
-            {ModelState = ModelState, OrderedFieldNames = viewModel.OrderedFieldNames};
-        return View(viewModel);
+        var vm = await orchestrator.GetVacancyTaskListModel(m);
+        vm.SoftValidationErrors = null;
+        vm.HasUserConfirmation = m.HasUserConfirmation;
+        vm.ValidationErrors = new ValidationSummaryViewModel
+            {ModelState = ModelState, OrderedFieldNames = vm.OrderedFieldNames};
+        return View(vm);
     }
 }
