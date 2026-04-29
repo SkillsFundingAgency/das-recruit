@@ -9,7 +9,9 @@
     <p class="das-notification__body">@Model.WarningMessage</p>
 </div>
 <govuk-banner asp-show="@Model.HasInfo" type="BannerStyle.Success">
-    <govuk-banner-heading>@Model.InfoMessage</govuk-banner-heading>
+    <govuk-banner-heading>
+        @Html.Raw(Model.InfoMessage)
+    </govuk-banner-heading>
 </govuk-banner>
 @section BackLink
 {
@@ -18,7 +20,7 @@
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.PageHeading</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@Model.PageHeading</h1>
     </div>
 </div>
 @if (Model.FilteringOptions == FilteringOptions.Closed)
