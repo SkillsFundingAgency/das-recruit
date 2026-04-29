@@ -21,7 +21,6 @@ public class VacancySubmittedHandler(
             logger.LogInformation("Processing {EventName} for vacancy: {VacancyId}", EventName, vacancySubmittedEvent.VacancyId);
                 
             await client.CreateVacancyReview(vacancySubmittedEvent.VacancyReference);
-            await client.EnsureVacancyIsGeocodedAsync(vacancySubmittedEvent.VacancyId);
                 
             logger.LogInformation("Finished Processing {EventName} for vacancy: {VacancyId}", EventName, vacancySubmittedEvent.VacancyId);
         }
