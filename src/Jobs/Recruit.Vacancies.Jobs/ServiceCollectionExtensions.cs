@@ -1,17 +1,8 @@
 using System.Collections.Generic;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
-using Communication.Core;
-using Communication.Types;
-using Communication.Types.Interfaces;
-using Esfa.Recruit.Client.Application.Communications;
-using Esfa.Recruit.Vacancies.Client.Application.Communications;
-using Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins;
-using Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantResolverPlugins;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Ioc;
-using Esfa.Recruit.Vacancies.Jobs.Communication;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Employer;
@@ -39,7 +30,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<TransferVacanciesFromEmployerReviewToQAReviewQueueTrigger>();
             services.AddScoped<UpdateProvidersQueueTrigger>();
             services.AddScoped<TransferVacanciesFromEmployerReviewToQAReviewJob>();
-            services.AddScoped<INotificationService, NotificationService>();
             
             // Domain Event Queue Handlers
 
@@ -49,7 +39,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<IDomainEventHandler<IEvent>, VacancySubmittedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyRejectedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, LiveVacancyChangedDateHandler>();
-            services.AddScoped<IDomainEventHandler<IEvent>, LiveVacancyWithdrawnHandler>();
 
             // VacancyReview
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewApprovedHandler>();
@@ -64,7 +53,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             // Provider
             services.AddScoped<IDomainEventHandler<IEvent>, SetupProviderHandler>();
 
-            RegisterCommunicationsService(services, configuration);
             RegisterDasEncodingService(services, configuration);
 
             services.AddSingleton<IFeature, Feature>();
@@ -82,36 +70,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             }
         }
         
-        private static void RegisterCommunicationsService(IServiceCollection services, IConfiguration configuration)
-        {
-            // Relies on services.AddRecruitStorageClient(configuration); being called first
-            services.AddTransient<ICommunicationRepository, MongoDbCommunicationRepository>();
-
-            services.AddScoped<CommunicationRequestQueueTrigger>();
-
-            var communicationStorageConnString = configuration.GetConnectionString("CommunicationsStorage");
-            services.AddSingleton<IDispatchQueuePublisher>(_ => new DispatchQueuePublisher(communicationStorageConnString));
-            services.AddScoped<CommunicationMessageDispatcherQueueTrigger>();
-            services.AddScoped<CommunicationMessageDispatcher>();
-
-            services.AddTransient<ICommunicationProcessor, CommunicationProcessor>();
-            services.AddTransient<ICommunicationService, CommunicationService>();
-
-            services.AddTransient<IParticipantResolver, VacancyParticipantsResolverPlugin>();
-            services.AddTransient<IParticipantResolver, ProviderParticipantsResolverPlugin>();
-            services.AddTransient<IParticipantResolver, EmployerParticipantsResolverPlugin>();
-            services.AddTransient<IUserPreferencesProvider, UserPreferencesProviderPlugin>();
-            services.AddTransient<ITemplateIdProvider, TemplateIdProviderPlugin>();
-            services.AddTransient<IEntityDataItemProvider, VacancyDataEntityPlugin>();
-            services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceUnsubscribeDataEntityPlugIn>();
-            services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceUrlDataEntityPlugin>();
-            services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceConfigDataEntityPlugin>();
-            services.AddTransient<IEntityDataItemProvider, ProviderDataEntityPlugin>();
-            services.AddTransient<IEntityDataItemProvider, EmployerDataEntityPlugin>();
-
-            services.Configure<CommunicationsConfiguration>(configuration.GetSection("CommunicationsConfiguration"));
-        }
-
         private static void RegisterDasEncodingService(IServiceCollection services, IConfiguration configuration)
         {
             var dasEncodingConfig = new EncodingConfig { Encodings = new List<Encoding>() };
