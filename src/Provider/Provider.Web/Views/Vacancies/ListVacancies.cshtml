@@ -27,6 +27,12 @@
         Closed vacancies can be archived when all applicants have received their outcome.
     </div>    
 }
+@if (Model.FilteringOptions == FilteringOptions.Archived)
+{
+    <div class="govuk-inset-text">
+        An archived vacancy can be cloned to list it again.
+    </div>    
+}
 @if (Model is { ListViewModel.Vacancies.Count: > 0 } || !string.IsNullOrWhiteSpace(Model.FilterViewModel.SearchTerm))
 {
     <partial name="_VacanciesListSearchFilter" model="@Model.FilterViewModel" />

@@ -26,7 +26,13 @@
 @if (Model.FilteringOptions == FilteringOptions.Closed)
 {
     <div class="govuk-inset-text">
-        Closed advert can be archived when all applicants have received their outcome.
+        Closed adverts can be archived when all applicants have received their outcome.
+    </div>
+}
+@if (Model.FilteringOptions == FilteringOptions.Archived)
+{
+    <div class="govuk-inset-text">
+        An archived advert can be cloned to list it again.
     </div>
 }
 @if (Model is { ListViewModel.Vacancies.Count: > 0 } || !string.IsNullOrWhiteSpace(Model.FilterViewModel.SearchTerm))
