@@ -4,19 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.ViewModels.Alerts;
 using Esfa.Recruit.Employer.Web.ViewModels.Vacancies;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Vacancy.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses.Vacancies;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using SFA.DAS.Encoding;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators;
@@ -91,6 +88,7 @@ public class VacanciesOrchestrator(IOuterApiClient outerApiClient,
             EmployerAccountId = hashedEmployerAccountId,
             NoResultsHeadingText = noResultsHeading,
             NoResultsLabelText = noResultsMessage,
+            FilteringOptions = filteringOption,
         };
     }
 

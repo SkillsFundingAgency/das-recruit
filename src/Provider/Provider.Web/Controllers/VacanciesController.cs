@@ -37,7 +37,7 @@ public class VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnv
             page,
             sortParams.SortColumn,
             sortParams.SortOrder);
-
+        
         return View("ListVacancies", vm);
     }
 

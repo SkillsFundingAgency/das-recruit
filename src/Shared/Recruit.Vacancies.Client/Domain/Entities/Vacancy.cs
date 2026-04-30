@@ -98,6 +98,13 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
                                   Status == VacancyStatus.Referred ||
                                   Status == VacancyStatus.Rejected )
                                  && IsDeleted == false) || (Status == VacancyStatus.Submitted && ClosingDate <= DateTime.UtcNow && !IsDeleted);
+
+        /// <summary>
+        /// We can only archive closed vacancies that have not been deleted
+        /// </summary>
+        public bool CanArchive => Status == VacancyStatus.Closed 
+                                  && !IsDeleted;
+
         /// <summary>
         /// We can only edit draft & referred & rejected vacancies that have not been deleted
         /// </summary>
