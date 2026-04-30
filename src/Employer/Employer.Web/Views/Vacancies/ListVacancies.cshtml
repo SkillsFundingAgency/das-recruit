@@ -23,18 +23,12 @@
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@Model.PageHeading</h1>
     </div>
 </div>
-@if (Model.FilteringOptions == FilteringOptions.Closed)
-{
-    <div class="govuk-inset-text">
-        Closed adverts can be archived when all applicants have received their outcome.
-    </div>
-}
-@if (Model.FilteringOptions == FilteringOptions.Archived)
-{
-    <div class="govuk-inset-text">
-        An archived advert can be cloned to list it again.
-    </div>
-}
+<govuk-inset asp-show="@(Model.FilteringOptions == FilteringOptions.Closed)">
+    Closed adverts can be archived when all applicants have received their outcome.
+</govuk-inset>
+<govuk-inset asp-show="@(Model.FilteringOptions == FilteringOptions.Archived)">
+    An archived advert can be cloned to list it again.
+</govuk-inset>
 @if (Model is { ListViewModel.Vacancies.Count: > 0 } || !string.IsNullOrWhiteSpace(Model.FilterViewModel.SearchTerm))
 {
     <partial name="_VacanciesListSearchFilter" model="@Model.FilterViewModel" />

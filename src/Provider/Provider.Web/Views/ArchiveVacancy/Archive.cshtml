@@ -26,9 +26,9 @@
                 <p class="govuk-body-s das-!-color-dark-grey">Vacancy reference: @Model.VacancyReferenceDisplay</p>
             </div>
         </div>
-        <div class="govuk-inset-text">
+        <govuk-inset>
             This vacancy will be moved from closed to archived. You can clone an archived vacancy to list it again.
-        </div>
+        </govuk-inset>
         <form asp-route="@RouteNames.ArchiveVacancy_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
             <input type="hidden" name="Status" value="@Model.Status"/>
             <div esfa-validation-marker-for="ConfirmArchive" class="govuk-form-group">

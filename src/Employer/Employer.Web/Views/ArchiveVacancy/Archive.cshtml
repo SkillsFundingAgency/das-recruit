@@ -26,9 +26,9 @@
                 <p class="govuk-body-s das-!-color-dark-grey">Advert reference: @Model.VacancyReferenceDisplay</p>
             </div>
         </div>
-        <div class="govuk-inset-text">
+        <govuk-inset>
             This advert will be moved from closed to archived. You can clone an archived advert to list it again.
-        </div>
+        </govuk-inset>
         <form asp-route="@RouteNames.ArchiveVacancy_Post" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancyId="@Model.VacancyId">
             <input type="hidden" name="Status" value="@Model.Status" />
             <div esfa-validation-marker-for="ConfirmArchive" class="govuk-form-group">
