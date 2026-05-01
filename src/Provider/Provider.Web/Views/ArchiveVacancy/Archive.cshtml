@@ -7,7 +7,7 @@
     <a asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-half">
+    <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model="new ValidationSummaryViewModel { ModelState = ViewData.ModelState }" />
         <h1 class="govuk-heading-xl">Do you want to archive this vacancy?</h1>
     </div>
