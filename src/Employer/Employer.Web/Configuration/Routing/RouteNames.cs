@@ -21,6 +21,8 @@ public static class RouteNames
 
     public const string Dashboard_Get = "Dashboard_Get";
 
+    public const string ArchiveVacancy_Get = nameof(ArchiveVacancy_Get);
+    public const string ArchiveVacancy_Post = nameof(ArchiveVacancy_Post);
     public const string VacanciesGetAll = nameof(VacanciesGetAll);
     
     public const string Dashboard_AccountsRename = "Dashboard_AccountsRename";

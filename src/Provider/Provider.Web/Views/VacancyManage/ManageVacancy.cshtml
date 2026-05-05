@@ -1,20 +1,13 @@
-﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
-@using Esfa.Recruit.Vacancies.Client.Domain.Extensions
-@model Esfa.Recruit.Provider.Web.ViewModels.VacancyManage.ManageVacancyViewModel
-
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.VacancyManage.ManageVacancyViewModel
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-manage-vacancy";
     ViewBag.Title = "Manage vacancy";
 }
-
 @section BackLink {
     <a asp-route="@RouteNames.VacanciesGetAll" asp-route-filter="@Model.FilteringOptions" asp-route-ukprn="@Model.Ukprn" class="govuk-back-link">Back</a>
 }
-
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
         <div asp-show="@Model.CanShowApplicationsStatusChangeBanner" class="govuk-notification-banner govuk-notification-banner--success" role="alert"
              aria-labelledby="govuk-notification-banner-title"
              data-module="govuk-notification-banner">
@@ -30,7 +23,6 @@
                 <p class="govuk-body">@Model.ApplicationReviewStatusChangeBannerMessage</p>
             </div>
         </div>
-
         <div asp-show="@Model.CanShowApplicationReviewStatusHeader" class="das-notification das-notification--information">
             <p class="das-notification__body">
                 @Model.ApplicationReviewStatusHeaderInfoMessage
@@ -39,19 +31,16 @@
         <h1 class="govuk-heading-xl govuk-!-margin-top-6 govuk-!-margin-bottom-6" id="vacancy-header">
             Manage vacancy
         </h1>
-        <govuk-tag-foundation asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-!-margin-bottom-4"/>
+        <govuk-tag-foundation asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-!-margin-bottom-4" />
         <span class="govuk-caption-l">@Model.EmployerName</span>
         <h1 class="govuk-heading-l">@Model.Title</h1>
         <p class="govuk-body-l">Vacancy reference: VAC@(Model.VacancyReference)</p>
-        
         <p asp-show="@Model.Status == VacancyStatus.Submitted" class="govuk-body">
             This vacancy has been sent to us for review. We’ll tell you within 1 working day if you need to make any edits to this vacancy.
         </p>
-        
         <p asp-show="@Model.Status == VacancyStatus.Review" class="govuk-body">
             This vacancy needs to be approved by the employer. If the employer approves the vacancy, it will be sent to DfE for review.
         </p>
-        
         <p asp-show="@Model.IsWithdrawn" class="govuk-inset-text">
             This vacancy has issues and was closed on @Model.WithdrawnDate.
         </p>
@@ -71,7 +60,6 @@
             </div>
         </div>
     </div>
-
     <div class="govuk-grid-column-two-thirds">
         <h2 class="govuk-heading-m">Vacancy summary</h2>
         <dl class="govuk-summary-list">
@@ -80,7 +68,7 @@
                     Status
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <govuk-tag-vacancy-status status="@Model.Status"/>
+                    <govuk-tag-vacancy-status status="@Model.Status" />
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a asp-show="@Model.CanShowCloseVacancyLink" asp-route="@RouteNames.CloseVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Change</a>
@@ -104,11 +92,11 @@
                 </dd>
             </div>
         </dl>
-
         <div class="govuk-button-group">
             <a asp-route="@RouteNames.DisplayFullVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">View vacancy</a>
             <a asp-show="@Model.CanShowCloneVacancyLink" asp-route="@RouteNames.CloneVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Clone vacancy</a>
             <a asp-show="@Model.CanShowDeleteVacancyLink" asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Delete vacancy</a>
+            <a asp-show="true" asp-route="@RouteNames.ArchiveVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Archive vacancy</a>
         </div>
         <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
         <div asp-show="@Model.CanShowVacancyAnalytics">
@@ -135,7 +123,6 @@
                 <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Make multiple applications unsuccessful</a>
             </p>
         </div>
-
         <p class="govuk-body govuk-hint">
             <label asp-show="@Model.IsDisabilityConfident" class="govuk-label govuk-inset-text">@Model.EmployerName is signed up to the <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in new tab)">Disability Confident scheme (opens in new tab)</a>.</label>
         </p>

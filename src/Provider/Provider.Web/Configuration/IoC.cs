@@ -130,6 +130,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<IApplicationReviewsOrchestrator, ApplicationReviewsOrchestrator>();
             services.AddTransient<CloneVacancyOrchestrator>();
             services.AddTransient<DeleteVacancyOrchestrator>();
+            services.AddTransient<ArchiveVacancyOrchestrator>();
             services.AddTransient<IReportDashboardOrchestrator, ReportDashboardOrchestrator>();
             services.AddTransient<IProviderApplicationsReportOrchestrator, ProviderApplicationsReportOrchestrator>();
             services.AddTransient<DashboardOrchestrator>();

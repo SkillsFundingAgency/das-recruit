@@ -127,6 +127,7 @@ public static class IoC
         services.AddTransient<VacanciesSearchSuggestionsOrchestrator>();
         services.AddTransient<DurationOrchestrator>();
         services.AddTransient<DashboardOrchestrator>();
+        services.AddTransient<ArchiveVacancyOrchestrator>();
         services.AddTransient<AlertsOrchestrator>();
         services.AddTransient<CloneVacancyOrchestrator>();
         services.AddTransient<VacancyTaskListOrchestrator>();

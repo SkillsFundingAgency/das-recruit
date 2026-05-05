@@ -160,7 +160,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             return messaging.SendCommandAsync(command);
         }
-        
+
+        public Task ArchiveVacancyAsync(Guid vacancyId, VacancyUser user)
+        {
+            var command = new ArchiveVacancyCommand
+            {
+                VacancyId = vacancyId,
+                User = user
+            };
+
+            return messaging.SendCommandAsync(command);
+        }
+
+
         public async Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId, string userId)
         {
             var dashboardStatsTask = employerAccountProvider.GetEmployerDashboardStats(employerAccountId);
