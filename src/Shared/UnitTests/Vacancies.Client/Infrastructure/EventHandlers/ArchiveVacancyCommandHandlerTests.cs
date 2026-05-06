@@ -60,7 +60,7 @@ internal class ArchiveVacancyCommandHandlerTests
         var vacancy = new Vacancy
         {
             Id = command.VacancyId,
-            Status = VacancyStatus.Live
+            Status = VacancyStatus.Archived
         };
 
         _repositoryMock
@@ -73,7 +73,7 @@ internal class ArchiveVacancyCommandHandlerTests
         // Assert
         result.Should().Be(Unit.Value);
 
-        vacancy.Status.Should().Be(VacancyStatus.Live);
+        vacancy.Status.Should().Be(VacancyStatus.Archived);
 
         _repositoryMock.Verify(r => r.UpdateAsync(It.IsAny<Vacancy>()), Times.Never);
     }
