@@ -96,7 +96,7 @@
             <a asp-route="@RouteNames.DisplayFullVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">View vacancy</a>
             <a asp-show="@Model.CanShowCloneVacancyLink" asp-route="@RouteNames.CloneVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Clone vacancy</a>
             <a asp-show="@Model.CanShowDeleteVacancyLink" asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Delete vacancy</a>
-            <a asp-show="true" asp-route="@RouteNames.ArchiveVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Archive vacancy</a>
+            <a asp-show="@Model.CanShowArchiveVacancyLink" asp-route="@RouteNames.ArchiveVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Archive vacancy</a>
         </div>
         <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
         <div asp-show="@Model.CanShowVacancyAnalytics">

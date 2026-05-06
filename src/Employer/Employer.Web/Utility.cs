@@ -1,13 +1,14 @@
-using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Employer.Web;
@@ -21,6 +22,7 @@ public interface IUtility
     Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm);
     Task UpdateEmployerProfile(VacancyEmployerInfoModel employerInfoModel, EmployerProfile employerProfile, Address address);
     bool IsTaskListCompleted(Vacancy vacancy);
+    Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Vacancy vacancy);
 }
     
 public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator taskListValidator) : IUtility
@@ -137,5 +139,16 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
     public bool IsTaskListCompleted(Vacancy vacancy)
     {
         return vacancy is not null && taskListValidator.IsCompleteAsync(vacancy, EmployerTaskListSectionFlags.All).Result;
+    }
+
+    public async Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Vacancy vacancy)
+    {
+        if (vacancy is null) return false;
+
+        var applicationReviews = await vacancyClient.GetApplicationReviewsAsync(vacancy.Id);
+        return applicationReviews
+            .Where(ar => !ar.IsWithdrawn)
+            .All(ar =>
+            ar.Status is ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful);
     }
 }

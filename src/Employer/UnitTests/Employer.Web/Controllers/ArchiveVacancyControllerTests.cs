@@ -26,7 +26,7 @@ public class ArchiveVacancyControllerTests
         Vacancy vacancy,
         string redirectUrl,
         [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
-        ArchiveVacancyOrchestrator orchestrator)
+        [Frozen] Mock<IArchiveVacancyOrchestrator> orchestrator)
     {
         vacancy.ClosingDate = DateTime.UtcNow.AddMonths(-1);
         vacancy.Status = VacancyStatus.Closed;
@@ -39,7 +39,14 @@ public class ArchiveVacancyControllerTests
         var httpContextMock = new Mock<HttpContext>();
         httpContextMock.Setup(ctx => ctx.Request.Headers.Referer).Returns(new StringValues(redirectUrl));
 
-        var controller = new ArchiveVacancyController(orchestrator)
+        orchestrator.Setup(x => x.ArchiveVacancyAsync(model, It.IsAny<VacancyUser>()))
+            .ReturnsAsync(new ArchiveViewModel
+            {
+                Title = vacancy.Title,
+                VacancyReference = vacancy.VacancyReference
+            });
+
+        var controller = new ArchiveVacancyController(orchestrator.Object)
         {
             TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
         };

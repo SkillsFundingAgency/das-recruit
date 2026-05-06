@@ -50,6 +50,8 @@ public class WhenArchivingVacancy
             .ReturnsAsync(vacancy);
         _utilityMock
             .Setup(x => x.CheckAuthorisedAccess(vacancy, employerId)).Verifiable();
+        _utilityMock
+            .Setup(x => x.IsAllApplicationReviewsHasOutcomeAsync(vacancy)).ReturnsAsync(true);
         // Act
         var result = await _sut.GetArchiveViewModelAsync(vrm);
 
@@ -86,6 +88,8 @@ public class WhenArchivingVacancy
             .ReturnsAsync(vacancy);
         _utilityMock
             .Setup(x => x.CheckAuthorisedAccess(vacancy, employerId)).Verifiable();
+        _utilityMock
+            .Setup(x => x.IsAllApplicationReviewsHasOutcomeAsync(vacancy)).ReturnsAsync(false);
 
         // Act
         Func<Task> act = async () => await _sut.GetArchiveViewModelAsync(vrm);
@@ -147,6 +151,8 @@ public class WhenArchivingVacancy
         _recruitClientMock
             .Setup(x => x.GetVacancyAsync(vacancyId))
             .ReturnsAsync(vacancy);
+        _utilityMock
+            .Setup(x => x.IsAllApplicationReviewsHasOutcomeAsync(vacancy)).ReturnsAsync(true);
 
         // Act
         var result = await _sut.ArchiveVacancyAsync(model, user);
@@ -189,6 +195,8 @@ public class WhenArchivingVacancy
         _recruitClientMock
             .Setup(x => x.GetVacancyAsync(vacancyId))
             .ReturnsAsync(vacancy);
+        _utilityMock
+            .Setup(x => x.IsAllApplicationReviewsHasOutcomeAsync(vacancy)).ReturnsAsync(false);
 
         // Act
         Func<Task> act = async () => await _sut.ArchiveVacancyAsync(model, new VacancyUser());

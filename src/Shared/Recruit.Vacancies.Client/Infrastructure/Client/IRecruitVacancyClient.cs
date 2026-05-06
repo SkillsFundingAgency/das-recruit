@@ -16,6 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<Vacancy> GetVacancyAsync(Guid vacancyId);
         Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference);
         Task<Domain.Entities.ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId);
+        Task<List<Domain.Entities.ApplicationReview>> GetApplicationReviewsAsync(Guid vacancyId);
         EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules);
         Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user);
         Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync(bool includePlaceholderProgramme = false);

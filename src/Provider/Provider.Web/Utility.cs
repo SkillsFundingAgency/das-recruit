@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -23,6 +24,7 @@ public interface IUtility
     Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm);
     Task UpdateEmployerProfile(VacancyEmployerInfoModel vacancyEmployerInfoModel, EmployerProfile profile, Address address);
     bool IsTaskListCompleted(Vacancy vacancy);
+    Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Vacancy vacancy);
 }
 public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator taskListValidator) : IUtility
 {
@@ -137,7 +139,17 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
             await vacancyClient.UpdateEmployerProfileAsync(employerProfile);
         }
     }
-    
+
+    public async Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Vacancy vacancy)
+    {
+        if (vacancy is null) return false;
+
+        var applicationReviews = await vacancyClient.GetApplicationReviewsAsync(vacancy.Id);
+        return applicationReviews
+            .Where(ar => !ar.IsWithdrawn)
+            .All(ar => ar.Status is ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful);
+    }
+
     [Obsolete("Use an instance of ITaskListValidator instead")]
     public bool IsTaskListCompleted(Vacancy vacancy)
     {

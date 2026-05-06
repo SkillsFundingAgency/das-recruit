@@ -1,30 +1,23 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.FeatureManagement.Mvc;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews;
-using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using InfoMsg = Esfa.Recruit.Shared.Web.ViewModels.InfoMessages;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.AspNetCore.Mvc;
+using InfoMsg = Esfa.Recruit.Shared.Web.ViewModels.InfoMessages;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePaths.AccountApplicationReviewsRoutePath)]
-    public class ApplicationReviewsController : Controller
+    public class ApplicationReviewsController(IApplicationReviewsOrchestrator orchestrator) : Controller
     {
-        private readonly IApplicationReviewsOrchestrator _orchestrator;
-
-        public ApplicationReviewsController(IApplicationReviewsOrchestrator orchestrator)
-        {
-            _orchestrator = orchestrator;
-        }
+        private readonly IApplicationReviewsOrchestrator _orchestrator = orchestrator;
 
         [HttpGet("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Get)]
         public async Task<IActionResult> ApplicationReviewsToUnsuccessful(VacancyRouteModel rm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
@@ -119,6 +112,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (rm.ApplicationsUnsuccessfulConfirmed == true)
             {
                 await _orchestrator.PostApplicationReviewsToUnsuccessfulAsync(rm, User.ToVacancyUser());
+
+                var isAllApplicationsHasOutcome = await orchestrator.IsAllApplicationReviewsHasOutcomeAsync(rm.VacancyId);
+                if (isAllApplicationsHasOutcome)
+                {
+                    TempData.TryAdd(TempDataKeys.ArchiveAdvertInfoMessage, InfoMessages.AdvertApplicantsOutcomeNotified);
+                    return RedirectToRoute(RouteNames.ArchiveVacancy_Get, new {rm.EmployerAccountId, rm.VacancyId, });
+                }
+
                 SetApplicationsReviewsToUnsuccessfulBannerMessage(rm);
                 return RedirectToRoute(RouteNames.VacancyManage_Get, new { rm.EmployerAccountId, rm.VacancyId });
             }

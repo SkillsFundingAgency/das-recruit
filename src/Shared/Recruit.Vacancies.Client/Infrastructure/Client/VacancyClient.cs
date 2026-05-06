@@ -281,6 +281,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return await applicationReadRepository.GetAsync(applicationReviewId);
         }
 
+        public async Task<List<Domain.Entities.ApplicationReview>> GetApplicationReviewsAsync(Guid vacancyId)
+        {
+            return await applicationReadRepository.GetForVacancyAsync<Domain.Entities.ApplicationReview>(vacancyId);
+        }
+
         public async Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider = false)
         {
             var applicationReviews = vacancySharedByProvider

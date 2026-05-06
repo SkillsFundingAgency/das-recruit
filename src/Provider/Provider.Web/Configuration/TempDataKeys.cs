@@ -22,4 +22,5 @@ public static class TempDataKeys
     public const string Postcode = nameof(Postcode);
     public const string AddLocationReturnPath = nameof(AddLocationReturnPath);
     public const string LegalEntityChanged = nameof(LegalEntityChanged);
+    public const string ArchiveVacancyInfoMessage = "ArchiveVacancy_InfoMessage";
 }

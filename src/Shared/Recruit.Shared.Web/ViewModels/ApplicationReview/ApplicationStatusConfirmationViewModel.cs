@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
             "No, do not make this application successful"
             :
             ShowStatusUnsuccessful
-                ? "No, do not make this application unsuccessful"
+                ? "No, leave the application unchanged"
                 :
                 "No";
         public long Ukprn { get; set; }

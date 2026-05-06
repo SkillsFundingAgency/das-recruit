@@ -1,15 +1,13 @@
-﻿using System.Threading.Tasks;
-using AutoFixture;
+﻿using System.Collections.Generic;
 using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Moq;
 using NUnit.Framework;
 
-namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.ApplicationReviewOrchestratorTests
+namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.ApplicationReviewsOrchestratorTests
 {
 
     public class ApplicationReviewOrchestratorTests
@@ -107,6 +105,40 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             Assert.That(model.Ukprn, Is.EqualTo(result.Ukprn));
             Assert.That(model.VacancyId, Is.EqualTo(result.VacancyId));
             Assert.That(model.CandidateFeedback, Is.EqualTo(result.CandidateFeedback));
+        }
+
+        [Test]
+        [MoqInlineAutoData(ApplicationReviewStatus.Successful, true)]
+        [MoqInlineAutoData(ApplicationReviewStatus.Unsuccessful, true)]
+        [MoqInlineAutoData(ApplicationReviewStatus.AllShared, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.InReview, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.Interviewing, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.EmployerInterviewing, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.EmployerUnsuccessful, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.PendingShared, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.PendingToMakeUnsuccessful, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.New, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.Shared, false)]
+        public async Task IsAllApplicationReviewsHasOutcomeAsync_Returns_Valid(ApplicationReviewStatus status, bool expectedResult)
+        {
+            var routeModel = _fixture.Create<VacancyRouteModel>();
+            var model = _fixture.Build<ApplicationReviewEditModel>()
+                .With(x => x.VacancyId, routeModel.VacancyId)
+                .Create();
+            var applicationReviews = _fixture.Create<List<ApplicationReview>>();
+            applicationReviews.ForEach(ar =>
+            {
+                ar.IsWithdrawn = false;
+                ar.Status = status;
+            });
+
+            _recruitVacancyClient.Setup(x => x.GetApplicationReviewsAsync(routeModel.VacancyId.Value))
+                .ReturnsAsync(applicationReviews);
+
+            var result = await _orchestrator.IsAllApplicationReviewsHasOutcomeAsync(model.VacancyId);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.EqualTo(expectedResult));
         }
     }
 }
