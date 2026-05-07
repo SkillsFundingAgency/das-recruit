@@ -37,7 +37,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
         IEmployerAccountProvider employerAccountProvider,
         IVacancyReviewQuery vacancyReviewQuery,
-        IVacancyService vacancyService,
         IEmployerProfileService employerProfileService,
         IUserRepository userRepository,
         IEmployerService employerService,
@@ -256,6 +255,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
         }
 
+        public async Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid vacancyId)
+        {
+            var applicationReviews = await applicationReadRepository.GetForVacancyAsync<Domain.Entities.ApplicationReview>(vacancyId);
+            return applicationReviews
+                .Where(ar => !ar.IsWithdrawn)
+                .All(ar => ar.Status is ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful);
+        }
+
         public EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules)
         {
             return validator.Validate(vacancy, rules);
@@ -279,11 +286,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public async Task<Domain.Entities.ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId)
         {
             return await applicationReadRepository.GetAsync(applicationReviewId);
-        }
-
-        public async Task<List<Domain.Entities.ApplicationReview>> GetApplicationReviewsAsync(Guid vacancyId)
-        {
-            return await applicationReadRepository.GetForVacancyAsync<Domain.Entities.ApplicationReview>(vacancyId);
         }
 
         public async Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider = false)

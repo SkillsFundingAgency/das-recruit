@@ -65,15 +65,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             var model = _fixture.Build<ApplicationReviewEditModel>()
                 .With(x => x.VacancyId, routeModel.VacancyId)
                 .Create();
-            var applicationReviews = _fixture.Create<List<ApplicationReview>>();
-            applicationReviews.ForEach(ar =>
-            {
-                ar.IsWithdrawn = false;
-                ar.Status = status;
-            });
-
-            _vacancyClient.Setup(x => x.GetApplicationReviewsAsync(routeModel.VacancyId))
-                .ReturnsAsync(applicationReviews);
+            _vacancyClient.Setup(x => x.IsAllApplicationReviewsHasOutcomeAsync(routeModel.VacancyId))
+                .ReturnsAsync(expectedResult);
 
             var result = await _orchestrator.IsAllApplicationReviewsHasOutcomeAsync(model.VacancyId);
 

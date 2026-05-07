@@ -145,10 +145,6 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
     {
         if (vacancy is null) return false;
 
-        var applicationReviews = await vacancyClient.GetApplicationReviewsAsync(vacancy.Id);
-        return applicationReviews
-            .Where(ar => !ar.IsWithdrawn)
-            .All(ar =>
-            ar.Status is ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful);
+        return await vacancyClient.IsAllApplicationReviewsHasOutcomeAsync(vacancy.Id);
     }
 }
