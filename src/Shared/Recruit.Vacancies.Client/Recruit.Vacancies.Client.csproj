@@ -48,6 +48,5 @@
     <PackageReference Include="Polly" Version="8.6.2" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageReference Include="TimeZoneConverter" Version="7.0.0" />
-    <ProjectReference Include="..\..\Communication\Communication.Types\Communication.Types.csproj" />
   </ItemGroup>
 </Project>

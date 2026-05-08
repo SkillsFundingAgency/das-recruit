@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
-using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
@@ -8,7 +7,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Microsoft.Extensions.Logging;
 using Xunit;
 using Projections = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
@@ -23,7 +21,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         private Mock<IVacancyRepository> _mockVacancyRepository;
         private Mock<IApprenticeshipProgrammeProvider> _mockReferenceDataReader;
         private Mock<ITimeProvider> _mockTimeProvider;
-        private Mock<ICommunicationQueueService> _mockCommunicationQueueService;
         private DateTime _currentTime;
         private VacancyClosedEvent _event;
         private Vacancy _vacancy;
@@ -91,7 +88,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
 
             await _handler.Handle(_event, CancellationToken.None);
 
-            _mockCommunicationQueueService.Verify(x=>x.AddMessageAsync(It.IsAny<CommunicationRequest>()), Times.Never);
             Assert.Equal(2, sequence);
         }
         
@@ -148,7 +144,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 .Setup(x => x.Now)
                 .Returns(() => _currentTime);
 
-            _mockCommunicationQueueService = new Mock<ICommunicationQueueService>();
 
             _mockQueryReader = new Mock<IQueryStoreReader>();
 
@@ -158,7 +153,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 _mockVacancyRepository.Object,
                 _mockReferenceDataReader.Object,
                 _mockTimeProvider.Object,
-                _mockCommunicationQueueService.Object,
                 _mockQueryReader.Object);
         }
     }
