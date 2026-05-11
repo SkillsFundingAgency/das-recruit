@@ -65,10 +65,6 @@ public class SubmitVacancyCommandHandler(
         };
 
         await mediator.Send(command, cancellationToken);
-        
-        var geoCommand = new GeocodeVacancyCommand { VacancyId = vacancy.Id };
-        await mediator.Send(geoCommand, cancellationToken);
-        
         return Unit.Value;
     }
 }
