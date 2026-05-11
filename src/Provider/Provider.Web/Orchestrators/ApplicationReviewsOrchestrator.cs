@@ -132,10 +132,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             if (!vacancyId.HasValue)
                 return false;
 
-            var applicationReviews = await client.GetApplicationReviewsAsync(vacancyId.Value);
-            return applicationReviews
-                .Where(ar => !ar.IsWithdrawn)
-                .All(ar => ar.Status is ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful);
+            return await client.IsAllApplicationReviewsHasOutcomeAsync(vacancyId.Value);
         }
     }
 }

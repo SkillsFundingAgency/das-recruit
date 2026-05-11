@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<Vacancy> GetVacancyAsync(Guid vacancyId);
         Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference);
         Task<Domain.Entities.ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId);
-        Task<List<Domain.Entities.ApplicationReview>> GetApplicationReviewsAsync(Guid vacancyId);
+        Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid vacancyId);
         EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules);
         Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user);
         Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync(bool includePlaceholderProgramme = false);
@@ -33,7 +33,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference);
         Task<Domain.Entities.User> GetUsersDetailsAsync(string userId);
         Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string vacancyUserId, string dfeUserId = null);
-
         Task<UserNotificationPreferences> GetUserNotificationPreferencesByDfEUserIdAsync(string idamsUserId, string dfeUserId = null);
         Task UpdateUserNotificationPreferencesAsync(UserNotificationPreferences preferences);
         EntityValidationResult ValidateUserNotificationPreferences(UserNotificationPreferences preferences);

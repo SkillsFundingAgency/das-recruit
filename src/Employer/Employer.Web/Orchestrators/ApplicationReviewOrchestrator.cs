@@ -116,11 +116,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         }
 
         public async Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid vacancyId)
-        {
-            var applicationReviews = await vacancyClient.GetApplicationReviewsAsync(vacancyId);
-            return applicationReviews
-                .Where(ar => !ar.IsWithdrawn)
-                .All(ar => ar.Status is ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful);
-        }
+            => await vacancyClient.IsAllApplicationReviewsHasOutcomeAsync(vacancyId);
     }
 }
