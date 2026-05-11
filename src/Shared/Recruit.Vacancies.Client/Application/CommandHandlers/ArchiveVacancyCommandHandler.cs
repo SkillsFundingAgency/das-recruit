@@ -36,6 +36,9 @@ public class ArchiveVacancyCommandHandler(ILogger<ArchiveVacancyCommandHandler> 
 
         vacancy.Status = VacancyStatus.Archived;
         vacancy.LastUpdatedDate = now;
+        vacancy.ArchivedDate = now;
+        vacancy.ArchivedByUserId = message.User.UserId ?? message.User.DfEUserId;
+        vacancy.ArchiveType = ArchiveType.Manual;
 
         await repository.UpdateAsync(vacancy);
 

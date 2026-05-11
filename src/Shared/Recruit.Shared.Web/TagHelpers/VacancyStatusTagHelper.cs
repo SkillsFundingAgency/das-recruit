@@ -35,13 +35,14 @@ public class VacancyStatusTagHelper: RaaTagsTagHelper
             return Status switch
             {
                 VacancyStatus.Draft => "govuk-tag--grey",
-                VacancyStatus.Review => "govuk-tag--blue", // pending employer review
+                VacancyStatus.Review => "govuk-tag--blue",    // pending employer review
                 VacancyStatus.Submitted => "govuk-tag--blue", // pending DfE review / ready for review
-                VacancyStatus.Referred => "govuk-tag--red", // rejected by employer
+                VacancyStatus.Referred => "govuk-tag--red",   // rejected by employer
                 VacancyStatus.Rejected => "govuk-tag--red",
                 VacancyStatus.Live => "govuk-tag--turquoise",
                 VacancyStatus.Closed => "govuk-tag--grey",
                 VacancyStatus.Approved => "govuk-tag--green",
+                VacancyStatus.Archived => "govuk-tag--grey",
                 _ => string.Empty
             };
         }

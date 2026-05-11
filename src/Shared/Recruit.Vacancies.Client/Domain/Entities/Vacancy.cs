@@ -14,6 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public OwnerType OwnerType { get; set; }
         public SourceOrigin SourceOrigin { get; set; }
         public SourceType SourceType { get; set; }
+        public ArchiveType? ArchiveType { get; set; }
         public long? SourceVacancyReference { get; set; }
         public DateTime? ClosedDate { get; set; }
         public DateTime? CreatedDate { get; set; }
@@ -21,7 +22,9 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public DateTime? SubmittedDate { get; set; }
         public VacancyUser SubmittedByUser { get; set; }
         public DateTime? ReviewDate { get; set; }
+        public DateTime? ArchivedDate { get; set; }
         public VacancyUser ReviewByUser { get; set; }
+        public string ArchivedByUserId { get; set; }
         public int ReviewCount { get; set; }
         public DateTime? ApprovedDate { get; set; }
         public DateTime? LiveDate { get; set; }
