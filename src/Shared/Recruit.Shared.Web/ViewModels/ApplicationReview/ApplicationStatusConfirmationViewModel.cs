@@ -32,13 +32,10 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
                 :
                 "Yes";
         public string NoMessageText => ShowStatusSuccessful
-            ?
-            "No, leave the application unchanged"
-            :
-            ShowStatusUnsuccessful
+            ? "No, leave the application unchanged"
+            : ShowStatusUnsuccessful
                 ? "No, leave the application unchanged"
-                :
-                "No";
+                : "No";
         public long Ukprn { get; set; }
         public Guid? VacancyId { get; set; }
     }
