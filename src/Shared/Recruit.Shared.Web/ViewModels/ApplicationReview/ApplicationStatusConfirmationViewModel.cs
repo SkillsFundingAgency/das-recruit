@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
                 "Yes";
         public string NoMessageText => ShowStatusSuccessful
             ?
-            "No, do not make this application successful"
+            "No, leave the application unchanged"
             :
             ShowStatusUnsuccessful
                 ? "No, leave the application unchanged"

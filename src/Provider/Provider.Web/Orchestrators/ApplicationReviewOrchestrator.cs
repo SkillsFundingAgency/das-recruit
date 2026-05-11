@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Mappings.Extensions;
 using Esfa.Recruit.Provider.Web.RouteModel;
@@ -35,10 +34,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var applicationReview = await utility.GetAuthorisedApplicationReviewAsync(rm);
 
-            var vacancy = await vacancyClient.GetVacancyAsync(rm.VacancyId.Value);
+            var vacancy = await vacancyClient.GetVacancyAsync(rm.VacancyId.GetValueOrDefault());
 
             if (applicationReview.IsWithdrawn)
-                throw new ApplicationWithdrawnException($"Application has been withdrawn. ApplicationReviewId:{applicationReview.Id}", rm.VacancyId.Value);
+                throw new ApplicationWithdrawnException($"Application has been withdrawn. ApplicationReviewId:{applicationReview.Id}", rm.VacancyId.GetValueOrDefault());
             var viewModel = applicationReview.ToViewModel();
             viewModel.Ukprn = rm.Ukprn;
             viewModel.VacancyId = rm.VacancyId;
@@ -48,6 +47,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             viewModel.VacancyTitle = vacancy.Title;
             viewModel.IsFoundation = vacancy.ApprenticeshipType == ApprenticeshipTypes.Foundation;
             viewModel.CandidateAppliedLocations = applicationReview.Application.CandidateAppliedLocations;
+            viewModel.Name = applicationReview.Application.FullName;
 
             return viewModel;
         }

@@ -41,38 +41,56 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return View(viewName, vm);
             }
 
-            switch (applicationReviewEditModel.Outcome.Value)
+            switch (applicationReviewEditModel.Outcome.GetValueOrDefault())
             {
                 case ApplicationReviewStatus.Shared:
                     var shareApplicationsModel = new ShareApplicationReviewsRequest
                     {
                         Ukprn = applicationReviewEditModel.Ukprn,
                         VacancyId = applicationReviewEditModel.VacancyId,
-                        ApplicationsToShare = new List<Guid>
-                        {
-                            applicationReviewEditModel.ApplicationReviewId
-                        }
+                        ApplicationsToShare = [applicationReviewEditModel.ApplicationReviewId]
                     };
-                    return RedirectToRoute(RouteNames.ApplicationReviewsToShareConfirmation_Get, shareApplicationsModel);
+                    return RedirectToRoute(RouteNames.ApplicationReviewsToShareConfirmation_Get,
+                        shareApplicationsModel);
 
                 case ApplicationReviewStatus.InReview:
                 case ApplicationReviewStatus.Interviewing:
-                    var statusChangeInfo = await orchestrator.PostApplicationReviewStatusChangeModelAsync(applicationReviewEditModel, User.ToVacancyUser());
-                    TempData.Add(TempDataKeys.ApplicationStatusChangedHeader, string.Format(InfoMessages.ApplicationStatusChangeBannerHeader, statusChangeInfo.CandidateName, applicationReviewEditModel.Outcome.GetDisplayName().ToLower()));
-                    return RedirectToRoute(RouteNames.VacancyManage_Get, new { applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
+                    var statusChangeInfo =
+                        await orchestrator.PostApplicationReviewStatusChangeModelAsync(applicationReviewEditModel,
+                            User.ToVacancyUser());
+                    TempData.Add(TempDataKeys.ApplicationStatusChangedHeader,
+                        string.Format(InfoMessages.ApplicationStatusChangeBannerHeader, statusChangeInfo.CandidateName,
+                            applicationReviewEditModel.Outcome.GetDisplayName().ToLower()));
+                    return RedirectToRoute(RouteNames.VacancyManage_Get,
+                        new {applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn});
 
                 case ApplicationReviewStatus.Successful:
                     TempData[TempDateArModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
-                    return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new { applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
+                    return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get,
+                        new
+                        {
+                            applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId,
+                            applicationReviewEditModel.Ukprn
+                        });
 
                 case ApplicationReviewStatus.EmployerUnsuccessful:
                     applicationReviewEditModel.Outcome = ApplicationReviewStatus.Unsuccessful;
                     TempData[TempDateArModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
-                    return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new { applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
-                
+                    return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get,
+                        new
+                        {
+                            applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId,
+                            applicationReviewEditModel.Ukprn
+                        });
+
                 case ApplicationReviewStatus.Unsuccessful:
                     TempData[TempDateArModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
-                    return RedirectToRoute(RouteNames.ApplicationReviewFeedback_Get, new { applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
+                    return RedirectToRoute(RouteNames.ApplicationReviewFeedback_Get,
+                        new
+                        {
+                            applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId,
+                            applicationReviewEditModel.Ukprn
+                        });
 
                 default:
                     var vm = await orchestrator.GetApplicationReviewViewModelAsync(applicationReviewEditModel);
@@ -86,40 +104,64 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (TempData[TempDateArModel] is string model)
             {
                 var applicationReviewEditViewModel = JsonConvert.DeserializeObject<ApplicationReviewEditModel>(model);
-                var applicationReviewFeedbackViewModel = await orchestrator.GetApplicationReviewFeedbackViewModelAsync(applicationReviewEditViewModel);
+                var applicationReviewFeedbackViewModel =
+                    await orchestrator.GetApplicationReviewFeedbackViewModelAsync(applicationReviewEditViewModel);
                 return View(applicationReviewFeedbackViewModel);
             }
-            return RedirectToRoute(RouteNames.ApplicationReview_Get, new { applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
+
+            return RedirectToRoute(RouteNames.ApplicationReview_Get,
+                new
+                {
+                    applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId,
+                    applicationReviewEditModel.Ukprn
+                });
         }
 
         [HttpPost("feedback", Name = RouteNames.ApplicationReviewFeedback_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ApplicationFeedback(ApplicationReviewFeedbackViewModel applicationReviewFeedbackEditModel)
+        public async Task<IActionResult> ApplicationFeedback(
+            ApplicationReviewFeedbackViewModel applicationReviewFeedbackEditModel)
         {
             if (!ModelState.IsValid)
             {
-                applicationReviewFeedbackEditModel.Name = await orchestrator.GetApplicationReviewFeedbackViewModelAsync(applicationReviewFeedbackEditModel);
+                applicationReviewFeedbackEditModel.Name =
+                    await orchestrator.GetApplicationReviewFeedbackViewModelAsync(applicationReviewFeedbackEditModel);
                 return View(applicationReviewFeedbackEditModel);
             }
 
             TempData[TempDateArModel] = JsonConvert.SerializeObject(applicationReviewFeedbackEditModel);
-            return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new { applicationReviewFeedbackEditModel.ApplicationReviewId, applicationReviewFeedbackEditModel.VacancyId, applicationReviewFeedbackEditModel.Ukprn });
+            return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get,
+                new
+                {
+                    applicationReviewFeedbackEditModel.ApplicationReviewId,
+                    applicationReviewFeedbackEditModel.VacancyId, applicationReviewFeedbackEditModel.Ukprn
+                });
         }
+
         [HttpGet("status", Name = RouteNames.ApplicationReviewConfirmation_Get)]
-        public async Task<IActionResult> ApplicationStatusConfirmation(ApplicationReviewRouteModel applicationReviewEditModel)
+        public async Task<IActionResult> ApplicationStatusConfirmation(
+            ApplicationReviewRouteModel applicationReviewEditModel)
         {
             if (TempData[TempDateArModel] is string model)
             {
                 var applicationReviewEditViewModel = JsonConvert.DeserializeObject<ApplicationReviewEditModel>(model);
-                var applicationStatusConfirmationViewModel = await orchestrator.GetApplicationStatusConfirmationViewModelAsync(applicationReviewEditViewModel);
+                var applicationStatusConfirmationViewModel =
+                    await orchestrator.GetApplicationStatusConfirmationViewModelAsync(applicationReviewEditViewModel);
                 return View(applicationStatusConfirmationViewModel);
             }
-            return RedirectToRoute(RouteNames.ApplicationReview_Get, new { applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
+
+            return RedirectToRoute(RouteNames.ApplicationReview_Get,
+                new
+                {
+                    applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId,
+                    applicationReviewEditModel.Ukprn
+                });
         }
 
         [HttpPost("status", Name = RouteNames.ApplicationReviewConfirmation_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ApplicationStatusConfirmation(ApplicationReviewStatusConfirmationEditModel editModel)
+        public async Task<IActionResult> ApplicationStatusConfirmation(
+            ApplicationReviewStatusConfirmationEditModel editModel)
         {
             if (!ModelState.IsValid)
             {
@@ -129,35 +171,45 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             if (editModel.CanNotifyCandidate)
             {
-                var statusChangeInfo = await orchestrator.PostApplicationReviewStatusChangeModelAsync(editModel, User.ToVacancyUser());
+                var statusChangeInfo =
+                    await orchestrator.PostApplicationReviewStatusChangeModelAsync(editModel, User.ToVacancyUser());
 
                 if (statusChangeInfo.ShouldMakeOthersUnsuccessful)
                 {
-                    TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSingleSuccessStatusHeader, statusChangeInfo.CandidateName));
-                    return RedirectToRoute(RouteNames.ApplicationReviewsToUnsuccessful_Get, new { editModel.VacancyId, editModel.Ukprn });
+                    TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage,
+                        InfoMessages.ApplicationReviewSingleSuccessStatusHeader);
+                    return RedirectToRoute(RouteNames.ApplicationReviewsToUnsuccessful_Get,
+                        new {editModel.VacancyId, editModel.Ukprn});
                 }
 
-                var isAllApplicationsHasOutcome = await orchestrator.IsAllApplicationReviewsHasOutcomeAsync(editModel.VacancyId);
+                var isAllApplicationsHasOutcome =
+                    await orchestrator.IsAllApplicationReviewsHasOutcomeAsync(editModel.VacancyId);
                 if (isAllApplicationsHasOutcome)
                 {
-                    TempData.TryAdd(TempDataKeys.ArchiveVacancyInfoMessage, InfoMessages.VacancyApplicantsOutcomeNotified);
-                    return RedirectToRoute(RouteNames.ArchiveVacancy_Get, new { editModel.VacancyId, editModel.Ukprn });
+                    TempData.TryAdd(TempDataKeys.ArchiveVacancyInfoMessage,
+                        InfoMessages.VacancyApplicantsOutcomeNotified);
+                    return RedirectToRoute(RouteNames.ArchiveVacancy_Get, new {editModel.VacancyId, editModel.Ukprn});
                 }
 
                 switch (editModel.Outcome)
                 {
                     case ApplicationReviewStatus.Successful:
-                        TempData.Add(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSingleSuccessStatusHeader, statusChangeInfo.CandidateName));
+                        TempData.Add(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage,
+                            InfoMessages.ApplicationReviewSingleSuccessStatusHeader);
                         break;
                     case ApplicationReviewStatus.Unsuccessful:
-                        TempData.Add(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage, string.Format(InfoMessages.ApplicationEmployerUnsuccessfulHeader, statusChangeInfo.CandidateName));
+                        TempData.Add(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage,
+                            InfoMessages.ApplicationEmployerUnsuccessfulHeader);
                         break;
                     default:
-                        TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, statusChangeInfo.CandidateName, editModel.Outcome.ToString().ToLower()));
+                        TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage,
+                            string.Format(InfoMessages.ApplicationReviewStatusHeader, statusChangeInfo.CandidateName,
+                                editModel.Outcome?.ToString().ToLower()));
                         break;
                 }
             }
-            return RedirectToRoute(RouteNames.VacancyManage_Get, new { editModel.VacancyId, editModel.Ukprn });
+
+            return RedirectToRoute(RouteNames.VacancyManage_Get, new {editModel.VacancyId, editModel.Ukprn});
         }
     }
 }
