@@ -4,14 +4,10 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Esfa.Recruit.Shared.Web.ModelBinders
 {
-    public class TrimModelBinder : IModelBinder
+    public class TrimModelBinder(IModelBinder fallbackBinder) : IModelBinder
     {
-        private readonly IModelBinder _fallbackBinder;
+        private readonly IModelBinder _fallbackBinder = fallbackBinder ?? throw new ArgumentNullException(nameof(fallbackBinder));
 
-        public TrimModelBinder(IModelBinder fallbackBinder)
-        {
-            _fallbackBinder = fallbackBinder ?? throw new ArgumentNullException(nameof(fallbackBinder));
-        }
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
             if (bindingContext == null)

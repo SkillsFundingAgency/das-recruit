@@ -5,17 +5,12 @@ using System.Text;
 
 namespace Esfa.Recruit.Shared.Web.Services
 {
-    public class GoogleMapsGeocodeImageService : IGeocodeImageService
+    public class GoogleMapsGeocodeImageService(string privateKey) : IGeocodeImageService
     {
         private const string MapTypeMarkers = "markers";
         private const string MapTypeCenter = "center";
 
-        private string _privateKey { get; set; }
-
-        public GoogleMapsGeocodeImageService(string privateKey)
-        {
-            _privateKey = privateKey;
-        }
+        private string PrivateKey { get; set; } = privateKey;
 
         public string GetMapImageUrl(string postcode, int imageWidth, int imageHeight, bool showMarker)
         {
@@ -47,7 +42,7 @@ namespace Esfa.Recruit.Shared.Web.Services
 
         private string SignUrl(string url)
         {
-            var privateKeyBytes = Convert.FromBase64String(_privateKey);
+            var privateKeyBytes = Convert.FromBase64String(PrivateKey);
 
             url += "&client=gme-skillsfundingagency";
             var uri = new Uri(url);

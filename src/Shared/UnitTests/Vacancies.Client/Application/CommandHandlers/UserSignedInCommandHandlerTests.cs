@@ -1,7 +1,4 @@
-using System;
 using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -9,16 +6,14 @@ using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 using Microsoft.Extensions.Logging;
-using Moq;
 using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.CommandHandlers
 {
     public class UserSignedInCommandHandlerTests
     {
-        private readonly Mock<IUserRepositoryRunner> _mockUserWriteRepository = new Mock<IUserRepositoryRunner>();
+        private readonly Mock<IUserWriteRepository> _mockUserWriteRepository = new Mock<IUserWriteRepository>();
         private readonly Mock<IUserRepository> _mockUserRepository = new Mock<IUserRepository>();
         private readonly Mock<IUserNotificationPreferencesRepository> _mockUserNotificationPreferencesRepository = new Mock<IUserNotificationPreferencesRepository>();
         private readonly Mock<ITimeProvider> _mockTimeProvider = new Mock<ITimeProvider>();

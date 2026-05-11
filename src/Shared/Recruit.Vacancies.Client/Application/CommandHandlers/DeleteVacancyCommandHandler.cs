@@ -20,18 +20,18 @@ public class DeleteVacancyCommandHandler(
     public async Task<Unit> Handle(DeleteVacancyCommand message, CancellationToken cancellationToken)
     {
         logger.LogInformation("Deleting vacancy {vacancyId}", message.VacancyId);
-            
+
         var vacancy = await repository.GetVacancyAsync(message.VacancyId);
 
         if (vacancy == null)
         {
-            logger.LogWarning($"Unable to find vacancy {{vacancyId}} for deletion", message.VacancyId);
+            logger.LogWarning("Unable to find vacancy {vacancyId} for deletion", message.VacancyId);
             return Unit.Value;
         }
 
-        if (vacancy.CanDelete == false)
+        if (!vacancy.CanDelete)
         {
-            logger.LogWarning($"Unable to delete vacancy {{vacancyId}} due to vacancy having a status of {vacancy?.Status}.", message.VacancyId);
+            logger.LogWarning("Unable to delete vacancy {vacancyId} due to vacancy having a status of {VacancyStatus}.", vacancy.Status, message.VacancyId);
             return Unit.Value;
         }
 
@@ -47,7 +47,7 @@ public class DeleteVacancyCommandHandler(
         {
             VacancyId = vacancy.Id
         });
-            
+
         return Unit.Value;
     }
 }

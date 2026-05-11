@@ -51,7 +51,7 @@ public class SelectLocationController(IUtility utility) : Controller
         }
         
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model);
-        await vacancyLocationService.SaveEmployerAddress(User.ToVacancyUser(), vacancy, addressToAdd);
+        await vacancyLocationService.SaveEmployerAddress(vacancy, addressToAdd);
         
         TempData[TempDataKeys.AddedLocation] = addressToAdd.ToAddressString();
         TempData.Remove(TempDataKeys.Postcode);

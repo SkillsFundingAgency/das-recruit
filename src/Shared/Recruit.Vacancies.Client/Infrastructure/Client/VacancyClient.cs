@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.Reports;
@@ -19,10 +18,11 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employ
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerProfile;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Report;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 using FluentValidation;
 using FluentValidation.Results;
 
@@ -38,9 +38,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IEmployerAccountProvider employerAccountProvider,
         IVacancyReviewQuery vacancyReviewQuery,
         IVacancyService vacancyService,
-        IEmployerProfileRepository employerProfileRepository,
+        IEmployerProfileService employerProfileService,
         IUserRepository userRepository,
-        IUserRepositoryRunner userWriteRepository,
         IEmployerService employerService,
         IReportService reportService,
         IProviderReportService providerReportService,
@@ -50,7 +49,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IVacancySummariesProvider vacancySummariesQuery,
         ITimeProvider timeProvider,
         ITrainingProviderService trainingProviderService,
-        ISqlDbRepository sqlDbRepository)
+        IVacancyAnalyticsService vacancyAnalyticsService,
+        IApplicationReadRepository applicationReadRepository)
         : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -233,9 +233,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendCommandAsync(command);
         }
 
-        public Task<EmployerEditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId)
+        public async Task<EmployerEditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId)
         {
-            return reader.GetEmployerVacancyDataAsync(employerAccountId);
+            var legalEntities = await employerAccountProvider.GetEmployerLegalEntitiesAsync(employerAccountId);
+            return new EmployerEditVacancyInfo
+            {
+                Id = QueryViewType.EditVacancyInfo.GetIdValue(employerAccountId),
+                LegalEntities = legalEntities,
+                LastUpdated = timeProvider.Now
+            };
         }
 
         public EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules)
@@ -260,26 +266,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<Domain.Entities.ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId)
         {
-            return await sqlDbRepository.GetAsync(applicationReviewId);
+            return await applicationReadRepository.GetAsync(applicationReviewId);
         }
 
         public async Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider = false)
         {
             var applicationReviews = vacancySharedByProvider
-                    ? await sqlDbRepository.GetForSharedVacancySortedAsync(vacancyReference, sortColumn, sortOrder)
-                    : await sqlDbRepository.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder);
+                    ? await applicationReadRepository.GetForSharedVacancySortedAsync(vacancyReference, sortColumn, sortOrder)
+                    : await applicationReadRepository.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder);
             
-            return applicationReviews == null
-                ? []
-                : applicationReviews.Select(c => (VacancyApplication)c).ToList();
-        }
-
-        public async Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference, bool vacancySharedByProvider = false)
-        {
-            var applicationReviews = vacancySharedByProvider
-                    ? await sqlDbRepository.GetForSharedVacancyAsync(vacancyReference)
-                    : await sqlDbRepository.GetForVacancyAsync<Domain.Entities.ApplicationReview>(vacancyReference);
-
             return applicationReviews == null
                 ? []
                 : applicationReviews.Select(c => (VacancyApplication)c).ToList();
@@ -288,7 +283,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public async Task<List<VacancyApplication>> GetVacancyApplicationsForSelectedIdsAsync(List<Guid> applicationReviewIds)
         {
             var applicationReviews =
-                await sqlDbRepository.GetAllForSelectedIdsAsync<Domain.Entities.ApplicationReview>(applicationReviewIds);
+                await applicationReadRepository.GetAllForSelectedIdsAsync<Domain.Entities.ApplicationReview>(applicationReviewIds);
 
             return applicationReviews == null
                 ? []
@@ -299,7 +294,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var vacancy = await repository.GetVacancyAsync(vacancyId);
             var applicationReviews =
-                await sqlDbRepository.GetAllForVacancyWithTemporaryStatus(vacancy.VacancyReference!.Value!, status);
+                await applicationReadRepository.GetAllForVacancyWithTemporaryStatus(vacancy.VacancyReference!.Value!, status);
 
             return applicationReviews == null
                 ? []
@@ -368,15 +363,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
         {
-            return employerProfileRepository.GetAsync(employerAccountId, accountLegalEntityPublicHashedId);
+            return employerProfileService.GetAsync(employerAccountId, accountLegalEntityPublicHashedId);
         }
 
-        public Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user)
+        public Task UpdateEmployerProfileAsync(EmployerProfile employerProfile)
         {
             var command = new UpdateEmployerProfileCommand
             {
                 Profile = employerProfile,
-                User = user
             };
 
             return messaging.SendCommandAsync(command);
@@ -454,20 +448,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return Task.CompletedTask;
         }
 
-        public Task WithdrawApplicationAsync(long vacancyReference, Guid candidateId)
-        {
-            return messaging.SendCommandAsync(new WithdrawApplicationCommand
-            {
-                VacancyReference = vacancyReference,
-                CandidateId = candidateId
-            });
-        }
-
-        public Task PerformRulesCheckAsync(Guid reviewId)
-        {
-            return vacancyService.PerformRulesCheckAsync(reviewId);
-        }
-
         public Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
         {
             return vacancyReviewQuery.GetCurrentReferredVacancyReviewAsync(vacancyReference);
@@ -486,19 +466,105 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return userRepository.GetAsync(userId);
         }
 
-        public Task UpsertUserDetails(Domain.Entities.User user)
-        {
-            return userWriteRepository.UpsertUserAsync(user);
-        }
-        
         public Task<Domain.Entities.User> GetUsersDetailsByDfEUserId(string dfeUserId)
         {
             return userRepository.GetByDfEUserId(dfeUserId);
         }
 
-        public Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference)
+        public async Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference)
         {
-            return reader.GetVacancyAnalyticsSummaryAsync(vacancyReference);
+            var endDate = timeProvider.Now.Date;
+
+            var metrics = await vacancyAnalyticsService
+                .GetVacancyAnalyticsSummaryAsync(vacancyReference);
+
+            if (metrics is not null && (metrics.Analytics == null || metrics.Analytics.Count == 0 || metrics.VacancyReference != vacancyReference))
+            {
+                return new VacancyAnalyticsSummary();
+            }
+
+            // Group analytics by date (single enumeration)
+            var analyticsByDate = metrics.Analytics
+            .GroupBy(a => a.AnalyticsDate.Date)
+            .ToDictionary(g => g.Key, g => new
+            {
+                Searches = g.Sum(x => x.SearchResultsCount),
+                Views = g.Sum(x => x.ViewsCount),
+                ApplicationsStarted = g.Sum(x => x.ApplicationStartedCount),
+                ApplicationsSubmitted = g.Sum(x => x.ApplicationSubmittedCount)
+            });
+
+            return new VacancyAnalyticsSummary
+            {
+                LastUpdated = metrics.UpdatedDate,
+                VacancyReference = vacancyReference,
+
+                // SEARCHES
+                NoOfApprenticeshipSearches = Total(x => x.Searches),
+                NoOfApprenticeshipSearchesSevenDaysAgo = GetValue(endDate.AddDays(-7), x => x.Searches),
+                NoOfApprenticeshipSearchesSixDaysAgo = GetValue(endDate.AddDays(-6), x => x.Searches),
+                NoOfApprenticeshipSearchesFiveDaysAgo = GetValue(endDate.AddDays(-5), x => x.Searches),
+                NoOfApprenticeshipSearchesFourDaysAgo = GetValue(endDate.AddDays(-4), x => x.Searches),
+                NoOfApprenticeshipSearchesThreeDaysAgo = GetValue(endDate.AddDays(-3), x => x.Searches),
+                NoOfApprenticeshipSearchesTwoDaysAgo = GetValue(endDate.AddDays(-2), x => x.Searches),
+                NoOfApprenticeshipSearchesOneDayAgo = GetValue(endDate.AddDays(-1), x => x.Searches),
+
+                // TODO post MVS
+                NoOfApprenticeshipSavedSearchAlerts = 0,
+                NoOfApprenticeshipSavedSearchAlertsSevenDaysAgo = 0,
+                NoOfApprenticeshipSavedSearchAlertsSixDaysAgo = 0,
+                NoOfApprenticeshipSavedSearchAlertsFiveDaysAgo = 0,
+                NoOfApprenticeshipSavedSearchAlertsFourDaysAgo = 0,
+                NoOfApprenticeshipSavedSearchAlertsThreeDaysAgo = 0,
+                NoOfApprenticeshipSavedSearchAlertsTwoDaysAgo = 0,
+                NoOfApprenticeshipSavedSearchAlertsOneDayAgo = 0,
+
+                // TODO post MVS
+                NoOfApprenticeshipSaved = 0,
+                NoOfApprenticeshipSavedSevenDaysAgo = 0,
+                NoOfApprenticeshipSavedSixDaysAgo = 0,
+                NoOfApprenticeshipSavedFiveDaysAgo = 0,
+                NoOfApprenticeshipSavedFourDaysAgo = 0,
+                NoOfApprenticeshipSavedThreeDaysAgo = 0,
+                NoOfApprenticeshipSavedTwoDaysAgo = 0,
+                NoOfApprenticeshipSavedOneDayAgo = 0,
+
+                // VIEWS
+                NoOfApprenticeshipDetailsViews = Total(x => x.Views),
+                NoOfApprenticeshipDetailsViewsSevenDaysAgo = GetValue(endDate.AddDays(-7), x => x.Views),
+                NoOfApprenticeshipDetailsViewsSixDaysAgo = GetValue(endDate.AddDays(-6), x => x.Views),
+                NoOfApprenticeshipDetailsViewsFiveDaysAgo = GetValue(endDate.AddDays(-5), x => x.Views),
+                NoOfApprenticeshipDetailsViewsFourDaysAgo = GetValue(endDate.AddDays(-4), x => x.Views),
+                NoOfApprenticeshipDetailsViewsThreeDaysAgo = GetValue(endDate.AddDays(-3), x => x.Views),
+                NoOfApprenticeshipDetailsViewsTwoDaysAgo = GetValue(endDate.AddDays(-2), x => x.Views),
+                NoOfApprenticeshipDetailsViewsOneDayAgo = GetValue(endDate.AddDays(-1), x => x.Views),
+
+                // APPLICATIONS STARTED
+                NoOfApprenticeshipApplicationsCreated = Total(x => x.ApplicationsStarted),
+                NoOfApprenticeshipApplicationsCreatedSevenDaysAgo = GetValue(endDate.AddDays(-7), x => x.ApplicationsStarted),
+                NoOfApprenticeshipApplicationsCreatedSixDaysAgo = GetValue(endDate.AddDays(-6), x => x.ApplicationsStarted),
+                NoOfApprenticeshipApplicationsCreatedFiveDaysAgo = GetValue(endDate.AddDays(-5), x => x.ApplicationsStarted),
+                NoOfApprenticeshipApplicationsCreatedFourDaysAgo = GetValue(endDate.AddDays(-4), x => x.ApplicationsStarted),
+                NoOfApprenticeshipApplicationsCreatedThreeDaysAgo = GetValue(endDate.AddDays(-3), x => x.ApplicationsStarted),
+                NoOfApprenticeshipApplicationsCreatedTwoDaysAgo = GetValue(endDate.AddDays(-2), x => x.ApplicationsStarted),
+                NoOfApprenticeshipApplicationsCreatedOneDayAgo = GetValue(endDate.AddDays(-1), x => x.ApplicationsStarted),
+
+                // APPLICATIONS SUBMITTED
+                NoOfApprenticeshipApplicationsSubmitted = Total(x => x.ApplicationsSubmitted),
+                NoOfApprenticeshipApplicationsSubmittedSevenDaysAgo = GetValue(endDate.AddDays(-7), x => x.ApplicationsSubmitted),
+                NoOfApprenticeshipApplicationsSubmittedSixDaysAgo = GetValue(endDate.AddDays(-6), x => x.ApplicationsSubmitted),
+                NoOfApprenticeshipApplicationsSubmittedFiveDaysAgo = GetValue(endDate.AddDays(-5), x => x.ApplicationsSubmitted),
+                NoOfApprenticeshipApplicationsSubmittedFourDaysAgo = GetValue(endDate.AddDays(-4), x => x.ApplicationsSubmitted),
+                NoOfApprenticeshipApplicationsSubmittedThreeDaysAgo = GetValue(endDate.AddDays(-3), x => x.ApplicationsSubmitted),
+                NoOfApprenticeshipApplicationsSubmittedTwoDaysAgo = GetValue(endDate.AddDays(-2), x => x.ApplicationsSubmitted),
+                NoOfApprenticeshipApplicationsSubmittedOneDayAgo = GetValue(endDate.AddDays(-1), x => x.ApplicationsSubmitted)
+            };
+
+            int Total(Func<dynamic, int> selector) =>
+                analyticsByDate.Values.Sum(selector);
+
+            int GetValue(DateTime date, Func<dynamic, int> selector) =>
+                analyticsByDate.TryGetValue(date, out var v) ? selector(v) : 0;
         }
 
         public async Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string idamsUserId, string dfeUserId = null)

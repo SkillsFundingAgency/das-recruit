@@ -1,15 +1,12 @@
-using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using FluentAssertions;
-using Moq;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerProfile;
 using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Services.EmployerService
 {
     public class GetEmployerDescriptionTests
     {
-        private Mock<IEmployerProfileRepository> _mockEmployerProfileRepository = new Mock<IEmployerProfileRepository>();
+        private readonly Mock<IEmployerProfileService> _mockEmployerProfileService = new();
 
         [Theory]
         [InlineData(VacancyStatus.Draft)]
@@ -27,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
                 AboutOrganisation = employerProfileAboutOrganisation
             };
 
-            _mockEmployerProfileRepository.Setup(pr => pr.GetAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(profile);
+            _mockEmployerProfileService.Setup(pr => pr.GetAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(profile);
 
             var sut = GetSut();
 
@@ -57,9 +54,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
             result.Should().Be(employerDescription);
         }
 
-        private Recruit.Vacancies.Client.Application.Services.EmployerService GetSut()
-        {
-            return new Recruit.Vacancies.Client.Application.Services.EmployerService(_mockEmployerProfileRepository.Object);
-        }
+        private Recruit.Vacancies.Client.Application.Services.EmployerService GetSut() => new(_mockEmployerProfileService.Object);
     }
 }

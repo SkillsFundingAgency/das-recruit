@@ -5,15 +5,8 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVa
 
 namespace Esfa.Recruit.Shared.Web.Services
 {
-    public class LegalEntityAgreementService : ILegalEntityAgreementService
+    public class LegalEntityAgreementService(IEmployerVacancyClient client) : ILegalEntityAgreementService
     {
-        private readonly IEmployerVacancyClient _client;
-
-        public LegalEntityAgreementService(IEmployerVacancyClient client)
-        {
-            _client = client;
-        }
-
         public async Task<bool> HasLegalEntityAgreementAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
         {
             var legalEntity = await GetLegalEntityAsync(employerAccountId, accountLegalEntityPublicHashedId);
@@ -34,7 +27,7 @@ namespace Esfa.Recruit.Shared.Web.Services
 
             if (hasLegalEntityAgreement)
             {
-                await _client.SetupEmployerAsync(employerAccountId);
+                await client.SetupEmployerAsync(employerAccountId);
             }
 
             return hasLegalEntityAgreement;
@@ -42,7 +35,7 @@ namespace Esfa.Recruit.Shared.Web.Services
 
         public async Task<LegalEntity> GetLegalEntityAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
         {
-            var employerData = await _client.GetEditVacancyInfoAsync(employerAccountId);
+            var employerData = await client.GetEditVacancyInfoAsync(employerAccountId);
 
             var legalEntity = employerData.LegalEntities.SingleOrDefault(l => l.AccountLegalEntityPublicHashedId == accountLegalEntityPublicHashedId);
 
@@ -51,7 +44,7 @@ namespace Esfa.Recruit.Shared.Web.Services
 
        private async Task<bool> CheckEmployerServiceForLegalEntityAgreementAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
         {
-            var legalEntities = await _client.GetEmployerLegalEntitiesAsync(employerAccountId);
+            var legalEntities = await client.GetEmployerLegalEntitiesAsync(employerAccountId);
 
             var legalEntity = legalEntities.SingleOrDefault(e => e.AccountLegalEntityPublicHashedId == accountLegalEntityPublicHashedId);
 

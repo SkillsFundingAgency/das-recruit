@@ -156,7 +156,7 @@ public class SelectLocationControllerTests
         result!.RouteName.Should().Be(RouteNames.AddMoreThanOneLocation_Get);
         sut.TempData.Keys.Should().NotContain(TempDataKeys.Postcode);
         (sut.TempData[TempDataKeys.AddedLocation] as string).Should().StartWith(model.SelectedLocation);
-        vacancyLocationService.Verify(x => x.SaveEmployerAddress(It.IsAny<VacancyUser>(), vacancy, It.IsAny<Address>()), Times.Once);
+        vacancyLocationService.Verify(x => x.SaveEmployerAddress(vacancy, It.IsAny<Address>()), Times.Once);
     }
     
     [Test, MoqAutoData]
@@ -194,9 +194,7 @@ public class SelectLocationControllerTests
         result!.RouteName.Should().Be(RouteNames.AddMoreThanOneLocation_Get);
         sut.TempData.Keys.Should().NotContain(TempDataKeys.Postcode);
         (sut.TempData[TempDataKeys.AddedLocation] as string).Should().StartWith(model.SelectedLocation);
-        vacancyLocationService.Verify(x => x.SaveEmployerAddress(
-                It.Is<VacancyUser>(user => user.UserId == userId.ToString()),
-                vacancy,
+        vacancyLocationService.Verify(x => x.SaveEmployerAddress(vacancy,
                 It.Is<Address>(address => address.Postcode == firstAddress.Postcode)),
             Times.Once
         );

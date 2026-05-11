@@ -59,41 +59,13 @@
 
 .app-tag {
   font-size: inherit;
-}
-
-.app-tag--draft {
-  color: #383f43;
-  background: #eeefef;
-}
-
-.app-tag--submitted {
-  color: #6e3619;
-  background: #fcd6c3;
-}
-
-.app-tag--referred {
-  color: #942514;
-  background: #f6d7d2;
-}
-
-.app-tag--approved {
-  color: #005a30;
-  background: #cce2d8;
-}
-
-.app-tag--live {
-  color: #005a30;
-  background: #cce2d8;
-}
-
-.app-tag--closed {
-  color: #383f43;
-  background: #eeefef;
+  white-space: nowrap;
+  max-width: max-content;
 }
 
 .app-tag--transferred {
-  color: #144e81;
-  background: #d2e2f1;
+    color: #144e81;
+    background: #d2e2f1;
 }
 
 /* Vacancy preview */
@@ -622,4 +594,14 @@ dd.govuk-summary-list__value .faa-user-content:first-child {
       width: 50%;
     }
   }
+}
+
+.das-sortable-column-header {
+    display: flex !important;
+}
+
+.das-pagination-container {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
 }

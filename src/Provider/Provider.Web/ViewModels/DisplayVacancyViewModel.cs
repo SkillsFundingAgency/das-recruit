@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string CompanyBenefitsInformation { get; internal set; }
         public WageType? WageType { get; internal set; }
         public string WorkingWeekDescription { get; internal set; }
-        public bool HasCompetitiveSalaryType => WageType.HasValue && WageType.Value == Vacancies.Client.Domain.Entities.WageType.CompetitiveSalary;
+        public bool HasCompetitiveSalaryType => WageType is Esfa.Recruit.Vacancies.Client.Domain.Entities.WageType.CompetitiveSalary;
         public string AccountLegalEntityPublicHashedId { get; internal set; }
         public int RouteId { get; set; }
         public string RouteTitle { get; set; }
@@ -138,7 +138,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public bool HasApplicationMethod => ApplicationMethod.HasValue;
         public bool HasSpecifiedThroughFaaApplicationMethod => HasApplicationMethod && ApplicationMethod.Value == Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughFindAnApprenticeship;
 
-        public bool HasSpecifiedThroughFaTApplicationMethod => HasApplicationMethod && ApplicationMethod.Value == Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughFindATraineeship;
+        public bool HasSpecifiedThroughFaTApplicationMethod => HasApplicationMethod && ApplicationMethod.Value == Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughFindATraineeship;
         public bool HasSpecifiedThroughExternalApplicationMethod => HasApplicationMethod && ApplicationMethod.Value == Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughExternalApplicationSite;
         public bool HasApplicationInstructions => !string.IsNullOrWhiteSpace(ApplicationInstructions);
         public bool HasApplicationUrl => !string.IsNullOrWhiteSpace(ApplicationUrl);

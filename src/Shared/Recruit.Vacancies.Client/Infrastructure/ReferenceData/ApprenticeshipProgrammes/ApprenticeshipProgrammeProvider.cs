@@ -41,17 +41,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
 
         private async Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammes(int? ukprn, bool includePlaceholderProgramme = false)
         {
-            var trainingProviders = await cache.CacheAsideAsync(CacheKeys.ApprenticeshipProgrammes,
-                timeProvider.NextDay6am,
-                async () =>
-                {
-                    var result = await outerApiClient.Get<GetTrainingProgrammesResponse>(new GetTrainingProgrammesRequest(ukprn));
-                    var trainingProgrammes = result.TrainingProgrammes.Select(c => (ApprenticeshipProgramme)c).ToList();
-                    return new ApprenticeshipProgrammes
-                    {
-                        Data = trainingProgrammes
-                    };
-                });
+            var trainingProviders = ukprn == null 
+                ? await cache.CacheAsideAsync(CacheKeys.ApprenticeshipProgrammes, timeProvider.NextDay6am, async () => await GetApprenticeshipProgrammesFromOuterApi(null)) 
+                : await GetApprenticeshipProgrammesFromOuterApi(ukprn);
 
             if (!includePlaceholderProgramme) return trainingProviders;
             
@@ -62,7 +54,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
 
             return trainingProviders;
         }
-        
+
+        private async Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammesFromOuterApi(int? ukprn)
+        {
+            var result = await outerApiClient.Get<GetTrainingProgrammesResponse>(new GetTrainingProgrammesRequest(ukprn));
+            var trainingProgrammes = result.TrainingProgrammes.Select(c => (ApprenticeshipProgramme)c).ToList();
+            return new ApprenticeshipProgrammes
+            {
+                Data = trainingProgrammes
+            };
+        }
+
         private static bool IsStandardActive(DateTime? effectiveTo, DateTime? lastDateStarts) =>
             (!effectiveTo.HasValue || effectiveTo.Value.Date >= DateTime.UtcNow.Date)
             && (!lastDateStarts.HasValue || lastDateStarts.Value.Date >= DateTime.UtcNow.Date);

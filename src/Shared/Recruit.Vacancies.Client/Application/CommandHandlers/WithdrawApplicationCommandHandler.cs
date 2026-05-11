@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
     public class WithdrawApplicationCommandHandler(
         ILogger<WithdrawApplicationCommandHandler> logger,
-        ISqlDbRepository sqlDbRepository,
+        IApplicationReadRepository applicationReadRepository,
         IApplicationReviewRepositoryRunner applicationReviewRepositoryRunner,
         ITimeProvider timeProvider,
         IMessaging messaging)
@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             logger.LogInformation("Withdrawing application for vacancyReference:{vacancyReference} and candidateId:{candidateId}", message.VacancyReference, message.CandidateId);
 
-            var applicationReview = await sqlDbRepository.GetAsync(message.VacancyReference, message.CandidateId);
+            var applicationReview = await applicationReadRepository.GetAsync(message.VacancyReference, message.CandidateId);
 
             if (applicationReview == null)
             {

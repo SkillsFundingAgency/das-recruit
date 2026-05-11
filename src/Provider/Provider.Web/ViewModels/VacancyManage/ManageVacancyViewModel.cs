@@ -40,5 +40,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public string ApplicationReviewStatusChangeBannerMessage { get; internal set; }
         public bool CanShowApplicationsStatusChangeBanner => !string.IsNullOrEmpty(ApplicationReviewStatusChangeBannerHeader);
         public ApprenticeshipTypes ApprenticeshipType { get; internal set; }
+        public FilteringOptions FilteringOptions { get; internal set; }
     }
 }

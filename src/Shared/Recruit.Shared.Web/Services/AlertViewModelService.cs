@@ -40,6 +40,7 @@ namespace Esfa.Recruit.Shared.Web.Services
 
             var transferredVacancies = vacancies.Where(v =>
                     v.TransferInfoReason == reason &&
+                    v.TransferInfoTransferredDate.HasValue &&
                     v.TransferInfoTransferredDate > userLastDismissedDate)
                 .ToList();
 
@@ -52,9 +53,14 @@ namespace Esfa.Recruit.Shared.Web.Services
                 .OrderBy(p => p)
                 .ToList();
 
+            var transferredVacanciesCount = transferredVacancies
+                .Select(v => v.Id)
+                .Distinct()
+                .Count();
+
             return new EmployerTransferredVacanciesAlertViewModel
             {
-                TransferredVacanciesCount = transferredVacancies.Count,
+                TransferredVacanciesCount = transferredVacanciesCount,
                 TransferredVacanciesProviderNames = transferredVacanciesProviderNames
             };
         }

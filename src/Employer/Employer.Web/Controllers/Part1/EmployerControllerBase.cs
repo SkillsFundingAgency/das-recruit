@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             DeleteVacancyEmployerInfoCookie();
             return wizard 
-                ? RedirectToRoute(RouteNames.Vacancies_Get, new {vrm.EmployerAccountId}) 
+                ? RedirectToRoute(RouteNames.VacanciesGetAll, new {vrm.EmployerAccountId}) 
                 : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vrm.VacancyId, vrm.EmployerAccountId});
         }
     }    

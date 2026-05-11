@@ -41,7 +41,7 @@ public class RaaTagsTagHelper : TagHelper
     }
 }
 
-[HtmlTargetElement(TagName)]
+[HtmlTargetElement(FoundationTagTagHelper.TagName)]
 public class FoundationTagTagHelper : RaaTagsTagHelper
 {
     public new const string TagName = "govuk-tag-foundation";
@@ -58,7 +58,7 @@ public class FoundationTagTagHelper : RaaTagsTagHelper
     }
 }
 
-[HtmlTargetElement(TagName)]
+[HtmlTargetElement(ApiSubmittedTagHelper.TagName)]
 public class ApiSubmittedTagHelper : RaaTagsTagHelper
 {
     public new const string TagName = "govuk-tag-api-submitted";
@@ -73,4 +73,19 @@ public class ApiSubmittedTagHelper : RaaTagsTagHelper
     {
         return Task.FromResult<IHtmlContent>(new HtmlString("API submitted"));
     }
+}
+
+[HtmlTargetElement(TagName)]
+public class TransferredFromProviderTagHelper : RaaTagsTagHelper
+{
+    private new const string TagName = "govuk-tag-transferred-from-provider";
+
+    public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+    {
+        output.AddClass("govuk-tag--purple", HtmlEncoder.Default);
+        await base.ProcessAsync(context, output);
+    }
+
+    protected override Task<IHtmlContent> GetContent(TagHelperOutput output) 
+        => Task.FromResult<IHtmlContent>(new HtmlString("Transferred from provider"));
 }

@@ -52,7 +52,7 @@ public class EnterLocationManuallyController(IUtility utility) : Controller
         
         var newAddress = model.ToDomain();
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model);
-        await vacancyLocationService.SaveEmployerAddress(User.ToVacancyUser(), vacancy, newAddress);
+        await vacancyLocationService.SaveEmployerAddress(vacancy, newAddress);
         
         TempData[TempDataKeys.AddedLocation] = newAddress.ToAddressString();
         TempData.Remove(TempDataKeys.Postcode);

@@ -51,6 +51,52 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services.AlertViewM
             vm.ProviderNamesCaption.Should().Be(expectedProviderNamesCaption);
         }
 
+        [Fact]
+        public void GetTransferredVacanciesAlert_CountsUniqueVacancyIds_WhenMultipleEntriesShareVacancyReference()
+        {
+            // Arrange
+            var sut = new AlertViewModelService();
+            var now = DateTime.UtcNow;
+            var id1 = Guid.NewGuid();
+            var id2 = Guid.NewGuid();
+
+            var vacancies = new List<VacancySummary>
+            {
+                new VacancySummary
+                {
+                    Id = id1,
+                    VacancyReference = 100L,
+                    TransferInfoReason = TransferReason.EmployerRevokedPermission,
+                    TransferInfoTransferredDate = now,
+                    TransferInfoProviderName = "Provider A"
+                },
+                new VacancySummary
+                {
+                    Id = id2,
+                    VacancyReference = 100L,
+                    TransferInfoReason = TransferReason.EmployerRevokedPermission,
+                    TransferInfoTransferredDate = now,
+                    TransferInfoProviderName = "Provider B"
+                },
+                // duplicate entry for same vacancy id should not increase the count
+                new VacancySummary
+                {
+                    Id = id1,
+                    VacancyReference = 100L,
+                    TransferInfoReason = TransferReason.EmployerRevokedPermission,
+                    TransferInfoTransferredDate = now,
+                    TransferInfoProviderName = "Provider A"
+                }
+            };
+
+            // Act
+            var vm = sut.GetTransferredVacanciesAlert(vacancies, TransferReason.EmployerRevokedPermission, null);
+
+            // Assert
+            vm.Should().NotBeNull();
+            vm.TransferredVacanciesCount.Should().Be(2);
+        }
+
         private IEnumerable<VacancySummary> GetVacancies()
         {
             return new List<VacancySummary>
@@ -68,6 +114,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services.AlertViewM
         {
             return new VacancySummary
             {
+                Id = Guid.NewGuid(),
                 TransferInfoReason = reason,
                 TransferInfoTransferredDate = transferredDate,
                 TransferInfoProviderName = providerName

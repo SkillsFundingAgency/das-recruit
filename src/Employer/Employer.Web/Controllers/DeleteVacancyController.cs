@@ -41,13 +41,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 {
                     return RedirectToRoute(RouteNames.EmployerTaskListGet, new {m.VacancyId, m.EmployerAccountId});
                 }
-                return RedirectToRoute(RouteNames.Vacancies_Get, new {m.VacancyId, m.EmployerAccountId});
+                return RedirectToRoute(RouteNames.VacanciesGetAll, new {m.VacancyId, m.EmployerAccountId});
             }
 
             var vm = await _orchestrator.DeleteVacancyAsync(m, User.ToVacancyUser());
             TempData.Add(TempDataKeys.DashboardInfoMessage, string.Format(InfoMessages.AdvertDeleted, vm.VacancyReference, vm.Title));
             
-            return RedirectToRoute(RouteNames.Vacancies_Get, new {m.EmployerAccountId});
+            return RedirectToRoute(RouteNames.VacanciesGetAll, new {m.EmployerAccountId});
         }
 
         private async Task<IActionResult> GetDeleteVacancyConfirmationView(VacancyRouteModel vrm)

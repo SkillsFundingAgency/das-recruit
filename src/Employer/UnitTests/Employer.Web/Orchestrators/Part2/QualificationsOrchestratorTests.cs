@@ -340,7 +340,7 @@ public class QualificationsOrchestratorTests
             MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User))
                 .Callback<Vacancy, VacancyUser>((vacancy, user) => { Vacancy = vacancy; })
                 .Returns(Task.FromResult(0));
-            MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
+            MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>()));
             
             MockReferenceDataClient
                 .Setup(x => x.GetCandidateQualificationsAsync())

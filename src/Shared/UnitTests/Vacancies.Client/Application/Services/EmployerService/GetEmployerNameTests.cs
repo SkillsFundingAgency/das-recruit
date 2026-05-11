@@ -1,15 +1,12 @@
-using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using FluentAssertions;
-using Moq;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerProfile;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services.EmployerService
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Services.EmployerService
 {
     public class GetEmployerNameTests
     {
-        private Mock<IEmployerProfileRepository> _mockEmployerProfileRepository = new Mock<IEmployerProfileRepository>();
+        private readonly Mock<IEmployerProfileService> _mockEmployerProfileService = new();
 
         [Theory]
         [InlineData(VacancyStatus.Live)]
@@ -19,7 +16,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services.EmployerS
         public async Task GetEmployerNameAsync_ShouldReturnVacancyEmployerName(VacancyStatus status)
         {
             var employerName = "Employer Name";
-            var vacancy = new Vacancy()
+            var vacancy = new Vacancy
             {
                 Status = status,
                 EmployerName = employerName
@@ -39,7 +36,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services.EmployerS
         {
             var employerName = "Employer Name";
             var legalEntityName = "Legal Entity Name";
-            var vacancy = new Vacancy()
+            var vacancy = new Vacancy
             {
                 Status = status,
                 EmployerName = employerName,
@@ -62,7 +59,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services.EmployerS
             var employerName = "Employer Name";
             var legalEntityName = "Legal Entity Name";
             var tradingName = "Trading Name";
-            var vacancy = new Vacancy()
+            var vacancy = new Vacancy
             {
                 Status = status,
                 EmployerName = employerName,
@@ -75,7 +72,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services.EmployerS
                 TradingName = tradingName
             };
             
-            _mockEmployerProfileRepository.Setup(pr => pr.GetAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(profile);
+            _mockEmployerProfileService.Setup(pr => pr.GetAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(profile);
 
             var sut = GetSut();
 
@@ -90,7 +87,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services.EmployerS
         public async Task GetEmployerNameAsync_ShouldReturnVacancyEmployerNameForAnonymous(VacancyStatus status)
         {
             var employerName = "Employer Name";
-            var vacancy = new Vacancy() {
+            var vacancy = new Vacancy 
+            {
                 Status = status,
                 EmployerName = employerName,
                 EmployerNameOption = EmployerNameOption.Anonymous
@@ -103,9 +101,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services.EmployerS
             result.Should().Be(employerName);
         }
 
-        private Recruit.Vacancies.Client.Application.Services.EmployerService GetSut()
-        {
-            return new Recruit.Vacancies.Client.Application.Services.EmployerService(_mockEmployerProfileRepository.Object);
-        }
+        private Recruit.Vacancies.Client.Application.Services.EmployerService GetSut() => new(_mockEmployerProfileService.Object);
     }
 }

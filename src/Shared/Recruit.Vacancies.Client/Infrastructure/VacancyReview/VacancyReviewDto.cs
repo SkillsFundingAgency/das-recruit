@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
 public class VacancyReviewDto
 {
     public Guid Id { get; init; }
-    public long VacancyReference { get; init; }
+    public long VacancyReference { get; set; }
     public required string VacancyTitle { get; init; }
     public required DateTime CreatedDate { get; init; }
     public required DateTime SlaDeadLine { get; init; }
@@ -19,6 +19,7 @@ public class VacancyReviewDto
     public byte SubmissionCount { get; init; }
     public string ReviewedByUserEmail { get; init; }
     public required string SubmittedByUserEmail { get; init; }
+    public string SubmittedByUserId { get; set; }
     public DateTime? ClosedDate { get; init; }
     public string ManualOutcome { get; set; }
     public string ManualQaComment { get; init; }
@@ -33,11 +34,14 @@ public class VacancyReviewDto
     public long AccountId { get; set; }
     public long AccountLegalEntityId { get; set; }
     public string EmployerName { get; set; }
-
     public string HashedAccountId { get; set; }
     public Guid VacancyId { get; set; }
+    public bool EnableAiProcessing { get; set; }
 
-    public static VacancyReviewDto MapVacancyReviewDto(Domain.Entities.VacancyReview source, IEncodingService encodingService)
+    public static VacancyReviewDto MapVacancyReviewDto(
+        Domain.Entities.VacancyReview source,
+        IEncodingService encodingService,
+        bool enableQaAi = false)
     {
         return new VacancyReviewDto
         {
@@ -51,11 +55,12 @@ public class VacancyReviewDto
             SubmissionCount = (byte)source.SubmissionCount,
             ReviewedByUserEmail = source.ReviewedByUser?.Email,
             SubmittedByUserEmail = source.SubmittedByUser.Email,
+            SubmittedByUserId = source.SubmittedByUser.UserId ?? source.SubmittedByUser.DfEUserId,
             ClosedDate = source.ClosedDate,
             ManualOutcome = source.ManualOutcome?.ToString(),
             ManualQaComment = source.ManualQaComment,
             ManualQaFieldIndicators =source.ManualQaFieldIndicators!=null ? source.ManualQaFieldIndicators.Where(c=>c.IsChangeRequested)
-                .Select(c=>c.ToString()).ToList() : [],
+                .Select(c=>c.FieldIdentifier.ToString()).ToList() : [],
             AutomatedQaOutcome = source.AutomatedQaOutcome?.Decision.ToString(),
             AutomatedQaOutcomeIndicators = source.AutomatedQaOutcomeIndicators?.FirstOrDefault()?.IsReferred.ToString(),
             DismissedAutomatedQaOutcomeIndicators = source.DismissedAutomatedQaOutcomeIndicators,
@@ -69,7 +74,8 @@ public class VacancyReviewDto
             EmployerName =  source.VacancySnapshot.EmployerName,
             EmployerLocations = source.VacancySnapshot.EmployerLocationOption == null ? [ source.VacancySnapshot.EmployerLocation ] : source.VacancySnapshot.EmployerLocations,
             EmployerLocationOption = source.VacancySnapshot.EmployerLocationOption ?? AvailableWhere.OneLocation,
-            VacancyId = source.VacancySnapshot.Id
+            VacancyId = source.VacancySnapshot.Id,
+            EnableAiProcessing = enableQaAi
         };
     }
 
@@ -83,7 +89,7 @@ public class VacancyReviewDto
         {
             return null;
         }
-        
+
         return new Domain.Entities.VacancyReview
         {
             Id = source.Id,
@@ -92,20 +98,32 @@ public class VacancyReviewDto
             CreatedDate = source.CreatedDate,
             SlaDeadline = source.SlaDeadLine,
             ReviewedDate = source.ReviewedDate,
-            Status = Enum.Parse<ReviewStatus>(source.Status),
+            Status = Enum.Parse<ReviewStatus>(source.Status),  
             SubmissionCount = source.SubmissionCount,
-            ReviewedByUser = new VacancyUser{Email = source.ReviewedByUserEmail},
-            SubmittedByUser = new VacancyUser{Email = source.SubmittedByUserEmail },
+            ReviewedByUser = new VacancyUser { Email = source.ReviewedByUserEmail },
+            SubmittedByUser = new VacancyUser { Email = source.SubmittedByUserEmail },
             ClosedDate = source.ClosedDate,
-            ManualOutcome = Enum.Parse<ManualQaOutcome>(source.ManualOutcome),
+            ManualOutcome = Enum.TryParse<ManualQaOutcome>(source.ManualOutcome, out var manualOutcome)
+                ? manualOutcome
+                : default,
             ManualQaComment = source.ManualQaComment,
-            ManualQaFieldIndicators = source.ManualQaFieldIndicators.Select(c=>new ManualQaFieldIndicator{IsChangeRequested = true, FieldIdentifier = c}).ToList(),
-            AutomatedQaOutcome = new RuleSetOutcome{Decision =  Enum.Parse<RuleSetDecision>(source.AutomatedQaOutcome)},
-            AutomatedQaOutcomeIndicators = new List<RuleOutcomeIndicator>{new()
+            ManualQaFieldIndicators = source.ManualQaFieldIndicators
+                .Select(c => new ManualQaFieldIndicator { IsChangeRequested = true, FieldIdentifier = c })
+                .ToList(),
+            AutomatedQaOutcome = new RuleSetOutcome
             {
-                IsReferred = !string.IsNullOrEmpty(source.AutomatedQaOutcomeIndicators),
-                RuleOutcomeId = Guid.NewGuid()
-            }},
+                Decision = Enum.TryParse<RuleSetDecision>(source.AutomatedQaOutcome, out var ruleSetDecision)
+                    ? ruleSetDecision
+                    : default
+            },
+            AutomatedQaOutcomeIndicators = new List<RuleOutcomeIndicator>
+            {
+                new()
+                {
+                    IsReferred = !string.IsNullOrEmpty(source.AutomatedQaOutcomeIndicators),
+                    RuleOutcomeId = Guid.NewGuid()
+                }
+            },
             DismissedAutomatedQaOutcomeIndicators = source.DismissedAutomatedQaOutcomeIndicators,
             UpdatedFieldIdentifiers = source.UpdatedFieldIdentifiers,
             VacancySnapshot = JsonConvert.DeserializeObject<Vacancy>(source.VacancySnapshot)

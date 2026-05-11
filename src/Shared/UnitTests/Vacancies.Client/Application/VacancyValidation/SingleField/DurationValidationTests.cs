@@ -1,4 +1,3 @@
-using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Xunit;
@@ -96,29 +95,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         }
 
         [Theory]
-        [InlineData(DurationUnit.Month, 8)]
-        public void ApprenticeshipDurationMustBeAtLeast8Months(DurationUnit unitValue, int durationValue)
-        {
-            Feature.Setup(x=>x.IsFeatureEnabled(RecruitFeatureNames.FoundationApprenticeships)).Returns(true);
-            var vacancy = new Vacancy
-            {
-                Wage = new Wage
-                {
-                    DurationUnit = unitValue,
-                    Duration = durationValue
-                }
-            };
-
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Duration);
-
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.Duration)}");
-            result.Errors[0].ErrorCode.Should().Be("36");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Duration);
-        }
-        
-        [Theory]
         [InlineData(DurationUnit.Month, 8, "29", true)]
         [InlineData(DurationUnit.Month, 8, "30", false)]
         [InlineData(DurationUnit.Year, 1, "29", true)]
@@ -131,7 +107,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [InlineData(DurationUnit.Year, 1, "9", true)]
         public void AnyApprenticeshipDurationMonthsMustHave30WeeklyHours(DurationUnit unitValue, int durationValue, string weeklyHoursText, bool hasErrors)
         {
-            Feature.Setup(x=>x.IsFeatureEnabled(RecruitFeatureNames.FoundationApprenticeships)).Returns(true);
             decimal? weeklyHours = decimal.TryParse(weeklyHoursText, out decimal parsed) ? parsed : (decimal?)null;
             var vacancy = new Vacancy
             {

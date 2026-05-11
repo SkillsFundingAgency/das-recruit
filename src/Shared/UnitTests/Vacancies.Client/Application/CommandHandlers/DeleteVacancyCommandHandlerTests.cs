@@ -1,4 +1,4 @@
-using System.Threading;
+﻿using System.Threading;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -13,10 +13,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
 
 public class DeleteVacancyCommandHandlerTests
 {
-    private readonly Mock<ILogger<DeleteVacancyCommandHandler>> _mockLogger = new Mock<ILogger<DeleteVacancyCommandHandler>>();
-    private readonly Mock<IVacancyRepository> _mockVacancyRepository = new Mock<IVacancyRepository>();
-    private readonly Mock<IMessaging> _mockMessaging = new Mock<IMessaging>();
-    private readonly Mock<ITimeProvider> _mockTimeProvider = new Mock<ITimeProvider>();
+    private readonly Mock<ILogger<DeleteVacancyCommandHandler>> _mockLogger = new();
+    private readonly Mock<IVacancyRepository> _mockVacancyRepository = new();
+    private readonly Mock<IMessaging> _mockMessaging = new();
+    private readonly Mock<ITimeProvider> _mockTimeProvider = new();
 
     [Theory]
     [InlineData(VacancyStatus.Live)]
@@ -29,7 +29,7 @@ public class DeleteVacancyCommandHandlerTests
         var vacancy = fixture.Build<Vacancy>().With(v => v.Status, status).Create();
         _mockVacancyRepository.Setup(r => r.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(vacancy);
         var sut = GetSut();
-        await sut.Handle(fixture.Create<DeleteVacancyCommand>(), new CancellationToken());
+        await sut.Handle(fixture.Create<DeleteVacancyCommand>(), CancellationToken.None);
         _mockVacancyRepository.Verify(m => m.UpdateAsync(It.IsAny<Vacancy>()), Times.Never);
         _mockMessaging.Verify(m => m.PublishEvent(It.IsAny<VacancyDeletedEvent>()), Times.Never);
     }
@@ -41,7 +41,7 @@ public class DeleteVacancyCommandHandlerTests
         var vacancy = fixture.Build<Vacancy>().With(v => v.IsDeleted, true).Create();
         _mockVacancyRepository.Setup(r => r.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(vacancy);
         var sut = GetSut();
-        await sut.Handle(fixture.Create<DeleteVacancyCommand>(), new CancellationToken());
+        await sut.Handle(fixture.Create<DeleteVacancyCommand>(), CancellationToken.None);
         _mockVacancyRepository.Verify(m => m.UpdateAsync(It.IsAny<Vacancy>()), Times.Never);
         _mockMessaging.Verify(m => m.PublishEvent(It.IsAny<VacancyDeletedEvent>()), Times.Never);
     }
@@ -52,7 +52,7 @@ public class DeleteVacancyCommandHandlerTests
         var fixture = new Fixture();
         _mockVacancyRepository.Setup(r => r.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync((Vacancy)null);
         var sut = GetSut();
-        await sut.Handle(fixture.Create<DeleteVacancyCommand>(), new CancellationToken());
+        await sut.Handle(fixture.Create<DeleteVacancyCommand>(), CancellationToken.None);
         _mockVacancyRepository.Verify(m => m.UpdateAsync(It.IsAny<Vacancy>()), Times.Never);
         _mockMessaging.Verify(m => m.PublishEvent(It.IsAny<VacancyDeletedEvent>()), Times.Never);
     }
@@ -66,7 +66,7 @@ public class DeleteVacancyCommandHandlerTests
         _mockVacancyRepository.Setup(r => r.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(vacancy);
         var command = fixture.Build<DeleteVacancyCommand>().Without(v => v.User).Create();
         var sut = GetSut();
-        await sut.Handle(command, new CancellationToken());
+        await sut.Handle(command, CancellationToken.None);
         _mockMessaging.Verify(m => m.PublishEvent(It.IsAny<VacancyDeletedEvent>()));
     }
 
@@ -75,19 +75,17 @@ public class DeleteVacancyCommandHandlerTests
     {
         var fixture = new Fixture();
         var deletedByUser = fixture.Create<VacancyUser>();
-        var vacancy = 
+        var vacancy =
             fixture.Build<Vacancy>()
                 .With(v => v.IsDeleted, false).Create();
         _mockVacancyRepository.Setup(r => r.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(vacancy);
         var command = fixture.Build<DeleteVacancyCommand>().With(v => v.User, deletedByUser).Create();
         var sut = GetSut();
-        await sut.Handle(command, new CancellationToken());
+        await sut.Handle(command, CancellationToken.None);
         _mockMessaging.Verify(m => m.PublishEvent(It.IsAny<VacancyDeletedEvent>()));
     }
 
-    private DeleteVacancyCommandHandler GetSut()
-    {
-        return new DeleteVacancyCommandHandler(
+    private DeleteVacancyCommandHandler GetSut() =>
+        new(
             _mockLogger.Object, _mockVacancyRepository.Object, _mockMessaging.Object, _mockTimeProvider.Object);
-    }
 }

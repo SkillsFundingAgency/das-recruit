@@ -25,7 +25,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Recruit.Vacancies.Jobs\Recruit.Vacancies.Jobs.csproj" />
-    <ProjectReference Include="..\..\Communication\Communication.Types\Communication.Types.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DomainEvents\Handlers\Provider\" />
   </ItemGroup>
 
 </Project>

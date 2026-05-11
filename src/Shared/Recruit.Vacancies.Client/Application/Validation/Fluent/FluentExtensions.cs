@@ -50,5 +50,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             return Uri.TryCreate(arg, UriKind.RelativeOrAbsolute, out _);
         }
+        
+        public static IRuleBuilderOptions<T, string> MustBeValidWebsiteAsync<T>(this IRuleBuilder<T, string> rule, IExternalWebsiteHealthCheckService externalWebsiteHealthCheckService)
+        {
+            return rule.SetAsyncValidator(new WebsiteValidator<T, string>(externalWebsiteHealthCheckService));
+        }
     }
 }

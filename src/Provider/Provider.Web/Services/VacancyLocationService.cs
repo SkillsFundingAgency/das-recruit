@@ -113,7 +113,7 @@ public class VacancyLocationService(
 
         foreach (var address in addresses)
         {
-            string newAddressString = address.ToSingleLineFullAddress();
+            var newAddressString = address.ToSingleLineFullAddress();
             var existingLocation = existingLocations.FirstOrDefault(x => x.ToSingleLineFullAddress().Equals(newAddressString, StringComparison.InvariantCultureIgnoreCase));
             if (existingLocation is null)
             {
@@ -126,13 +126,13 @@ public class VacancyLocationService(
             existingLocation.Country = address.Country;
         }
 
-        await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
+        await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile);
     }
 
     public async Task SaveEmployerAddress(VacancyUser user, Vacancy vacancy, long ukprn, Address address)
     {
         var existingLocations = await GetVacancyLocations(vacancy, ukprn);
-        string newAddressString = address.ToSingleLineFullAddress();
+        var newAddressString = address.ToSingleLineFullAddress();
         if (existingLocations.Any(x => x.ToSingleLineFullAddress().Equals(newAddressString, StringComparison.InvariantCultureIgnoreCase)))
         {
             // Don't add existing addresses
@@ -141,6 +141,6 @@ public class VacancyLocationService(
         
         var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
         employerProfile.OtherLocations.Add(address);
-        await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
+        await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile);
     }
 }

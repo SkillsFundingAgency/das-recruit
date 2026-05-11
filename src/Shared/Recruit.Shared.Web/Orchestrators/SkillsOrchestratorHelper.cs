@@ -6,21 +6,16 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Shared.Web.Orchestrators
 {
-    public class SkillsOrchestratorHelper
+    public class SkillsOrchestratorHelper(Func<List<string>> getCandidateSkillsAsync)
     {
         private const int ColumnOneCutOffIndex = 9;
         private const char SortPrefixSeparator = '-';
 
-        private readonly Lazy<List<string>> _lazyCandidateSkills;
+        private readonly Lazy<List<string>> _lazyCandidateSkills = new(getCandidateSkillsAsync);
         
         private List<string> CandidateSkills => _lazyCandidateSkills.Value;
         private IEnumerable<string> Column1BuiltInSkills => CandidateSkills.Take(ColumnOneCutOffIndex);
         private IEnumerable<string> Column2BuiltInSkills => CandidateSkills.Skip(ColumnOneCutOffIndex);
-
-        public SkillsOrchestratorHelper(Func<List<string>> getCandidateSkillsAsync)
-        {
-            _lazyCandidateSkills = new Lazy<List<string>>(getCandidateSkillsAsync);
-        }
 
         public void SetViewModelSkillsFromVacancy(ISkillsViewModel vm, Vacancy vacancy)
         {

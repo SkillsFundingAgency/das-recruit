@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Failed to retrieve account information for account Id: {hashedAccountId}");
+                logger.LogError(ex, "Failed to retrieve account information for account Id: {HashedAccountId}", hashedAccountId);
                 throw;
             }
         }

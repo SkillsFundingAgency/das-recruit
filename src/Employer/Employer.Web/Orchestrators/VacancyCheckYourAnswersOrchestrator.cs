@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
@@ -36,7 +35,9 @@ public class VacancyCheckYourAnswersOrchestrator(
     private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage |
                                                        VacancyRuleSet.TrainingExpiryDate |
                                                        VacancyRuleSet.TrainingProviderDeliverCourse |
-                                                       VacancyRuleSet.TrainingProgramme;
+                                                       VacancyRuleSet.TrainingProgramme |
+                                                       VacancyRuleSet.EmployerWebsiteUrl |
+                                                       VacancyRuleSet.ApplicationMethod;
 
     private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
 

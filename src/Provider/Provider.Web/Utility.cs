@@ -21,7 +21,7 @@ public interface IUtility
     bool VacancyHasStartedPartTwo(Vacancy vacancy);
     PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy);
     Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm);
-    Task UpdateEmployerProfile(VacancyEmployerInfoModel vacancyEmployerInfoModel, EmployerProfile profile, Address address, VacancyUser user);
+    Task UpdateEmployerProfile(VacancyEmployerInfoModel vacancyEmployerInfoModel, EmployerProfile profile, Address address);
     bool IsTaskListCompleted(Vacancy vacancy);
 }
 public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator taskListValidator) : IUtility
@@ -114,7 +114,7 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
     }
 
     public async Task UpdateEmployerProfile(VacancyEmployerInfoModel employerInfoModel, 
-        EmployerProfile employerProfile, Address address, VacancyUser user)
+        EmployerProfile employerProfile, Address address)
     {
         var updateProfile = false;
         if (string.IsNullOrEmpty(employerProfile.AccountLegalEntityPublicHashedId) && !string.IsNullOrEmpty(employerInfoModel?.AccountLegalEntityPublicHashedId)) 
@@ -134,7 +134,7 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
         }
         if (updateProfile)    
         {
-            await vacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
+            await vacancyClient.UpdateEmployerProfileAsync(employerProfile);
         }
     }
     
