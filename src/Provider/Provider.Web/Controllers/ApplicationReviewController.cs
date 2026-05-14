@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     [Route(RoutePaths.AccountApplicationReviewRoutePath)]
     public class ApplicationReviewController(IApplicationReviewOrchestrator orchestrator) : Controller
     {
-        private const string TempDateArModel = "ApplicationReviewEditModel";
+        private const string TempDataArModel = "ApplicationReviewEditModel";
 
         [HttpGet("", Name = RouteNames.ApplicationReview_Get)]
         public async Task<IActionResult> ApplicationReview(ApplicationReviewRouteModel rm)
@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                         new {applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn});
 
                 case ApplicationReviewStatus.Successful:
-                    TempData[TempDateArModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
+                    TempData[TempDataArModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
                     return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get,
                         new
                         {
@@ -75,7 +75,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
                 case ApplicationReviewStatus.EmployerUnsuccessful:
                     applicationReviewEditModel.Outcome = ApplicationReviewStatus.Unsuccessful;
-                    TempData[TempDateArModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
+                    TempData[TempDataArModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
                     return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get,
                         new
                         {
@@ -84,7 +84,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                         });
 
                 case ApplicationReviewStatus.Unsuccessful:
-                    TempData[TempDateArModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
+                    TempData[TempDataArModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
                     return RedirectToRoute(RouteNames.ApplicationReviewFeedback_Get,
                         new
                         {
@@ -101,7 +101,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpGet("feedback", Name = RouteNames.ApplicationReviewFeedback_Get)]
         public async Task<IActionResult> ApplicationFeedback(ApplicationReviewRouteModel applicationReviewEditModel)
         {
-            if (TempData[TempDateArModel] is string model)
+            if (TempData[TempDataArModel] is string model)
             {
                 var applicationReviewEditViewModel = JsonConvert.DeserializeObject<ApplicationReviewEditModel>(model);
                 var applicationReviewFeedbackViewModel =
@@ -129,7 +129,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return View(applicationReviewFeedbackEditModel);
             }
 
-            TempData[TempDateArModel] = JsonConvert.SerializeObject(applicationReviewFeedbackEditModel);
+            TempData[TempDataArModel] = JsonConvert.SerializeObject(applicationReviewFeedbackEditModel);
             return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get,
                 new
                 {
@@ -142,7 +142,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         public async Task<IActionResult> ApplicationStatusConfirmation(
             ApplicationReviewRouteModel applicationReviewEditModel)
         {
-            if (TempData[TempDateArModel] is string model)
+            if (TempData[TempDataArModel] is string model)
             {
                 var applicationReviewEditViewModel = JsonConvert.DeserializeObject<ApplicationReviewEditModel>(model);
                 var applicationStatusConfirmationViewModel =

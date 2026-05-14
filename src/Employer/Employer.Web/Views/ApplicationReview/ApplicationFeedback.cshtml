@@ -1,6 +1,6 @@
-﻿@model Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview.ApplicationReviewFeedbackViewModel
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview.ApplicationReviewFeedbackViewModel
 @{
-    ViewBag.GaData.Vpv = "/recruitment/provider/page-application-feedback";
+    ViewBag.GaData.Vpv = "/recruitment/employer/page-application-feedback";
     ViewBag.Title = "Give feedback (single and multiple applications)";
 }
 @section BackLink {
@@ -22,7 +22,7 @@
                 </div>
             </govuk-inset>
         </div>
-        <form asp-route="@RouteNames.ApplicationReviewFeedback_Post" asp-route-applicationReviewId="@Model.ApplicationReviewId" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
+        <form asp-route="@RouteNames.ApplicationReviewFeedback_Post" asp-route-applicationReviewId="@Model.ApplicationReviewId" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancyId="@Model.VacancyId">
             @Html.HiddenFor(model => model.Outcome)
             @Html.HiddenFor(model => model.Name)
             <span esfa-validation-message-for="Outcome" class="govuk-error-message"></span>

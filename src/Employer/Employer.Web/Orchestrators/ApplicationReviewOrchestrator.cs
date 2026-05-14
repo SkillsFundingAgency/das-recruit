@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Exceptions;
 using Esfa.Recruit.Employer.Web.Mappings.Extensions;
@@ -21,6 +21,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         Task<ApplicationReviewCandidateInfo> PostApplicationReviewEditModelAsync(ApplicationReviewEditModel m, VacancyUser user);
         Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel m);
         Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewEditModel rm);
+        Task<Dictionary<string, string>> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewFeedbackViewModel applicationReviewFeedbackViewModel);
+        Task<ApplicationReviewFeedbackViewModel> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewEditModel rm);
         Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid vacancyId);
     }
 
@@ -80,7 +82,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             await client.SetApplicationReviewStatus(applicationReview.Id, m.Outcome, m.CandidateFeedback, user);
 
-            return new ApplicationReviewCandidateInfo()
+            return new ApplicationReviewCandidateInfo
             {
                 ApplicationReviewId = applicationReview.Id,
                 FriendlyId = applicationReview.GetFriendlyId(),
@@ -98,7 +100,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 ApplicationReviewId = m.ApplicationReviewId,
                 CandidateFeedback = m.CandidateFeedback,
                 Outcome = m.Outcome,
-                Name = applicationReview.Application.FullName
+                Name = applicationReview.Application.FullName,
+                FriendlyId = applicationReview.GetFriendlyId()
             };
         }
 
@@ -112,6 +115,35 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 Outcome = rm.Outcome,
                 Name = applicationReviewVm.Name,
                 FriendlyId = applicationReviewVm.FriendlyId
+            };
+        }
+
+        public async Task<ApplicationReviewFeedbackViewModel> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewEditModel rm)
+        {
+            var applicationReviewVm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel)rm);
+
+            return new ApplicationReviewFeedbackViewModel
+            {
+                CandidateFeedback = rm.CandidateFeedback,
+                Outcome = rm.Outcome,
+                ApplicationReviewId = rm.ApplicationReviewId,
+                Name = applicationReviewVm.Name,
+                FriendlyId = applicationReviewVm.FriendlyId,
+                EmployerAccountId = rm.EmployerAccountId,
+                VacancyId = rm.VacancyId
+            };
+        }
+
+        public async Task<Dictionary<string, string>> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewFeedbackViewModel applicationReviewFeedbackViewModel)
+        {
+            await utility.GetAuthorisedApplicationReviewAsync(applicationReviewFeedbackViewModel);
+
+            var applicationReview = await utility.GetAuthorisedApplicationReviewAsync(applicationReviewFeedbackViewModel);
+
+            return new Dictionary<string, string>
+            {
+                {"Name", applicationReview.Application.FullName},
+                {"FriendlyId", applicationReview.GetFriendlyId()}
             };
         }
 

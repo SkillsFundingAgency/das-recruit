@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Proivder.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.Mappings.Extensions;
+using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
-using Esfa.Recruit.Proivder.Web.Exceptions;
-using Esfa.Recruit.Provider.Web.Models;
 using ApplicationReviewViewModel = Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
@@ -110,6 +110,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Outcome = rm.Outcome,
                 ApplicationReviewId = rm.ApplicationReviewId,
                 Name = applicationReviewVm.Name,
+                FriendlyId = applicationReviewVm.FriendlyId,
                 Ukprn = rm.Ukprn,
                 VacancyId = rm.VacancyId
             };
@@ -139,5 +140,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             return await vacancyClient.IsAllApplicationReviewsHasOutcomeAsync(vacancyId.Value);
         }
+
     }
 }

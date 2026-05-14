@@ -1,30 +1,38 @@
-﻿@using Esfa.Recruit.Shared.Web.TagHelpers
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews.ApplicationReviewsToUnsuccessfulFeedbackViewModel
-
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews.ApplicationReviewsToUnsuccessfulFeedbackViewModel
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-application-reviews-to-unsuccessful-feedback";
-    ViewBag.Title = "Make Multiple Applications Unsuccessful Feedback";
+    ViewBag.Title = "Give feedback (single and multiple applications)";
+    var applicantsText = Model.IsMultipleApplications ? "applicants" : "applicant";
 }
-
 @section BackLink {
     <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model="@(new ValidationSummaryViewModel { ModelState = ViewData.ModelState})" />
         <div>
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-                @($"Give feedback to the unsuccessful applicant{(Model.IsMultipleApplications ? "s." : ".")}")
+                Give feedback to the unsuccessful @applicantsText
             </h1>
+            <govuk-inset>
+                @foreach(var applicant in Model.ApplicationDetails)
+                {
+                    <div>
+                        @applicant.Key
+                    </div>
+                    <div>
+                        Application ID: @applicant.Value
+                    </div>
+                }
+            </govuk-inset>
         </div>
         <form asp-route="@RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
-
             <div esfa-validation-marker-for="CandidateFeedback" id="Multiple-unsuccessful-candidate-feedback" class="govuk-form-group">
                 <div class="govuk-character-count" id="provider-character-count" data-module="govuk-character-count" data-maxwords="200">
                     <span esfa-validation-message-for="CandidateFeedback" class="govuk-error-message"></span>
-                    <span class="govuk-hint">@($"Your feedback will be sent to all applicant{(Model.IsMultipleApplications ? "s." : ".")} you have selected as unsuccessful.")</span>
+                    <span class="govuk-hint">
+                        Help the @applicantsText understand why their application was unsuccessful. Your feedback will be sent to all @applicantsText you have selected as unsuccessful.
+                    </span>
                     <textarea asp-for="CandidateFeedback" class="govuk-textarea govuk-js-character-count" id="provider-multiple-candidate-feedback" name="CandidateFeedback" rows="6"></textarea>
                     <div id="provider-multiple-candidate-feedback-info" class="govuk-hint govuk-character-count__message">
                         You have 200 words remaining

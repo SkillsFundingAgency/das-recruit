@@ -1,7 +1,8 @@
 ﻿@model Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview.ApplicationStatusConfirmationViewModel
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-application-status-confirmation";
-    ViewBag.Title = @Model.ShowStatusSuccessful ? "Make successful" : "Review Application Confirmation";
+    ViewBag.Title = @Model.ShowStatusSuccessful ? "Make successful" : "Make unsuccessful";
+    var outcomeText = @Model.ShowStatusSuccessful ? "successful" : "unsuccessful";
 }
 @section BackLink {
     <a asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" esfa-automation="link-back" class="govuk-back-link">Back</a>
@@ -9,7 +10,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-            Do you want to make this application successful?
+            Do you want to make this application @outcomeText?
         </h1>
         <govuk-inset>
             <div>
@@ -23,15 +24,11 @@
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model="new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }" />
         <div asp-show="@Model.ShowStatusUnsuccessful">
-            <h1 class="govuk-heading-l govuk-!-margin-bottom-6">
-                Are you sure you want to make @Model.Name's application unsuccessful?
-            </h1>
-            <p>
-                This will notify @Model.Name that they won't be offered the apprenticeship.
-            </p>
             <h2 class="govuk-heading-s">Your message to the applicant</h2>
-            <div class="govuk-details__text govuk-!-margin-bottom-6">
-                <p class="govuk-body">@Model.CandidateFeedback</p>
+            <div class="govuk-!-margin-bottom-6">
+                <govuk-inset>
+                    @Model.CandidateFeedback
+                </govuk-inset>
             </div>
         </div>
         <div asp-show="@Model.ShowStatusEmployerUnsuccessful">

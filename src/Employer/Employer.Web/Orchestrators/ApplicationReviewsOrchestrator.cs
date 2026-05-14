@@ -88,10 +88,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             await client.SetApplicationReviewsPendingUnsuccessfulFeedback(user, applicationReviewStatus, request.VacancyId, request.CandidateFeedback);
         }
-        
+
         public async Task PostApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulConfirmationViewModel request, VacancyUser user)
         {
-            await client.SetApplicationReviewsToUnsuccessful(request.VacancyApplicationsToUnsuccessful.Select(c=>c.ApplicationReviewId), request.CandidateFeedback, user, request.VacancyId);
+            await client.SetApplicationReviewsToUnsuccessful(request.VacancyApplicationsToUnsuccessful.Select(c => c.ApplicationReviewId), request.CandidateFeedback, user, request.VacancyId);
         }
 
         public async Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid vacancyId) => await client.IsAllApplicationReviewsHasOutcomeAsync(vacancyId);

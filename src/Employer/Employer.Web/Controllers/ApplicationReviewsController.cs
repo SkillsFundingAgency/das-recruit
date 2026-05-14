@@ -17,15 +17,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     [Route(RoutePaths.AccountApplicationReviewsRoutePath)]
     public class ApplicationReviewsController(IApplicationReviewsOrchestrator orchestrator) : Controller
     {
-        private readonly IApplicationReviewsOrchestrator _orchestrator = orchestrator;
-
         [HttpGet("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Get)]
         public async Task<IActionResult> ApplicationReviewsToUnsuccessful(VacancyRouteModel rm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
             Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
             Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
 
-            var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm, outputSortColumn, outputSortOrder);
+            var viewModel = await orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm, outputSortColumn, outputSortOrder);
 
             if (TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage)) 
             {
@@ -41,10 +39,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm, rm.SortColumn, rm.SortOrder);
+                var viewModel = await orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm, rm.SortColumn, rm.SortOrder);
                 return View(viewModel);
             }
-            await _orchestrator.PostApplicationReviewsStatus
+            await orchestrator.PostApplicationReviewsStatus
             (
                 new ApplicationReviewsToUpdateStatusModel
                 {
@@ -62,7 +60,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("unsuccessful-feedback", Name = RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Get)]
         public async Task<IActionResult> ApplicationReviewsFeedback(ApplicationReviewsToUnsuccessfulRouteModel request)
         {
-            var viewModel = await _orchestrator.GetApplicationReviewsFeedbackViewModel(request);
+            var viewModel = await orchestrator.GetApplicationReviewsFeedbackViewModel(request);
 
             return View(viewModel);
         }
@@ -74,7 +72,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             {
                 return View(request);
             }
-            await _orchestrator.PostApplicationReviewPendingUnsuccessfulFeedback
+            await orchestrator.PostApplicationReviewPendingUnsuccessfulFeedback
             (
                 new ApplicationReviewStatusModel
                 {
@@ -87,7 +85,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             return RedirectToRoute(RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Get, new
             {
-                request.IsMultipleApplications,
                 request.EmployerAccountId,
                 request.VacancyId
             });
@@ -96,7 +93,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Get)]
         public async Task<IActionResult> ApplicationReviewsToUnsuccessfulConfirmation(ApplicationReviewsToUnsuccessfulRouteModel rm)
         {
-            var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(rm);
+            var viewModel = await orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(rm);
 
             return View(viewModel);
         }
@@ -111,7 +108,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (rm.ApplicationsUnsuccessfulConfirmed == true)
             {
-                await _orchestrator.PostApplicationReviewsToUnsuccessfulAsync(rm, User.ToVacancyUser());
+                await orchestrator.PostApplicationReviewsToUnsuccessfulAsync(rm, User.ToVacancyUser());
 
                 var isAllApplicationsHasOutcome = await orchestrator.IsAllApplicationReviewsHasOutcomeAsync(rm.VacancyId);
                 if (isAllApplicationsHasOutcome)
@@ -120,8 +117,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                     return RedirectToRoute(RouteNames.ArchiveVacancy_Get, new {rm.EmployerAccountId, rm.VacancyId, });
                 }
 
+                rm.IsMultipleApplications = rm.VacancyApplicationsToUnsuccessful.Count > 1;
                 SetApplicationsReviewsToUnsuccessfulBannerMessage(rm);
-                return RedirectToRoute(RouteNames.VacancyManage_Get, new { rm.EmployerAccountId, rm.VacancyId });
             }
 
             return RedirectToRoute(RouteNames.VacancyManage_Get, new { rm.EmployerAccountId, rm.VacancyId });

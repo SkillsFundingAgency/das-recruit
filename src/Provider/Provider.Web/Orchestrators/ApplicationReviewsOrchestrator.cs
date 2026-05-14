@@ -18,7 +18,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         Task PostApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulConfirmationViewModel request, VacancyUser user);
         Task PostApplicationReviewsStatus(ApplicationReviewsToUpdateStatusModel request, VacancyUser user, ApplicationReviewStatus? applicationReviewStatus, ApplicationReviewStatus? applicationReviewTemporaryStatus);
         Task PostApplicationReviewPendingUnsuccessfulFeedback(ApplicationReviewStatusModel request, VacancyUser user, ApplicationReviewStatus applicationReviewStatus);
-
         Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid? vacancyId);
     }
 

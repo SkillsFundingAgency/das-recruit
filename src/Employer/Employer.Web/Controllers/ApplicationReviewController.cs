@@ -43,17 +43,17 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage,
                     editModel.Outcome == ApplicationReviewStatus.EmployerInterviewing
                         ? string.Format(InfoMessages.ApplicationEmployerInterviewingHeader, candidateInfo.FriendlyId, candidateInfo.Name)
-                        : string.Format(InfoMessages.ApplicationEmployerUnsuccessfulHeader, candidateInfo.FriendlyId));
+                        : InfoMessages.ApplicationEmployerUnsuccessfulHeader);
 
                 TempData.Add(TempDataKeys.ApplicationReviewedInfoMessage,
                     editModel.Outcome == ApplicationReviewStatus.EmployerInterviewing
-                        ? string.Format(InfoMessages.ApplicationEmployerInterviewingBody)
-                        : string.Format(InfoMessages.ApplicationEmployerUnsuccessfulBody));
+                        ? InfoMessages.ApplicationEmployerInterviewingBody
+                        : InfoMessages.ApplicationEmployerUnsuccessfulBody);
 
-                return RedirectToRoute( RouteNames.VacancyManage_Get, new { editModel.EmployerAccountId, editModel.VacancyId });
+                return RedirectToRoute( RouteNames.VacancyManage_Get, new {editModel.VacancyId, editModel.EmployerAccountId});
             }
 
-            if (editModel.Outcome == ApplicationReviewStatus.InReview || editModel.Outcome == ApplicationReviewStatus.Interviewing)
+            if (editModel.Outcome is ApplicationReviewStatus.InReview or ApplicationReviewStatus.Interviewing)
             {
                 var confirmationEditModel = new ApplicationReviewStatusConfirmationEditModel 
                 {
@@ -70,13 +70,67 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return RedirectToRoute(RouteNames.VacancyManage_Get, new { editModel.VacancyId, editModel.EmployerAccountId });
             }
 
+            if (editModel.Outcome is ApplicationReviewStatus.Unsuccessful)
+            {
+                TempData[TempDataArModel] = JsonConvert.SerializeObject(editModel);
+                return RedirectToRoute(RouteNames.ApplicationReviewFeedback_Get,
+                    new
+                    {
+                        editModel.ApplicationReviewId,
+                        editModel.VacancyId,
+                        editModel.EmployerAccountId
+                    });
+            }
+
             TempData[TempDataArModel] = JsonConvert.SerializeObject(editModel);
             return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new { editModel.VacancyId, editModel.EmployerAccountId, editModel.ApplicationReviewId, editModel.Outcome, editModel.CandidateFeedback });
+        }
+
+        [HttpGet("feedback", Name = RouteNames.ApplicationReviewFeedback_Get)]
+        public async Task<IActionResult> ApplicationFeedback(ApplicationReviewRouteModel applicationReviewEditModel)
+        {
+            if (TempData[TempDataArModel] is string model)
+            {
+                var applicationReviewEditViewModel = JsonConvert.DeserializeObject<ApplicationReviewEditModel>(model);
+                var applicationReviewFeedbackViewModel = await orchestrator.GetApplicationReviewFeedbackViewModelAsync(applicationReviewEditViewModel);
+                return View(applicationReviewFeedbackViewModel);
+            }
+
+            return RedirectToRoute(RouteNames.ApplicationReview_Get,
+                new
+                {
+                    applicationReviewEditModel.ApplicationReviewId,
+                    applicationReviewEditModel.VacancyId,
+                    applicationReviewEditModel.EmployerAccountId
+                });
+        }
+
+        [HttpPost("feedback", Name = RouteNames.ApplicationReviewFeedback_Post)]
+        public async Task<IActionResult> ApplicationFeedback(ApplicationReviewFeedbackViewModel applicationReviewFeedbackEditModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                var applicationReviewFeedbackViewModel = await orchestrator.GetApplicationReviewFeedbackViewModelAsync(applicationReviewFeedbackEditModel);
+                applicationReviewFeedbackEditModel.Name = applicationReviewFeedbackViewModel.GetValueOrDefault("Name");
+                applicationReviewFeedbackEditModel.FriendlyId = applicationReviewFeedbackViewModel.GetValueOrDefault("FriendlyId");
+                return View(applicationReviewFeedbackEditModel);
+            }
+
+            TempData[TempDataArModel] = JsonConvert.SerializeObject(applicationReviewFeedbackEditModel);
+            return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get,
+                new
+                {
+                    applicationReviewFeedbackEditModel.ApplicationReviewId,
+                    applicationReviewFeedbackEditModel.VacancyId,
+                    applicationReviewFeedbackEditModel.EmployerAccountId
+                });
         }
 
         [HttpGet("status", Name = RouteNames.ApplicationReviewConfirmation_Get)]
         public async Task<IActionResult> ApplicationStatusConfirmation(ApplicationReviewEditModel editModel)
         {
+            ModelState.Clear();
+
             if (TempData[TempDataArModel] is string model)
             {
                 var applicationReviewEditViewModel = JsonConvert.DeserializeObject<ApplicationReviewEditModel>(model);
@@ -113,7 +167,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 }
 
                 TempData.Add(TempDataKeys.ApplicationReviewStatusChangeInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, statusInfo.CandidateName, editModel.Outcome?.ToString().ToLower()));
-                return RedirectToRoute(RouteNames.VacancyManage_Get, new { VacancyId = editModel.VacancyId, EmployerAccountId = editModel.EmployerAccountId });
+                return RedirectToRoute(RouteNames.VacancyManage_Get, new {editModel.VacancyId, editModel.EmployerAccountId });
             }
             return RedirectToRoute(RouteNames.ApplicationReview_Get, new { editModel.VacancyId, editModel.EmployerAccountId, editModel.ApplicationReviewId });
         }

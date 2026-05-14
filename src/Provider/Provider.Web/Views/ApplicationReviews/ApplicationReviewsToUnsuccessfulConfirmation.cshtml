@@ -40,13 +40,11 @@
             <div esfa-validation-marker-for="ApplicationsToUnsuccessfulConfirmed" class="govuk-form-group">
                 <div class="govuk-form-group" das-highlight-error-for="ApplicationsToUnsuccessful" error-class="govuk-form-group--error" id="provider-applications-to-unsuccessful-confirm-form">
                     <fieldset class="govuk-fieldset">
-
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                             <h1 class="govuk-fieldset__heading">
                                 @Model.LegendMessage
                             </h1>
                         </legend>
-
                         @for (var i = 0; i < Model.ApplicationsToUnsuccessful.Count(); i++)
                         {
                             <div class="govuk-!-display-none">

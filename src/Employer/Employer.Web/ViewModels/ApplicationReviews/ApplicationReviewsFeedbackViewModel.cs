@@ -9,8 +9,13 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews
     {
         public string CandidateFeedback { get; set; }
         public List<VacancyApplication> ApplicationsToUnsuccessful { get; set; }
-        public string ApplicationsToUnsuccessfulFeedbackHeaderTitle => IsMultipleApplications ? "Give feedback to the unsuccessful applicants" : "Give feedback to the unsuccessful applicant";
+        public string ApplicationsToUnsuccessfulFeedbackHeaderTitle =>
+            IsMultipleApplications 
+                ? "Give feedback to the unsuccessful applicants" 
+                : "Give feedback to the unsuccessful applicant";
         public string ApplicationsToUnsuccessfulFeedbackDescription =>
-            IsMultipleApplications ? "Your feedback will be sent to all applicants you have selected as unsuccessful." : "Your feedback will be sent to the applicant you have selected as unsuccessful.";
+            IsMultipleApplications 
+                ? "Help the applicants understand why their application was unsuccessful. Your feedback will be sent to all applicants you have selected as unsuccessful." 
+                : "Help the applicant understand why their application was unsuccessful. Your message will be sent to the applicant.";
     }
 }

@@ -184,8 +184,23 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .With(x => x.ApplicationsToUnsuccessful, applicationReviewIds)
                 .Create();
 
+            var vacancyApplications = new List<VacancyApplication>
+            {
+                _fixture.Create<VacancyApplication>(),
+                _fixture.Create<VacancyApplication>()
+            };
+
+            _orchestrator.Setup(o =>
+                    o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.IsAny<ApplicationReviewsToUnsuccessfulRequest>(), It.IsAny<SortColumn>(), It.IsAny<SortOrder>()))
+                .ReturnsAsync(new ApplicationReviewsToUnsuccessfulViewModel
+                {
+                    VacancyId = request.VacancyId,
+                    Ukprn = request.Ukprn,
+                    VacancyApplications = vacancyApplications
+                });
+
             // Act
-            var actionResult =await _controller.ApplicationReviewsToUnsuccessful(request, "Name", "Ascending");
+            var actionResult = await _controller.ApplicationReviewsToUnsuccessful(request, "Name", "Ascending");
 
             var redirectResult = actionResult as RedirectToRouteResult;
             // Assert
