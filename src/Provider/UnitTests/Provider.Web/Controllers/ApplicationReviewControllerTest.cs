@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -421,10 +422,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         [Test]
         public async Task POST_ApplicationFeedback_ReturnsRedirectToRouteResult()
         {
-            var tempDataMock = new Mock<ITempDataDictionary>();
-
             _orchestrator.Setup(o => o.GetApplicationReviewFeedbackViewModelAsync(It.IsAny<ApplicationReviewFeedbackViewModel>()))
-                .ReturnsAsync("Name");
+                .ReturnsAsync(new Dictionary<string, string>()
+                {
+                    {"Name", "Some name"},
+                    {"FriendlyId", "Some friendly id"}
+                });
 
             var applicationReviewFeedbackViewModel = new ApplicationReviewFeedbackViewModel
             {

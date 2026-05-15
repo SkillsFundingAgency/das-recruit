@@ -105,7 +105,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// <summary>
         /// We can only archive closed vacancies that have not been deleted
         /// </summary>
-        public bool CanArchive => Status != VacancyStatus.Archived 
+        public bool CanArchive => Status == VacancyStatus.Closed
                                   && !IsDeleted;
 
         /// <summary>

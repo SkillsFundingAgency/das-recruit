@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Proivder.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.Mappings.Extensions;
 using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -19,7 +21,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         Task<ApplicationReviewStatusChangeInfo> PostApplicationReviewStatusChangeModelAsync(ApplicationReviewStatusChangeModel m, VacancyUser user);
         Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel);
         Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewEditModel rm);
-        Task<string> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewFeedbackViewModel applicationReviewFeedbackViewModel);
+        Task<Dictionary<string, string>> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewFeedbackViewModel applicationReviewFeedbackViewModel);
         Task<ApplicationReviewFeedbackViewModel> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewEditModel rm);
         Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid? vacancyId);
     }
@@ -88,16 +90,23 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 CandidateFeedback = applicationReviewStatusConfirmationEditModel.CandidateFeedback,
                 Outcome = applicationReviewStatusConfirmationEditModel.Outcome,
                 ApplicationReviewId = applicationReviewStatusConfirmationEditModel.ApplicationReviewId,
-                Name = applicationReview.Application.FullName
+                Name = applicationReview.Application.FullName,
+                FriendlyId = applicationReview.GetFriendlyId(),
+                Ukprn = applicationReviewStatusConfirmationEditModel.Ukprn,
+                VacancyId = applicationReviewStatusConfirmationEditModel.VacancyId
             };
         }
-        public async Task<string> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewFeedbackViewModel applicationReviewFeedbackViewModel)
+        public async Task<Dictionary<string, string>> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewFeedbackViewModel applicationReviewFeedbackViewModel)
         {
             await utility.GetAuthorisedApplicationReviewAsync(applicationReviewFeedbackViewModel);
 
             var applicationReview = await utility.GetAuthorisedApplicationReviewAsync(applicationReviewFeedbackViewModel);
 
-            return applicationReview.Application.FullName;
+            return new Dictionary<string, string>
+            {
+                {"Name", applicationReview.Application.FullName},
+                {"FriendlyId", applicationReview.GetFriendlyId()}
+            };
         }
 
         public async Task<ApplicationReviewFeedbackViewModel> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewEditModel rm)

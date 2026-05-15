@@ -212,21 +212,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
 
         [Test]
-        public void GET_ApplicationReviewsToUnsuccessfulFeedback_ReturnsViewAndModelWithNoApplications()
-        {
-            var routeModel = _fixture.Create<ApplicationReviewsToUnsuccessfulRouteModel>();
-
-            var result = _controller.ApplicationReviewsToUnsuccessfulFeedback(routeModel);
-
-            var viewResult = (ViewResult)result;
-            var model = viewResult.Model as ApplicationReviewsToUnsuccessfulFeedbackViewModel;
-
-            Assert.That(model, Is.Not.Null);
-            Assert.That(routeModel.Ukprn, Is.EqualTo(model.Ukprn));
-            Assert.That(routeModel.VacancyId, Is.EqualTo(model.VacancyId));
-        }
-
-        [Test]
         public async Task GET_ApplicationReviewsToUnsuccessfulFeedback_ReturnsViewModelWithCorrectNumberOfApplications()
         {
             // Arrange
@@ -261,13 +246,13 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         public async Task POST_ApplicationReviewsToUnsuccessfulFeedback_RedirectToConfirmation()
         {
             var request = _fixture
-                .Build<ApplicationReviewsToUnsuccessfulFeedbackViewModel>()
+                .Build<ApplicationReviewsFeedbackViewModel>()
                 .With(x => x.CandidateFeedback, "abc")
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.Ukprn, _ukprn)
                 .Create();
 
-            var result = await _controller.ApplicationReviewsToUnsuccessfulFeedback(request) as RedirectToRouteResult;
+            var result = await _controller.ApplicationReviewsFeedback(request) as RedirectToRouteResult;
 
             Assert.That(result, Is.Not.Null);
             Assert.That(RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Get, Is.EqualTo(result.RouteName));

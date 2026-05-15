@@ -64,40 +64,19 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 ApplicationReviewStatus.PendingToMakeUnsuccessful
             );
 
-            var applicationDetails = viewModel.VacancyApplications
-                .ToDictionary(
-                    x => x.CandidateName,
-                    x => x.GetFriendlyId());
-
-            TempData[TempDataKeys.ApplicationsToUnsuccessfulFeedbackHeader] = JsonSerializer.Serialize(applicationDetails);
-
             return RedirectToRoute(RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Get, new { request.Ukprn, request.VacancyId });
         }
 
         [HttpGet("unsuccessful-feedback", Name = RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Get)]
-        public IActionResult ApplicationReviewsToUnsuccessfulFeedback(ApplicationReviewsToUnsuccessfulRouteModel request)
+        public async Task<IActionResult> ApplicationReviewsFeedback(ApplicationReviewsToUnsuccessfulRouteModel request)
         {
-            var applicationReviewsToUnsuccessfulFeedbackViewModel = new ApplicationReviewsToUnsuccessfulFeedbackViewModel
-            {
-                VacancyId = request.VacancyId,
-                Ukprn = request.Ukprn
-            };
+            var viewModel = await orchestrator.GetApplicationReviewsFeedbackViewModel(request);
 
-            Dictionary<string, string> applicationDetails = [];
-
-            if (TempData[TempDataKeys.ApplicationsToUnsuccessfulFeedbackHeader] is string json)
-            {
-                applicationDetails =
-                    JsonSerializer.Deserialize<Dictionary<string, string>>(json)
-                    ?? [];
-            }
-            applicationReviewsToUnsuccessfulFeedbackViewModel.ApplicationDetails = applicationDetails;
-
-            return View(applicationReviewsToUnsuccessfulFeedbackViewModel);
+            return View(viewModel);
         }
 
         [HttpPost("unsuccessful-feedback", Name = RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Post)]
-        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulFeedback(ApplicationReviewsToUnsuccessfulFeedbackViewModel request)
+        public async Task<IActionResult> ApplicationReviewsFeedback(ApplicationReviewsFeedbackViewModel request)
         {
             if (!ModelState.IsValid)
             {

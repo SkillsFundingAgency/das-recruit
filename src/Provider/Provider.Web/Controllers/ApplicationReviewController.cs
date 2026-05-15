@@ -119,13 +119,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         [HttpPost("feedback", Name = RouteNames.ApplicationReviewFeedback_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ApplicationFeedback(
-            ApplicationReviewFeedbackViewModel applicationReviewFeedbackEditModel)
+        public async Task<IActionResult> ApplicationFeedback(ApplicationReviewFeedbackViewModel applicationReviewFeedbackEditModel)
         {
             if (!ModelState.IsValid)
             {
-                applicationReviewFeedbackEditModel.Name =
-                    await orchestrator.GetApplicationReviewFeedbackViewModelAsync(applicationReviewFeedbackEditModel);
+                var applicationReviewFeedbackViewModel = await orchestrator.GetApplicationReviewFeedbackViewModelAsync(applicationReviewFeedbackEditModel);
+                applicationReviewFeedbackEditModel.Name = applicationReviewFeedbackViewModel.GetValueOrDefault("Name");
+                applicationReviewFeedbackEditModel.FriendlyId = applicationReviewFeedbackViewModel.GetValueOrDefault("FriendlyId");
                 return View(applicationReviewFeedbackEditModel);
             }
 
@@ -134,7 +134,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 new
                 {
                     applicationReviewFeedbackEditModel.ApplicationReviewId,
-                    applicationReviewFeedbackEditModel.VacancyId, applicationReviewFeedbackEditModel.Ukprn
+                    applicationReviewFeedbackEditModel.VacancyId,
+                    applicationReviewFeedbackEditModel.Ukprn
                 });
         }
 
