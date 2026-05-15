@@ -7,11 +7,15 @@
 <div asp-show="@Model.HasWarning" class="das-notification das-notification--warning">
     <p class="das-notification__body">@Model.WarningMessage</p>
 </div>
-<govuk-banner asp-show="@Model.HasInfo" type="BannerStyle.Success">
-    <govuk-banner-heading>
-        @Html.Raw(Model.InfoMessage)
-    </govuk-banner-heading>
-</govuk-banner>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <govuk-banner asp-show="@Model.HasInfo" type="BannerStyle.Success">
+            <govuk-banner-heading>
+                @Html.Raw(Model.InfoMessage)
+            </govuk-banner-heading>
+        </govuk-banner>
+    </div>
+</div>
 @section BackLink
 {
     <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" esfa-automation="link-back" class="govuk-back-link">Return to recruitment dashboard</a>
@@ -28,7 +32,7 @@
     </govuk-inset>
     <govuk-inset asp-show="@(Model.FilteringOptions == FilteringOptions.Archived)">
         An archived vacancy can be cloned to list it again.
-    </govuk-inset>    
+    </govuk-inset>
 }
 @if (Model is { ListViewModel.Vacancies.Count: > 0 } || !string.IsNullOrWhiteSpace(Model.FilterViewModel.SearchTerm))
 {
