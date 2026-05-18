@@ -84,6 +84,7 @@ public static class IoC
         services.AddSingleton<IValidator<SelectTrainingProviderEditModel>, SelectTrainingProviderEditModelValidator>();
         services.AddSingleton<IValidator<ConfirmTrainingProviderEditModel>, ConfirmTrainingProviderEditModelValidator>();
         services.AddSingleton<IValidator<ApplicationReviewsFeedbackViewModel>, ApplicationReviewsFeedbackModelValidator>();
+        services.AddSingleton<IValidator<ApplicationReviewFeedbackViewModel>, ApplicationReviewFeedbackModelValidator>();
         services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulConfirmationViewModel>, ApplicationReviewsToUnsuccessfulConfirmationViewModelValidator>();
         services.AddSingleton<IValidator<AddLocationEditModel>, AddLocationEditModelValidator>();
         services.AddSingleton<IValidator<EnterLocationManuallyEditModel>, EnterLocationManuallyEditModelValidator>();

@@ -14,11 +14,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         Task<ApplicationReviewsToUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModel(ApplicationReviewsToUnsuccessfulRouteModel request);
         Task<ApplicationReviewsToUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm, SortColumn sortColumn, SortOrder sortOrder);
         Task<ShareMultipleApplicationReviewsViewModel> GetApplicationReviewsToShareViewModelAsync(VacancyRouteModel rm, SortColumn sortColumn, SortOrder sortOrder);
+        Task<ApplicationReviewsFeedbackViewModel> GetApplicationReviewsFeedbackViewModel(ApplicationReviewsToUnsuccessfulRouteModel rm);
         Task<ShareMultipleApplicationReviewsConfirmationViewModel> GetApplicationReviewsToShareConfirmationViewModel(ShareApplicationReviewsRequest request);
         Task PostApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulConfirmationViewModel request, VacancyUser user);
         Task PostApplicationReviewsStatus(ApplicationReviewsToUpdateStatusModel request, VacancyUser user, ApplicationReviewStatus? applicationReviewStatus, ApplicationReviewStatus? applicationReviewTemporaryStatus);
         Task PostApplicationReviewPendingUnsuccessfulFeedback(ApplicationReviewStatusModel request, VacancyUser user, ApplicationReviewStatus applicationReviewStatus);
-
         Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid? vacancyId);
     }
 
@@ -60,6 +60,20 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 VacancyId = vacancy.Id,
                 Ukprn = rm.Ukprn,
                 VacancyApplications = vacancyApplications
+            };
+        }
+
+        public async Task<ApplicationReviewsFeedbackViewModel> GetApplicationReviewsFeedbackViewModel(ApplicationReviewsToUnsuccessfulRouteModel rm)
+        {
+            var applicationsToUnsuccessful =
+                await client.GetVacancyApplicationsForReferenceAndStatus(rm.VacancyId.GetValueOrDefault(), ApplicationReviewStatus.PendingToMakeUnsuccessful);
+            return new ApplicationReviewsFeedbackViewModel
+            {
+                VacancyId = rm.VacancyId,
+                Ukprn = rm.Ukprn,
+                ApplicationsToUnsuccessful = applicationsToUnsuccessful,
+                Outcome = ApplicationReviewStatus.Unsuccessful,
+                IsMultipleApplications = applicationsToUnsuccessful.Count > 1
             };
         }
 

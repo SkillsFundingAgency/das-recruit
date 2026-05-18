@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Esfa.Recruit.Proivder.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.Mappings.Extensions;
+using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
-using Esfa.Recruit.Proivder.Web.Exceptions;
-using Esfa.Recruit.Provider.Web.Models;
 using ApplicationReviewViewModel = Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
@@ -19,7 +21,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         Task<ApplicationReviewStatusChangeInfo> PostApplicationReviewStatusChangeModelAsync(ApplicationReviewStatusChangeModel m, VacancyUser user);
         Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel);
         Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewEditModel rm);
-        Task<string> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewFeedbackViewModel applicationReviewFeedbackViewModel);
+        Task<Dictionary<string, string>> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewFeedbackViewModel applicationReviewFeedbackViewModel);
         Task<ApplicationReviewFeedbackViewModel> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewEditModel rm);
         Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid? vacancyId);
     }
@@ -79,8 +81,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel)
         {
-            await utility.GetAuthorisedApplicationReviewAsync(applicationReviewStatusConfirmationEditModel);
-
             var applicationReview = await utility.GetAuthorisedApplicationReviewAsync(applicationReviewStatusConfirmationEditModel);
 
             return new ApplicationStatusConfirmationViewModel
@@ -88,16 +88,21 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 CandidateFeedback = applicationReviewStatusConfirmationEditModel.CandidateFeedback,
                 Outcome = applicationReviewStatusConfirmationEditModel.Outcome,
                 ApplicationReviewId = applicationReviewStatusConfirmationEditModel.ApplicationReviewId,
-                Name = applicationReview.Application.FullName
+                Name = applicationReview.Application.FullName,
+                FriendlyId = applicationReview.GetFriendlyId(),
+                Ukprn = applicationReviewStatusConfirmationEditModel.Ukprn,
+                VacancyId = applicationReviewStatusConfirmationEditModel.VacancyId
             };
         }
-        public async Task<string> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewFeedbackViewModel applicationReviewFeedbackViewModel)
+        public async Task<Dictionary<string, string>> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewFeedbackViewModel applicationReviewFeedbackViewModel)
         {
-            await utility.GetAuthorisedApplicationReviewAsync(applicationReviewFeedbackViewModel);
-
             var applicationReview = await utility.GetAuthorisedApplicationReviewAsync(applicationReviewFeedbackViewModel);
 
-            return applicationReview.Application.FullName;
+            return new Dictionary<string, string>
+            {
+                {"Name", applicationReview.Application.FullName},
+                {"FriendlyId", applicationReview.GetFriendlyId()}
+            };
         }
 
         public async Task<ApplicationReviewFeedbackViewModel> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewEditModel rm)
@@ -110,6 +115,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Outcome = rm.Outcome,
                 ApplicationReviewId = rm.ApplicationReviewId,
                 Name = applicationReviewVm.Name,
+                FriendlyId = applicationReviewVm.FriendlyId,
                 Ukprn = rm.Ukprn,
                 VacancyId = rm.VacancyId
             };
@@ -139,5 +145,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             return await vacancyClient.IsAllApplicationReviewsHasOutcomeAsync(vacancyId.Value);
         }
+
     }
 }

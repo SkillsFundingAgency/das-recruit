@@ -3,6 +3,7 @@ using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using NUnit.Framework;
@@ -71,10 +72,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             _utility.Setup(x => x.GetAuthorisedApplicationReviewAsync(model))
                 .ReturnsAsync(applicationReview);
 
-            string result = await _orchestrator.GetApplicationReviewFeedbackViewModelAsync(model);
+            var result = await _orchestrator.GetApplicationReviewFeedbackViewModelAsync(model);
 
             Assert.That(result, Is.Not.Null);
-            Assert.That(applicationReview.Application.FullName, Is.EqualTo(result));
+            Assert.That(applicationReview.Application.FullName, Is.EqualTo(result.GetValueOrDefault("Name")));
+            Assert.That(applicationReview.GetFriendlyId(), Is.EqualTo(result.GetValueOrDefault("FriendlyId")));
         }
 
         [Test]

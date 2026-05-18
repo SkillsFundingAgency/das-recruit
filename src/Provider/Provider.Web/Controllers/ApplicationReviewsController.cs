@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
@@ -9,6 +10,7 @@ using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -43,9 +45,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
             Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
 
+            var viewModel = await orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(request, outputSortColumn, outputSortOrder);
+
             if (!ModelState.IsValid)
             {
-                var viewModel = await orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(request, outputSortColumn, outputSortOrder);
                 return View(viewModel);
             }
             
@@ -60,23 +63,20 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 null,
                 ApplicationReviewStatus.PendingToMakeUnsuccessful
             );
-            
+
             return RedirectToRoute(RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Get, new { request.Ukprn, request.VacancyId });
         }
 
         [HttpGet("unsuccessful-feedback", Name = RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Get)]
-        public IActionResult ApplicationReviewsToUnsuccessfulFeedback(ApplicationReviewsToUnsuccessfulRouteModel request)
+        public async Task<IActionResult> ApplicationReviewsFeedback(ApplicationReviewsToUnsuccessfulRouteModel request)
         {
-            var applicationReviewsToUnsuccessfulFeedbackViewModel = new ApplicationReviewsToUnsuccessfulFeedbackViewModel
-            {
-                VacancyId = request.VacancyId,
-                Ukprn = request.Ukprn
-            };
-            return View(applicationReviewsToUnsuccessfulFeedbackViewModel);
+            var viewModel = await orchestrator.GetApplicationReviewsFeedbackViewModel(request);
+
+            return View(viewModel);
         }
 
         [HttpPost("unsuccessful-feedback", Name = RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Post)]
-        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulFeedback(ApplicationReviewsToUnsuccessfulFeedbackViewModel request)
+        public async Task<IActionResult> ApplicationReviewsFeedback(ApplicationReviewsFeedbackViewModel request)
         {
             if (!ModelState.IsValid)
             {
