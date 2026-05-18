@@ -96,6 +96,26 @@ a.app-card:focus .app-card__heading-text {
   }
 }
 
+/* Vacancy List */
+
+.app-vacancy-list .govuk-table__head tr th,
+.app-vacancy-list .govuk-table__body tr td {
+    font-size: 1rem;
+    padding-right: 10px;
+}
+
+@media (min-width: 40.0625em) {
+  .app-vacancy-list {
+    width: 100%;
+  }  
+
+    .app-vacancy-list--employer .th-w-title { width: 230px }
+    .app-vacancy-list--employer .th-w-ref { width: 170px }
+    .app-vacancy-list--employer .th-w-applications { width: 120px }
+    .app-vacancy-list--employer .th-w-status { width: 150px }
+    .app-vacancy-list--employer .th-w-action { width: 70px }
+}
+
 /* Status Tags */
 
 .app-tag {
