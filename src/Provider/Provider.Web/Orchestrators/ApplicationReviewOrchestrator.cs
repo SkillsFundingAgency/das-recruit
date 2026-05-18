@@ -81,8 +81,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel)
         {
-            await utility.GetAuthorisedApplicationReviewAsync(applicationReviewStatusConfirmationEditModel);
-
             var applicationReview = await utility.GetAuthorisedApplicationReviewAsync(applicationReviewStatusConfirmationEditModel);
 
             return new ApplicationStatusConfirmationViewModel
@@ -98,8 +96,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         }
         public async Task<Dictionary<string, string>> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewFeedbackViewModel applicationReviewFeedbackViewModel)
         {
-            await utility.GetAuthorisedApplicationReviewAsync(applicationReviewFeedbackViewModel);
-
             var applicationReview = await utility.GetAuthorisedApplicationReviewAsync(applicationReviewFeedbackViewModel);
 
             return new Dictionary<string, string>
