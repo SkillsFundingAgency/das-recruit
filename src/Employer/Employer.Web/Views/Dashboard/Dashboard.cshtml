@@ -67,22 +67,21 @@
             Filter = FilteringOptions.Draft
         })
         <div class="govuk-grid-column-one-third">
-            <div class="app-card @GetCardStatus(Model.HasEmployerReviewPermission)">
+            @{
+                var reviewCardHref = Model.HasEmployerReviewPermission
+                    ? Url.RouteUrl(RouteNames.VacanciesGetAll, new { employerAccountId = Model.EmployerAccountId, filter = FilteringOptions.Review })
+                    : Url.RouteUrl(RouteNames.YourTrainingProviderPermission, new { employerAccountId = Model.EmployerAccountId });
+            }
+            <a class="app-card" href="@reviewCardHref">
                 <div class="app-card__content">
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.VacancyCountReview</span>
-                        <a asp-show="@Model.HasEmployerReviewPermission" asp-route="@RouteNames.VacanciesGetAll" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.Review" class="govuk-link govuk-link--no-visited-state">
-                            @FilteringOptions.Review @Model.VacancyTextReview
-                        </a>
-                        <span asp-hide="@Model.HasEmployerReviewPermission">@FilteringOptions.Review @Model.VacancyTextReview</span>
+                        <span class="app-card__heading-text">@FilteringOptions.Review @Model.VacancyTextReview</span>
                     </h3>
                     <p asp-show="@Model.HasEmployerReviewPermission" class="govuk-body app-card__description">Adverts created by training providers that you need to review.</p>
-                    <p asp-hide="@Model.HasEmployerReviewPermission" class="govuk-body app-card__description">
-                        If you want to review adverts before they are published you need to
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.YourTrainingProviderPermission" asp-route-employerAccountId="@Model.EmployerAccountId">manage your permissions</a>.
-                    </p>
+                    <p asp-hide="@Model.HasEmployerReviewPermission" class="govuk-body app-card__description">If you want to review adverts before they are published you need to manage your permissions.</p>
                 </div>
-            </div>
+            </a>
         </div>
         @await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
         {
