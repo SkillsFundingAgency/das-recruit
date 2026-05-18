@@ -29,7 +29,7 @@
         </div>
     </div>
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-column-one-half">
             <form asp-route="@RouteNames.VacanciesGetAll" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.All" method="get" autocomplete="off">
                 <div class="govuk-form-group">
                     <label for="search-input" class="govuk-label">
@@ -50,7 +50,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-!-margin-bottom-5">
-                <a asp-route="@RouteNames.VacanciesGetAll" asp-route-filter="@FilteringOptions.All" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
+                <a asp-route="@RouteNames.VacanciesGetAll" asp-route-filter="@FilteringOptions.All" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
                     View all adverts (@Model.NumberOfVacancies)
                 </a>
             </div>
@@ -136,15 +136,6 @@
             RouteName = RouteNames.VacanciesGetAll,
             EmployerAccountId = Model.EmployerAccountId,
             Filter = FilteringOptions.NewApplications,
-            Tasks = new[]
-            {
-                new VacancyCardTaskViewModel
-                {
-                    Show = Model.ShowAllApplications,
-                    Filter = FilteringOptions.AllApplications,
-                    Text = "View all applications"
-                }
-            }
         }))
     </div>
     <div class="govuk-grid-row app-card__row">
@@ -156,15 +147,6 @@
             RouteName = RouteNames.VacanciesGetAll,
             EmployerAccountId = Model.EmployerAccountId,
             Filter = FilteringOptions.NewSharedApplications,
-            Tasks = new[]
-            {
-                new VacancyCardTaskViewModel
-                {
-                    Show = Model.ShowAllSharedApplications,
-                    Filter = FilteringOptions.AllSharedApplications,
-                    Text = "View all shared applications",
-                }
-            }
         }))    
         @(await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
         {

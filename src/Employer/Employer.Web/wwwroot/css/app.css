@@ -6,9 +6,29 @@
   margin-bottom: 20px;
 }
 
+a.app-card {
+  display: block;
+  text-decoration: none;
+  border-radius: 0.3rem;
+  color: #0b0c0c;
+}
+
+a.app-card:hover,
+a.app-card:focus {
+  background-color: #0f385c;
+  color: #fff;
+}
+
+a.app-card:focus {
+  outline: 3px solid #fd0;
+}
+
 @media (min-width: 40.0625em) {
   .app-card {
     margin-bottom: 0;
+  }
+  a.app-card {
+    min-height: 12rem;
   }
 }
 
@@ -18,29 +38,50 @@
 
 .app-card__heading {
   margin-bottom: 10px;
-  font-size: 19px;
   font-size: 1.1875rem;
   line-height: 1.31579;
+  color: inherit;
+}
+
+a.app-card .app-card__heading-text {
+  color: #1a65a6;
+  text-decoration: underline;
+  text-decoration-thickness: max(1px, .0625rem);
+  text-underline-offset: .1578em;
+}
+
+a.app-card:hover .app-card__heading-text {
+  color: #fff;
+}
+
+a.app-card:active .app-card__heading-text,
+a.app-card:focus .app-card__heading-text {
+  color: #0b0c0c;
+  outline: 3px solid rgba(0, 0, 0, 0);
+  background-color: #fd0;
+  box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+  text-decoration: none;
 }
 
 @media (min-width: 40.0625em) {
   .app-card__stat {
     display: block;
-    font-size: 32px;
-    font-size: 2rem;
-    line-height: 1.25;
+    font-size: 2.25rem;
+    line-height: 1;
+    margin-bottom: 10px;
   }
 }
 
 .app-card__content {
   padding: 20px;
+  color: inherit;
 }
 
 .app-card__description {
   margin-bottom: 0;
-  font-size: 16px;
   font-size: 1rem;
   line-height: 1.25;
+  color: inherit;
 }
 
 .app-card__tasks {
