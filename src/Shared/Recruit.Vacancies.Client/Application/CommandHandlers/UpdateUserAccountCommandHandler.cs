@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +9,8 @@ using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class UpdateUserAccountCommandHandler(IRecruitVacancyClient client, IUserWriteRepository userRepository)
+    public class UpdateUserAccountCommandHandler(IRecruitVacancyClient client,
+        IUserWriteRepository userRepository)
         : IRequestHandler<UpdateUserAccountCommand, Unit>
     {
         public async Task<Unit> Handle(UpdateUserAccountCommand message, CancellationToken cancellationToken)
@@ -17,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             var user = await client.GetUsersDetailsAsync(message.IdamsUserId);
 
-            user.EmployerAccountIds = accounts.UserAccounts.Select(c=>c.AccountId).ToList();
+            user.EmployerAccountIds = accounts.UserAccounts.Select(c=> Convert.ToInt64(c.AccountId)).ToList();
 
             await userRepository.UpsertUserAsync(user);
             
