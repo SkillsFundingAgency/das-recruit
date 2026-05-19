@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class ArchiveVacancyController(ArchiveVacancyOrchestrator orchestrator) : Controller
+    public class ArchiveVacancyController(IArchiveVacancyOrchestrator orchestrator) : Controller
     {
         [HttpGet("archive", Name = RouteNames.ArchiveVacancy_Get)]
         public Task<IActionResult> Archive(VacancyRouteModel vrm) 
@@ -53,6 +53,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         private async Task<IActionResult> GetArchiveVacancyConfirmationView(VacancyRouteModel vrm)
         {
             var vm = await orchestrator.GetArchiveViewModelAsync(vrm);
+            if (TempData.TryGetValue(TempDataKeys.ArchiveAdvertInfoMessage, out var infoMessage))
+            {
+                vm.InfoMessage = infoMessage!.ToString();
+            }
             return View(vm);
         }
     }

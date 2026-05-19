@@ -33,8 +33,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     /// </summary>
     internal class QualificationValidatorBase : AbstractValidator<Qualification>
     {
-        private readonly IList<string> _qualificationTypes;
-
         protected QualificationValidatorBase(IReferenceDataClient referenceDataClient, IProfanityListProvider profanityListProvider)
             : this(0, referenceDataClient, profanityListProvider)
         {
@@ -42,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         protected QualificationValidatorBase(long ruleId, IReferenceDataClient referenceDataClient, IProfanityListProvider profanityListProvider)
         {
-            _qualificationTypes = referenceDataClient.GetCandidateQualificationsAsync().Result ?? [];
+            IList<string> qualificationTypes = referenceDataClient.GetCandidateQualificationsAsync().Result ?? [];
             
             RuleFor(x => x.QualificationType)
                 .Cascade(CascadeMode.Stop)
@@ -50,7 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Select a qualification")
                     .WithErrorCode("53")
                 .WithState(_=>ruleId)
-                .Must(_qualificationTypes.Contains)
+                .Must(qualificationTypes.Contains)
                     .WithMessage("Invalid qualification type")
                     .WithErrorCode("57")
                 .WithState(_=>ruleId)

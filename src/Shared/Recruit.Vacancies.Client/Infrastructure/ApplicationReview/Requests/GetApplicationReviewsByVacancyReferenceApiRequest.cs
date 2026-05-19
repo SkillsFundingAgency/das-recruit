@@ -4,12 +4,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview.Request
 {
     public record GetApplicationReviewsByVacancyReferenceApiRequest(long VacancyReference) : IGetApiRequest
     {
-        public string GetUrl
-        {
-            get
-            {
-                return $"applicationReviews/vacancyReference/{VacancyReference}";
-            }
-        }
+        public string GetUrl => $"applicationReviews/vacancyReference/{VacancyReference}";
     }
 }

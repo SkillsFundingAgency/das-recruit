@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Vacancy vacancy,
             string redirectUrl,
             [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
-            ArchiveVacancyOrchestrator orchestrator)
+            [Frozen] Mock<IArchiveVacancyOrchestrator> orchestrator)
         {
             vacancy.ClosingDate = DateTime.UtcNow.AddMonths(-1);
             vacancy.Status = VacancyStatus.Closed;
@@ -37,6 +37,13 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var httpContextMock = new Mock<HttpContext>();
             httpContextMock.Setup(ctx => ctx.Request.Headers.Referer).Returns(new StringValues(redirectUrl));
 
+            orchestrator.Setup(x => x.ArchiveVacancyAsync(model, It.IsAny<VacancyUser>()))
+                .ReturnsAsync(new ArchiveViewModel
+                {
+                    Title = vacancy.Title,
+                    VacancyReference = vacancy.VacancyReference
+                });
+
             var user = new ClaimsPrincipal(new ClaimsIdentity(
                 new[]
                 {
@@ -44,7 +51,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                     new Claim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier,"10000001")
                 }
             ));
-            var controller = new ArchiveVacancyController(orchestrator)
+            var controller = new ArchiveVacancyController(orchestrator.Object)
             {
                 TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
             };

@@ -189,6 +189,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             return applicationReviews.Cast<T>().ToList();
         }
 
+        public async Task<List<T>> GetForVacancyAsync<T>(Guid vacancyId)
+        {
+            var response = await outerApiClient.Get<GetApplicationReviewsByVacancyIdApiResponse>(
+                new GetApplicationReviewsByVacancyIdApiRequest(vacancyId));
+
+            if (response?.ApplicationReviews == null || response.ApplicationReviews.Count == 0) return [];
+
+            var applicationReviews = response.ApplicationReviews
+                .Select(MapToDomainApplicationReview).ToList();
+
+            return applicationReviews.Cast<T>().ToList();
+        }
+
         public async Task<List<Domain.Entities.ApplicationReview>> GetForVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
         {
             var response = await outerApiClient.Get<GetApplicationReviewsByVacancyReferenceApiResponse>(

@@ -171,6 +171,8 @@ public static class RouteNames
     public const string ApplicationReviewsToUnsuccessfulFeedback_Post = "ApplicationReviewsToUnsuccessfulFeedback_Post";
     public const string ApplicationReviewsToUnsuccessfulConfirmation_Get = "ApplicationReviewsToUnsuccessfulConfirmation_Get";
     public const string ApplicationReviewsToUnsuccessfulConfirmation_Post = "ApplicationReviewsToUnsuccessfulConfirmation_Post";
+    public const string ApplicationReviewFeedback_Get = "ApplicationReviewFeedback_Get";
+    public const string ApplicationReviewFeedback_Post = "ApplicationReviewFeedback_Post";
 
     public const string VacancyManage_Get = "VacancyManage_Get";
     public const string VacancyEdit_Get = "VacancyEdit_Get";

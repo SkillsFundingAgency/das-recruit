@@ -8,9 +8,15 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators;
 
+public interface IArchiveVacancyOrchestrator
+{
+    Task<ArchiveViewModel> GetArchiveViewModelAsync(VacancyRouteModel vrm);
+    Task<ArchiveViewModel> ArchiveVacancyAsync(ArchiveEditModel m, VacancyUser user);
+}
+
 public class ArchiveVacancyOrchestrator(IProviderVacancyClient client,
     IRecruitVacancyClient vacancyClient,
-    IUtility utility)
+    IUtility utility) : IArchiveVacancyOrchestrator
 {
     public async Task<ArchiveViewModel> GetArchiveViewModelAsync(VacancyRouteModel vrm)
     {
@@ -18,7 +24,7 @@ public class ArchiveVacancyOrchestrator(IProviderVacancyClient client,
 
         utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
-        if (!vacancy.CanArchive)
+        if (!vacancy.CanArchive || !await utility.IsAllApplicationReviewsHasOutcomeAsync(vacancy))
             throw new InvalidStateException(string.Format(ErrorMessages.AdvertNotAvailableForArchive, vacancy.Title));
 
         var vm = new ArchiveViewModel
@@ -40,7 +46,7 @@ public class ArchiveVacancyOrchestrator(IProviderVacancyClient client,
 
         utility.CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
 
-        if (!vacancy.CanArchive)
+        if (!vacancy.CanArchive || !await utility.IsAllApplicationReviewsHasOutcomeAsync(vacancy))
             throw new InvalidStateException(string.Format(ErrorMessages.AdvertNotAvailableForArchive, vacancy.Title));
 
         var vm = new ArchiveViewModel

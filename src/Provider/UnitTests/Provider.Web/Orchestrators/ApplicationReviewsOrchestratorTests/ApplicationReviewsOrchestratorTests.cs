@@ -3,6 +3,7 @@ using System.Linq;
 using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
@@ -183,6 +184,33 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             Assert.That(viewModel.ApplicationReviewsToShare.Count(), Is.EqualTo(vacancyApplications.Count()));
             Assert.That(viewModel.Ukprn, Is.EqualTo(request.Ukprn));
             Assert.That(viewModel.VacancyId, Is.EqualTo(request.VacancyId));
+        }
+
+        [Test]
+        [MoqInlineAutoData(ApplicationReviewStatus.Successful, true)]
+        [MoqInlineAutoData(ApplicationReviewStatus.Unsuccessful, true)]
+        [MoqInlineAutoData(ApplicationReviewStatus.AllShared, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.InReview, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.Interviewing, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.EmployerInterviewing, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.EmployerUnsuccessful, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.PendingShared, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.PendingToMakeUnsuccessful, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.New, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.Shared, false)]
+        public async Task IsAllApplicationReviewsHasOutcomeAsync_Returns_Valid(ApplicationReviewStatus status, bool expectedResult)
+        {
+            var routeModel = _fixture.Create<VacancyRouteModel>();
+            var model = _fixture.Build<ApplicationReviewEditModel>()
+                .With(x => x.VacancyId, routeModel.VacancyId)
+                .Create();
+            _vacancyClient.Setup(x => x.IsAllApplicationReviewsHasOutcomeAsync(routeModel.VacancyId.Value))
+                .ReturnsAsync(expectedResult);
+
+            var result = await _orchestrator.IsAllApplicationReviewsHasOutcomeAsync(model.VacancyId);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.EqualTo(expectedResult));
         }
     }
 }

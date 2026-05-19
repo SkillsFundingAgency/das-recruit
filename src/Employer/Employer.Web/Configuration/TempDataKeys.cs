@@ -19,5 +19,6 @@
         public const string AddedLocation = nameof(AddedLocation);
         public const string Postcode = nameof(Postcode);
         public const string AddLocationReturnPath = nameof(AddLocationReturnPath);
+        public const string ArchiveAdvertInfoMessage = "ArchiveAdvert_InfoMessage";
     }
 }

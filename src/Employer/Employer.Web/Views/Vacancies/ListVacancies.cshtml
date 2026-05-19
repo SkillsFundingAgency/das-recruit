@@ -8,11 +8,15 @@
 <div asp-show="@Model.HasWarning" class="das-notification das-notification--warning">
     <p class="das-notification__body">@Model.WarningMessage</p>
 </div>
-<govuk-banner asp-show="@Model.HasInfo" type="BannerStyle.Success">
-    <govuk-banner-heading>
-        @Html.Raw(Model.InfoMessage)
-    </govuk-banner-heading>
-</govuk-banner>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <govuk-banner asp-show="@Model.HasInfo" type="BannerStyle.Success">
+            <govuk-banner-heading>
+                @Html.Raw(Model.InfoMessage)
+            </govuk-banner-heading>
+        </govuk-banner>
+    </div>
+</div>
 @section BackLink
 {
     <a asp-hide="@Model.ShowReferredFromMaBackLink" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" esfa-automation="link-back" class="govuk-back-link">Return to recruitment dashboard</a>

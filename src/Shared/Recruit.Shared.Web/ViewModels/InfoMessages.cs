@@ -11,6 +11,10 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public const string VacancyArchived = "'{0} (VAC{1})' has been <a href='{2}' class='govuk-link govuk-link govuk-link--no-visited-state'>archived</a>.";
 
         public const string AdvertArchived = "'{0} (VAC{1})' has been <a href='{2}' class='govuk-link govuk-link govuk-link--no-visited-state'>archived</a>.";
+       
+        public const string AdvertApplicantsOutcomeNotified = "All applicants have been notified of their outcomes. You can now archive this advert.";
+
+        public const string VacancyApplicantsOutcomeNotified = "All applicants have been notified of their outcomes. You can now archive this vacancy.";
 
         public const string AdvertDeleted = "Advert VAC{0} - '{1}' has been deleted.";
 
@@ -30,7 +34,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
 
         public const string ApplicationReviewSuccessStatusBannerMessage = "Now notify the other applicants they have been unsuccessful.";
 
-        public const string ApplicationReviewUnsuccessStatusHeader = "Applications made unsuccessful.";
+        public const string ApplicationReviewUnsuccessStatusHeader = "Application made unsuccessful.";
 
         public const string ApplicationEmployerInterviewingHeader = "You want to interview applicant {0}. The applicant is now listed as {1}.";
 

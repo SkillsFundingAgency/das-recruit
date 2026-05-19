@@ -84,6 +84,7 @@ public static class IoC
         services.AddSingleton<IValidator<SelectTrainingProviderEditModel>, SelectTrainingProviderEditModelValidator>();
         services.AddSingleton<IValidator<ConfirmTrainingProviderEditModel>, ConfirmTrainingProviderEditModelValidator>();
         services.AddSingleton<IValidator<ApplicationReviewsFeedbackViewModel>, ApplicationReviewsFeedbackModelValidator>();
+        services.AddSingleton<IValidator<ApplicationReviewFeedbackViewModel>, ApplicationReviewFeedbackModelValidator>();
         services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulConfirmationViewModel>, ApplicationReviewsToUnsuccessfulConfirmationViewModelValidator>();
         services.AddSingleton<IValidator<AddLocationEditModel>, AddLocationEditModelValidator>();
         services.AddSingleton<IValidator<EnterLocationManuallyEditModel>, EnterLocationManuallyEditModelValidator>();
@@ -127,7 +128,7 @@ public static class IoC
         services.AddTransient<VacanciesSearchSuggestionsOrchestrator>();
         services.AddTransient<DurationOrchestrator>();
         services.AddTransient<DashboardOrchestrator>();
-        services.AddTransient<ArchiveVacancyOrchestrator>();
+        services.AddTransient<IArchiveVacancyOrchestrator, ArchiveVacancyOrchestrator>();
         services.AddTransient<AlertsOrchestrator>();
         services.AddTransient<CloneVacancyOrchestrator>();
         services.AddTransient<VacancyTaskListOrchestrator>();

@@ -16,7 +16,7 @@ internal class ArchiveVacancyCommandHandlerTests
     private Mock<ILogger<ArchiveVacancyCommandHandler>> _loggerMock;
     private Mock<IVacancyRepository> _repositoryMock;
     private Mock<ITimeProvider> _timeProviderMock;
-
+    
     private ArchiveVacancyCommandHandler _handler;
 
     [SetUp]
@@ -36,7 +36,8 @@ internal class ArchiveVacancyCommandHandlerTests
     public async Task Handle_Should_Return_Unit_When_Vacancy_Not_Found()
     {
         // Arrange
-        var command = new ArchiveVacancyCommand { VacancyId = Guid.NewGuid() };
+        var user = new VacancyUser { UserId = Guid.NewGuid().ToString(), Name = "Test User" };
+        var command = new ArchiveVacancyCommand { VacancyId = Guid.NewGuid(), User = user };
 
         _repositoryMock
             .Setup(r => r.GetVacancyAsync(command.VacancyId))
@@ -55,12 +56,13 @@ internal class ArchiveVacancyCommandHandlerTests
     public async Task Handle_Should_Not_Archive_When_CanArchive_Is_False()
     {
         // Arrange
-        var command = new ArchiveVacancyCommand { VacancyId = Guid.NewGuid() };
+        var user = new VacancyUser { UserId = Guid.NewGuid().ToString(), Name = "Test User" };
+        var command = new ArchiveVacancyCommand { VacancyId = Guid.NewGuid(), User = user };
 
         var vacancy = new Vacancy
         {
             Id = command.VacancyId,
-            Status = VacancyStatus.Live
+            Status = VacancyStatus.Archived
         };
 
         _repositoryMock
@@ -73,7 +75,7 @@ internal class ArchiveVacancyCommandHandlerTests
         // Assert
         result.Should().Be(Unit.Value);
 
-        vacancy.Status.Should().Be(VacancyStatus.Live);
+        vacancy.Status.Should().Be(VacancyStatus.Archived);
 
         _repositoryMock.Verify(r => r.UpdateAsync(It.IsAny<Vacancy>()), Times.Never);
     }
@@ -82,7 +84,8 @@ internal class ArchiveVacancyCommandHandlerTests
     public async Task Handle_Should_Archive_Vacancy_When_Valid()
     {
         // Arrange
-        var command = new ArchiveVacancyCommand { VacancyId = Guid.NewGuid() };
+        var user = new VacancyUser { UserId = Guid.NewGuid().ToString(), Name = "Test User" };
+        var command = new ArchiveVacancyCommand { VacancyId = Guid.NewGuid(), User = user };
 
         var now = DateTime.UtcNow;
 
