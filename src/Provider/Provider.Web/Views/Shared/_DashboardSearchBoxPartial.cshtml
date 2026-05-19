@@ -12,15 +12,15 @@
         <h1 class="govuk-heading-l">Recruitment dashboard</h1>
     </div>
     <div class="govuk-grid-column-one-half ">
-        <a asp-route="@RouteNames.CreateVacancyStart" asp-route-ukprn="@Model.Ukprn" class="govuk-button das-float-right govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
+        <a asp-route="@RouteNames.CreateVacancyStart" asp-route-ukprn="@Model.Ukprn" class="govuk-button das-float-right govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create a vacancy</a>
     </div>
 </div>
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-one-half">
         <form asp-route="@RouteNames.VacanciesGetAll" asp-route-ukprn="@Model.Ukprn" asp-route-filter="@FilteringOptions.All" method="get" autocomplete="off">
             <div class="govuk-form-group">
                 <label for="search-input" class="govuk-label">
-                    Search by vacancy title, reference or employer
+                    Search by vacancy title, reference number or employer
                 </label>
                 <div class="das-search-form__group">
                     <input id="search-input" name="searchTerm" title="Search" class="govuk-input das-search-form__input app-vacancy-autocomplete" type="text" maxlength="200" data-apiurl="@vacanciesSearchSuggestionsEndpointUrl" />
@@ -37,7 +37,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <div class="govuk-!-margin-bottom-5">
-            <a asp-route="@RouteNames.VacanciesGetAll" asp-route-ukprn="@Model.Ukprn" asp-route-filter="@FilteringOptions.All" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state">
+            <a asp-route="@RouteNames.VacanciesGetAll" asp-route-ukprn="@Model.Ukprn" asp-route-filter="@FilteringOptions.All" class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold govuk-link--no-visited-state">
                 View all vacancies (@Model.NumberOfVacancies)
             </a>
         </div>

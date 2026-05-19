@@ -15,7 +15,7 @@
         {
             Count = Model.VacancyCountDraft,
             HeadingText = $"{FilteringOptions.Draft} {Model.VacancyTextDraft}",
-            Description = "Vacancies need completing and sending for review.",
+            Description = "Vacancies that need completing and sending for review.",
             RouteName = RouteNames.VacanciesGetAll,
             Ukprn = Model.Ukprn,
             Filter = FilteringOptions.Draft
@@ -24,7 +24,7 @@
         {
             Count = Model.VacancyCountReview,
             HeadingText = FilteringOptions.Review.GetDisplayName(UserType.Provider),
-            Description = "Vacancies that have been sent for review.",
+            Description = "Vacancies that have been sent to the employer for review.",
             RouteName = RouteNames.VacanciesGetAll,
             Ukprn = Model.Ukprn,
             Filter = FilteringOptions.Review
@@ -56,22 +56,7 @@
             Description = "Vacancies on Find an apprenticeship service.",
             RouteName = RouteNames.VacanciesGetAll,
             Ukprn = Model.Ukprn,
-            Filter = FilteringOptions.Live,
-            Tasks = new[]
-            {
-                new VacancyCardTaskViewModel
-                {
-                    Show = Model.ShowNoOfVacanciesClosingSoon,
-                    Filter = FilteringOptions.ClosingSoon,
-                    Text = $"{Model.NoOfVacanciesClosingSoon} live {Model.VacancyTextClosingSoon} closing soon"
-                },
-                new VacancyCardTaskViewModel
-                {
-                    Show = Model.ShowNoOfVacanciesClosingSoonWithNoApplications,
-                    Filter = FilteringOptions.ClosingSoonWithNoApplications,
-                    Text = $"{Model.NoOfVacanciesClosingSoonWithNoApplications} live {Model.VacancyTextClosingSoonWithNoApplications} closing soon with no applications"
-                }
-            }
+            Filter = FilteringOptions.Live
         }))
         @(await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
         {
@@ -80,16 +65,7 @@
             Description = "Applications from Find an apprenticeship service.",
             RouteName = RouteNames.VacanciesGetAll,
             Ukprn = Model.Ukprn,
-            Filter = FilteringOptions.NewApplications,
-            Tasks = new[]
-            {
-                new VacancyCardTaskViewModel
-                {
-                    Show = Model.ShowAllApplications,
-                    Filter = FilteringOptions.AllApplications,
-                    Text = "View all applications"
-                }
-            }
+            Filter = FilteringOptions.NewApplications
         }))
     </div>
     <div class="govuk-grid-row app-card__row">
@@ -106,7 +82,7 @@
         {
             Count = Model.VacancyCountClosed,
             HeadingText = $"{FilteringOptions.Closed} {Model.VacancyTextClosed}",
-            Description = "Vacancies that have passed the closing date. You can clone these vacancies to republish them.",
+            Description = "Vacancies that have passed the closing date. ",
             RouteName = RouteNames.VacanciesGetAll,
             Ukprn = Model.Ukprn,
             Filter = FilteringOptions.Closed
