@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Domain;
@@ -16,6 +17,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators;
 public class VacancyTaskListOrchestrator(
     IUtility utility,
     IProviderVacancyClient providerVacancyClient,
+    IGetProviderStatusClient providerStatusClient,
     ITaskListValidator taskListValidator)
 {
     public async Task<VacancyTaskListViewModel> GetVacancyTaskListModel(VacancyRouteModel routeModel)
@@ -30,10 +32,27 @@ public class VacancyTaskListOrchestrator(
             await taskListValidator.GetItemStatesAsync(vacancy, ProviderTaskListSectionFlags.All),
             vacancy
         );
+
+        var providerEditVacancyInfo = editVacancyInfoTask.Result;
+        if (providerEditVacancyInfo == null)
+        {
+            var providerAccountResponse = await providerStatusClient.GetProviderStatus(routeModel.Ukprn);
+
+            if (providerAccountResponse.CanAccessService)
+            {
+                await providerVacancyClient.SetupProviderAsync(routeModel.Ukprn);
+            }
+            else
+            {
+                throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, routeModel.Ukprn));
+            }
+            providerEditVacancyInfo = await providerVacancyClient.GetProviderEditVacancyInfoAsync(routeModel.Ukprn);
+        }
+        
         
         return new VacancyTaskListViewModel
         {
-            AccountCount = editVacancyInfoTask.Result.Employers.Count(),
+            AccountCount = providerEditVacancyInfo.Employers.Count(),
             AccountLegalEntityCount = employerInfoTask.Result.LegalEntities.Count,
             ApplicationMethod = vacancy.ApplicationMethod,
             ApprenticeshipType = vacancy.ApprenticeshipType.GetValueOrDefault(),
