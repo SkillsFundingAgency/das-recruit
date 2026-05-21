@@ -38,9 +38,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             var vacancy = await _repository.GetVacancyAsync(message.IdOfVacancyToClone);
 
-            if (vacancy.Status != VacancyStatus.Submitted && vacancy.Status != VacancyStatus.Live && vacancy.Status != VacancyStatus.Closed && vacancy.Status != VacancyStatus.Review)
+            if (vacancy.Status != VacancyStatus.Submitted 
+                && vacancy.Status != VacancyStatus.Live 
+                && vacancy.Status != VacancyStatus.Closed
+                && vacancy.Status != VacancyStatus.Review
+                && vacancy.Status != VacancyStatus.Archived)
             {
-                _logger.LogError($"Unable to clone vacancy {{vacancyId}} due to it having a status of {vacancy.Status}.", message.IdOfVacancyToClone);
+                _logger.LogError("Unable to clone vacancy {vacancyId} due to it having a status of {VacancyStatus}.", vacancy.Status, message.IdOfVacancyToClone);
                 
                 throw new InvalidStateException($"Vacancy is not in correct state to be cloned. Current State: {vacancy.Status}");
             }
