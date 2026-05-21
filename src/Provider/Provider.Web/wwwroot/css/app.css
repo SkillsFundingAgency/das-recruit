@@ -697,3 +697,12 @@ dd.govuk-summary-list__value .faa-user-content:first-child {
     flex-direction: row-reverse;
     justify-content: space-between;
 }
+
+.raa-archive-card {
+    background: #f3f2f1;
+    border: none;
+}
+
+    .raa-archive-card .raa-archive-card-heading {
+        margin-top: 40px !important;
+    }

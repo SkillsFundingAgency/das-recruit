@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -15,24 +16,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         Task PostApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulConfirmationViewModel request, VacancyUser user);
         Task PostApplicationReviewsStatus(ApplicationReviewsToUpdateStatusModel request, VacancyUser user, ApplicationReviewStatus? applicationReviewStatus, ApplicationReviewStatus? applicationReviewTemporaryStatus);
         Task PostApplicationReviewPendingUnsuccessfulFeedback(ApplicationReviewStatusModel request, VacancyUser user, ApplicationReviewStatus applicationReviewStatus);
+        Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid vacancyId);
     }
 
-    public class ApplicationReviewsOrchestrator : IApplicationReviewsOrchestrator
+    public class ApplicationReviewsOrchestrator(IRecruitVacancyClient client) : IApplicationReviewsOrchestrator
     {
-        private readonly IRecruitVacancyClient _vacancyClient;
-
-        public ApplicationReviewsOrchestrator(IRecruitVacancyClient client)
-        {
-            _vacancyClient = client;
-        }
-
         public async Task<ApplicationReviewsToUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm, SortColumn sortColumn, SortOrder sortOrder)
         {
-            var vacancy = await _vacancyClient.GetVacancyAsync(rm.VacancyId);
+            var vacancy = await client.GetVacancyAsync(rm.VacancyId);
 
-            var applicationReviews = await _vacancyClient.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference!.Value, sortColumn, sortOrder);
+            var applicationReviews = await client.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference!.Value, sortColumn, sortOrder);
             var applicationsSelected =
-                await _vacancyClient.GetVacancyApplicationsForReferenceAndStatus(rm.VacancyId,
+                await client.GetVacancyApplicationsForReferenceAndStatus(rm.VacancyId,
                     ApplicationReviewStatus.PendingToMakeUnsuccessful);
 
             var vacancyApplications = applicationReviews.Where(fil => fil.IsNotWithdrawn).ToList();
@@ -56,7 +51,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         public async Task<ApplicationReviewsFeedbackViewModel> GetApplicationReviewsFeedbackViewModel(ApplicationReviewsToUnsuccessfulRouteModel rm)
         {
             var applicationsToUnsuccessful =
-                await _vacancyClient.GetVacancyApplicationsForReferenceAndStatus(rm.VacancyId!,
+                await client.GetVacancyApplicationsForReferenceAndStatus(rm.VacancyId!,
                     ApplicationReviewStatus.PendingToMakeUnsuccessful);
             return new ApplicationReviewsFeedbackViewModel
             {
@@ -71,7 +66,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         public async Task<ApplicationReviewsToUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(ApplicationReviewsToUnsuccessfulRouteModel rm)
         {
             var applicationsToUnsuccessful =
-                await _vacancyClient.GetVacancyApplicationsForReferenceAndStatus(rm.VacancyId,
+                await client.GetVacancyApplicationsForReferenceAndStatus(rm.VacancyId,
                     ApplicationReviewStatus.PendingToMakeUnsuccessful);
 
             return new ApplicationReviewsToUnsuccessfulConfirmationViewModel
@@ -85,18 +80,20 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         }
         public async Task PostApplicationReviewsStatus(ApplicationReviewsToUpdateStatusModel request, VacancyUser user, ApplicationReviewStatus? applicationReviewStatus, ApplicationReviewStatus? applicationReviewTemporaryStatus)
         {
-            var vacancy = await _vacancyClient.GetVacancyAsync(request.VacancyId);
-            await _vacancyClient.SetApplicationReviewsStatus(vacancy!.VacancyReference!.Value, request.ApplicationReviewIds, user, applicationReviewStatus, request.VacancyId,applicationReviewTemporaryStatus);
+            var vacancy = await client.GetVacancyAsync(request.VacancyId);
+            await client.SetApplicationReviewsStatus(vacancy!.VacancyReference!.Value, request.ApplicationReviewIds, user, applicationReviewStatus, request.VacancyId,applicationReviewTemporaryStatus);
         }
         
         public async Task PostApplicationReviewPendingUnsuccessfulFeedback(ApplicationReviewStatusModel request, VacancyUser user, ApplicationReviewStatus applicationReviewStatus)
         {
-            await _vacancyClient.SetApplicationReviewsPendingUnsuccessfulFeedback(user, applicationReviewStatus, request.VacancyId, request.CandidateFeedback);
+            await client.SetApplicationReviewsPendingUnsuccessfulFeedback(user, applicationReviewStatus, request.VacancyId, request.CandidateFeedback);
         }
-        
+
         public async Task PostApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulConfirmationViewModel request, VacancyUser user)
         {
-            await _vacancyClient.SetApplicationReviewsToUnsuccessful(request.VacancyApplicationsToUnsuccessful.Select(c=>c.ApplicationReviewId), request.CandidateFeedback, user, request.VacancyId);
+            await client.SetApplicationReviewsToUnsuccessful(request.VacancyApplicationsToUnsuccessful.Select(c => c.ApplicationReviewId), request.CandidateFeedback, user, request.VacancyId);
         }
+
+        public async Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid vacancyId) => await client.IsAllApplicationReviewsHasOutcomeAsync(vacancyId);
     }
 }

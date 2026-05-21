@@ -23,29 +23,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         public const string ApplicationReviewsToUnsuccessful = "You need to select at least one application before continuing";
         public const string ApplicationsToUnsuccessfulConfirmationRequired = "You must select one option before continuing";
 
-        public ApplicationReviewValidator()
-        {
-            When(x => x.Status == ApplicationReviewStatus.Unsuccessful, () =>
-            {
-                RuleFor(x => x.CandidateFeedback)
-                    .NotEmpty()
-                    .WithMessage(CandidateFeedbackRequired)
-                    .MaximumLength(CandidateFeedbackMaxLength)
-                    .WithMessage(string.Format(CandidateFeedbackLength, CandidateFeedbackMaxLength))
-                    .Must(BeWithinMaxWordsOrEmpty)
-                    .WithMessage(string.Format(ApplicationReviewValidator.CandidateFeedbackWordsLength, ApplicationReviewValidator.CandidateFeedbackMaxWordLength))
-                    .ValidFreeTextCharacters()
-                    .WithMessage(CandidateFeedbackFreeTextCharacters);
-            });
-
-            When(x => x.Status == ApplicationReviewStatus.Successful, () =>
-            {
-                RuleFor(x => x.CandidateFeedback)
-                    .Empty()
-                    .WithMessage(CandidateFeedbackNull);
-            });
-        }
-
         public static bool BeWithinMaxWordsOrEmpty(string inputText)
         {
             if (string.IsNullOrEmpty(inputText))
@@ -53,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 return true;
             }
 
-            string[] words = inputText.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var words = inputText.Split([' '], StringSplitOptions.RemoveEmptyEntries);
 
             return words.Length <= ApplicationReviewValidator.CandidateFeedbackMaxWordLength;
         }
