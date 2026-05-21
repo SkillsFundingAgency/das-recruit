@@ -38,7 +38,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<IDomainEventHandler<IEvent>, LiveVacancyChangedDateHandler>();
 
             // VacancyReview
-            services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewApprovedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewReferredHandler>();
 
             // Application
