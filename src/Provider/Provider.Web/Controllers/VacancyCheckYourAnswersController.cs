@@ -57,6 +57,16 @@ public class VacancyCheckYourAnswersController(VacancyCheckYourAnswersOrchestrat
     [HttpPost("{vacancyId:guid}/check-your-answers", Name = RouteNames.ProviderCheckYourAnswersPost)]
     public async Task<IActionResult> CheckYourAnswers(SubmitEditModel m)
     {
+        if (!ModelState.IsValid)
+        {
+            var viewModel = await orchestrator.GetVacancyTaskListModel(m);
+            viewModel.SoftValidationErrors = null;
+            viewModel.HasUserConfirmation = m.HasUserConfirmation;
+            viewModel.ValidationErrors = new ValidationSummaryViewModel
+                { ModelState = ModelState, OrderedFieldNames = viewModel.OrderedFieldNames };
+            return View(viewModel);
+        }
+
         var response = await orchestrator.SubmitVacancyAsync(m, User.ToVacancyUser());
             
         if (!response.Success)
@@ -84,12 +94,12 @@ public class VacancyCheckYourAnswersController(VacancyCheckYourAnswersOrchestrat
         if(response.Errors.Errors.Any(e => e.ErrorCode == ErrorCodes.TrainingProviderMustHaveEmployerPermission))
             throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, m.Ukprn));
 
-        var viewModel = await orchestrator.GetVacancyTaskListModel(m);
+        var vm = await orchestrator.GetVacancyTaskListModel(m);
 
-        viewModel.SoftValidationErrors = null;
-        viewModel.ValidationErrors = new ValidationSummaryViewModel
-            {ModelState = ModelState, OrderedFieldNames = viewModel.OrderedFieldNames};
+        vm.SoftValidationErrors = null;
+        vm.ValidationErrors = new ValidationSummaryViewModel
+            {ModelState = ModelState, OrderedFieldNames = vm.OrderedFieldNames};
             
-        return View(viewModel);
+        return View(vm);
     }
 }
