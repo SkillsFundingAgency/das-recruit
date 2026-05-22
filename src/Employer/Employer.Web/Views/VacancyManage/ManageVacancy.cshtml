@@ -139,8 +139,13 @@
             <a asp-show="@Model.CanShowArchiveLink" asp-route="@RouteNames.ArchiveVacancy_Get"
                 asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Archive advert</a>
         </div>
-        <govuk-inset>
-            Closed adverts can be archived when all applicants have received their outcome. You can clone an archived advert to advertise it again.
+        <govuk-inset asp-show="@Model.CanShowArchiveInsetText">
+            <div asp-show="Model.Status == VacancyStatus.Archived">
+                An archived advert can be cloned to list it again.
+            </div>
+            <div asp-show="Model.Status == VacancyStatus.Closed">
+                Closed adverts can be archived when all applicants have received their outcome. You can clone an archived advert to advertise it again.
+            </div>
         </govuk-inset>
         <div asp-show="@Model.CanShowVacancyAnalytics">
             <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">

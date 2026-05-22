@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public int TotalUnfilteredApplicationsCount => Applications?.TotalUnfilteredApplicationsCount ?? 0;
         public bool ShowEmployerApplications => !Applications.VacancySharedByProvider;
         public bool ShowSharedApplications => HasApplications && Applications.VacancySharedByProvider;
-        public bool CanShowMultipleApplicationsUnsuccessfulLink => (IsVacancyLive || IsVacancyClosed) && Applications.CanShowMultipleApplicationsUnsuccessfulLink && ShowEmployerApplications;
+        public bool CanShowMultipleApplicationsUnsuccessfulLink => (IsVacancyLive || IsVacancyClosed || IsVacancyArchived) && Applications.CanShowMultipleApplicationsUnsuccessfulLink && ShowEmployerApplications;
 
         public bool CanShowEditVacancyLink { get; internal set; }
         public bool CanShowCloseVacancyLink { get; internal set; }
@@ -36,10 +36,11 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool CanShowApplicationReviewStatusHeader => !string.IsNullOrEmpty(EmployerReviewedApplicationHeaderMessage);
         public string ApplicationStatusChangeHeaderMessage { get; internal set; }
         public bool CanShowApplicationStatusChangeBanner => !string.IsNullOrEmpty(ApplicationStatusChangeHeaderMessage);
-
-        public bool CanShowVacancyAnalytics => IsVacancyLive || IsVacancyClosed;
+        public bool CanShowArchiveInsetText => IsVacancyArchived || IsVacancyClosed;
+        public bool CanShowVacancyAnalytics => IsVacancyLive || IsVacancyClosed || IsVacancyArchived ;
         public bool IsVacancyLive => Status == VacancyStatus.Live;
         public bool IsVacancyClosed => Status == VacancyStatus.Closed;
+        public bool IsVacancyArchived => Status == VacancyStatus.Archived;
         public bool IsTransferred => string.IsNullOrWhiteSpace(TransferredProviderName) == false && string.IsNullOrWhiteSpace(TransferredOnDate) == false;
         public bool CanClone { get; internal set; }
         public string ViewBagTitle => ShowEmployerApplications ? "Manage Advert" : $"{Title} shared applications";

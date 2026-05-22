@@ -103,7 +103,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(rm);
+                var viewModel = await orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(rm);
+                return View(viewModel);
             }
 
             if (rm.ApplicationsUnsuccessfulConfirmed == true)
