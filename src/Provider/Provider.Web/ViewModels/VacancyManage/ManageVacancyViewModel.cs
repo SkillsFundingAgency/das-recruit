@@ -23,16 +23,18 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public bool CanShowCloseVacancyLink { get; internal set; }
         public bool CanShowCloneVacancyLink { get; internal set; }
         public bool CanShowDeleteVacancyLink { get; internal set; }
+        public bool CanShowArchiveVacancyLink { get; internal set; }
         public string VacancyClosedInfoMessage { get; internal set; }
         public bool HasVacancyClosedInfoMessage => !string.IsNullOrEmpty(VacancyClosedInfoMessage);
         public string ApplicationReviewStatusHeaderInfoMessage { get; internal set; }
         public bool CanShowApplicationReviewStatusHeader => !string.IsNullOrEmpty(ApplicationReviewStatusHeaderInfoMessage);
-
-        public bool CanShowVacancyAnalytics => IsVacancyLive || IsVacancyClosed;
+        public bool CanShowArchiveInsetText => IsVacancyArchived || IsVacancyClosed;
+        public bool CanShowVacancyAnalytics => IsVacancyLive || IsVacancyClosed || IsVacancyArchived;
         public bool CanShowShareMultipleApplicationsLink => (IsVacancyLive || IsVacancyClosed) && Applications.CanShowShareMultipleApplicationsLink;
-        public bool CanShowMultipleApplicationsUnsuccessfulLink => (IsVacancyLive || IsVacancyClosed) && Applications.CanShowMultipleApplicationsUnsuccessfulLink;
+        public bool CanShowMultipleApplicationsUnsuccessfulLink => (IsVacancyLive || IsVacancyClosed || IsVacancyArchived) && Applications.CanShowMultipleApplicationsUnsuccessfulLink;
         public bool IsVacancyLive => Status == VacancyStatus.Live;
         public bool IsVacancyClosed => Status == VacancyStatus.Closed;
+        public bool IsVacancyArchived => Status == VacancyStatus.Archived;
         public string WithdrawnDate { get; internal set; }
         public bool IsWithdrawn => !string.IsNullOrEmpty(WithdrawnDate);
         public bool IsApplyThroughFatVacancy { get; internal set; }

@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System;
-using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReviews;
+﻿using System;
+using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.RouteModel;
@@ -9,7 +8,6 @@ public class ApplicationReviewsToUnsuccessfulRouteModel : VacancyRouteModel
 {
     public ApplicationReviewStatus? Outcome { get; set; }
     public bool IsMultipleApplications { get; set; }
-    
     public SortColumn SortColumn { get; set; }
     public SortOrder SortOrder { get; set; }
 }

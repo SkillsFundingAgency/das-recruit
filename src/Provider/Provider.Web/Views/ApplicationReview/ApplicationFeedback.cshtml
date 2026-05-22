@@ -1,19 +1,26 @@
 ﻿@model Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview.ApplicationReviewFeedbackViewModel
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-application-feedback";
-    ViewBag.Title = "Application Feedback";
+    ViewBag.Title = "Give feedback (single and multiple applications)";
 }
 @section BackLink {
     <a asp-route="@RouteNames.VacancyManage_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <partial name="@PartialNames.ValidationSummary" model="new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }" />
         <div>
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-                Give feedback to @Model.Name
+                Give feedback to the unsuccessful applicant
             </h1>
+            <govuk-inset>
+                <div>
+                    @Model.Name
+                </div>
+                <div>
+                    Application ID: @Model.FriendlyId
+                </div>
+            </govuk-inset>
         </div>
         <form asp-route="@RouteNames.ApplicationReviewFeedback_Post" asp-route-applicationReviewId="@Model.ApplicationReviewId" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
             @Html.HiddenFor(model => model.Outcome)
@@ -23,7 +30,7 @@
                 <div class="govuk-character-count"
                      id="conditional-contact-3" data-module="govuk-character-count" data-maxwords="200">
                     <span esfa-validation-message-for="CandidateFeedback" class="govuk-error-message"></span>
-                    <span class="govuk-hint">Help the applicant understand why their application was unsuccessful. Your comment will be sent to the applicant.</span>
+                    <span class="govuk-hint">Help the applicant understand why their application was unsuccessful. Your message will be sent to the applicant.</span>
                     <textarea asp-for="CandidateFeedback" class="govuk-textarea govuk-js-character-count" id="CandidateFeedback" name="CandidateFeedback" rows="6"></textarea>
                     <div id="CandidateFeedback-info" class="govuk-hint govuk-character-count__message">
                         You have 200 words remaining

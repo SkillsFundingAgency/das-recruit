@@ -25,7 +25,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             var vacancy = await repository.GetVacancyAsync(message.IdOfVacancyToClone);
 
-            if (vacancy.Status != VacancyStatus.Submitted && vacancy.Status != VacancyStatus.Live && vacancy.Status != VacancyStatus.Closed && vacancy.Status != VacancyStatus.Review)
+            if (vacancy.Status != VacancyStatus.Submitted 
+                && vacancy.Status != VacancyStatus.Live 
+                && vacancy.Status != VacancyStatus.Closed
+                && vacancy.Status != VacancyStatus.Review
+                && vacancy.Status != VacancyStatus.Archived)
             {
                 logger.LogError("Unable to clone vacancy {vacancyId} due to it having a status of {VacancyStatus}.", message.IdOfVacancyToClone, vacancy.Status);
                 
@@ -74,7 +78,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             clone.EmployerReviewFieldIndicators = null;
             clone.EmployerRejectedReason = null;
             clone.ProviderReviewFieldIndicators = null;
-            
+            clone.ArchivedByUserId = null;
+            clone.ArchiveType = null;
+            clone.ArchivedDate = null;
+
             MigrateLocations(clone);
 
             return clone;

@@ -18,6 +18,7 @@
         EmployerReviewedApplications,
         NewSharedApplications,
         AllSharedApplications,
-        Dashboard
+        Dashboard,
+        Archived,
     }
 }

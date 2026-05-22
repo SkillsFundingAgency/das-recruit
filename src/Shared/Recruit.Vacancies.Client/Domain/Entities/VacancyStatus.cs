@@ -9,6 +9,7 @@
         Referred,
         Live,
         Closed,
-        Approved
+        Approved,
+        Archived
     }
 }

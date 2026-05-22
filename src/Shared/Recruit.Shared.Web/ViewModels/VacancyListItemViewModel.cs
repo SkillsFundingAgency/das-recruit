@@ -28,7 +28,7 @@ public class VacancyListItemViewModel
     private string? TransferInfo { get; set; }
 
     // calculated fields
-    public bool CanShowVacancyApplicationsCount => Status is VacancyStatus.Live or VacancyStatus.Closed &&
+    public bool CanShowVacancyApplicationsCount => Status is VacancyStatus.Live or VacancyStatus.Closed or VacancyStatus.Archived &&
                                                    ApplicationMethod is Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughFindAnApprenticeship
                                                        or Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughFindATraineeship;
 
