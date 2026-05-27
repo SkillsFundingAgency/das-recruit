@@ -37,7 +37,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
         IEmployerAccountProvider employerAccountProvider,
         IVacancyReviewQuery vacancyReviewQuery,
-        IVacancyService vacancyService,
         IEmployerProfileService employerProfileService,
         IUserRepository userRepository,
         IEmployerService employerService,
@@ -160,7 +159,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             return messaging.SendCommandAsync(command);
         }
-        
+
+        public Task ArchiveVacancyAsync(Guid vacancyId, VacancyUser user)
+        {
+            var command = new ArchiveVacancyCommand
+            {
+                VacancyId = vacancyId,
+                User = user
+            };
+
+            return messaging.SendCommandAsync(command);
+        }
+
+
         public async Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId, string userId)
         {
             var dashboardStatsTask = employerAccountProvider.GetEmployerDashboardStats(employerAccountId);
@@ -242,6 +253,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 LegalEntities = legalEntities,
                 LastUpdated = timeProvider.Now
             };
+        }
+
+        public async Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid vacancyId)
+        {
+            var vacancy = await repository.GetVacancyAsync(vacancyId);
+            if (vacancy.Status != VacancyStatus.Closed) return false; // Only check for closed vacancies as live vacancies can have in review applications
+            
+            var applicationReviews = await applicationReadRepository.GetForVacancyAsync<Domain.Entities.ApplicationReview>(vacancyId);
+            return applicationReviews
+                .Where(ar => !ar.IsWithdrawn)
+                .All(ar => ar.Status is ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful);
+
         }
 
         public EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules)

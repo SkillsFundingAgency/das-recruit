@@ -69,6 +69,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             viewModel.CanShowCloseVacancyLink = vacancy.CanClose;
             viewModel.CanShowCloneVacancyLink = vacancy.CanClone;
             viewModel.CanShowDeleteVacancyLink = vacancy.CanDelete;
+            viewModel.CanShowArchiveVacancyLink = vacancy.CanArchive && await utility.IsAllApplicationReviewsHasOutcomeAsync(vacancy);
             viewModel.EmployerName = vacancy.EmployerName;
 
             if (vacancy.Status == VacancyStatus.Closed && vacancy.ClosureReason == ClosureReason.WithdrawnByQa)

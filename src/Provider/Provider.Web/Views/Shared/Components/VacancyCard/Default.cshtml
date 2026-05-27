@@ -1,12 +1,16 @@
 ﻿@model Esfa.Recruit.Provider.Web.ViewModels.Dashboard.VacancyCardViewModel
+@{
+    var cardBgColorCss = Model.IsArchiveCard ? "raa-archive-card" : string.Empty;
+    var marginTop = Model.IsArchiveCard ? "raa-archive-card-heading" : string.Empty;
+}
 <div class="govuk-grid-column-one-third">
     <a asp-route="@Model.RouteName"
        asp-route-ukprn="@Model.Ukprn"
        asp-route-filter="@Model.Filter"
-       class="app-card">
+       class="app-card @cardBgColorCss">
         <div class="app-card__content">
-            <h3 class="govuk-heading-m app-card__heading">
-                <span class="app-card__stat">@Model.Count</span>
+            <h3 class="govuk-heading-m app-card__heading @marginTop">
+                <span asp-hide="@Model.IsArchiveCard" class="app-card__stat">@Model.Count</span>
                 <span class="app-card__heading-text">@Model.HeadingText</span>
             </h3>
             <p class="govuk-body app-card__description">

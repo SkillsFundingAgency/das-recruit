@@ -11,6 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
     {
         Task<ApplicationReview> GetAsync(Guid applicationReviewId);
         Task<List<T>> GetForVacancyAsync<T>(long vacancyReference);
+        Task<List<T>> GetForVacancyAsync<T>(Guid vacancyId);
         Task<List<ApplicationReview>> GetForSharedVacancyAsync(long vacancyReference);
         Task<List<ApplicationReview>> GetForVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder);
         Task<List<ApplicationReview>> GetForSharedVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder);

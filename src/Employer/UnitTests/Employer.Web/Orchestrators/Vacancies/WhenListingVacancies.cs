@@ -20,6 +20,7 @@ public class WhenListingVacancies
     [MoqInlineAutoData(FilteringOptions.Live, typeof(GetVacanciesByEmployerAccountAndStatusApiRequest))]
     [MoqInlineAutoData(FilteringOptions.Closed, typeof(GetVacanciesByEmployerAccountAndStatusApiRequest))]
     [MoqInlineAutoData(FilteringOptions.Referred, typeof(GetVacanciesByEmployerAccountAndStatusApiRequest))]
+    [MoqInlineAutoData(FilteringOptions.Archived, typeof(GetVacanciesByEmployerAccountAndStatusApiRequest))]
     public async Task Then_The_List_Vacancies_Query_Is_Constructed_Correctly(
         FilteringOptions filteringOption,
         Type expectedType,
@@ -64,6 +65,7 @@ public class WhenListingVacancies
     [MoqInlineAutoData(FilteringOptions.Live, "Live adverts")]
     [MoqInlineAutoData(FilteringOptions.Closed, "Closed adverts")]
     [MoqInlineAutoData(FilteringOptions.Referred, "Rejected adverts")]
+    [MoqInlineAutoData(FilteringOptions.Archived, "Archived adverts")]
     public async Task Then_The_View_Is_Constructed_Correctly(
         FilteringOptions filteringOption,
         string expectedPageHeading,

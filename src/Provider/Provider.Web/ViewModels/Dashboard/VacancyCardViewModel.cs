@@ -10,4 +10,5 @@ public record VacancyCardViewModel
     public string RouteName { get; set; }
     public long Ukprn { get; set; }
     public FilteringOptions? Filter { get; set; }
+    public bool IsArchiveCard => Filter == FilteringOptions.Archived;
 }

@@ -210,7 +210,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             Assert.That(routeModel.VacancyId, Is.EqualTo(actual.VacancyId));
             Assert.That(routeModel.EmployerAccountId, Is.EqualTo(actual.EmployerAccountId));
             Assert.That("Give feedback to the unsuccessful applicants", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackHeaderTitle));
-            Assert.That("Your feedback will be sent to all applicants you have selected as unsuccessful.", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackDescription)); 
+            Assert.That("Help the applicants understand why their application was unsuccessful. Your feedback will be sent to all applicants you have selected as unsuccessful.", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackDescription)); 
         }
 
         [Test]
@@ -243,7 +243,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             Assert.That(routeModel.VacancyId, Is.EqualTo(actual.VacancyId));
             Assert.That(routeModel.EmployerAccountId, Is.EqualTo(actual.EmployerAccountId));
             Assert.That("Give feedback to the unsuccessful applicant", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackHeaderTitle));
-            Assert.That("Your feedback will be sent to the applicant you have selected as unsuccessful.", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackDescription));
+            Assert.That("Help the applicant understand why their application was unsuccessful. Your message will be sent to the applicant.", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackDescription));
         }
 
         [Test, MoqAutoData]
@@ -331,7 +331,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             Assert.That(actual.VacancyApplicationsToUnsuccessful.Count(), Is.EqualTo(2));
             Assert.That(routeModel.VacancyId, Is.EqualTo(actual.VacancyId));
             Assert.That(routeModel.EmployerAccountId, Is.EqualTo(actual.EmployerAccountId));
-            Assert.That("Make multiple applications unsuccessful", Is.EqualTo(actual.ApplicationReviewsConfirmationHeaderTitle));
+            Assert.That("Give feedback to the unsuccessful applicants", Is.EqualTo(actual.ApplicationReviewsConfirmationHeaderTitle));
             Assert.That("You will make these applications unsuccessful:", Is.EqualTo(actual.ApplicationReviewsConfirmationHeaderDescription));
             Assert.That("These applicants will be notified with this message:", Is.EqualTo(actual.ApplicationsReviewsConfirmationNotificationMessage));
             Assert.That("Do you want to make these applications unsuccessful?", Is.EqualTo(actual.ApplicationsReviewsConfirmationLegendMessage));
@@ -372,7 +372,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             Assert.That(actual.VacancyApplicationsToUnsuccessful.Count(), Is.EqualTo(1));
             Assert.That(routeModel.VacancyId, Is.EqualTo(actual.VacancyId));
             Assert.That(routeModel.EmployerAccountId, Is.EqualTo(actual.EmployerAccountId));
-            Assert.That("Make application unsuccessful", Is.EqualTo(actual.ApplicationReviewsConfirmationHeaderTitle));
+            Assert.That("Give feedback to the unsuccessful applicant", Is.EqualTo(actual.ApplicationReviewsConfirmationHeaderTitle));
             Assert.That("You will make this application unsuccessful:", Is.EqualTo(actual.ApplicationReviewsConfirmationHeaderDescription));
             Assert.That("This applicant will be notified with this message:", Is.EqualTo(actual.ApplicationsReviewsConfirmationNotificationMessage));
             Assert.That("Do you want to make this application unsuccessful?", Is.EqualTo(actual.ApplicationsReviewsConfirmationLegendMessage));

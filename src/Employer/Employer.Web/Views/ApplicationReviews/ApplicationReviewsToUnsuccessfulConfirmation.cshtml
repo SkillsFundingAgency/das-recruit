@@ -2,80 +2,82 @@
 @model Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews.ApplicationReviewsToUnsuccessfulConfirmationViewModel
 @{
     ViewBag.Vpv = "/recruitment/employer/page-application-reviews-to-unsuccessful-confirmation";
-    ViewBag.Title = "Make Applications Unsuccessful Confirmation";
+    ViewBag.Title = "Make unsuccessful";
+    var applicantsText = Model.IsMultipleApplications ? "applicants" : "applicant";
+    var headerText = Model.IsMultipleApplications ? "Do you want to make these applications unsuccessful?" : "Do you want to make this application unsuccessful?";
+    var yesRadioText = Model.IsMultipleApplications ? "Yes, make these applications unsuccessful and notify the applicants" : "Yes, make this application unsuccessful and notify the applicant";
+    var noRadioText = Model.IsMultipleApplications ? "No, leave the applications unchanged" : "No, leave the application unchanged";
 }
 @section BackLink {
     <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
-
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="@PartialNames.ValidationSummary" model="new ValidationSummaryViewModel { ModelState = ViewData.ModelState }" />
         <div>
             <h1 id="applications-to-unsuccessful-title" class="govuk-heading-xl govuk-!-margin-bottom-6">
-                @Model.ApplicationReviewsConfirmationHeaderTitle
+                @headerText
             </h1>
-            <p id="applications-to-unsuccessful-description">
-                @Model.ApplicationReviewsConfirmationHeaderDescription
-            </p>
-            <div id="applications-to-unsuccessful-listing" class="govuk-details__text govuk-!-margin-bottom-6">
-                @{
-                    foreach (VacancyApplication vacancyApplication in Model.VacancyApplicationsToUnsuccessful)
+            <govuk-inset>
+                <div id="applications-to-unsuccessful-listing">
+                    @foreach (VacancyApplication vacancyApplication in Model.VacancyApplicationsToUnsuccessful)
                     {
-                        <p class="govuk-!-margin-top-2 govuk-!-margin-bottom-2 govuk-!-margin-left-2">@vacancyApplication.CandidateName: @vacancyApplication.GetFriendlyId()</p>
+                        <div>
+                            @vacancyApplication.CandidateName: @vacancyApplication.GetFriendlyId()
+                        </div>
                     }
-                }
+                </div>
+            </govuk-inset>
+            <div>
+                <h2 class="govuk-heading-s govuk-!-margin-bottom-5">
+                    Your message to the @applicantsText
+                </h2>
             </div>
-            <p>
-                @Model.ApplicationsReviewsConfirmationNotificationMessage
-            </p>
-            <div class="govuk-details__text govuk-!-margin-bottom-6">
-                <p id="candidate-feedback-confirm-text" class="govuk-body">@Model.CandidateFeedback</p>
-            </div>
+            <govuk-inset>
+                <p id="candidate-feedback-confirm-text" class="govuk-body">
+                    @Model.CandidateFeedback
+                </p>
+            </govuk-inset>
         </div>
-
         <form method="post" id="employer-applications-to-unsuccessful-confirm-form" asp-route="@RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Post" asp-all-route-data="@Model.RouteDictionary">
             @Html.HiddenFor(model => model.CandidateFeedback)
-            <input asp-for="IsMultipleApplications" type="hidden"/>
+            @Html.HiddenFor(model => model.IsMultipleApplications)
             <div esfa-validation-marker-for="ApplicationsUnsuccessfulConfirmed" class="govuk-form-group">
                 <div class="govuk-form-group" das-highlight-error-for="VacancyApplicationsToUnsuccessful" error-class="govuk-form-group--error" id="employer-applications-to-unsuccessful-confirm-group">
                     <fieldset class="govuk-fieldset">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            <h1 class="govuk-fieldset__heading">@Model.ApplicationsReviewsConfirmationLegendMessage</h1>
-                        </legend>
                         @for (var i = 0; i < Model.VacancyApplicationsToUnsuccessful.Count; i++)
                         {
                             <div class="govuk-!-display-none">
-                                <input type="hidden" asp-for="VacancyApplicationsToUnsuccessful[i].ApplicationReviewId"/>
+                                <input type="hidden" asp-for="VacancyApplicationsToUnsuccessful[i].ApplicationReviewId" />
                             </div>
                         }
-
                         <span esfa-validation-message-for="ApplicationsUnsuccessfulConfirmed" class="govuk-error-message"></span>
                         <div class="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input asp-for="ApplicationsUnsuccessfulConfirmed" class="govuk-radios__input" id="employer-applications-to-unsuccessful-confirm-yes" type="radio" value="true">
-                                <label for="employer-applications-to-unsuccessful-confirm-yes" class="govuk-label govuk-radios__label">Yes</label>
-                            </div>
-                            <div class="govuk-radios__item">
-                                <input asp-for="ApplicationsUnsuccessfulConfirmed" class="govuk-radios__input" id="employer-applications-to-unsuccessful-confirm-no" type="radio" value="false">
-                                <label for="employer-applications-to-unsuccessful-confirm-no" class="govuk-label govuk-radios__label">No</label>
-                            </div>
+                                    <label for="employer-applications-to-unsuccessful-confirm-yes" class="govuk-label govuk-radios__label">
+                                        @yesRadioText
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input asp-for="ApplicationsUnsuccessfulConfirmed" class="govuk-radios__input" id="employer-applications-to-unsuccessful-confirm-no" type="radio" value="false">
+                                        <label for="employer-applications-to-unsuccessful-confirm-no" class="govuk-label govuk-radios__label">
+                                            @noRadioText
+                                        </label>
+                                    </div>
+                                </div>
+                            </fieldset>
                         </div>
-                    </fieldset>
-                </div>
+                    </div>
+                    <div class="govuk-warning-text">
+                        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                        <strong class="govuk-warning-text__text">
+                            This action cannot be undone.
+                        </strong>
+                    </div>
+                    <div class="govuk-button-group">
+                        <button class="govuk-button submit" data-module="govuk-button" id="employer-applications-to-unsuccessful-confirm" type="submit">Submit</button>
+                    </div>
+                </form>
             </div>
-
-            <div class="govuk-warning-text">
-                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                <strong class="govuk-warning-text__text">
-                    This action cannot be undone.
-                </strong>
-            </div>
-
-            <div class="govuk-button-group">
-                <button class="govuk-button submit" data-module="govuk-button" id="employer-applications-to-unsuccessful-confirm" type="submit">Confirm</button>
-            </div>
-
-        </form>
-    </div>
-</div>
+        </div>
