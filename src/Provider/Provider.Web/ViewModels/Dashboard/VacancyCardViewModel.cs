@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Dashboard;
 
@@ -11,6 +10,4 @@ public record VacancyCardViewModel
     public string RouteName { get; set; }
     public long Ukprn { get; set; }
     public FilteringOptions? Filter { get; set; }
-
-    public IReadOnlyCollection<VacancyCardTaskViewModel> Tasks { get; set; } = [];
 }
