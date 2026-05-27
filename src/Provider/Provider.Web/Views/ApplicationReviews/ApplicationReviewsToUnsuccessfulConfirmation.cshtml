@@ -3,7 +3,9 @@
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-application-reviews-to-unsuccessful-confirmation";
     ViewBag.Title = "Make Unsuccessful";
-    var applicantsText = Model.IsMultipleApplications ? "applications" : "application";
+    var applicantsText = Model.IsMultipleApplications ? "applicants" : "applicant";
+    var yesRadioText = Model.IsMultipleApplications ? "Yes, make these applications unsuccessful and notify the applicants" : "Yes, make this application unsuccessful and notify the applicant";
+    var noRadioText = Model.IsMultipleApplications ? "No, leave the applications unchanged" : "No, leave the application unchanged";
 }
 @section BackLink {
     <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
@@ -16,7 +18,7 @@
                 @Model.ApplicationsToUnsuccessfulFeedbackHeaderTitle
             </h1>
             <govuk-inset>
-                <div id="applications-to-unsuccessful-listing" class="govuk-!-margin-bottom-6">
+                <div id="applications-to-unsuccessful-listing">
                     @foreach (VacancyApplication vacancyApplication in Model.ApplicationsToUnsuccessful)
                     {
                         <div>
@@ -53,13 +55,13 @@
                             <div class="govuk-radios__item">
                                 <input asp-for="ApplicationsToUnsuccessfulConfirmed" class="govuk-radios__input" id="applications-to-unsuccessful-confirm-yes" type="radio" value="true">
                                 <label for="applications-to-unsuccessful-confirm-yes" class="govuk-label govuk-radios__label">
-                                    Yes, make these applications unsuccessful and notify the @applicantsText
+                                    @yesRadioText
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
                                 <input asp-for="ApplicationsToUnsuccessfulConfirmed" class="govuk-radios__input" id="applications-to-unsuccessful-confirm-no" type="radio" value="false">
                                 <label for="applications-to-unsuccessful-confirm-no" class="govuk-label govuk-radios__label">
-                                            No, leave the @applicantsText unchanged
+                                    @noRadioText
                                 </label>
                             </div>
                         </div>
@@ -76,6 +78,5 @@
                 <button class="govuk-button submit" data-module="govuk-button" id="provider-applications-to-unsuccessful-confirm" type="submit">Submit</button>
             </div>
         </form>
-
     </div>
 </div>

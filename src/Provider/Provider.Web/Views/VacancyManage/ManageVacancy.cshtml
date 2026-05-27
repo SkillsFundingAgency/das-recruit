@@ -98,8 +98,13 @@
             <a asp-show="@Model.CanShowDeleteVacancyLink" asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Delete vacancy</a>
             <a asp-show="@Model.CanShowArchiveVacancyLink" asp-route="@RouteNames.ArchiveVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Archive vacancy</a>
         </div>
-        <govuk-inset>
-            Closed vacancies can be archived when all applicants have received their outcome. You can clone an archived vacancy to advertise it again.
+        <govuk-inset asp-show="@Model.CanShowArchiveInsetText">
+            <div asp-show="Model.Status == VacancyStatus.Archived">
+                An archived vacancy can be cloned to list it again.
+            </div>
+            <div asp-show="Model.Status == VacancyStatus.Closed">
+                Closed vacancies can be archived when all applicants have received their outcome. You can clone an archived vacancy to advertise it again.
+            </div>            
         </govuk-inset>
         <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
         <div asp-show="@Model.CanShowVacancyAnalytics">

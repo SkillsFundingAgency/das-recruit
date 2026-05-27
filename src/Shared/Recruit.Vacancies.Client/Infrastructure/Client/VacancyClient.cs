@@ -257,10 +257,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid vacancyId)
         {
+            var vacancy = await repository.GetVacancyAsync(vacancyId);
+            if (vacancy.Status != VacancyStatus.Closed) return false; // Only check for closed vacancies as live vacancies can have in review applications
+            
             var applicationReviews = await applicationReadRepository.GetForVacancyAsync<Domain.Entities.ApplicationReview>(vacancyId);
             return applicationReviews
                 .Where(ar => !ar.IsWithdrawn)
                 .All(ar => ar.Status is ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful);
+
         }
 
         public EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules)

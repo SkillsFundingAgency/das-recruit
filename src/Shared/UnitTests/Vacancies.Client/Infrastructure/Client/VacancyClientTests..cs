@@ -97,6 +97,7 @@ public class VacancyClientTests
         bool expectedResult,
         List<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview> applicationReviews,
         [Frozen] Mock<IApplicationReadRepository> sqlDbRepositoryMock,
+        [Frozen] Mock<IVacancyRepository> vacancyRepositoryMock,
         [Greedy] VacancyClient vacancyClient)
     {
         var vacancyId = Guid.NewGuid();
@@ -106,11 +107,38 @@ public class VacancyClientTests
             ar.Status = status;
         });
 
+        vacancyRepositoryMock.Setup(x => x.GetVacancyAsync(vacancyId)).ReturnsAsync(new Vacancy { Id = vacancyId, Status = VacancyStatus.Closed });
+
         sqlDbRepositoryMock.Setup(x => x.GetForVacancyAsync<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview>(vacancyId))
             .ReturnsAsync(applicationReviews);
 
         var result = await vacancyClient.IsAllApplicationReviewsHasOutcomeAsync(vacancyId);
 
         result.Should().Be(expectedResult);
+    }
+
+    [Test, MoqAutoData]
+    public async Task When_Vacancy_Not_Closed_IsAllApplicationReviewsHasOutcomeAsync_Returns_Invalid(
+        ApplicationReviewStatus status,
+        List<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview> applicationReviews,
+        [Frozen] Mock<IApplicationReadRepository> sqlDbRepositoryMock,
+        [Frozen] Mock<IVacancyRepository> vacancyRepositoryMock,
+        [Greedy] VacancyClient vacancyClient)
+    {
+        var vacancyId = Guid.NewGuid();
+        applicationReviews.ForEach(ar =>
+        {
+            ar.IsWithdrawn = false;
+            ar.Status = status;
+        });
+
+        vacancyRepositoryMock.Setup(x => x.GetVacancyAsync(vacancyId)).ReturnsAsync(new Vacancy { Id = vacancyId, Status = VacancyStatus.Live });
+
+        sqlDbRepositoryMock.Setup(x => x.GetForVacancyAsync<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview>(vacancyId))
+            .ReturnsAsync(applicationReviews);
+
+        var result = await vacancyClient.IsAllApplicationReviewsHasOutcomeAsync(vacancyId);
+
+        result.Should().Be(false);
     }
 }
