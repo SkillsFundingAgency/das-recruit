@@ -19,6 +19,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerProfile;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Report;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancyAnalytics;
@@ -31,13 +32,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
     public partial class VacancyClient(
         IVacancyRepository repository,
         IVacancyQuery vacancyQuery,
-        IQueryStoreReader reader,
         IMessaging messaging,
         IEntityValidator<Vacancy, VacancyRuleSet> validator,
         IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
         IEmployerAccountProvider employerAccountProvider,
         IVacancyReviewQuery vacancyReviewQuery,
-        IVacancyService vacancyService,
         IEmployerProfileService employerProfileService,
         IUserRepository userRepository,
         IEmployerService employerService,
@@ -49,6 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IVacancySummariesProvider vacancySummariesQuery,
         ITimeProvider timeProvider,
         ITrainingProviderService trainingProviderService,
+        IProviderRelationshipsService providerRelationshipsService,
         IVacancyAnalyticsService vacancyAnalyticsService,
         IApplicationReadRepository applicationReadRepository)
         : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient

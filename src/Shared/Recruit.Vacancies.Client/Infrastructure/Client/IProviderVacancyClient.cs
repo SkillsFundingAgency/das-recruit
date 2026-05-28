@@ -24,7 +24,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task WriteApplicationSummaryReportsToCsv(Stream stream, Guid reportId, ReportVersion version = ReportVersion.V2);
         Task CreateProviderApiVacancy(Guid id, string title, string employerAccountId, VacancyUser user);
         Task<ProviderDashboardSummary> GetDashboardSummary(long ukprn, string userId);
-        Task<long> GetVacancyCount(long ukprn, FilteringOptions? filteringOptions, string searchTerm);
         Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync(int ukprn);
     }
 }

@@ -7,10 +7,6 @@ using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
-using Microsoft.Extensions.Logging;
-using ErrorMessages = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators;
 

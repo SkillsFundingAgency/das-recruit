@@ -107,7 +107,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
             
             providerRelationshipsService.Setup(x => x.GetLegalEntitiesForProviderAsync(vacancyRouteModel.Ukprn,
-                    OperationType.Recruitment))
+                    new List<OperationType> { OperationType.Recruitment }))
                 .ReturnsAsync(new List<EmployerInfo>{employerInfo} );
             
             var actual = await orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, null, null);
@@ -282,7 +282,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId;
            
             providerRelationshipsService.Setup(x => x.GetLegalEntitiesForProviderAsync(vacancyRouteModel.Ukprn,
-                    OperationType.Recruitment))
+                    new List<OperationType> { OperationType.Recruitment }))
                 .ReturnsAsync(new List<EmployerInfo>
                 {
                     employerInfo

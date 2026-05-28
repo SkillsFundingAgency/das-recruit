@@ -203,21 +203,21 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var providerData = await providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn);
             var employerInfo = providerData.Employers.Single(e => e.EmployerAccountId == vacancy.EmployerAccountId);
             var legalEntity = employerInfo.LegalEntities.First(l => l.AccountLegalEntityPublicHashedId == employerProfile.AccountLegalEntityPublicHashedId);
-            var locations = new List<Address>();
-            locations.Add(legalEntity.Address.ConvertToDomainAddress());
+            var locations = new List<Address> {legalEntity.Address.ConvertToDomainAddress()};
             locations.AddRange(employerProfile.OtherLocations);
             return locations;
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, LocationEditModel> DefineMappings()
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, LocationEditModel>();
-
-            mappings.Add(e => e.EmployerLocation.AddressLine1, vm => vm.AddressLine1);
-            mappings.Add(e => e.EmployerLocation.AddressLine2, vm => vm.AddressLine2);
-            mappings.Add(e => e.EmployerLocation.AddressLine3, vm => vm.AddressLine3);
-            mappings.Add(e => e.EmployerLocation.AddressLine4, vm => vm.AddressLine4);
-            mappings.Add(e => e.EmployerLocation.Postcode, vm => vm.Postcode);
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, LocationEditModel>
+            {
+                {e => e.EmployerLocation.AddressLine1, vm => vm.AddressLine1},
+                {e => e.EmployerLocation.AddressLine2, vm => vm.AddressLine2},
+                {e => e.EmployerLocation.AddressLine3, vm => vm.AddressLine3},
+                {e => e.EmployerLocation.AddressLine4, vm => vm.AddressLine4},
+                {e => e.EmployerLocation.Postcode, vm => vm.Postcode}
+            };
 
             return mappings;
         }

@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Failed to retrieve account information for account Id: {hashedAccountId}");
+                logger.LogError(ex, "Failed to retrieve account information for account Id: {HashedAccountId}", hashedAccountId);
                 throw;
             }
         }
@@ -105,14 +105,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
         {
             try
             {
-                long accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
+                var accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
                 var account = await outerApiClient.Get<GetAccountResponse>(new GetAccountRequest(accountId));
                 
                 return account.HashedAccountId;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Failed to retrieve account information for account Id: {hashedAccountId}");
+                logger.LogError(ex, "Failed to retrieve account information for account Id: {HashedAccountId}", hashedAccountId);
                 throw;
             }
         }
@@ -123,7 +123,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             {
                 logger.LogTrace("Getting Employer Application Review Stats from Outer Api");
 
-                long accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
+                var accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
                 var retryPolicy = PollyRetryPolicy.GetPolicy();
 
                 return await retryPolicy.Execute(_ => outerApiClient.Post<GetApplicationReviewStatsResponse>(
@@ -147,7 +147,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
         {
             logger.LogTrace("Getting Employer Dashboard Stats from Outer Api");
 
-            long accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
+            var accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
             var retryPolicy = PollyRetryPolicy.GetPolicy();
 
             return await retryPolicy.Execute(_ => outerApiClient.Get<GetEmployerDashboardApiResponse>(
@@ -169,7 +169,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             string searchTerm)
         {
             logger.LogTrace("Getting Employer Vacancies from Outer Api");
-            long accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
+            var accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
 
             var retryPolicy = PollyRetryPolicy.GetPolicy();
 
@@ -186,7 +186,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
         public async Task<GetAlertsByAccountIdApiResponse> GetEmployerAlerts(string hashedAccountId, string userId)
         {
             logger.LogTrace("Getting Employer alerts from Outer Api");
-            long accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
+            var accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
 
             var retryPolicy = PollyRetryPolicy.GetPolicy();
 
@@ -206,7 +206,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             int pageSize = 25)
         {
             var retryPolicy = PollyRetryPolicy.GetPolicy();
-            long accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
+            var accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
 
             return await retryPolicy.Execute(_ => outerApiClient.Get<GetVacanciesDashboardResponse>(
                     new GetEmployerDashboardVacanciesApiRequest(accountId, pageNumber, pageSize, statuses)),

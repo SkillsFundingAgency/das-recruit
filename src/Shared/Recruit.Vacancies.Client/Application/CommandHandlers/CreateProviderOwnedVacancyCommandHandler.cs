@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 
-public class CreateProviderOwnedVacancyCommandHandler(
+public class  CreateProviderOwnedVacancyCommandHandler(
     ILogger<CreateProviderOwnedVacancyCommandHandler> logger,
     IVacancyRepository repository,
     ITimeProvider timeProvider)

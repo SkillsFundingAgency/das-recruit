@@ -50,7 +50,7 @@ public class LegalEntityAndEmployerOrchestrator(
         {
             // Only include employer accounts where the provider has recruitment permission
             var allLegalEntities = await providerRelationshipsService.GetLegalEntitiesForProviderAsync(
-                vrm.Ukprn, OperationType.Recruitment);
+                vrm.Ukprn, [OperationType.Recruitment]);
                 
             var legalEntities = allLegalEntities.ToList();
                 
@@ -183,7 +183,7 @@ public class LegalEntityAndEmployerOrchestrator(
                 RouteNames.ConfirmLegalEntityEmployer_Get);
             if (string.IsNullOrEmpty(employerAccountId))
             {
-                employerAccountId = vacancy.EmployerAccountId;    
+                employerAccountId = vacancy.EmployerAccountId;
             }
 
             if (string.IsNullOrEmpty(employerAccountLegalEntityPublicHashedId))
@@ -204,7 +204,7 @@ public class LegalEntityAndEmployerOrchestrator(
             //Implement
             // Only include employer accounts where the provider has recruitment permission
             var allLegalEntities = await providerRelationshipsService.GetLegalEntitiesForProviderAsync(
-                vacancyRouteModel.Ukprn, OperationType.Recruitment);
+                vacancyRouteModel.Ukprn, [OperationType.Recruitment]);
                 
             var legalEntities = allLegalEntities.ToList();
                 
@@ -228,7 +228,7 @@ public class LegalEntityAndEmployerOrchestrator(
         else
         {
             var employerVacancyInfo = await providerVacancyClient.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, employerAccountId);
-            if (employerVacancyInfo?.LegalEntities == null || employerVacancyInfo.LegalEntities.Any() == false)
+            if (employerVacancyInfo?.LegalEntities == null || !employerVacancyInfo.LegalEntities.Any())
             {
                 throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vacancyRouteModel.Ukprn));
             }

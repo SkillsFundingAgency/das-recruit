@@ -44,6 +44,7 @@ public class EmployerNameOrchestrator(
         var employerProfile = getEmployerProfileTask.Result;
         var legalEntity = employerInfo.LegalEntities.Single(l => l.AccountLegalEntityPublicHashedId == accountLegalEntityPublicHashedId);
 
+
         var vm = new EmployerNameViewModel 
         {
             AnonymousName = employerInfoModel?.AnonymousName ,
