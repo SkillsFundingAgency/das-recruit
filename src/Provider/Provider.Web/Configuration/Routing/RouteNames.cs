@@ -21,6 +21,8 @@ public static class RouteNames
     public const string VacanciesGetAll = nameof(VacanciesGetAll);
     public const string Dashboard_Account_Home = "Dashboard_Account_Home";
     public const string DeleteVacancy_Get = "DeleteVacancy_Get";
+    public const string ArchiveVacancy_Get = nameof(ArchiveVacancy_Get);
+    public const string ArchiveVacancy_Post = nameof(ArchiveVacancy_Post);
     public const string DeleteVacancy_Post = "DeleteVacancy_Post";
     public const string DisplayFullVacancy_Get = "DisplayFullVacancy_Get";
     public const string DisplayVacancy_Get = "DisplayVacancy_Get";

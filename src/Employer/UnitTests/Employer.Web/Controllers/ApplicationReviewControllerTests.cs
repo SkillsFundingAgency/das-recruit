@@ -203,7 +203,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         }
 
         [Test]
-        public async Task POST_ApplicationReview_StatusUnsuccessful_RedirectsToApplicationReviewConfirmationView()
+        public async Task POST_ApplicationReview_StatusUnsuccessful_RedirectsToApplicationReviewFeedback()
         {
             // Arrange
             var editModel = _fixture.Build<ApplicationReviewEditModel>()
@@ -218,7 +218,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
 
             // Assert
             Assert.That(redirectResult, Is.Not.Null);
-            Assert.That(RouteNames.ApplicationReviewConfirmation_Get, Is.EqualTo(redirectResult.RouteName));
+            Assert.That(RouteNames.ApplicationReviewFeedback_Get, Is.EqualTo(redirectResult.RouteName));
             Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
             Assert.That(_employerAccountId, Is.EqualTo(redirectResult.RouteValues["EmployerAccountId"]));
         }

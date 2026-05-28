@@ -172,7 +172,10 @@ public class CloneVacancyCommandHandlerTests
             {nameof(Vacancy.AdditionalQuestion1), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
             {nameof(Vacancy.AdditionalQuestion2), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
             {nameof(Vacancy.HasSubmittedAdditionalQuestions), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
-            {nameof(Vacancy.HasOptedToAddQualifications), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)}
+            {nameof(Vacancy.HasOptedToAddQualifications), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+            {nameof(Vacancy.ArchiveType), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
+            {nameof(Vacancy.ArchivedDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
+            {nameof(Vacancy.ArchivedByUserId), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)}
         };
 
         foreach (var property in typeof(Vacancy).GetProperties())

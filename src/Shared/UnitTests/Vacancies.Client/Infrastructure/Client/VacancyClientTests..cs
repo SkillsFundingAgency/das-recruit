@@ -79,4 +79,66 @@ public class VacancyClientTests
         result.Application.ApplicationId.Should().Be(applicationReviewId);
         sqlDbRepositoryMock.Verify(r => r.GetAsync(applicationReviewId), Times.Once);
     }
+
+    [Test]
+    [MoqInlineAutoData(ApplicationReviewStatus.Successful, true)]
+    [MoqInlineAutoData(ApplicationReviewStatus.Unsuccessful, true)]
+    [MoqInlineAutoData(ApplicationReviewStatus.AllShared, false)]
+    [MoqInlineAutoData(ApplicationReviewStatus.InReview, false)]
+    [MoqInlineAutoData(ApplicationReviewStatus.Interviewing, false)]
+    [MoqInlineAutoData(ApplicationReviewStatus.EmployerInterviewing, false)]
+    [MoqInlineAutoData(ApplicationReviewStatus.EmployerUnsuccessful, false)]
+    [MoqInlineAutoData(ApplicationReviewStatus.PendingShared, false)]
+    [MoqInlineAutoData(ApplicationReviewStatus.PendingToMakeUnsuccessful, false)]
+    [MoqInlineAutoData(ApplicationReviewStatus.New, false)]
+    [MoqInlineAutoData(ApplicationReviewStatus.Shared, false)]
+    public async Task IsAllApplicationReviewsHasOutcomeAsync_Returns_Valid(
+        ApplicationReviewStatus status,
+        bool expectedResult,
+        List<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview> applicationReviews,
+        [Frozen] Mock<IApplicationReadRepository> sqlDbRepositoryMock,
+        [Frozen] Mock<IVacancyRepository> vacancyRepositoryMock,
+        [Greedy] VacancyClient vacancyClient)
+    {
+        var vacancyId = Guid.NewGuid();
+        applicationReviews.ForEach(ar =>
+        {
+            ar.IsWithdrawn = false;
+            ar.Status = status;
+        });
+
+        vacancyRepositoryMock.Setup(x => x.GetVacancyAsync(vacancyId)).ReturnsAsync(new Vacancy { Id = vacancyId, Status = VacancyStatus.Closed });
+
+        sqlDbRepositoryMock.Setup(x => x.GetForVacancyAsync<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview>(vacancyId))
+            .ReturnsAsync(applicationReviews);
+
+        var result = await vacancyClient.IsAllApplicationReviewsHasOutcomeAsync(vacancyId);
+
+        result.Should().Be(expectedResult);
+    }
+
+    [Test, MoqAutoData]
+    public async Task When_Vacancy_Not_Closed_IsAllApplicationReviewsHasOutcomeAsync_Returns_Invalid(
+        ApplicationReviewStatus status,
+        List<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview> applicationReviews,
+        [Frozen] Mock<IApplicationReadRepository> sqlDbRepositoryMock,
+        [Frozen] Mock<IVacancyRepository> vacancyRepositoryMock,
+        [Greedy] VacancyClient vacancyClient)
+    {
+        var vacancyId = Guid.NewGuid();
+        applicationReviews.ForEach(ar =>
+        {
+            ar.IsWithdrawn = false;
+            ar.Status = status;
+        });
+
+        vacancyRepositoryMock.Setup(x => x.GetVacancyAsync(vacancyId)).ReturnsAsync(new Vacancy { Id = vacancyId, Status = VacancyStatus.Live });
+
+        sqlDbRepositoryMock.Setup(x => x.GetForVacancyAsync<Recruit.Vacancies.Client.Domain.Entities.ApplicationReview>(vacancyId))
+            .ReturnsAsync(applicationReviews);
+
+        var result = await vacancyClient.IsAllApplicationReviewsHasOutcomeAsync(vacancyId);
+
+        result.Should().Be(false);
+    }
 }

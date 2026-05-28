@@ -84,7 +84,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
             services.AddSingleton<IValidator<WageEditModel>, WageEditModelValidator>();
 
-            services.AddSingleton<IValidator<ApplicationReviewFeedbackViewModel>, ApplicationReviewFeedbackModelValidator>();
+            services.AddSingleton<IValidator<ApplicationReviewFeedbackViewModel>, ViewModels.Validations.Fluent.ApplicationReviewFeedbackModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulFeedbackViewModel>, ApplicationReviewsFeedbackModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulRequest>, ApplicationReviewsToUnsuccessfulModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulConfirmationViewModel>, ApplicationReviewsToUnsuccessfulConfirmationModelValidator>();
@@ -130,6 +130,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<IApplicationReviewsOrchestrator, ApplicationReviewsOrchestrator>();
             services.AddTransient<CloneVacancyOrchestrator>();
             services.AddTransient<DeleteVacancyOrchestrator>();
+            services.AddTransient<IArchiveVacancyOrchestrator, ArchiveVacancyOrchestrator>();
             services.AddTransient<IReportDashboardOrchestrator, ReportDashboardOrchestrator>();
             services.AddTransient<IProviderApplicationsReportOrchestrator, ProviderApplicationsReportOrchestrator>();
             services.AddTransient<DashboardOrchestrator>();

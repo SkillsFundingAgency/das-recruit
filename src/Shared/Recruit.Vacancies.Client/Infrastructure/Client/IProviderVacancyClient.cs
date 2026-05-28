@@ -18,6 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<EmployerInfo> GetProviderEmployerVacancyDataAsync(long ukprn, string employerAccountId);
         Task<IEnumerable<EmployerInfo>> GetProviderEmployerVacancyDatasAsync(long ukprn, IList<string> employerAccountIds);
         Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user);
+        Task ArchiveVacancyAsync(Guid vacancyId, VacancyUser user);
         Task<Guid> CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyUser user, string reportName);
         Task<List<ReportSummary>> GetReportsForProviderAsync(long ukprn);
         Task<Report> GetReportAsync(Guid reportId);
