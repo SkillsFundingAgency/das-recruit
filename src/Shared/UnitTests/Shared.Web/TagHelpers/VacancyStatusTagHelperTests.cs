@@ -11,7 +11,7 @@ public class VacancyStatusTagHelperTests : TagHelperTestsBase
     {
         var values = Enum.GetValues<VacancyStatus>();
 
-        values.Should().HaveCount(8); // update if enum grows
+        values.Should().HaveCount(9); // update if enum grows
     }
 
     [Test]

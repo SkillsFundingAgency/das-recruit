@@ -14,6 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public OwnerType OwnerType { get; set; }
         public SourceOrigin SourceOrigin { get; set; }
         public SourceType SourceType { get; set; }
+        public ArchiveType? ArchiveType { get; set; }
         public long? SourceVacancyReference { get; set; }
         public DateTime? ClosedDate { get; set; }
         public DateTime? CreatedDate { get; set; }
@@ -21,7 +22,9 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public DateTime? SubmittedDate { get; set; }
         public VacancyUser SubmittedByUser { get; set; }
         public DateTime? ReviewDate { get; set; }
+        public DateTime? ArchivedDate { get; set; }
         public VacancyUser ReviewByUser { get; set; }
+        public string ArchivedByUserId { get; set; }
         public int ReviewCount { get; set; }
         public DateTime? ApprovedDate { get; set; }
         public DateTime? LiveDate { get; set; }
@@ -87,10 +90,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public ClosureReason? ClosureReason { get; set; }
         public TransferInfo TransferInfo { get; set; }
         public bool CanClose => Status == VacancyStatus.Live;
-        public bool CanClone => (Status == VacancyStatus.Live || 
-                                 Status == VacancyStatus.Closed || 
-                                 Status == VacancyStatus.Submitted || 
-                                 Status == VacancyStatus.Review);
+        public bool CanClone => Status is VacancyStatus.Live or VacancyStatus.Closed or VacancyStatus.Submitted or VacancyStatus.Review or VacancyStatus.Archived;
         /// <summary>
         /// We can only delete draft vacancies that have not been deleted
         /// </summary>
@@ -98,6 +98,13 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
                                   Status == VacancyStatus.Referred ||
                                   Status == VacancyStatus.Rejected )
                                  && IsDeleted == false) || (Status == VacancyStatus.Submitted && ClosingDate <= DateTime.UtcNow && !IsDeleted);
+
+        /// <summary>
+        /// We can only archive closed vacancies that have not been deleted
+        /// </summary>
+        public bool CanArchive => Status == VacancyStatus.Closed
+                                  && !IsDeleted;
+
         /// <summary>
         /// We can only edit draft & referred & rejected vacancies that have not been deleted
         /// </summary>
