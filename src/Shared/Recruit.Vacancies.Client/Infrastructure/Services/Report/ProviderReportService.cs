@@ -6,12 +6,10 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Reports;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses.Reports;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Encoding;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Report;
 public class ProviderReportService(
     ILogger<ProviderReportService> logger,
-    IEncodingService encodingService,
     IOuterApiClient outerApiClient) : IProviderReportService
 {
     public async Task<GetProviderReportsApiResponse> GetReportsForProviderAsync(long ukprn)
