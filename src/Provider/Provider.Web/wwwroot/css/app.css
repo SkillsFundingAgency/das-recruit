@@ -1,5 +1,9 @@
 /* Dashboard */
 
+.faa-dashboard-search {
+    max-width: 540px;
+}
+
 .app-card {
     border: 1px solid #bfc1c3;
     height: 100%;
@@ -73,7 +77,7 @@ a.app-card:focus .app-card__heading-text {
 }
 
 .app-card__content {
-    padding: 20px;
+    padding: 1rem;
     color: inherit;
 }
 
