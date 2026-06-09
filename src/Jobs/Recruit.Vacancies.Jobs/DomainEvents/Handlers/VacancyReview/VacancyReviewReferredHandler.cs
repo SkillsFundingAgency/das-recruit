@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Unable to process {eventBody}", @event);
+                logger.LogError(ex, "Unable to process {EventBody}", @event);
                 throw;
             }
         }

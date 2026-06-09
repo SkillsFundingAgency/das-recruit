@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             if (!vacancy.CanRefer)
             {
-                logger.LogWarning("Unable to refer vacancy {vacancyReference} due to vacancy having a status of {status}.", vacancy.VacancyReference, vacancy.Status);
+                logger.LogWarning("Unable to refer vacancy {VacancyReference} due to vacancy having a status of {Status}.", vacancy.VacancyReference, vacancy.Status);
                 return Unit.Value;
             }
 
