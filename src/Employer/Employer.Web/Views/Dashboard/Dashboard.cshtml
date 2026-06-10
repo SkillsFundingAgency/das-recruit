@@ -28,29 +28,27 @@
             <a asp-route="@RouteNames.CreateVacancyStart" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button das-float-right govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create an advert</a>
         </div>
     </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <form asp-route="@RouteNames.VacanciesGetAll" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.All" method="get" autocomplete="off">
-                <div class="govuk-form-group">
-                    <label for="search-input" class="govuk-label">
-                        Search by advert title or reference number
-                    </label>
-                    <div class="das-search-form__group">
-                        <input id="search-input" name="searchTerm" title="Search" class="govuk-input das-search-form__input app-vacancy-autocomplete" type="text" maxlength="200" data-apiurl="@vacanciesSearchSuggestionsEndpointUrl" />
-                        <div class="das-search-form__button-wrap">
-                            <button class="govuk-button das-search-form__button" type="submit">
-                                Search
-                            </button>
-                        </div>
-                    </div>
+
+    <form asp-route="@RouteNames.VacanciesGetAll" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.All" method="get" autocomplete="off" class="faa-dashboard-search">
+        <div class="govuk-form-group">
+            <label for="search-input" class="govuk-label">
+                Search by advert title or reference number
+            </label>
+            <div class="das-search-form__group">
+                <input id="search-input" name="searchTerm" title="Search" class="govuk-input das-search-form__input app-vacancy-autocomplete" type="text" maxlength="200" data-apiurl="@vacanciesSearchSuggestionsEndpointUrl" />
+                <div class="das-search-form__button-wrap">
+                    <button class="govuk-button das-search-form__button" type="submit">
+                        Search
+                    </button>
                 </div>
-            </form>
+            </div>
         </div>
-    </div>
+    </form>
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-!-margin-bottom-5">
-                <a asp-route="@RouteNames.VacanciesGetAll" asp-route-filter="@FilteringOptions.All" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
+                <a asp-route="@RouteNames.VacanciesGetAll" asp-route-filter="@FilteringOptions.All" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
                     View all adverts (@Model.NumberOfVacancies)
                 </a>
             </div>
@@ -67,22 +65,21 @@
             Filter = FilteringOptions.Draft
         })
         <div class="govuk-grid-column-one-third">
-            <div class="app-card @GetCardStatus(Model.HasEmployerReviewPermission)">
+            @{
+                var reviewCardHref = Model.HasEmployerReviewPermission
+                    ? Url.RouteUrl(RouteNames.VacanciesGetAll, new { employerAccountId = Model.EmployerAccountId, filter = FilteringOptions.Review })
+                    : Url.RouteUrl(RouteNames.YourTrainingProviderPermission, new { employerAccountId = Model.EmployerAccountId });
+            }
+            <a class="app-card" href="@reviewCardHref">
                 <div class="app-card__content">
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.VacancyCountReview</span>
-                        <a asp-show="@Model.HasEmployerReviewPermission" asp-route="@RouteNames.VacanciesGetAll" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.Review" class="govuk-link govuk-link--no-visited-state">
-                            @FilteringOptions.Review @Model.VacancyTextReview
-                        </a>
-                        <span asp-hide="@Model.HasEmployerReviewPermission">@FilteringOptions.Review @Model.VacancyTextReview</span>
+                        <span class="app-card__heading-text">@FilteringOptions.Review @Model.VacancyTextReview</span>
                     </h3>
                     <p asp-show="@Model.HasEmployerReviewPermission" class="govuk-body app-card__description">Adverts created by training providers that you need to review.</p>
-                    <p asp-hide="@Model.HasEmployerReviewPermission" class="govuk-body app-card__description">
-                        If you want to review adverts before they are published you need to
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.YourTrainingProviderPermission" asp-route-employerAccountId="@Model.EmployerAccountId">manage your permissions</a>.
-                    </p>
+                    <p asp-hide="@Model.HasEmployerReviewPermission" class="govuk-body app-card__description">Manage your permissions to review adverts before they are published.</p>
                 </div>
-            </div>
+            </a>
         </div>
         @await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
         {
@@ -108,7 +105,7 @@
         {
             Count = Model.VacancyCountLive,
             HeadingText = $"{@FilteringOptions.Live} {@Model.VacancyTextLive}",
-            Description = "Your adverts on the Find an apprenticeship service.",
+            Description = "Your adverts on Find an apprenticeship service.",
             RouteName = RouteNames.VacanciesGetAll,
             EmployerAccountId = Model.EmployerAccountId,
             Filter = FilteringOptions.Live,
@@ -136,15 +133,6 @@
             RouteName = RouteNames.VacanciesGetAll,
             EmployerAccountId = Model.EmployerAccountId,
             Filter = FilteringOptions.NewApplications,
-            Tasks = new[]
-            {
-                new VacancyCardTaskViewModel
-                {
-                    Show = Model.ShowAllApplications,
-                    Filter = FilteringOptions.AllApplications,
-                    Text = "View all applications"
-                }
-            }
         }))
     </div>
     <div class="govuk-grid-row app-card__row">
@@ -156,15 +144,6 @@
             RouteName = RouteNames.VacanciesGetAll,
             EmployerAccountId = Model.EmployerAccountId,
             Filter = FilteringOptions.NewSharedApplications,
-            Tasks = new[]
-            {
-                new VacancyCardTaskViewModel
-                {
-                    Show = Model.ShowAllSharedApplications,
-                    Filter = FilteringOptions.AllSharedApplications,
-                    Text = "View all shared applications",
-                }
-            }
         }))    
         @(await Component.InvokeAsync("VacancyCard", new VacancyCardViewModel
         {
