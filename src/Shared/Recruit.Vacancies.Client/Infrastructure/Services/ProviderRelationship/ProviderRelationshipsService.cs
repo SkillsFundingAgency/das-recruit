@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
@@ -22,22 +20,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
         IOuterApiClient outerApiClient,
         IEncodingService encodingService,
         ICache cache,
-        ITimeProvider timeProvider,
-        HttpClient httpClient)
+        ITimeProvider timeProvider)
         : IProviderRelationshipsService
     {
-        public async Task RevokeProviderPermissionToRecruitAsync(long ukprn, string accountLegalEntityPublicHashedId)
-        {
-            var stringContent = GetStringContent(ukprn, accountLegalEntityPublicHashedId);
-
-            var response = await httpClient.PostAsync("/permissions/revoke", stringContent);
-
-            if (!response.IsSuccessStatusCode || response.StatusCode != HttpStatusCode.NotModified)
-            {
-                throw new InvalidOperationException($"Failed to revoke provider {ukprn} permission for account legal entity {accountLegalEntityPublicHashedId} response code: {response.StatusCode}");
-            }
-        }
-
         public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(long ukprn, List<OperationType> operationTypes)
         {
             var providerPermissions = await GetProviderPermissionsByUkprn(ukprn, operationTypes);
@@ -79,13 +64,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             return hasPermission;
         }
 
-        public async Task<bool> CheckProviderHasPermissions(long ukprn, OperationType operationType)
-        {
-            var result = await GetProviderPermissionsByUkprn(ukprn, [operationType]);
-
-            return result.AccountProviderLegalEntities.Any();
-        }
-
         public async Task<bool> CheckEmployerHasPermissions(string accountHashedId, OperationType operationType)
         {
             var result = await GetProviderPermissionsByAccountHashedId(accountHashedId, operationType);
@@ -99,7 +77,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             var operationsKey = string.Join(",", operationTypes
                 .Select(x => x.ToString())
                 .OrderBy(x => x));
-            await cache.CacheAsideAsync($"{CacheKeys.ProviderPermissions}_{ukprn}_{accountId}_{operationsKey.GetHashCode()}",
+           
+            return await cache.CacheAsideAsync($"{CacheKeys.ProviderPermissions}_{ukprn}_{accountId}_{operationsKey.GetHashCode()}",
                 timeProvider.NextDay,
                 async () =>
                 {
@@ -114,10 +93,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                             }
                         });
 
-                    return MapToProviderPermissions(permissions.AccountProviderLegalEntities);
+                    return MapToLegalEntities(permissions.AccountProviderLegalEntities);
                 });
-
-            return [];
         }
 
         private async Task<ProviderPermissions> GetProviderPermissionsByUkprn(long ukprn, List<OperationType> operationTypes)
@@ -125,7 +102,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             var operationsKey = string.Join(",", operationTypes
                 .Select(x => x.ToString())
                 .OrderBy(x => x));
-            await cache.CacheAsideAsync($"{CacheKeys.ProviderPermissions}_{ukprn}_{operationsKey.GetHashCode()}",
+             
+            return await cache.CacheAsideAsync($"{CacheKeys.ProviderPermissions}_{ukprn}_{operationsKey.GetHashCode()}",
                 timeProvider.NextDay,
                 async () =>
                 {
@@ -141,14 +119,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 
                     return MapToProviderPermissions(permissions.AccountProviderLegalEntities);
                 });
-
-            return new ProviderPermissions();
         }
 
         private async Task<ProviderPermissions> GetProviderPermissionsByAccountHashedId(string accountHashedId, OperationType operationType)
         {
             var operationsKey = string.Join(",", new[] { operationType }.OrderBy(x => x));
-            await cache.CacheAsideAsync($"{CacheKeys.ProviderPermissions}_{accountHashedId}_{operationsKey.GetHashCode()}",
+            return await cache.CacheAsideAsync($"{CacheKeys.ProviderPermissions}_{accountHashedId}_{operationsKey.GetHashCode()}",
                 timeProvider.NextDay,
                 async () =>
                 {
@@ -165,8 +141,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 
                     return MapToProviderPermissions(permissions.AccountProviderLegalEntities);
                 });
-
-            return new ProviderPermissions();
         }
 
         private static ProviderPermissions MapToProviderPermissions(
@@ -187,6 +161,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                     })
                     .ToList()
             };
+
+        private static List<LegalEntityDto> MapToLegalEntities(List<AccountLegalEntityItem> accountLegalEntityItems) =>
+            accountLegalEntityItems
+                .Select(l => new LegalEntityDto
+                {
+                    AccountHashedId = l.AccountHashedId,
+                    AccountLegalEntityPublicHashedId = l.AccountLegalEntityPublicHashedId,
+                    AccountName = l.AccountName,
+                    AccountLegalEntityId = l.AccountLegalEntityId,
+                    AccountId = l.AccountId,
+                    AccountLegalEntityName = l.AccountLegalEntityName,
+                    AccountProviderId = l.AccountProviderId,
+                    AccountPublicHashedId = l.AccountPublicHashedId
+                })
+                .ToList();
 
         private static StringContent GetStringContent(long ukprn, string accountLegalEntityPublicHashedId)
         {

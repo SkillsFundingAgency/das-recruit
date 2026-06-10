@@ -26,7 +26,7 @@ public class EmployerNameController(EmployerNameOrchestrator orchestrator, IWebH
         //if matching cookie is not found redirect to legal entity selection
         //this could happen if the user navigates straight to employer-name end point
         //by passing employer or location end point
-        var vm = await orchestrator.GetEmployerNameViewModelAsync(model, employerInfoModel, User.ToVacancyUser());
+        var vm = await orchestrator.GetEmployerNameViewModelAsync(model, employerInfoModel);
         return View(vm);
     }
 
@@ -47,7 +47,7 @@ public class EmployerNameController(EmployerNameOrchestrator orchestrator, IWebH
             response.AddErrorsToModelState(ModelState);
         }
 
-        var vm = await orchestrator.GetEmployerNameViewModelAsync(model, employerInfoModel, User.ToVacancyUser());
+        var vm = await orchestrator.GetEmployerNameViewModelAsync(model, employerInfoModel);
         if (!ModelState.IsValid)
         {
             vm.NewTradingName = model.NewTradingName;
