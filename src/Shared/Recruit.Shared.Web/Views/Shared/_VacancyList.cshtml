@@ -5,20 +5,21 @@
 @model VacanciesListViewModel
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <table class="govuk-table das-table--condensed das-table--responsive">
+        <table class="govuk-table das-table--responsive app-vacancy-list app-vacancy-list--@Model.UserType.ToString().ToLowerInvariant()">
             <caption class="govuk-visually-hidden">Your draft vacancies</caption>
             <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-                <th asp-show="@(Model.UserType is UserType.Employer)" class="govuk-table__header" scope="col">Advert title</th>
-                <th asp-show="@(Model.UserType is UserType.Employer)" class="govuk-table__header" scope="col">Advert reference number</th>
-
-                <th asp-show="@(Model.UserType is UserType.Provider)" class="govuk-table__header" scope="col">Vacancy title</th>
-                <th asp-show="@(Model.UserType is UserType.Provider)" class="govuk-table__header" scope="col">Employer</th>
-                <th asp-show="@(Model.UserType is UserType.Provider)" class="govuk-table__header" scope="col">Vacancy reference number</th>
-
-                <th class="govuk-table__header" scope="col">Applications</th>
                 
-                <das-sortable-column-header 
+                <th asp-show="@(Model.UserType is UserType.Employer)" class="govuk-table__header th-w-title" scope="col">Advert title</th>
+                <th asp-show="@(Model.UserType is UserType.Employer)" class="govuk-table__header th-w-ref" scope="col">Advert reference</th>
+
+                <th asp-show="@(Model.UserType is UserType.Provider)" class="govuk-table__header th-w-title" scope="col">Vacancy title</th>
+                <th asp-show="@(Model.UserType is UserType.Provider)" class="govuk-table__header th-w-employer" scope="col">Employer</th>
+                <th asp-show="@(Model.UserType is UserType.Provider)" class="govuk-table__header th-w-ref" scope="col">Vacancy reference</th>
+
+                <th class="govuk-table__header th-w-applications" scope="col">Applications</th>
+
+                <das-sortable-column-header
                     route-data="@Model.RouteDictionary"
                     sort-column="@VacancySortColumn.ClosingDate"
                     default-sort-order="Desc"
@@ -27,8 +28,8 @@
                     Closing date
                 </das-sortable-column-header>
 
-                <th class="govuk-table__header" scope="col">Status</th>
-                <th class="govuk-table__header govuk-table__header--numeric govuk-!-padding-right-0" scope="col">Action</th>
+                <th class="govuk-table__header th-w-status" scope="col">Status</th>
+                <th class="govuk-table__header govuk-table__header--numeric govuk-!-padding-right-0 th-w-action" scope="col">Action</th>
             </tr>
             </thead>
             <tbody class="govuk-table__body">

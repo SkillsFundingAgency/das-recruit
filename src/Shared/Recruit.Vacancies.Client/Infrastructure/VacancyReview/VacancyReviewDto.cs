@@ -25,7 +25,7 @@ public class VacancyReviewDto
     public string ManualQaComment { get; init; }
     public required List<string> ManualQaFieldIndicators { get; init; }
     public string AutomatedQaOutcome { get; set; }
-    public string AutomatedQaOutcomeIndicators { get; init; }
+    public List<RuleOutcomeIndicator> AutomatedQaOutcomeIndicators { get; init; }
     public required List<string> DismissedAutomatedQaOutcomeIndicators { get; init; }
     public required List<string> UpdatedFieldIdentifiers { get; init; }
     public string OwnerType { get; set; }
@@ -62,7 +62,7 @@ public class VacancyReviewDto
             ManualQaFieldIndicators =source.ManualQaFieldIndicators!=null ? source.ManualQaFieldIndicators.Where(c=>c.IsChangeRequested)
                 .Select(c=>c.FieldIdentifier.ToString()).ToList() : [],
             AutomatedQaOutcome = source.AutomatedQaOutcome?.Decision.ToString(),
-            AutomatedQaOutcomeIndicators = source.AutomatedQaOutcomeIndicators?.FirstOrDefault()?.IsReferred.ToString(),
+            AutomatedQaOutcomeIndicators = source.AutomatedQaOutcomeIndicators.ToList(),
             DismissedAutomatedQaOutcomeIndicators = source.DismissedAutomatedQaOutcomeIndicators,
             UpdatedFieldIdentifiers = source.UpdatedFieldIdentifiers,
             VacancySnapshot = JsonConvert.SerializeObject(source.VacancySnapshot),
@@ -120,7 +120,7 @@ public class VacancyReviewDto
             {
                 new()
                 {
-                    IsReferred = !string.IsNullOrEmpty(source.AutomatedQaOutcomeIndicators),
+                    IsReferred = (source.AutomatedQaOutcomeIndicators.Any(c=>c.IsReferred)),
                     RuleOutcomeId = Guid.NewGuid()
                 }
             },
