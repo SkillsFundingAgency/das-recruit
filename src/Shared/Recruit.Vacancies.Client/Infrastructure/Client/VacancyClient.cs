@@ -385,9 +385,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendCommandAsync(command);
         }
 
-        public Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
+        public async Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
         {
-            return employerProfileService.GetAsync(employerAccountId, accountLegalEntityPublicHashedId);
+            return await employerProfileService.GetAsync(employerAccountId, accountLegalEntityPublicHashedId);
         }
 
         public Task UpdateEmployerProfileAsync(EmployerProfile employerProfile)

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -10,9 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Providers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses.Providers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
-using Newtonsoft.Json;
 using SFA.DAS.Encoding;
-using Encoding = System.Text.Encoding;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship
 {
@@ -177,14 +174,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                 })
                 .ToList();
 
-        private static StringContent GetStringContent(long ukprn, string accountLegalEntityPublicHashedId)
-        {
-            var recruitOperationId = 1;
-            var operationsToRevoke = new[] { recruitOperationId };
-            var serializedData = JsonConvert.SerializeObject(new { ukprn, accountLegalEntityPublicHashedId, operationsToRevoke });
-            return new StringContent(serializedData, Encoding.UTF8, "application/json");
-        }
-
         private async Task<List<EmployerInfo>> GetEmployerInfosAsync(ProviderPermissions providerPermissions)
         {
             var employerInfos = new List<EmployerInfo>();
@@ -193,7 +182,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 
             foreach (var permittedEmployer in permittedEmployerAccounts)
             {
-                var employerInfo = new EmployerInfo()
+                var employerInfo = new EmployerInfo
                 {
                     EmployerAccountId = permittedEmployer.Key,
                     Name = permittedEmployer.First().AccountName, //should be same in all the items hence read from first
@@ -201,15 +190,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                 };
 
                 var legalEntityViewModels = await employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(permittedEmployer.Key);
-
+                var accountLegalEntities = legalEntityViewModels.ToList();
                 foreach (LegalEntityDto permittedLegalEntity in permittedEmployer)
                 {
-                    var matchingLegalEntity = legalEntityViewModels.FirstOrDefault(e => e.AccountLegalEntityPublicHashedId == permittedLegalEntity.AccountLegalEntityPublicHashedId);
-                    if (matchingLegalEntity != null)
+                    if (accountLegalEntities.Count > 0)
                     {
-                        var legalEntity = LegalEntityMapper.MapFromAccountApiLegalEntity(matchingLegalEntity);
-                        legalEntity.AccountLegalEntityPublicHashedId = permittedLegalEntity.AccountLegalEntityPublicHashedId;
-                        employerInfo.LegalEntities.Add(legalEntity);
+                        var matchingLegalEntity = accountLegalEntities.FirstOrDefault(e => e.AccountLegalEntityPublicHashedId == permittedLegalEntity.AccountLegalEntityPublicHashedId);
+                        if (matchingLegalEntity != null)
+                        {
+                            var legalEntity = LegalEntityMapper.MapFromAccountApiLegalEntity(matchingLegalEntity);
+                            legalEntity.AccountLegalEntityPublicHashedId = permittedLegalEntity.AccountLegalEntityPublicHashedId;
+                            employerInfo.LegalEntities.Add(legalEntity);
+                        }
                     }
                 }
 
