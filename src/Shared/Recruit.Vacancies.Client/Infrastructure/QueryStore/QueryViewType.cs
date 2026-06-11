@@ -11,11 +11,6 @@
             _idFormatString = formatString;
         }
 
-        public string GetIdValue(object[] args)
-        {
-            return string.Format(_idFormatString, args);
-        }
-
         public string GetIdValue(string value)
         {
             return string.Format(_idFormatString, value);
@@ -24,11 +19,6 @@
         public string GetIdValue(long value)
         {
             return string.Format(_idFormatString, value);
-        }
-
-        public string GetIdValue()
-        {
-            return _idFormatString;
         }
 
         public static QueryViewType EmployerDashboard => new QueryViewType(nameof(EmployerDashboard), "EmployerDashboard_{0}");

@@ -18,7 +18,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
     public partial class VacancyClient : IProviderVacancyClient
     {
         public async Task<Guid> CreateVacancyAsync(string employerAccountId,
-            long ukprn, string title, VacancyUser user, string accountLegalEntityPublicHashedId, string legalEntityName)
+            long ukprn,
+            string title,
+            VacancyUser user,
+            string accountLegalEntityPublicHashedId,
+            string legalEntityName)
         {
             var vacancyId = GenerateVacancyId();
 
@@ -44,7 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             var command = new CreateProviderOwnedVacancyCommand(
                 id,
                 SourceOrigin.Api,
-                user.Ukprn.Value,
+                user.Ukprn.GetValueOrDefault(),
                 employerAccountId,
                 user,
                 UserType.Provider,
@@ -60,7 +64,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<long> GetVacancyCount(long ukprn, FilteringOptions? filteringOptions, string searchTerm)
         {
-            var dashboardStatsTask = await trainingProviderService.GetProviderDashboardStats(ukprn, "");
+            var dashboardStatsTask = await trainingProviderService.GetProviderDashboardStats(ukprn, string.Empty);
 
             switch (filteringOptions)
             {
@@ -190,8 +194,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return null;
         }
 
-        public async Task<IEnumerable<EmployerInfo>> GetProviderEmployerVacancyDatasAsync(long ukprn,
-            IList<string> employerAccountIds)
+        public async Task<IEnumerable<EmployerInfo>> GetProviderEmployerVacancyDatasAsync(long ukprn, IList<string> employerAccountIds)
         {
             var employerInfos = new List<EmployerInfo>();
             foreach (var employerAccountId in employerAccountIds)
