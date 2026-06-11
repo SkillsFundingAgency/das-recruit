@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
@@ -11,10 +10,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
     {
         private const int PostcodeMinLength = 5;
         private const int IncodeLength = 3;
-        private static readonly Regex UkPostcodeRegex =
-            new(@"([A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2})$", RegexOptions.IgnoreCase);
-
-
+        
         public static string PostcodeAsOutcode(this Address address)
         {
             var postcode = address.Postcode.Replace(" ", "");

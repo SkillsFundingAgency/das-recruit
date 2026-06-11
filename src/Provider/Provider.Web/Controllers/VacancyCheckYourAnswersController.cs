@@ -43,7 +43,10 @@ public class VacancyCheckYourAnswersController(VacancyCheckYourAnswersOrchestrat
 
         if (TempData.TryGetValue(TempDataKeys.VacancyPreviewInfoMessage, out var value))
         {
-            if (value != null) viewModel.VacancyClonedInfoMessage = value.ToString();
+            if (value != null)
+            {
+                viewModel.VacancyClonedInfoMessage = value.ToString();
+            }
         }
 
         if (TempData[TempDataKeys.LegalEntityChanged] is bool legalEntityChanged)

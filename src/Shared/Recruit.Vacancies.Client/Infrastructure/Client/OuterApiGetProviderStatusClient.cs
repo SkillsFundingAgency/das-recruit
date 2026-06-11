@@ -49,8 +49,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             }
             catch (Exception e)
             {
-                logger.LogDebug("Get Provider Status failed for ukprn number: {Ukprn}.", ukprn);
-                throw new Exception($"Get Provider Status failed for ukprn number: {ukprn}.", e);
+                logger.LogInformation("Get Provider Status failed for ukprn number: {Ukprn}. Exception: {Exception}", ukprn, e.Message);
+                throw new Exception();
             }
         }
     }
