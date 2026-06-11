@@ -8,9 +8,6 @@ using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -18,23 +15,15 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Esfa.Recruit.Provider.Web.Middleware
 {
-    public class ProviderAccountHandler : AuthorizationHandler<ProviderAccountRequirement>
+    public class ProviderAccountHandler(
+        IWebHostEnvironment hostingEnvironment,
+        ITempDataProvider tempDataProvider,
+        ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
+        : AuthorizationHandler<ProviderAccountRequirement>
     {
-        private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly IProviderVacancyClient _client;
-        private readonly ITempDataProvider _tempDataProvider;
         private readonly Predicate<Claim> _ukprnClaimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier) 
                                                                             || c.Type.Equals(ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier);
         private readonly IDictionary<string, object> _dict = new Dictionary<string, object>();
-        private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
-
-        public ProviderAccountHandler(IWebHostEnvironment hostingEnvironment, IProviderVacancyClient client, ITempDataProvider tempDataProvider, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
-        {
-            _hostingEnvironment = hostingEnvironment;
-            _client = client;
-            _tempDataProvider = tempDataProvider;
-            _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
-        }
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, ProviderAccountRequirement requirement)
         {
@@ -56,7 +45,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
                     if (context.HasFailed)
                     {
                         var mvcContext = (AuthorizationFilterContext)context.Resource;
-                        _tempDataProvider.SaveTempData(mvcContext.HttpContext, _dict);
+                        tempDataProvider.SaveTempData(mvcContext.HttpContext, _dict);
                     }
                     else
                     {
@@ -120,7 +109,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
                 if (ukprn == EsfaTestTrainingProvider.Ukprn)
                     return true;
 
-                var provider = await _trainingProviderSummaryProvider.GetAsync(ukprn);
+                var provider = await trainingProviderSummaryProvider.GetAsync(ukprn);
                 
                 _dict.Add(TempDataKeys.ProviderName, provider.ProviderName);
 
@@ -129,17 +118,6 @@ namespace Esfa.Recruit.Provider.Web.Middleware
             catch (Exception)
             {
                 return false;
-            }
-        }
-
-        private async Task SetupProvider(AuthorizationHandlerContext context)
-        {
-            if (context.Resource is AuthorizationFilterContext mvcContext &&
-                mvcContext.RouteData.Values.ContainsKey(RouteValues.Ukprn))
-            {
-                var ukprn = context.User.FindFirst(_ukprnClaimFinderPredicate).Value;
-
-                await _client.SetupProviderAsync(long.Parse(ukprn));
             }
         }
 
@@ -164,7 +142,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
             var ukprn = context.User.FindFirst(_ukprnClaimFinderPredicate).Value;
             var cookieKey = GetOncePerAuthorizedSessionCookieKey(ukprn);
 
-            mvcContext.HttpContext.Response.Cookies.Append(cookieKey, "1", EsfaCookieOptions.GetDefaultHttpCookieOption(_hostingEnvironment));
+            mvcContext.HttpContext.Response.Cookies.Append(cookieKey, "1", EsfaCookieOptions.GetDefaultHttpCookieOption(hostingEnvironment));
         }
 
         private string GetOncePerAuthorizedSessionCookieKey(string ukprn)

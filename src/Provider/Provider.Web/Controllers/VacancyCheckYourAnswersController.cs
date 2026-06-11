@@ -41,9 +41,9 @@ public class VacancyCheckYourAnswersController(VacancyCheckYourAnswersOrchestrat
             OrderedFieldNames = viewModel.OrderedFieldNames
         };
 
-        if (TempData.ContainsKey(TempDataKeys.VacancyPreviewInfoMessage))
+        if (TempData.TryGetValue(TempDataKeys.VacancyPreviewInfoMessage, out var value))
         {
-            viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyPreviewInfoMessage].ToString();
+            if (value != null) viewModel.VacancyClonedInfoMessage = value.ToString();
         }
 
         if (TempData[TempDataKeys.LegalEntityChanged] is bool legalEntityChanged)
@@ -72,10 +72,10 @@ public class VacancyCheckYourAnswersController(VacancyCheckYourAnswersOrchestrat
             if (response.Data.IsSentForReview)
                 return RedirectToRoute(RouteNames.Reviewed_Index_Get, m.RouteDictionary);
 
-            if (response.Data.HasProviderAgreement == false)
+            if (!response.Data.HasProviderAgreement)
                 return RedirectToRoute(RouteNames.ProviderAgreement_HardStop_Get, m.RouteDictionary);
 
-            if (response.Data.HasLegalEntityAgreement == false)
+            if (!response.Data.HasLegalEntityAgreement)
                 return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get, m.RouteDictionary);
 
             throw new Exception("Unknown submit state");

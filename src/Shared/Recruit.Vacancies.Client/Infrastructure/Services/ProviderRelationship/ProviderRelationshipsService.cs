@@ -154,7 +154,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                         AccountId = l.AccountId,
                         AccountLegalEntityName = l.AccountLegalEntityName,
                         AccountProviderId = l.AccountProviderId,
-                        AccountPublicHashedId = l.AccountPublicHashedId
+                        AccountPublicHashedId = l.AccountPublicHashedId,
                     })
                     .ToList()
             };
@@ -170,7 +170,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                     AccountId = l.AccountId,
                     AccountLegalEntityName = l.AccountLegalEntityName,
                     AccountProviderId = l.AccountProviderId,
-                    AccountPublicHashedId = l.AccountPublicHashedId
+                    AccountPublicHashedId = l.AccountPublicHashedId,
                 })
                 .ToList();
 
@@ -193,16 +193,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                 var accountLegalEntities = legalEntityViewModels.ToList();
                 foreach (LegalEntityDto permittedLegalEntity in permittedEmployer)
                 {
-                    if (accountLegalEntities.Count > 0)
-                    {
-                        var matchingLegalEntity = accountLegalEntities.FirstOrDefault(e => e.AccountLegalEntityPublicHashedId == permittedLegalEntity.AccountLegalEntityPublicHashedId);
-                        if (matchingLegalEntity != null)
-                        {
-                            var legalEntity = LegalEntityMapper.MapFromAccountApiLegalEntity(matchingLegalEntity);
-                            legalEntity.AccountLegalEntityPublicHashedId = permittedLegalEntity.AccountLegalEntityPublicHashedId;
-                            employerInfo.LegalEntities.Add(legalEntity);
-                        }
-                    }
+                    if (accountLegalEntities.Count <= 0) continue;
+                    
+                    var matchingLegalEntity = accountLegalEntities.FirstOrDefault(e => e.AccountLegalEntityPublicHashedId == permittedLegalEntity.AccountLegalEntityPublicHashedId);
+
+                    if (matchingLegalEntity == null) continue;
+                    
+                    var legalEntity = LegalEntityMapper.MapFromAccountApiLegalEntity(matchingLegalEntity);
+                    legalEntity.AccountLegalEntityPublicHashedId = permittedLegalEntity.AccountLegalEntityPublicHashedId;
+                    employerInfo.LegalEntities.Add(legalEntity);
                 }
 
                 employerInfos.Add(employerInfo);

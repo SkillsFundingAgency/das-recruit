@@ -123,7 +123,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             var alertsTask = trainingProviderService.GetProviderAlerts(Convert.ToInt32(ukprn), userId);
             var transferredVacanciesTasks = vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn);
 
-
             await Task.WhenAll(vacancySummariesTasks, alertsTask, transferredVacanciesTasks);
 
             var vacancySummariesResult = await vacancySummariesTasks;
@@ -175,14 +174,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             var getLegalEntities = await providerRelationshipsService.GetLegalEntitiesForProvider(ukprn, employerAccountId,
                 [OperationType.Recruitment, OperationType.RecruitmentRequiresReview]);
 
-            var employerInfos = getLegalEntities.ToList();
-            if (employerInfos.Count > 0)
+            var getLegalEntitiesList = getLegalEntities.ToList();
+            if (getLegalEntitiesList.Count > 0)
             {
                 return new EmployerInfo
                 {
                     EmployerAccountId = employerAccountId,
-                    Name = employerInfos.First().Name,
-                    LegalEntities = employerInfos.First().LegalEntities,
+                    Name = getLegalEntitiesList.First().Name,
+                    LegalEntities = getLegalEntitiesList
+                        .SelectMany(x => x.LegalEntities)
+                        .ToList()
                 };
             }
 
@@ -204,7 +205,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     {
                         EmployerAccountId = employerAccountId,
                         Name = getLegalEntitiesList.First().Name,
-                        LegalEntities = getLegalEntitiesList.First().LegalEntities,
+                        LegalEntities = getLegalEntitiesList
+                            .SelectMany(x => x.LegalEntities)
+                            .ToList()
                     });
                 }
             }
