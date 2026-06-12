@@ -20,6 +20,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
         ITimeProvider timeProvider)
         : IProviderRelationshipsService
     {
+        private readonly Dictionary<string, object> _apiLoggingContext = new()
+        {
+            {
+                "apiCall", "AccountLegalEntities"
+            }
+        };
+
         public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(long ukprn, List<OperationType> operationTypes)
         {
             var providerPermissions = await GetProviderPermissionsByUkprn(ukprn, operationTypes);
@@ -83,12 +90,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 
                     var permissions = await retryPolicy.Execute(_ => outerApiClient.Get<GetProviderPermissionsByUkprnAndAccountIdApiResponse>(
                             new GetProviderPermissionsByUkprnAndAccountIdApiRequest(ukprn, accountId, operationTypes)),
-                        new Dictionary<string, object>
-                        {
-                            {
-                                "apiCall", "AccountLegalEntities"
-                            }
-                        });
+                        _apiLoggingContext);
 
                     return MapToLegalEntities(permissions.AccountProviderLegalEntities);
                 });
@@ -107,12 +109,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                     var retryPolicy = PollyRetryPolicy.GetPolicy();
                     var permissions = await retryPolicy.Execute(_ => outerApiClient.Get<GetProviderPermissionsByUkprnApiResponse>(
                             new GetProviderPermissionsByUkprnApiRequest(ukprn, operationTypes)),
-                        new Dictionary<string, object>
-                        {
-                            {
-                                "apiCall", "AccountLegalEntities"
-                            }
-                        });
+                        _apiLoggingContext);
 
                     return MapToProviderPermissions(permissions.AccountProviderLegalEntities);
                 });
@@ -129,12 +126,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 
                     var permissions = await retryPolicy.Execute(_ => outerApiClient.Get<GetProviderPermissionsByUkprnApiResponse>(
                             new GetEmployerPermissionsByAccountHashedIdApiRequest(accountHashedId, [operationType])),
-                        new Dictionary<string, object>
-                        {
-                            {
-                                "apiCall", "AccountLegalEntities"
-                            }
-                        });
+                        _apiLoggingContext);
 
                     return MapToProviderPermissions(permissions.AccountProviderLegalEntities);
                 });

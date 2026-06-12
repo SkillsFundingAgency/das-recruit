@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
@@ -41,7 +40,7 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
         return vacancy;
     }
 
-    public void CheckCanEdit(Vacancy vacancy)
+    private static void CheckCanEdit(Vacancy vacancy)
     {
         if (!vacancy.CanEmployerEdit)
             throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
@@ -55,7 +54,7 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
             throw new AuthorisationException(string.Format(ExceptionMessages.UserIsNotTheOwner, OwnerType.Employer));
     }
 
-    public bool VacancyHasCompletedPartOne(Vacancy vacancy)
+    private bool VacancyHasCompletedPartOne(Vacancy vacancy)
     {
         return vacancy.ApplicationMethod != null;
     }
@@ -119,7 +118,7 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
             updateProfile = true;
             employerProfile.AccountLegalEntityPublicHashedId = employerInfoModel.AccountLegalEntityPublicHashedId;
         }
-        if (employerInfoModel != null && employerInfoModel.EmployerIdentityOption == EmployerIdentityOption.NewTradingName)
+        if (employerInfoModel is {EmployerIdentityOption: EmployerIdentityOption.NewTradingName})
         {
             updateProfile = true;
             employerProfile.TradingName = employerInfoModel.NewTradingName;

@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
     {
         private readonly Predicate<Claim> _ukprnClaimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier) 
                                                                             || c.Type.Equals(ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier);
-        private readonly IDictionary<string, object> _dict = new Dictionary<string, object>();
+        private readonly Dictionary<string, object> _dict = new();
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, ProviderAccountRequirement requirement)
         {
@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
 
                 if (hasIdentityServerAuthorization && isOnRoatp)
                 {
-                    if (HasDoneOncePerAuthorizedSessionActions(context) == false)
+                    if (!HasDoneOncePerAuthorizedSessionActions(context))
                     {
                         SetOncePerAuthorizedSessionActionsCompleted(context);
                     }
@@ -55,7 +55,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
             }
         }
 
-        private bool HasServiceAuthorization(AuthorizationHandlerContext context)
+        private static bool HasServiceAuthorization(AuthorizationHandlerContext context)
         {
             Predicate<Claim> serviceClaimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier) 
                                                                 || c.Type.Equals(ProviderRecruitClaims.DfEUserServiceTypeClaimTypeIdentifier);
@@ -72,12 +72,12 @@ namespace Esfa.Recruit.Provider.Web.Middleware
 
         private bool HasUkprnAuthorization(AuthorizationHandlerContext context)
         {
-            if (context.Resource is AuthorizationFilterContext mvcContext && mvcContext.RouteData.Values.ContainsKey(RouteValues.Ukprn))
+            if (context.Resource is AuthorizationFilterContext mvcContext && mvcContext.RouteData.Values.TryGetValue(RouteValues.Ukprn, out var value))
             {
                 if (context.User.HasClaim(_ukprnClaimFinderPredicate))
                 {
                     var ukprnFromClaim = context.User.FindFirst(_ukprnClaimFinderPredicate).Value;
-                    var ukprnFromUrl = mvcContext.RouteData.Values[RouteValues.Ukprn].ToString();
+                    var ukprnFromUrl = value.ToString();
 
                     if (!string.IsNullOrEmpty(ukprnFromUrl) && ukprnFromUrl.Equals(ukprnFromClaim))
                     {
@@ -103,7 +103,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
 
             try
             {
-                if (long.TryParse(ukprnFromClaim, out var ukprn) == false)
+                if (!long.TryParse(ukprnFromClaim, out var ukprn))
                     return false;
 
                 if (ukprn == EsfaTestTrainingProvider.Ukprn)
@@ -113,7 +113,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
                 
                 _dict.Add(TempDataKeys.ProviderName, provider.ProviderName);
 
-                return provider != null;
+                return true;
             }
             catch (Exception)
             {
@@ -123,7 +123,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
 
         private bool HasDoneOncePerAuthorizedSessionActions(AuthorizationHandlerContext context)
         {
-            if (!(context.Resource is AuthorizationFilterContext mvcContext))
+            if (context.Resource is not AuthorizationFilterContext mvcContext)
                 return false;
 
             var ukprn = context.User.FindFirst(_ukprnClaimFinderPredicate).Value;
@@ -136,7 +136,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
 
         private void SetOncePerAuthorizedSessionActionsCompleted(AuthorizationHandlerContext context)
         {
-            if (!(context.Resource is AuthorizationFilterContext mvcContext))
+            if (context.Resource is not AuthorizationFilterContext mvcContext)
                 return;
 
             var ukprn = context.User.FindFirst(_ukprnClaimFinderPredicate).Value;
@@ -145,7 +145,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
             mvcContext.HttpContext.Response.Cookies.Append(cookieKey, "1", EsfaCookieOptions.GetDefaultHttpCookieOption(hostingEnvironment));
         }
 
-        private string GetOncePerAuthorizedSessionCookieKey(string ukprn)
+        private static string GetOncePerAuthorizedSessionCookieKey(string ukprn)
         {
             return string.Format(CookieNames.SetupProvider, ukprn);
         }

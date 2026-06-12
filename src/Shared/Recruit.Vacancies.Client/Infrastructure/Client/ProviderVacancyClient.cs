@@ -184,7 +184,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 return new EmployerInfo
                 {
                     EmployerAccountId = employerAccountId,
-                    Name = getLegalEntitiesList.First().Name,
+                    Name = getLegalEntitiesList.FirstOrDefault()?.Name,
                     LegalEntities = getLegalEntitiesList
                         .SelectMany(x => x.LegalEntities)
                         .ToList()
@@ -207,7 +207,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     employerInfos.Add(new EmployerInfo
                     {
                         EmployerAccountId = employerAccountId,
-                        Name = getLegalEntitiesList.First().Name,
+                        Name = getLegalEntitiesList.FirstOrDefault()?.Name,
                         LegalEntities = getLegalEntitiesList
                             .SelectMany(x => x.LegalEntities)
                             .ToList()
