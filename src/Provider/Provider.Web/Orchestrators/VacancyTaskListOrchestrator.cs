@@ -7,10 +7,6 @@ using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
-using Microsoft.Extensions.Logging;
-using ErrorMessages = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators;
 
@@ -34,6 +30,7 @@ public class VacancyTaskListOrchestrator(
         );
 
         var providerEditVacancyInfo = editVacancyInfoTask.Result;
+        var employerInfo = employerInfoTask.Result;
         if (providerEditVacancyInfo == null)
         {
             var providerAccountResponse = await providerStatusClient.GetProviderStatus(routeModel.Ukprn);
@@ -53,7 +50,7 @@ public class VacancyTaskListOrchestrator(
         return new VacancyTaskListViewModel
         {
             AccountCount = providerEditVacancyInfo.Employers.Count(),
-            AccountLegalEntityCount = employerInfoTask.Result.LegalEntities.Count,
+            AccountLegalEntityCount = employerInfo?.LegalEntities.Count ?? 0,
             ApplicationMethod = vacancy.ApplicationMethod,
             ApprenticeshipType = vacancy.ApprenticeshipType.GetValueOrDefault(),
             Ukprn = routeModel.Ukprn,
@@ -71,10 +68,12 @@ public class VacancyTaskListOrchestrator(
         
         await Task.WhenAll(employerInfoTask, editVacancyInfoTask);
 
+        var employerInfo = employerInfoTask.Result;
+
         return new VacancyTaskListViewModel
         {
             AccountCount = editVacancyInfoTask.Result.Employers.Count(),
-            AccountLegalEntityCount = employerInfoTask.Result.LegalEntities.Count,
+            AccountLegalEntityCount = employerInfo?.LegalEntities.Count ?? 0,
             Ukprn = vrm.Ukprn,
             TaskListStates = ProviderTaskListStateView.CreateEmpty(),
             VacancyId = vrm.VacancyId

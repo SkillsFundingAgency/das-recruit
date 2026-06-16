@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Reports;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
@@ -17,7 +18,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
     public partial class VacancyClient : IProviderVacancyClient
     {
         public async Task<Guid> CreateVacancyAsync(string employerAccountId,
-            long ukprn, string title, VacancyUser user, string accountLegalEntityPublicHashedId, string legalEntityName)
+            long ukprn,
+            string title,
+            VacancyUser user,
+            string accountLegalEntityPublicHashedId,
+            string legalEntityName)
         {
             var vacancyId = GenerateVacancyId();
 
@@ -43,7 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             var command = new CreateProviderOwnedVacancyCommand(
                 id,
                 SourceOrigin.Api,
-                user.Ukprn.Value,
+                user.Ukprn.GetValueOrDefault(),
                 employerAccountId,
                 user,
                 UserType.Provider,
@@ -59,7 +64,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<long> GetVacancyCount(long ukprn, FilteringOptions? filteringOptions, string searchTerm)
         {
-            var dashboardStatsTask = await trainingProviderService.GetProviderDashboardStats(ukprn, "");
+            var dashboardStatsTask = await trainingProviderService.GetProviderDashboardStats(ukprn, string.Empty);
 
             switch (filteringOptions)
             {
@@ -70,7 +75,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 case FilteringOptions.EmployerReviewedApplications:
                     return dashboardStatsTask.EmployerReviewedApplicationsCount;
                 default:
-                    return await vacancySummariesQuery.VacancyCount(ukprn, string.Empty, filteringOptions, searchTerm, OwnerType.Provider);
+                    return await vacancySummariesQuery.VacancyCount(ukprn, string.Empty, filteringOptions, searchTerm,
+                        OwnerType.Provider);
             }
         }
 
@@ -112,13 +118,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
         }
 
-        public async Task<ProviderDashboard> GetDashboardAsync(long ukprn, string userId, int page, int pageSize, string sortColumn, string sortOrder, FilteringOptions? status = null, string searchTerm = null)
+        public async Task<ProviderDashboard> GetDashboardAsync(long ukprn, string userId, int page, int pageSize,
+            string sortColumn, string sortOrder, FilteringOptions? status = null, string searchTerm = null)
         {
             var vacancySummariesTasks =
-                trainingProviderService.GetProviderVacancies(Convert.ToInt32(ukprn), page, pageSize, sortColumn, sortOrder, status ?? FilteringOptions.Dashboard, searchTerm);
+                trainingProviderService.GetProviderVacancies(Convert.ToInt32(ukprn), page, pageSize, sortColumn,
+                    sortOrder, status ?? FilteringOptions.Dashboard, searchTerm);
             var alertsTask = trainingProviderService.GetProviderAlerts(Convert.ToInt32(ukprn), userId);
             var transferredVacanciesTasks = vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn);
-
 
             await Task.WhenAll(vacancySummariesTasks, alertsTask, transferredVacanciesTasks);
 
@@ -126,7 +133,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             var alerts = await alertsTask;
 
             var vacancySummaries = vacancySummariesResult.VacancySummaries
-                .Where(c=> !c.IsTraineeship).ToList();
+                .Where(c => !c.IsTraineeship).ToList();
             var transferredVacancies = transferredVacanciesTasks.Result.Select(t =>
                 new ProviderDashboardTransferredVacancy
                 {
@@ -147,19 +154,68 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
         }
 
-        public Task<ProviderEditVacancyInfo> GetProviderEditVacancyInfoAsync(long ukprn)
+        public async Task<ProviderEditVacancyInfo> GetProviderEditVacancyInfoAsync(long ukprn)
         {
-            return reader.GetProviderVacancyDataAsync(ukprn);
+            var getEmployerInfos = await providerRelationshipsService.GetLegalEntitiesForProviderAsync(ukprn,
+                [OperationType.Recruitment, OperationType.RecruitmentRequiresReview]);
+
+            var employerInfos = getEmployerInfos.ToList();
+            if (employerInfos.Count > 0)
+            {
+                return new ProviderEditVacancyInfo
+                {
+                    Employers = employerInfos,
+                    HasProviderAgreement = employerInfos.Any(e =>
+                                e.LegalEntities.TrueForAll(a => a.HasLegalEntityAgreement))
+                };
+            }
+
+            return null;
         }
 
-        public Task<EmployerInfo> GetProviderEmployerVacancyDataAsync(long ukprn, string employerAccountId)
+        public async Task<EmployerInfo> GetProviderEmployerVacancyDataAsync(long ukprn, string employerAccountId)
         {
-            return reader.GetProviderEmployerVacancyDataAsync(ukprn, employerAccountId);
+            var getLegalEntities = await providerRelationshipsService.GetLegalEntitiesForProvider(ukprn, employerAccountId,
+                [OperationType.Recruitment, OperationType.RecruitmentRequiresReview]);
+
+            var getLegalEntitiesList = getLegalEntities.ToList();
+            if (getLegalEntitiesList.Count > 0)
+            {
+                return new EmployerInfo
+                {
+                    EmployerAccountId = employerAccountId,
+                    Name = getLegalEntitiesList.FirstOrDefault()?.Name,
+                    LegalEntities = getLegalEntitiesList
+                        .SelectMany(x => x.LegalEntities)
+                        .ToList()
+                };
+            }
+
+            return null;
         }
 
-        public Task<IEnumerable<EmployerInfo>> GetProviderEmployerVacancyDatasAsync(long ukprn, IList<string> employerAccountIds)
+        public async Task<IEnumerable<EmployerInfo>> GetProviderEmployerVacancyDatasAsync(long ukprn, IList<string> employerAccountIds)
         {
-            return reader.GetProviderEmployerVacancyDatasAsync(ukprn, employerAccountIds);
+            var employerInfos = new List<EmployerInfo>();
+            foreach (var employerAccountId in employerAccountIds)
+            {
+                var getLegalEntities = await providerRelationshipsService.GetLegalEntitiesForProvider(ukprn, employerAccountId,
+                    [OperationType.Recruitment, OperationType.RecruitmentRequiresReview]);
+                var getLegalEntitiesList = getLegalEntities.ToList();
+                if (getLegalEntitiesList.Count > 0)
+                {
+                    employerInfos.Add(new EmployerInfo
+                    {
+                        EmployerAccountId = employerAccountId,
+                        Name = getLegalEntitiesList.FirstOrDefault()?.Name,
+                        LegalEntities = getLegalEntitiesList
+                            .SelectMany(x => x.LegalEntities)
+                            .ToList()
+                    });
+                }
+            }
+
+            return employerInfos;
         }
 
         public Task SetupProviderAsync(long ukprn)
@@ -169,20 +225,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendCommandAsync(command);
         }
 
-        public async Task<Guid> CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyUser user, string reportName)
+        public async Task<Guid> CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate,
+            VacancyUser user, string reportName)
         {
             var reportId = Guid.NewGuid();
-
-            var owner = new ReportOwner
-            {
-                OwnerType = ReportOwnerType.Provider,
-                Ukprn = ukprn
-            };
 
             // Report generation is handled by the ProviderReportService which calls the Outer API. so that report is created in the SQL DB.
             await providerReportService.CreateProviderApplicationsReportAsync(reportId, ukprn, fromDate, toDate, user,
                 reportName);
-            
+
             return reportId;
         }
 
@@ -194,6 +245,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             {
                 return [];
             }
+
             return providerReports.Reports.Select(Domain.Reports.Report.ToReportSummary).ToList();
         }
 
@@ -204,17 +256,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return response?.Report?.ToEntity(response.Report);
         }
 
-        public async Task WriteApplicationSummaryReportsToCsv(Stream stream, Guid reportId, ReportVersion version = ReportVersion.V2)
+        public async Task WriteApplicationSummaryReportsToCsv(Stream stream, Guid reportId,
+            ReportVersion version = ReportVersion.V2)
         {
             var response = await providerReportService.GetReportDataAsync(reportId);
 
             switch (version)
             {
                 case ReportVersion.V1:
-                    await reportService.WriteApplicationSummaryReportsV1ToCsv(stream, response.Reports.Select(c => (ApplicationSummaryCsvReportV1)c).ToList());
+                    await reportService.WriteApplicationSummaryReportsV1ToCsv(stream,
+                        response.Reports.Select(c => (ApplicationSummaryCsvReportV1) c).ToList());
                     break;
                 case ReportVersion.V2:
-                    await reportService.WriteApplicationSummaryReportsV2ToCsv(stream, response.Reports.Select(r => (ApplicationSummaryCsvReportV2)r).ToList());
+                    await reportService.WriteApplicationSummaryReportsV2ToCsv(stream,
+                        response.Reports.Select(r => (ApplicationSummaryCsvReportV2) r).ToList());
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(version), version, null);
@@ -222,6 +277,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         }
 
         public Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync(int ukprn)
-            => apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync(ukprn: ukprn, includePlaceholderProgramme: false);
+            => apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync(ukprn: ukprn,
+                includePlaceholderProgramme: false);
     }
 }

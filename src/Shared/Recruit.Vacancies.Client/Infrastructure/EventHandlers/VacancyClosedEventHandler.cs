@@ -53,7 +53,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
             if (queryResult != null)
             {
-                _logger.LogInformation($"Vacancy {vacancy.VacancyReference} already closed. Skipping notification.");
+                _logger.LogInformation("Vacancy {VacancyReference} already closed. Skipping notification.", vacancy.VacancyReference);
                 return;
             }
             

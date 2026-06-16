@@ -10,5 +10,7 @@
         public const string Profanities = "profanities";
         public const string BannedPhrases = "bannedPhrases";
         public const string TrainingProviders = "providers";
+        public const string ProviderPermissions = "providerPermissions";
+        public const string ProviderAccountsPermissions = "providerAccountsPermissions";
     }
 }

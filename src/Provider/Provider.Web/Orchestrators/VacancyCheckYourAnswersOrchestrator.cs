@@ -48,14 +48,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel routeModel)
         {
-            var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(routeModel, RouteNames.ProviderTaskListGet);
+            var vacancy = await utility.GetAuthorisedVacancyForEditAsync(routeModel, RouteNames.ProviderTaskListGet);
             
-            var editVacancyInfoTask = providerVacancyClient.GetProviderEditVacancyInfoAsync(routeModel.Ukprn);
-            await Task.WhenAll(vacancyTask, editVacancyInfoTask);
+            var editVacancyInfo = await providerVacancyClient.GetProviderEditVacancyInfoAsync(routeModel.Ukprn);
 
-            var employerInfo = await providerVacancyClient.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn, vacancyTask.Result.EmployerAccountId);
+            var employerInfo = await providerVacancyClient.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn, vacancy.EmployerAccountId);
             
-            var vacancy = vacancyTask.Result;
             var hasProviderReviewPermission = await providerRelationshipsService.HasProviderGotEmployersPermissionAsync(routeModel.Ukprn, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
             
             var vm = new VacancyPreviewViewModel();
@@ -72,19 +70,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
+                vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.GetValueOrDefault(), ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
             }
 
             vm.AccountLegalEntityCount = employerInfo?.LegalEntities.Count ?? 0;
-            vm.AccountCount = editVacancyInfoTask.Result.Employers.Count();
+            vm.AccountCount = editVacancyInfo.Employers.Count();
             return vm;
         }
 
         public async Task<VacancyPreviewViewModel> GetCreateVacancyTaskListModel(VacancyRouteModel vrm, string employerAccountId)
         {
-            var employerInfo =
-                await providerVacancyClient.GetProviderEmployerVacancyDataAsync(vrm.Ukprn,
-                    employerAccountId);
+            var employerInfo = await providerVacancyClient.GetProviderEmployerVacancyDataAsync(vrm.Ukprn, employerAccountId);
             var editVacancyInfo = await providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
 
             var createVacancyTaskListModel = new VacancyPreviewViewModel
@@ -119,12 +115,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private async Task<SubmitVacancyResponse> SubmitActionAsync(Vacancy vacancy, VacancyUser user)
         {
             var hasLegalEntityAgreementTask = legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
-            var hasProviderAgreementTask = trainingProviderAgreementService.HasAgreementAsync(vacancy.TrainingProvider.Ukprn.Value);
+            var hasProviderAgreementTask = trainingProviderAgreementService.HasAgreementAsync(vacancy.TrainingProvider.Ukprn.GetValueOrDefault());
 
             await Task.WhenAll(hasLegalEntityAgreementTask, hasProviderAgreementTask);
 
             var hasProviderReviewPermission = await providerRelationshipsService.HasProviderGotEmployersPermissionAsync(
-                vacancy.TrainingProvider.Ukprn.Value,
+                vacancy.TrainingProvider.Ukprn.GetValueOrDefault(),
                 vacancy.EmployerAccountId,
                 vacancy.AccountLegalEntityPublicHashedId,
                 OperationType.RecruitmentRequiresReview);

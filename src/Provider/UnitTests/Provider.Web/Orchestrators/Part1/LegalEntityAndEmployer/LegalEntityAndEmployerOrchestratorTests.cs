@@ -76,7 +76,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
                 .ReturnsAsync(response);
 
             providerRelationshipService
-                .Setup(x => x.GetLegalEntitiesForProviderAsync(vacancyRouteModel.Ukprn, OperationType.Recruitment))
+                .Setup(x => x.GetLegalEntitiesForProviderAsync(vacancyRouteModel.Ukprn, new List<OperationType> { OperationType.Recruitment }))
                 .ReturnsAsync(mockEmployerInfos);
 
             var actual = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel,

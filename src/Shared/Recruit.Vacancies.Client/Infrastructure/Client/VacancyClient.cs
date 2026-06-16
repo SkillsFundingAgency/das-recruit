@@ -19,6 +19,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerProfile;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Report;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancyAnalytics;
@@ -31,7 +32,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
     public partial class VacancyClient(
         IVacancyRepository repository,
         IVacancyQuery vacancyQuery,
-        IQueryStoreReader reader,
         IMessaging messaging,
         IEntityValidator<Vacancy, VacancyRuleSet> validator,
         IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
@@ -48,6 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IVacancySummariesProvider vacancySummariesQuery,
         ITimeProvider timeProvider,
         ITrainingProviderService trainingProviderService,
+        IProviderRelationshipsService providerRelationshipsService,
         IVacancyAnalyticsService vacancyAnalyticsService,
         IApplicationReadRepository applicationReadRepository)
         : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
@@ -384,9 +385,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendCommandAsync(command);
         }
 
-        public Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
+        public async Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
         {
-            return employerProfileService.GetAsync(employerAccountId, accountLegalEntityPublicHashedId);
+            return await employerProfileService.GetAsync(employerAccountId, accountLegalEntityPublicHashedId);
         }
 
         public Task UpdateEmployerProfileAsync(EmployerProfile employerProfile)
