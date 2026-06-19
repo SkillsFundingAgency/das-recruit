@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Esfa.Recruit.Vacancies.Jobs.NServiceBus;
 using Microsoft.Azure.WebJobs.Host;
@@ -26,8 +25,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 {
                     logger = ((ILoggerFactory)host.Services.GetService(typeof(ILoggerFactory)))
                         .CreateLogger(nameof(Program));
-
-                    CheckInfrastructure(host.Services, logger);
 
                     await host.RunAsync();
                 }
@@ -106,20 +103,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         }
                     })
                     .UseConsoleLifetime();
-        }
-
-        private static void CheckInfrastructure(IServiceProvider serviceProvider, ILogger logger)
-        {
-            try
-            {
-                var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
-                collectionChecker.EnsureCollectionsExist();
-                collectionChecker.CreateIndexes().Wait();
-            }
-            catch (Exception ex)
-            {
-                logger?.LogError(ex, "Error checking infrastructure");
-            }
         }
     }
 }
