@@ -19,9 +19,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Messaging;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays;
@@ -35,7 +33,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerProfile;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Report;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
@@ -66,7 +63,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             RegisterClients(services);
             RegisterServiceDeps(services, configuration);
             RegisterAccountApiClientDeps(services);
-            RegisterMongoQueryStores(services, configuration);
             RegisterRepositories(services, configuration);
             RegisterOutOfProcessEventDelegatorDeps(services, configuration);
             RegisterQueueStorageServices(services, configuration);
@@ -132,9 +128,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IProviderReportService, ProviderReportService>();
             services.AddTransient<IEmployerProfileService, EmployerProfileService>();
 
-            // Projection services
-            services.AddTransient<IEditVacancyInfoProjectionService, EditVacancyInfoProjectionService>();
-
             // Reference Data Providers
             services.AddTransient<IMinimumWageProvider, NationalMinimumWageProvider>();
             services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>();
@@ -152,43 +145,18 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
         private static void RegisterRepositories(IServiceCollection services, IConfiguration configuration)
         {
-            var mongoConnectionString = configuration.GetConnectionString("MongoDb");
-
-            services.Configure<MongoDbConnectionDetails>(options =>
-            {
-                options.ConnectionString = mongoConnectionString;
-            });
-
-            MongoDbConventions.RegisterMongoConventions();
-
-            services.AddTransient<MongoDbCollectionChecker>();
             //Repositories
             services.AddTransient<IVacancyRepository, SqlVacancyRepository>();
-            
             services.AddTransient<IVacancyReviewRepository, VacancyReviewService>();
-
             services.AddTransient<IUserWriteRepository, UserService>();
             services.AddTransient<IUserRepository, UserService>();
-
             services.AddTransient<IApplicationWriteRepository, ApplicationReviewService>();
-            
             services.AddTransient<IApplicationReadRepository, ApplicationReviewService>();
-
             services.AddTransient<IApplicationReviewRepositoryRunner, ApplicationReviewRepositoryRunner>();
 
-
-            services.AddTransient<IReportRepository, MongoDbReportRepository>();
-            services.AddTransient<IUserNotificationPreferencesRepository, MongoDbUserNotificationPreferencesRepository>();
-            
             //Queries
-            services.AddTransient<IVacancyQuery, SqlVacancyQuery>(); // replaces MongoDbVacancyRepository
+            services.AddTransient<IVacancyQuery, SqlVacancyQuery>();
             services.AddTransient<IVacancyReviewQuery, VacancyReviewService>();
-
-            services.AddTransient<IQueryStoreReader, QueryStoreClient>();
-            services.AddTransient<IQueryStoreWriter, QueryStoreClient>();
-
-            services.AddTransient<IReferenceDataReader, MongoDbReferenceDataRepository>();
-            services.AddTransient<IReferenceDataWriter, MongoDbReferenceDataRepository>();
         }
 
         private static void RegisterOutOfProcessEventDelegatorDeps(IServiceCollection services, IConfiguration configuration)
@@ -200,12 +168,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
         {
             var recruitStorageConnectionString = configuration.GetConnectionString("QueueStorage");
             services.AddTransient<IRecruitQueueService>(_ => new RecruitStorageQueueService(recruitStorageConnectionString));
-        }
-
-        private static void RegisterMongoQueryStores(IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddTransient<IQueryStore, MongoQueryStore>();
-            services.AddTransient<IQueryStoreHouseKeepingService, MongoQueryStore>();
         }
 
         private static void AddValidation(IServiceCollection services)
