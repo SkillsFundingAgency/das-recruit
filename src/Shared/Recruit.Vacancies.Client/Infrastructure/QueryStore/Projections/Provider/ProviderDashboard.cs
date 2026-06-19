@@ -5,12 +5,8 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider
 {
-    public class ProviderDashboard : QueryProjectionBase
+    public class ProviderDashboard
     {
-        public ProviderDashboard() : base(QueryViewType.ProviderDashboard.TypeName)
-        {
-        }
-
         public IEnumerable<VacancySummary> Vacancies { get; set; }
         public int? TotalVacancies { get; set; } = null;
         public ProviderTransferredVacanciesAlertModel ProviderTransferredVacanciesAlert { get; set; } = new();

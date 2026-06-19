@@ -3,12 +3,8 @@ using Esfa.Recruit.Vacancies.Client.Domain.Alerts;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer
 {
-    public class EmployerDashboard : QueryProjectionBase
+    public class EmployerDashboard
     {
-        public EmployerDashboard() : base(QueryViewType.EmployerDashboard.TypeName)
-        {
-        }
-
         public IEnumerable<VacancySummary> Vacancies { get; set; }
         public EmployerTransferredVacanciesAlertModel EmployerRevokedTransferredVacanciesAlert { get; set; } = new();
         public EmployerTransferredVacanciesAlertModel BlockedProviderTransferredVacanciesAlert { get; set; } = new();
