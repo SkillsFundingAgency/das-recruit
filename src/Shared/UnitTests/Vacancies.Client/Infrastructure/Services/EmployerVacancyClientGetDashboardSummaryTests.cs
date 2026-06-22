@@ -63,16 +63,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             string employerAccountId,
             string userId,
             GetAlertsByAccountIdApiResponse alertsResponse,
-            [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
             [Frozen] Mock<IEmployerAccountProvider> employerAccountProvider,
             VacancyClient vacancyClient)
         {
-            vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId)).ReturnsAsync(new VacancyDashboard
-            {
-                VacancyApplicationsDashboard = [],
-                VacancyStatusDashboard = [],
-                VacancySharedApplicationsDashboard = []
-            });
             employerAccountProvider.Setup(x => x.GetEmployerDashboardStats(employerAccountId))
                 .ReturnsAsync(new GetEmployerDashboardApiResponse
                 {

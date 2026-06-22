@@ -99,24 +99,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IEmployerService, EmployerService>();
             services.AddHttpClient<IExternalWebsiteHealthCheckService, ExternalWebsiteHealthCheckService>();
 
-            //Reporting Service
-            services.AddTransient<ICsvBuilder, CsvBuilder>();
-            services.AddTransient<IReportService, ReportService>();
-            services.AddTransient<ProviderApplicationsReportStrategy>();
-            services.AddTransient<QaApplicationsReportStrategy>();
-            services.AddTransient<Func<ReportType, IReportStrategy>>(serviceProvider => reportType =>
-            {
-                switch (reportType)
-                {
-                    case ReportType.ProviderApplications:
-                        return serviceProvider.GetService<ProviderApplicationsReportStrategy>();
-                    case ReportType.QaApplications:
-                        return serviceProvider.GetService<QaApplicationsReportStrategy>();
-                    default:
-                        throw new Exception($"No report strategy for {reportType}");
-                }
-            });
-
             // Infrastructure Services
             services.AddTransient<IEmployerAccountProvider, EmployerAccountProvider>();
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
@@ -133,9 +115,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>();
             services.AddTransient<IProfanityListProvider, ProfanityListProvider>();
             services.AddTransient<IBannedPhrasesProvider, BannedPhrasesProvider>();
-
-            // Query Data Providers
-            services.AddTransient<IVacancySummariesProvider, VacancySummariesProvider>();
 
             // Reference Data update services
             services.AddTransient<ITrainingProvidersUpdateService, TrainingProvidersUpdateService>();

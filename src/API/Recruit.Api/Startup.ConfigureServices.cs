@@ -17,8 +17,6 @@ using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Encoding;
 using SFA.DAS.Recruit.Api.Commands;
 using SFA.DAS.Recruit.Api.Configuration;
-using SFA.DAS.Recruit.Api.Mappers;
-using SFA.DAS.Recruit.Api.Services;
 
 namespace SFA.DAS.Recruit.Api
 {
@@ -28,7 +26,6 @@ namespace SFA.DAS.Recruit.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
-            services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
             services.Configure<RecruitConfiguration>(Configuration.GetSection("Recruit"));
             services.Configure<AzureActiveDirectoryConfiguration>(Configuration.GetSection("AzureAd"));
 
@@ -48,11 +45,8 @@ namespace SFA.DAS.Recruit.Api
             RegisterDasEncodingService(services, Configuration);
 
             services.AddRecruitStorageClient(Configuration);
-            
-            MongoDbConventions.RegisterMongoConventions();
 
             services.AddHealthChecks()
-                    .AddMongoDb(Configuration.GetConnectionString("MongoDb"))
                     .AddApplicationInsightsPublisher();
 
             services.AddApplicationInsightsTelemetry(Configuration);
