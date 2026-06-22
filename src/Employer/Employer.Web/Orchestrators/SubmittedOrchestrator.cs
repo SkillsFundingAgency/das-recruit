@@ -2,7 +2,6 @@
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
@@ -34,8 +33,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 isResubmit = review != null;
             }
 
-            var preferences = await _vacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
-
             var vm = new VacancySubmittedConfirmationViewModel
             {
                 VacancyId = vacancy.Id,
@@ -43,7 +40,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 Title = vacancy.Title,
                 VacancyReference = vacancy.VacancyReference?.ToString(),
                 IsResubmit = isResubmit,
-                HasNotificationsSet = preferences != null && preferences.NotificationTypes > NotificationTypes.None
             };
 
             return vm;

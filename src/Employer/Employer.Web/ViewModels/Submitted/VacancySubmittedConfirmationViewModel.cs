@@ -7,7 +7,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Submitted
         public string Title { get; set; }
         public string VacancyReference { get; set; }
         public bool IsResubmit { get; set; }
-        public bool HasNotificationsSet { get; set; }
 
         public bool HasVacancyReference => !string.IsNullOrEmpty(VacancyReference);
     }
