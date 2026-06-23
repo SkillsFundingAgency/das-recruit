@@ -16,7 +16,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         ILogger<UserSignedInCommandHandler> logger,
         IUserWriteRepository userWriteRepository,
         IUserRepository userRepository,
-        IUserNotificationPreferencesRepository userNotificationPreferencesRepository,
         ITimeProvider timeProvider,
         IRecruitQueueService queueService)
         : IRequestHandler<UserSignedInCommand, Unit>
@@ -50,21 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 CreatedDate = now,
                 DfEUserId = user.DfEUserId
             };
-
-            var userNotificationPreferences = userType == UserType.Provider 
-                ? await userNotificationPreferencesRepository.GetByDfeUserId(userEntity.DfEUserId) ?? await userNotificationPreferencesRepository.GetAsync(userEntity.IdamsUserId)
-                : await userNotificationPreferencesRepository.GetAsync(userEntity.IdamsUserId);
-
-            userNotificationPreferences ??= new UserNotificationPreferences
-            {
-                Id = userEntity.IdamsUserId,
-                NotificationTypes = userEntity.UserType == UserType.Provider
-                    ? NotificationTypes.VacancyRejectedByEmployer
-                    : NotificationTypes.VacancySentForReview,
-                NotificationScope = NotificationScope.OrganisationVacancies,
-                DfeUserId = userEntity.DfEUserId
-            };                                                        
-                                                                      
+                                                         
             userEntity.Name = user.Name;
             userEntity.LastSignedInDate = now;
             userEntity.Email = user.Email;
@@ -76,15 +61,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 {
                     userEntity.DfEUserId = user.DfEUserId;    
                 }
-
-                if (string.IsNullOrEmpty(userNotificationPreferences.DfeUserId)|| userEntity.DfEUserId != user.DfEUserId)
-                {
-                    userNotificationPreferences.DfeUserId = user.DfEUserId;
-                }
             }
 
             await userWriteRepository.UpsertUserAsync(userEntity);
-            await userNotificationPreferencesRepository.UpsertAsync(userNotificationPreferences);
 
             if (userType == UserType.Employer)
                 await queueService.AddMessageAsync(new UpdateEmployerUserAccountQueueMessage { IdamsUserId = user.UserId });

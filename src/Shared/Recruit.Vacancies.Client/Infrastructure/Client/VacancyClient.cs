@@ -38,8 +38,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IUserRepository userRepository,
         IEmployerService employerService,
         IProviderReportService providerReportService,
-        IUserNotificationPreferencesRepository userNotificationPreferencesRepository,
-        AbstractValidator<UserNotificationPreferences> userNotificationPreferencesValidator,
         AbstractValidator<Qualification> qualificationValidator,
         ITimeProvider timeProvider,
         ITrainingProviderService trainingProviderService,
@@ -599,22 +597,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             ValidationResult fluentResult = qualificationValidator.Validate(qualification);
             return EntityValidationResult.FromFluentValidationResult(fluentResult);
-        }
-        
-        public async Task<long> GetVacancyCount(string employerAccountId, FilteringOptions? filteringOptions, string searchTerm)
-        {
-            var ownerType = filteringOptions is FilteringOptions.NewSharedApplications or FilteringOptions.AllSharedApplications ? OwnerType.Provider : OwnerType.Employer;
-
-            var dashboardStats = await employerAccountProvider.GetEmployerDashboardStats(employerAccountId);
-
-            return filteringOptions switch
-            {
-                FilteringOptions.NewApplications => dashboardStats.NewApplicationsCount,
-                FilteringOptions.AllSharedApplications => dashboardStats.AllSharedApplicationsCount,
-                FilteringOptions.EmployerReviewedApplications => dashboardStats.EmployerReviewedApplicationsCount,
-                _ => await vacancySummariesQuery.VacancyCount(null, employerAccountId, filteringOptions, searchTerm,
-                    ownerType)
-            };
         }
     }
 }

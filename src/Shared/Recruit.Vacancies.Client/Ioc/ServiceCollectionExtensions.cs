@@ -157,7 +157,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<AbstractValidator<ApplicationReview>, ApplicationReviewValidator>();
             services.AddTransient<AbstractValidator<VacancyReview>, VacancyReviewValidator>();
 
-            services.AddTransient<AbstractValidator<UserNotificationPreferences>, UserNotificationPreferencesValidator>();
             services.AddTransient<AbstractValidator<Qualification>, QualificationValidator>();
         }
 

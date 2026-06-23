@@ -90,11 +90,6 @@ public class TitleOrchestratorTests
                 .Match<EmployerReviewFieldIndicator>((x) => x.IsChangeRequested == value);
         }
 
-        public void VerifyVacancyTotalRetrieved(string employerAccountId)
-        {
-            MockClient.Verify(x=>x.GetVacancyCount(employerAccountId, null, null), Times.Once);   
-        }
-
         public Mock<IEmployerVacancyClient> MockClient { get; set; }
         public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
     }
