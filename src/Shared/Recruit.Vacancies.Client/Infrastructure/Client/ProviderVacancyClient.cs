@@ -86,7 +86,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 NumberClosingSoonWithNoApplications = dashboardStats.ClosingSoonWithNoApplications,
                 ProviderTransferredVacanciesAlert = alerts.ProviderTransferredVacanciesAlert,
                 WithdrawnVacanciesAlert = alerts.WithdrawnVacanciesAlert,
-                TransferredVacancies = transferredVacancies
             };
         }
 
@@ -97,29 +96,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 trainingProviderService.GetProviderVacancies(Convert.ToInt32(ukprn), page, pageSize, sortColumn,
                     sortOrder, status ?? FilteringOptions.Dashboard, searchTerm);
             var alertsTask = trainingProviderService.GetProviderAlerts(Convert.ToInt32(ukprn), userId);
-            var transferredVacanciesTasks = vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn);
 
-            await Task.WhenAll(vacancySummariesTasks, alertsTask, transferredVacanciesTasks);
+            await Task.WhenAll(vacancySummariesTasks, alertsTask);
 
             var vacancySummariesResult = await vacancySummariesTasks;
             var alerts = await alertsTask;
 
             var vacancySummaries = vacancySummariesResult.VacancySummaries
                 .Where(c => !c.IsTraineeship).ToList();
-            var transferredVacancies = transferredVacanciesTasks.Result.Select(t =>
-                new ProviderDashboardTransferredVacancy
-                {
-                    LegalEntityName = t.LegalEntityName,
-                    TransferredDate = t.TransferredDate,
-                    Reason = t.Reason
-                });
 
             return new ProviderDashboard
             {
-                Id = QueryViewType.ProviderDashboard.GetIdValue(ukprn),
                 Vacancies = vacancySummaries,
-                TransferredVacancies = transferredVacancies,
-                LastUpdated = timeProvider.Now,
                 TotalVacancies = vacancySummariesResult.PageInfo.TotalCount,
                 WithdrawnVacanciesAlert = alerts.WithdrawnVacanciesAlert,
                 ProviderTransferredVacanciesAlert = alerts.ProviderTransferredVacanciesAlert,

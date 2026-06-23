@@ -2,78 +2,75 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Shared.Web.ViewModels.Alerts;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 
-namespace Esfa.Recruit.Provider.Web.Services
+namespace Esfa.Recruit.Provider.Web.Services;
+
+public class ProviderAlertsViewModelFactory(
+    AlertViewModelService alertViewModelService,
+    IProviderVacancyClient providerVacancyClient)
+    : IProviderAlertsViewModelFactory
 {
-    public class ProviderAlertsViewModelFactory : IProviderAlertsViewModelFactory
+    public async Task<AlertsViewModel> Create(User user)
     {
-        private readonly AlertViewModelService _alertViewModelService;
-        private readonly IProviderVacancyClient _providerVacancyClient;
+        if (user?.Ukprn == null)
+            throw new ArgumentNullException(nameof(user));
 
-        public ProviderAlertsViewModelFactory(AlertViewModelService alertViewModelService, IProviderVacancyClient providerVacancyClient)
-        {
-            _alertViewModelService = alertViewModelService;
-            _providerVacancyClient = providerVacancyClient;
-        }
-        public async Task<AlertsViewModel> Create(User user)
-        {
-            if (user?.Ukprn == null)
-                throw new ArgumentNullException(nameof(user));
+        var vacancies = await providerVacancyClient.GetDashboardAsync(user.Ukprn.Value, "", 1, 25, "", "", FilteringOptions.Closed, null);
 
-            var vacancies = await _providerVacancyClient.GetDashboardAsync(user.Ukprn.Value, "", 1, 25, "", "", FilteringOptions.Closed, null);
+        var transferredVacanciesAlert = new ProviderTransferredVacanciesAlertViewModel
+        {
+            LegalEntityNames = vacancies.ProviderTransferredVacanciesAlert.LegalEntityNames
+        };
             
-            var transferredVacanciesAlert = _alertViewModelService.GetProviderTransferredVacanciesAlert(
-                vacancies.TransferredVacancies,
-                user.TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn);
-            var withdrawnByQaVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(
-                vacancies.Vacancies,
-                user.ClosedVacanciesWithdrawnByQaAlertDismissedOn);
+        var withdrawnByQaVacanciesAlert = alertViewModelService.GetWithdrawnByQaVacanciesAlert(
+            vacancies.Vacancies,
+            user.ClosedVacanciesWithdrawnByQaAlertDismissedOn);
 
-            if (user.Ukprn.HasValue)
+        if (user.Ukprn.HasValue)
+        {
+            if (transferredVacanciesAlert is not null)
             {
-                if (transferredVacanciesAlert != null)
-                {
-                    transferredVacanciesAlert.Ukprn = user.Ukprn.Value;    
-                    
-                }
-                if (withdrawnByQaVacanciesAlert != null)
-                {
-                    withdrawnByQaVacanciesAlert.Ukprn = user.Ukprn.Value;    
-                }
+                transferredVacanciesAlert.Ukprn = user.Ukprn.Value;    
             }
-            
-            return new AlertsViewModel(transferredVacanciesAlert, withdrawnByQaVacanciesAlert, user.Ukprn);
-        }
-        public AlertsViewModel Create(ProviderDashboard providerDashboard, User user)
-        {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
-
-            var transferredVacanciesAlert = _alertViewModelService.GetProviderTransferredVacanciesAlert(
-                providerDashboard?.TransferredVacancies ?? Array.Empty<ProviderDashboardTransferredVacancy>(),
-                user.TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn);
-            var withdrawnByQaVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(
-                providerDashboard?.Vacancies ?? Array.Empty<VacancySummary>(),
-                user.ClosedVacanciesWithdrawnByQaAlertDismissedOn);
-
-            if (user.Ukprn.HasValue)
+            if (withdrawnByQaVacanciesAlert != null)
             {
-                if (transferredVacanciesAlert != null)
-                {
-                    transferredVacanciesAlert.Ukprn = user.Ukprn.Value;    
-                    
-                }
-                if (withdrawnByQaVacanciesAlert != null)
-                {
-                    withdrawnByQaVacanciesAlert.Ukprn = user.Ukprn.Value;    
-                }
+                withdrawnByQaVacanciesAlert.Ukprn = user.Ukprn.Value;    
             }
-            
-            return new AlertsViewModel(transferredVacanciesAlert, withdrawnByQaVacanciesAlert, user.Ukprn);
         }
+            
+        return new AlertsViewModel(transferredVacanciesAlert, withdrawnByQaVacanciesAlert, user.Ukprn);
+    }
+    public AlertsViewModel Create(ProviderDashboard providerDashboard, User user)
+    {
+        if (user == null)
+            throw new ArgumentNullException(nameof(user));
+
+        var transferredVacanciesAlert = new ProviderTransferredVacanciesAlertViewModel
+        {
+            LegalEntityNames = providerDashboard.ProviderTransferredVacanciesAlert?.LegalEntityNames ?? [],
+        };
+
+        var withdrawnByQaVacanciesAlert = alertViewModelService.GetWithdrawnByQaVacanciesAlert(
+            providerDashboard?.Vacancies ?? Array.Empty<VacancySummary>(),
+            user.ClosedVacanciesWithdrawnByQaAlertDismissedOn);
+
+        if (user.Ukprn.HasValue)
+        {
+            if (transferredVacanciesAlert is not null)
+            {
+                transferredVacanciesAlert.Ukprn = user.Ukprn.Value;    
+            }
+            if (withdrawnByQaVacanciesAlert != null)
+            {
+                withdrawnByQaVacanciesAlert.Ukprn = user.Ukprn.Value;    
+            }
+        }
+            
+        return new AlertsViewModel(transferredVacanciesAlert, withdrawnByQaVacanciesAlert, user.Ukprn);
     }
 }
