@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
-using Esfa.Recruit.Vacancies.Client.Domain.Reports;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Reports;
@@ -61,41 +59,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             await AssignVacancyNumber(id);
         }
-
-        public async Task<long> GetVacancyCount(long ukprn, FilteringOptions? filteringOptions, string searchTerm)
-        {
-            var dashboardStatsTask = await trainingProviderService.GetProviderDashboardStats(ukprn, string.Empty);
-
-            switch (filteringOptions)
-            {
-                case FilteringOptions.NewApplications:
-                    return dashboardStatsTask.NewApplicationsCount;
-                case FilteringOptions.AllSharedApplications:
-                    return dashboardStatsTask.AllSharedApplicationsCount;
-                case FilteringOptions.EmployerReviewedApplications:
-                    return dashboardStatsTask.EmployerReviewedApplicationsCount;
-                default:
-                    return await vacancySummariesQuery.VacancyCount(ukprn, string.Empty, filteringOptions, searchTerm,
-                        OwnerType.Provider);
-            }
-        }
-
+        
         public async Task<ProviderDashboardSummary> GetDashboardSummary(long ukprn, string userId)
         {
-            var transferredVacanciesTask = vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn);
             var dashboardStatsTask = trainingProviderService.GetProviderDashboardStats(ukprn, userId);
             var alertsTask = trainingProviderService.GetProviderAlerts(Convert.ToInt32(ukprn), userId);
 
-            await Task.WhenAll(transferredVacanciesTask, alertsTask, dashboardStatsTask);
+            await Task.WhenAll(alertsTask, dashboardStatsTask);
             var alerts = await alertsTask;
-
-            var transferredVacancies = transferredVacanciesTask.Result.Select(t =>
-                new ProviderDashboardTransferredVacancy
-                {
-                    LegalEntityName = t.LegalEntityName,
-                    TransferredDate = t.TransferredDate,
-                    Reason = t.Reason
-                });
+            
             var dashboardStats = dashboardStatsTask.Result;
 
             return new ProviderDashboardSummary
