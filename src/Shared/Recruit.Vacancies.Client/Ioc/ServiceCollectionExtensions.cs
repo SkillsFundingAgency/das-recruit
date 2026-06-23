@@ -99,6 +99,10 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IEmployerService, EmployerService>();
             services.AddHttpClient<IExternalWebsiteHealthCheckService, ExternalWebsiteHealthCheckService>();
 
+            //Reporting Service
+            services.AddTransient<ICsvBuilder, CsvBuilder>();
+            services.AddTransient<IReportService, ReportService>();
+            
             // Infrastructure Services
             services.AddTransient<IEmployerAccountProvider, EmployerAccountProvider>();
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();

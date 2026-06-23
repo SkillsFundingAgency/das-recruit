@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services.Reports;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
@@ -43,7 +44,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         ITrainingProviderService trainingProviderService,
         IProviderRelationshipsService providerRelationshipsService,
         IVacancyAnalyticsService vacancyAnalyticsService,
-        IApplicationReadRepository applicationReadRepository)
+        IApplicationReadRepository applicationReadRepository,
+        IReportService reportService)
         : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
