@@ -100,7 +100,6 @@ jobs:
 - deployment: DeployEmployerWeb
   dependsOn:
   - DeployInfrastructure
-  - DeployApi
   workspace:
     clean: all
   pool:
@@ -129,7 +128,6 @@ jobs:
 - deployment: DeployProviderWeb
   dependsOn:
   - DeployInfrastructure
-  - DeployApi
   workspace:
     clean: all
   pool:
