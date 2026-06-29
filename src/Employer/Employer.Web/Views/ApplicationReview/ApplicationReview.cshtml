@@ -298,6 +298,17 @@
                                 Send a notification to the applicant telling them they won't be offered this apprenticeship.
                             </div>
                         </div>
+                        <div esfa-validation-marker-for="CandidateFeedback" id="unsuccessful-candidate-feedback" class="govuk-radios__conditional govuk-radios__conditional--hidden">
+                            <div class="govuk-character-count" id="conditional-contact-3" data-module="govuk-character-count" data-maxwords="200">
+                                <label asp-for="CandidateFeedback" class="govuk-label govuk-!-font-weight-bold">Feedback</label>
+                                <span esfa-validation-message-for="CandidateFeedback" class="govuk-error-message"></span>
+                                <span class="govuk-hint">@Model.FormRadioButtonNoFeedbackText</span>
+                                <textarea asp-for="CandidateFeedback" class="govuk-textarea govuk-js-character-count govuk-!-margin-top-4" id="CandidateFeedback" name="CandidateFeedback" rows="6"></textarea>
+                                <div id="CandidateFeedbackEmployerUnsuccessful-info" class="govuk-hint govuk-character-count__message">
+                                    You have 200 words remaining
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </fieldset>
             </div>
