@@ -50,7 +50,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
             var m = new ApplicationReviewEditModel
             {
                 Outcome = ApplicationReviewStatus.EmployerUnsuccessful,
-                CandidateFeedback = candidateFeedback
+                CandidateFeedback = candidateFeedback,
+                IsApplicationSharedByProvider = true
             };
 
             var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
@@ -84,7 +85,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
         {
             var m = new ApplicationReviewEditModel {
                 Outcome = ApplicationReviewStatus.EmployerUnsuccessful,
-                CandidateFeedback = "?$@#()\"\'\\!,+-=_:;.&€£*%/[] \\A-Z \a-z \0-9 your comments will be sent to the candidate."
+                CandidateFeedback = "?$@#()\"\'\\!,+-=_:;.&€£*%/[] \\A-Z \a-z \0-9 your comments will be sent to the candidate.",
+                IsApplicationSharedByProvider = true
             };
 
             var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
@@ -103,7 +105,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
             var m = new ApplicationReviewEditModel
             {
                 Outcome = outcome,
-                CandidateFeedback = feedback
+                CandidateFeedback = feedback,
+                IsApplicationSharedByProvider = true
             };
 
             var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);

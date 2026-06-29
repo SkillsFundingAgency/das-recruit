@@ -364,7 +364,6 @@
                         <h3 class="govuk-heading-m govuk-!-margin-top-6">What do you want to do with this application?</h3>
                     </legend>
                     <span esfa-validation-message-for="Outcome" class="govuk-error-message"></span>
-                    <input type="hidden" asp-for="NavigateToFeedbackPage" value="true" />
                     <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
                         <div asp-show="@Model.CanShowRadioButtonReview" class="govuk-radios__item">
                             <input asp-for="Outcome" class="govuk-radios__input" id="outcome-reviewed" type="radio" value="@ApplicationReviewStatus.InReview.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.InReview ? "checked" : null)">

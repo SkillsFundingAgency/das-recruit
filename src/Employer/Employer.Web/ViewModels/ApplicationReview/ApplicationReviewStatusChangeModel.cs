@@ -8,5 +8,5 @@ public class ApplicationReviewStatusChangeModel : ApplicationReviewRouteModel, I
 {
     public ApplicationReviewStatus? Outcome { get; set; }
     public string CandidateFeedback { get; set; }
-    public bool NavigateToFeedbackPage { get; set; }
+    public bool IsApplicationSharedByProvider { get; set; }
 }
