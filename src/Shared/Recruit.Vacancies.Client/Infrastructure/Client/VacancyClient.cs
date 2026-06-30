@@ -12,7 +12,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
@@ -23,7 +22,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Report;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancyAnalytics;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 using FluentValidation;
 using FluentValidation.Results;
 
@@ -40,17 +38,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IEmployerProfileService employerProfileService,
         IUserRepository userRepository,
         IEmployerService employerService,
-        IReportService reportService,
         IProviderReportService providerReportService,
-        IUserNotificationPreferencesRepository userNotificationPreferencesRepository,
-        AbstractValidator<UserNotificationPreferences> userNotificationPreferencesValidator,
         AbstractValidator<Qualification> qualificationValidator,
-        IVacancySummariesProvider vacancySummariesQuery,
         ITimeProvider timeProvider,
         ITrainingProviderService trainingProviderService,
         IProviderRelationshipsService providerRelationshipsService,
         IVacancyAnalyticsService vacancyAnalyticsService,
-        IApplicationReadRepository applicationReadRepository)
+        IApplicationReadRepository applicationReadRepository,
+        IReportService reportService)
         : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -217,9 +212,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             return new EmployerDashboard
             {
-                Id = QueryViewType.EmployerDashboard.GetIdValue(employerAccountId),
                 Vacancies = vacancySummaries.VacancySummaries,
-                LastUpdated = timeProvider.Now,
                 TotalVacancies = vacancySummaries.PageInfo.TotalCount,
                 BlockedProviderAlert = alerts.BlockedProviderAlert,
                 BlockedProviderTransferredVacanciesAlert = alerts.BlockedProviderTransferredVacanciesAlert,
@@ -250,9 +243,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             var legalEntities = await employerAccountProvider.GetEmployerLegalEntitiesAsync(employerAccountId);
             return new EmployerEditVacancyInfo
             {
-                Id = QueryViewType.EditVacancyInfo.GetIdValue(employerAccountId),
                 LegalEntities = legalEntities,
-                LastUpdated = timeProvider.Now
             };
         }
 
@@ -591,40 +582,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 analyticsByDate.TryGetValue(date, out var v) ? selector(v) : 0;
         }
 
-        public async Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string idamsUserId, string dfeUserId = null)
-        {
-            var preferences = await userNotificationPreferencesRepository.GetAsync(idamsUserId);
-
-            if (dfeUserId != null)
-            {
-                return preferences;
-            }
-            
-            return preferences ?? new UserNotificationPreferences { Id = idamsUserId};
-        }
-        
-        public async Task<UserNotificationPreferences> GetUserNotificationPreferencesByDfEUserIdAsync(string idamsUserId, string dfeUserId = null)
-        {
-            var preferences = await userNotificationPreferencesRepository.GetByDfeUserId(dfeUserId) 
-                              ?? await GetUserNotificationPreferencesAsync(idamsUserId, dfeUserId);
-
-            return preferences ?? new UserNotificationPreferences() { Id = idamsUserId ,DfeUserId = dfeUserId};
-        }
-
-        public Task UpdateUserNotificationPreferencesAsync(UserNotificationPreferences preferences)
-        {
-            return messaging.SendCommandAsync(new UpdateUserNotificationPreferencesCommand
-            {
-                UserNotificationPreferences = preferences
-            });
-        }
-
-        public EntityValidationResult ValidateUserNotificationPreferences(UserNotificationPreferences preferences)
-        {
-            var fluentResult = userNotificationPreferencesValidator.Validate(preferences);
-            return EntityValidationResult.FromFluentValidationResult(fluentResult);
-        }
-
         public Task UpdateUserAccountAsync(string idamsUserId)
         {
             return messaging.SendCommandAsync(new UpdateUserAccountCommand
@@ -642,22 +599,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             ValidationResult fluentResult = qualificationValidator.Validate(qualification);
             return EntityValidationResult.FromFluentValidationResult(fluentResult);
-        }
-        
-        public async Task<long> GetVacancyCount(string employerAccountId, FilteringOptions? filteringOptions, string searchTerm)
-        {
-            var ownerType = filteringOptions is FilteringOptions.NewSharedApplications or FilteringOptions.AllSharedApplications ? OwnerType.Provider : OwnerType.Employer;
-
-            var dashboardStats = await employerAccountProvider.GetEmployerDashboardStats(employerAccountId);
-
-            return filteringOptions switch
-            {
-                FilteringOptions.NewApplications => dashboardStats.NewApplicationsCount,
-                FilteringOptions.AllSharedApplications => dashboardStats.AllSharedApplicationsCount,
-                FilteringOptions.EmployerReviewedApplications => dashboardStats.EmployerReviewedApplicationsCount,
-                _ => await vacancySummariesQuery.VacancyCount(null, employerAccountId, filteringOptions, searchTerm,
-                    ownerType)
-            };
         }
     }
 }

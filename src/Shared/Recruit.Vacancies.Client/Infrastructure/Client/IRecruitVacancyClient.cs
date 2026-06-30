@@ -32,10 +32,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task UpdateEmployerProfileAsync(EmployerProfile employerProfile);
         Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference);
         Task<Domain.Entities.User> GetUsersDetailsAsync(string userId);
-        Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string vacancyUserId, string dfeUserId = null);
-        Task<UserNotificationPreferences> GetUserNotificationPreferencesByDfEUserIdAsync(string idamsUserId, string dfeUserId = null);
-        Task UpdateUserNotificationPreferencesAsync(UserNotificationPreferences preferences);
-        EntityValidationResult ValidateUserNotificationPreferences(UserNotificationPreferences preferences);
         Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email);
         EntityValidationResult ValidateQualification(Qualification qualification);
         Task CloseVacancyAsync(Guid vacancyId, VacancyUser user, ClosureReason reason);

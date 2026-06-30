@@ -20,7 +20,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             long ukprn,
             string userId,
             GetProviderDashboardApiResponse apiResponse,
-            [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
             [Frozen] Mock<ITrainingProviderService> trainingProviderService,
             VacancyClient vacancyClient)
         {
@@ -56,18 +55,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public async Task Then_Model_Values_Set_For_No_Vacancies(
             long ukprn,
             string userId,
-            [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
             [Frozen] Mock<ITrainingProviderService> trainingProviderService,
             VacancyClient vacancyClient)
         {
-            vacanciesSummaryProvider.Setup(x => x.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn)).ReturnsAsync(new VacancyDashboard
-            {
-                VacancyApplicationsDashboard = [],
-                VacancyStatusDashboard = [],
-                VacanciesClosingSoonWithNoApplications = 0,
-                VacancySharedApplicationsDashboard = [],
-            });
-
             trainingProviderService.Setup(x => x.GetProviderDashboardStats(ukprn, userId)).ReturnsAsync(new GetProviderDashboardApiResponse()
             {
                 NewApplicationsCount = 0,
@@ -82,28 +72,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             actual.HasOneVacancy.Should().BeFalse();
             actual.HasApplications.Should().BeFalse();
             actual.NumberOfVacancies.Should().Be(0);
-        }
-
-
-        [Test, MoqAutoData]
-        public async Task Then_Gets_DashboardSummary_With_TransferredVacancies(
-            List<TransferInfo> transferredVacancies,
-            long ukprn,
-            string userId,
-            [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
-            VacancyClient vacancyClient)
-        {
-            vacanciesSummaryProvider.Setup(x => x.GetTransferredFromProviderAsync(ukprn)).ReturnsAsync(transferredVacancies);
-
-            var actual = await vacancyClient.GetDashboardSummary(ukprn, userId);
-
-            actual.TransferredVacancies.Should().BeEquivalentTo(transferredVacancies.Select(t =>
-                new ProviderDashboardTransferredVacancy
-                {
-                    LegalEntityName = t.LegalEntityName,
-                    TransferredDate = t.TransferredDate,
-                    Reason = t.Reason
-                }));
         }
     }
 }
