@@ -771,3 +771,7 @@ dd.govuk-summary-list__value .faa-user-content:first-child {
     .raa-archive-card .raa-archive-card-heading {
         margin-top: 40px !important;
     }
+
+.border-bottom-none {
+    border-bottom: none !important;
+}
