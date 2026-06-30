@@ -450,6 +450,7 @@ function inViewport($el) {
 
 function initializeHtmlEditors() {
   tinymce.init({
+    browser_spellcheck: true,
     element_format: "html",
     apply_source_formatting: true,
     menubar: false,
