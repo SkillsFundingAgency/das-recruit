@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -18,8 +17,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
     [Authorize(Policy = nameof(PolicyNames.HasEmployerOwnerOrTransactorAccount))]
-    public class VacancyManageController(
-        VacancyManageOrchestrator orchestrator,
+    public class VacancyManageController(VacancyManageOrchestrator orchestrator,
         IWebHostEnvironment hostingEnvironment,
         IUtility utility)
         : Controller
@@ -125,13 +123,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             Response.Cookies.ClearProposedStartDate(hostingEnvironment, vacancyId);
         }
 
-        private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
-        {
-            if (utility.IsTaskListCompleted(vacancy))
-            {
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {VacancyId = vacancy.Id, vacancy.EmployerAccountId});
-            }
-            return RedirectToRoute(RouteNames.EmployerTaskListGet, new {VacancyId = vacancy.Id, vacancy.EmployerAccountId});
-        }
+        private RedirectToRouteResult HandleRedirectOfEditableVacancy(Vacancy vacancy) =>
+            RedirectToRoute(utility.IsTaskListCompleted(vacancy) 
+                ? RouteNames.EmployerCheckYourAnswersGet 
+                : RouteNames.EmployerTaskListGet, new {VacancyId = vacancy.Id, vacancy.EmployerAccountId});
     }
 }

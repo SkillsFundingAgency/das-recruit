@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 EmployerAccountId = vacancy.EmployerAccountId,
                 Title = vacancy.Title,
                 Status = vacancy.Status,
-                VacancyReference = vacancy.VacancyReference.Value.ToString()
+                VacancyReference = vacancy.VacancyReference.GetValueOrDefault().ToString()
             };
 
             viewModel.ClosingDate = viewModel.Status == VacancyStatus.Closed ? vacancy.ClosedDate?.AsGdsDate() : vacancy.ClosingDate?.AsGdsDate();
@@ -83,7 +83,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             if (vacancy.CanEmployerReviewApplications && vacancyApplications is { Count: 0 })
             {
-                //If there are no applications the employer user shouldnt be here
+                //If there are no applications the employer user shouldn't be here
                 throw new AuthorisationException(string.Format(ExceptionMessages.UserIsNotTheOwner, OwnerType.Employer));
             }
             
