@@ -130,9 +130,11 @@
                     <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Make multiple applications unsuccessful</a>
                 </p>
             </div>
-            <p class="govuk-body govuk-hint">
-                <label asp-show="@Model.IsDisabilityConfident" class="govuk-label govuk-inset-text">@Model.EmployerName is signed up to the <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in new tab)">Disability Confident scheme (opens in new tab).</a></label>
-            </p>
+            <div class="govuk-body govuk-hint">
+                <p asp-show="@Model.IsDisabilityConfident" class="govuk-label govuk-inset-text">
+                    @Model.EmployerName is signed up to the <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in new tab)">Disability Confident scheme (opens in new tab).</a>
+                </p>
+            </div>
         </div>
         <div class="govuk-grid-column-one-third" asp-show="Model.Applications is {CanShowLocationFilter: true}">
             <form method="get" autocomplete="off">
@@ -162,7 +164,7 @@
     <div asp-show="@(Model.IsApplyThroughFaaVacancy || Model.IsApplyThroughFatVacancy)">
         <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications" />
         <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">
-            <govuk-inset>
+            <govuk-inset asp-show="@Model.CanShowNoApplicationsInsetText">
                 Applications will be displayed here once you start receiving them.
             </govuk-inset>
         </p>

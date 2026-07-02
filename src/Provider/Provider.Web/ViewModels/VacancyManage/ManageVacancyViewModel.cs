@@ -18,6 +18,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public VacancyApplicationsViewModel Applications { get; internal set; }
         public bool HasApplications => TotalUnfilteredApplicationsCount > 0;
         public bool HasNoApplications => TotalUnfilteredApplicationsCount == 0;
+        public bool CanShowNoApplicationsInsetText => !IsVacancyArchived && !IsVacancyClosed && !IsVacancyRejected;
         public int TotalUnfilteredApplicationsCount => Applications?.TotalUnfilteredApplicationsCount ?? 0;
         public bool CanShowEditVacancyLink { get; internal set; }
         public bool CanShowCloseVacancyLink { get; internal set; }
@@ -36,6 +37,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public bool IsVacancyLive => Status == VacancyStatus.Live;
         public bool IsVacancyClosed => Status == VacancyStatus.Closed;
         public bool IsVacancyArchived => Status == VacancyStatus.Archived;
+        public bool IsVacancyRejected => Status == VacancyStatus.Rejected;
         public string WithdrawnDate { get; internal set; }
         public bool IsWithdrawn => !string.IsNullOrEmpty(WithdrawnDate);
         public bool IsApplyThroughFatVacancy { get; internal set; }

@@ -198,8 +198,8 @@
                     Applications (@Model.TotalUnfilteredApplicationsCount)
                 </h2>
             </div>
-            <p class="govuk-body govuk-hint">
-                <label asp-show="@Model.IsDisabilityConfident" class="govuk-label govuk-inset-text">
+            <div class="govuk-body govuk-hint">
+                <p asp-show="@Model.IsDisabilityConfident" class="govuk-label govuk-inset-text">
                     You are signed up to the
                     <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link"
                        rel="noopener" target="_blank"
@@ -207,8 +207,8 @@
                         Disability Confident
                         scheme (opens in new tab).
                     </a>
-                </label>
-            </p>
+                </p>
+            </div>
         </div>
         <div class="govuk-grid-column-one-third" asp-show="Model.Applications is { CanShowLocationFilter: true }">
             <form method="get" autocomplete="off">
@@ -241,7 +241,7 @@
         <div asp-show="@Model.ShowEmployerApplications">
             <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications" />
             <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">
-                <govuk-inset>
+                <govuk-inset asp-show="@Model.CanShowNoApplicationsInsetText">
                     Applications will be displayed here once you start receiving them.
                 </govuk-inset>
             </p>
