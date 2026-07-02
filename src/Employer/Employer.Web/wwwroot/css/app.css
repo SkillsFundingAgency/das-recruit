@@ -685,3 +685,7 @@ dd.govuk-summary-list__value .faa-user-content:first-child {
     flex-direction: row-reverse;
     justify-content: space-between;
 }
+
+.border-bottom-none {
+    border-bottom: none !important;
+}

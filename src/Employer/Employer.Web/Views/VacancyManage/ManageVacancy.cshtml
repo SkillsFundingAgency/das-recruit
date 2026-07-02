@@ -68,34 +68,25 @@
                 @Model.EmployerReviewedApplicationHeaderMessage
             </p>
         </div>
-        <h1 class="govuk-heading-xl govuk-!-margin-top-6 govuk-!-margin-bottom-6" id="vacancy-header">
-            Manage Advert
-        </h1>
         <govuk-tag-foundation asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-!-margin-bottom-4"/>
         <h1 class="govuk-heading-l">@Model.Title</h1>
         <p class="govuk-body-l">Advert reference: VAC@(Model.VacancyReference)</p>
-        
-        <p asp-show="@(Model.Status == VacancyStatus.Submitted)" class="govuk-body">
-            This advert has been sent to us for review. We’ll tell you within 1 working day if you need to make any edits to this advert.
-        </p>
-
         <p asp-show="@Model.IsTransferred" class="govuk-inset-text">
             This advert was created by
             <span class="govuk-!-font-weight-bold">@Model.TransferredProviderName</span>
             and transferred to your account on @Model.TransferredOnDate
         </p>
-
         <p asp-show="@Model.IsWithdrawn" class="govuk-inset-text">
             This advert has issues and was closed on @Model.WithdrawnDate.
         </p>
-
         <p asp-show="@Model.IsClosedBlockedByQa" class="govuk-inset-text">
             This advert was closed on @Model.ClosingDate because the training provider is no longer able to manage or
             recruit apprentices.
         </p>
-
         <h2 class="govuk-heading-m">Advert summary</h2>
-
+        <p asp-show="@(Model.Status == VacancyStatus.Submitted)" class="govuk-body">
+            This advert has been sent for review. We’ll let you know within 1 working day if you need to make changes.
+        </p>
         <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -110,7 +101,7 @@
                 </dd>
             </div>
 
-            <div class="govuk-summary-list__row">
+            <div class="govuk-summary-list__row border-bottom-none">
                 <dt class="govuk-summary-list__key">
                     Closing date
                     <br>
@@ -147,79 +138,129 @@
                 Closed adverts can be archived when all applicants have received their outcome. You can clone an archived advert to advertise it again.
             </div>
         </govuk-inset>
+        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
         <div asp-show="@Model.CanShowVacancyAnalytics">
-            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
             <h2 class="govuk-heading-m">
                 Advert analytics
             </h2>
-            <p>To see how many people have looked at your advert, <a asp-route="@RouteNames.VacancyAnalytics_Get"
-                    asp-all-route-data="@Model.RouteDictionary" class="govuk-link">view advert analytics</a>.</p>
+            <p>
+                To see how many people have looked at your advert, <a asp-route="@RouteNames.VacancyAnalytics_Get"
+                    asp-all-route-data="@Model.RouteDictionary" class="govuk-link">view advert analytics</a>.
+            </p>
         </div>
         <hr asp-show="@Model.CanShowVacancyAnalytics"
             class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
     </div>
 </div>
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <div>
-            <h2 asp-show="@Model.ShowEmployerApplications" class="govuk-heading-m">
-                Applications (@Model.TotalUnfilteredApplicationsCount)
-            </h2>
-        </div>
-        <div asp-show="@Model.IsApplyThroughFaaVacancy">
-            <div asp-show="@Model.ShowSharedApplications" class="govuk-grid-column-full">
-                <div asp-show="Model.CanShowApplicationReviewStatusHeader"
-                    class="govuk-notification-banner govuk-notification-banner--success" role="alert"
-                    aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-                    <div class="govuk-notification-banner__header">
-                        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                            Done
-                        </h2>
-                    </div>
-                    <div class="govuk-notification-banner__content">
-                        <h3 class="govuk-notification-banner__heading">
-                            @Model.EmployerReviewedApplicationHeaderMessage
-                        </h3>
-                        <p class="govuk-body">@Model.EmployerReviewedApplicationBodyMessage</p>
+@if (Model.CanShowApplicationsSection)
+{
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div>
+                <h2 asp-show="@Model.ShowEmployerApplications" class="govuk-heading-m">
+                    Applications (@Model.TotalUnfilteredApplicationsCount)
+                </h2>
+            </div>
+            <div asp-show="@Model.IsApplyThroughFaaVacancy">
+                <div asp-show="@Model.ShowSharedApplications" class="govuk-grid-column-full">
+                    <div asp-show="Model.CanShowApplicationReviewStatusHeader"
+                         class="govuk-notification-banner govuk-notification-banner--success" role="alert"
+                         aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                        <div class="govuk-notification-banner__header">
+                            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                                Done
+                            </h2>
+                        </div>
+                        <div class="govuk-notification-banner__content">
+                            <h3 class="govuk-notification-banner__heading">
+                                @Model.EmployerReviewedApplicationHeaderMessage
+                            </h3>
+                            <p class="govuk-body">@Model.EmployerReviewedApplicationBodyMessage</p>
+                        </div>
                     </div>
                 </div>
+                <govuk-tag-foundation asp-show="@(Model.ApprenticeshipType.IsFoundation() && Model.ShowSharedApplications)" class="govuk-!-margin-bottom-4" />
+                <span asp-show="@Model.ShowSharedApplications" class="govuk-caption-l">Shared applications</span>
+                <h1 asp-show="@Model.ShowSharedApplications" class="govuk-heading-l">@Model.Title</h1>
+                <p class="govuk-body" asp-show="@Model.CanShowMultipleApplicationsUnsuccessfulLink">
+                    <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get"
+                       asp-all-route-data="@Model.RouteDictionary"
+                       class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">
+                        Make multiple applications
+                        unsuccessful
+                    </a>
+                </p>
+                <p asp-show="@Model.ShowSharedApplications" class="govuk-body govuk-!-margin-bottom-4 govuk-!-margin-top-4">
+                    Each application is anonymised. If you decide to interview the applicant, you will be able to see their
+                    name and contact information.
+                </p>
+                <h2 asp-show="@Model.ShowSharedApplications" class="govuk-heading-m">
+                    Applications (@Model.TotalUnfilteredApplicationsCount)
+                </h2>
             </div>
-
-            <govuk-tag-foundation asp-show="@(Model.ApprenticeshipType.IsFoundation() && Model.ShowSharedApplications)" class="govuk-!-margin-bottom-4"/>
-            
-            <span asp-show="@Model.ShowSharedApplications" class="govuk-caption-l">Shared applications</span>
-            <h1 asp-show="@Model.ShowSharedApplications" class="govuk-heading-l">@Model.Title</h1>
-            
-            <p class="govuk-body" asp-show="@Model.CanShowMultipleApplicationsUnsuccessfulLink">
-                <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get"
-                    asp-all-route-data="@Model.RouteDictionary"
-                    class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Make multiple applications
-                    unsuccessful</a>
+            <p class="govuk-body govuk-hint">
+                <label asp-show="@Model.IsDisabilityConfident" class="govuk-label govuk-inset-text">
+                    You are signed up to the
+                    <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link"
+                       rel="noopener" target="_blank"
+                       title="Disability Confident employer scheme and guidance (opens in new tab)">
+                        Disability Confident
+                        scheme (opens in new tab).
+                    </a>
+                </label>
             </p>
-            <p asp-show="@Model.ShowSharedApplications" class="govuk-body govuk-!-margin-bottom-4 govuk-!-margin-top-4">
-                Each application is anonymised. If you decide to interview the applicant, you will be able to see their
-                name and contact information.</p>
-            <h2 asp-show="@Model.ShowSharedApplications" class="govuk-heading-m">
-                Applications (@Model.TotalUnfilteredApplicationsCount)
-            </h2>
         </div>
-        <p class="govuk-body govuk-hint">
-            <label asp-show="@Model.IsDisabilityConfident" class="govuk-label govuk-inset-text">You are signed up to the
-                <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link"
-                    rel="noopener" target="_blank"
-                    title="Disability Confident employer scheme and guidance (opens in new tab)">Disability Confident
-                    scheme (opens in new tab)</a>.</label>
-        </p>
+        <div class="govuk-grid-column-one-third" asp-show="Model.Applications.CanShowLocationFilter">
+            <form method="get" autocomplete="off">
+                <div class="govuk-grid-row">
+                    <div class="govuk-form-group">
+                        <label class="govuk-label" for="locationFilter">Filter by location</label>
+                        <select class="govuk-select"
+                                id="locationFilter"
+                                name="locationFilter"
+                                data-ays-ignore="true">
+                            <option value="All">All locations</option>
+                            @foreach (var location in Model.Applications.EmploymentLocations)
+                            {
+                                if (location == Model.Applications.SelectedLocation)
+                                {
+                                    <option value="@location" selected>@location</option>
+                                }
+                                else
+                                {
+                                    <option value="@location">@location</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
-
-<div asp-show="@Model.IsApplyThroughFaaVacancy">
-    <div asp-show="@Model.ShowEmployerApplications">
-        <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable"
-                 for="Applications" />
-        <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">No applications for this apprenticeship have been received.</p>
+    <div asp-show="@Model.IsApplyThroughFaaVacancy">
+        <div asp-show="@Model.ShowEmployerApplications">
+            <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications" />
+            <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">
+                <govuk-inset>
+                    Applications will be displayed here once you start receiving them.
+                </govuk-inset>
+            </p>
+        </div>
+        <partial asp-show="@Model.ShowSharedApplications" name="@PartialNames.VacancySharedApplicationsTable" for="Applications" />
     </div>
-    <partial asp-show="@Model.ShowSharedApplications" name="@PartialNames.VacancySharedApplicationsTable"
-        for="Applications" />
-</div>
+}
+else
+{
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div>
+                <h2 class="govuk-heading-m">
+                    Applications
+                </h2>
+            </div>
+            <govuk-inset>
+                Applications will be displayed here once the vacancy is live and applications have been received.
+            </govuk-inset>
+        </div>
+    </div>
+}

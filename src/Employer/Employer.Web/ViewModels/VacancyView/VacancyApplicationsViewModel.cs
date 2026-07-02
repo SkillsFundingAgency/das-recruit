@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
@@ -17,10 +18,10 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public string? SelectedLocation { get; set; }
         public int TotalUnfilteredApplicationsCount { get; set; } = 0;
         public int TotalFilteredApplicationsCount { get; set; } = 0;
-
         public string FilteredApplicationsLabelText => TotalFilteredApplicationsCount == 1
-            ? "1 Application"
-            : $"{TotalFilteredApplicationsCount} Applications";
+            ? $"1 result for '{SelectedLocation}'"
+            : $"{TotalFilteredApplicationsCount} results for '{SelectedLocation}'";
+        public bool ShowFilteredApplicationsLabelText => !string.IsNullOrEmpty(SelectedLocation) && !string.Equals(SelectedLocation, "All", StringComparison.InvariantCultureIgnoreCase);
 
         public bool HasApplications => Applications != null && Applications.Any();
         public bool HasNoApplications => !HasApplications;

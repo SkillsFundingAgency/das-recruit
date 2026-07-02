@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
@@ -20,16 +21,18 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyView
         public int TotalFilteredApplicationsCount { get; set; } = 0;
 
         public string FilteredApplicationsLabelText => TotalFilteredApplicationsCount == 1
-            ? "1 Application"
-            : $"{TotalFilteredApplicationsCount} Applications";
+            ? $"1 result for '{SelectedLocation}'"
+            : $"{TotalFilteredApplicationsCount} results for '{SelectedLocation}'";
 
-        public bool HasApplications => Applications is not null && Applications.Any();
+        public bool ShowFilteredApplicationsLabelText => !string.IsNullOrEmpty(SelectedLocation) && !string.Equals(SelectedLocation, "All", StringComparison.InvariantCultureIgnoreCase);
+
+        public bool HasApplications => Applications is not null && Applications.Count > 0;
         public bool HasNoApplications => !HasApplications;
 
         public bool ShowDisability { get; internal set; }
 
         public bool CanShowShareMultipleApplicationsLink =>
-            Applications?.Any(app => app.Status == ApplicationReviewStatus.New || app.Status == ApplicationReviewStatus.InReview) ?? false;
+            Applications?.Any(app => app.Status is ApplicationReviewStatus.New or ApplicationReviewStatus.InReview) ?? false;
 
         public bool CanShowMultipleApplicationsUnsuccessfulLink =>
           Applications?.Any(app => app.Status != ApplicationReviewStatus.Successful && app.Status != ApplicationReviewStatus.Unsuccessful) ?? false;

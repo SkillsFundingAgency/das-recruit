@@ -29,9 +29,9 @@ public class VacancyStatusTagHelper: RaaTagsTagHelper
     private static IEnumerable<string> GetModifierClasses(VacancyStatus? status) => status switch
     {
         VacancyStatus.Draft => ["govuk-tag--grey"],
-        VacancyStatus.Review => ["govuk-tag", "app-tag", "govuk-tag--blue"], // pending employer review
-        VacancyStatus.Submitted => ["govuk-tag--blue"],                      // pending DfE review / ready for review
-        VacancyStatus.Referred => ["govuk-tag--red"],                        // rejected by employer
+        VacancyStatus.Review => ["govuk-tag", "app-tag", "govuk-tag--blue"],    // pending employer review
+        VacancyStatus.Submitted => ["govuk-tag", "app-tag", "govuk-tag--blue"], // pending DfE review / ready for review
+        VacancyStatus.Referred => ["govuk-tag--red"],                           // rejected by employer
         VacancyStatus.Rejected => ["govuk-tag--red"],
         VacancyStatus.Live => ["govuk-tag--turquoise"],
         VacancyStatus.Closed => ["govuk-tag--grey"],
