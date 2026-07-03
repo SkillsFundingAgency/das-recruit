@@ -341,16 +341,17 @@ a.app-card:focus .app-card__heading-text {
 /* Html editor */
 
 .html-editor-toolbar {
-    padding-bottom: 0.5em;
+    padding: 0.3em;
+    border-left: 2px solid #0b0c0c;
+    border-top: 2px solid #0b0c0c;
+    border-right: 2px solid #0b0c0c;
 }
 
 .html-editor-toolbar button {
     display: block;
     align-items: center;
-}
-
-.html-editor-toolbar button span {
-    pointer-events: none;
+    margin-bottom: 0 !important;
+    box-shadow: none !important;
 }
 
 .html-editor-toolbar button span svg {
@@ -363,13 +364,14 @@ a.app-card:focus .app-card__heading-text {
 }
 
 .html-editor-textarea {
-    max-height: 400px;
+    min-height: 200px;
+    max-height: 350px;
     overflow: auto;
     resize: none;
 }
 
 .html-editor-textarea li p {
-    margin-bottom: 0em;
+    margin-bottom: 0;
 }
 
 /* Tinymce */
