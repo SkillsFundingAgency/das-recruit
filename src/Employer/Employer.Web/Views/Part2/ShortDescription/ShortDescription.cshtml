@@ -32,7 +32,7 @@
         <form asp-route="@RouteNames.ShortDescription_Post" asp-all-route-data="@Model.RouteDictionary">
             <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="350">
                 <div esfa-validation-marker-for="ShortDescription" class="govuk-form-group">
-                    <label class="govuk-visually-hidden" asp-for="ShortDescription">
+                    <label id="ShortDescription-Label" class="govuk-visually-hidden" asp-for="ShortDescription">
                         Apprenticeship summary
                     </label>
            
@@ -40,7 +40,9 @@
                         You must enter at least 50 characters.
                     </div>
                     <span esfa-validation-message-for="ShortDescription" class="govuk-error-message"></span>
-                    <textarea class="govuk-textarea govuk-js-character-count html-editor" asp-for="ShortDescription" rows="5" aria-describedby="ShortDescription-info ShortDescription-hint"></textarea>
+                    <textarea asp-for="ShortDescription" aria-labelledby="ShortDescription-Label" aria-required="true"
+                        class="govuk-textarea govuk-js-character-count html-editor govuk-visually-hidden"
+                         rows="5" aria-describedby="ShortDescription-info ShortDescription-hint"></textarea>
                 </div>
                 <div id="ShortDescription-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
                     You can enter up to 350 characters
@@ -57,8 +59,11 @@
 
 @section FooterJS 
 {
-    <script src="/lib/tinymce-4.9.2/tinymce.min.js" no-cdn></script>
-    <script nws-csp-add-nonce="true">
-        initializeHtmlEditors();
+    <script type="module" nws-csp-add-nonce="true">
+        import { initHtmlEditor } from "./../../../../../javascripts/html-editor.mjs";
+        document.addEventListener("DOMContentLoaded", (event) => {
+            initHtmlEditor(document.querySelector('.html-editor'), "Short description")
+        });
+        
     </script>
 }

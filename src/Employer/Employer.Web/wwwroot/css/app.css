@@ -330,8 +330,46 @@ a.app-card:focus .app-card__heading-text {
   list-style-type: disc;
 }
 
+.app-ugc-wrap li p {
+    margin-bottom: 0;
+}
+
 .app-preserve-line-breaks {
   white-space: pre-line;
+}
+
+/* Html editor */
+
+.html-editor-toolbar {
+    padding-bottom: 0.5em;
+}
+
+.html-editor-toolbar button {
+    display: block;
+    align-items: center;
+}
+
+.html-editor-toolbar button span {
+    pointer-events: none;
+}
+
+.html-editor-toolbar button span svg {
+    fill: #242424;
+    display: block;
+}
+
+.html-editor-toolbar button.active {
+    background-color: #cccccc !important;
+}
+
+.html-editor-textarea {
+    max-height: 400px;
+    overflow: auto;
+    resize: none;
+}
+
+.html-editor-textarea li p {
+    margin-bottom: 0em;
 }
 
 /* Tinymce */
