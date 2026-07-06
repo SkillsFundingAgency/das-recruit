@@ -25,7 +25,7 @@
          <form asp-route="@RouteNames.VacancyHowTheApprenticeWillTrain_Index_Post" asp-all-route-data="@Model.RouteDictionary">
         
              <div esfa-validation-marker-for="TrainingDescription" class="govuk-form-group">
-                 <label asp-for="TrainingDescription" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">The apprentice’s training plan (optional)</label>
+                 <label id="TrainingDescription-Label" asp-for="TrainingDescription" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">The apprentice’s training plan (optional)</label>
                  <p class="govuk-body">If you’ve agreed the apprentice’s training, include:</p>
                  <ul class="govuk-list govuk-list--bullet">
                      <li>where training will take place (at work or at a college - if it involves travelling somewhere else, include the address if you can)</li>
@@ -35,11 +35,11 @@
                      If you do not enter anything, we’ll display a message saying that the training schedule has not been agreed yet.
                  </div>
                  <span esfa-validation-message-for="TrainingDescription" class="govuk-error-message"></span>
-                 <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5" maxlength="4000" ></textarea>
+                 <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5" maxlength="4000" aria-labelledby="TrainingDescription-Label"></textarea>
              </div>
              
              <div esfa-validation-marker-for="AdditionalTrainingDescription" class="govuk-form-group">
-                 <label asp-for="AdditionalTrainingDescription" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">Additional training information (optional)</label>
+                 <label id="AdditionalTrainingDescription-Label" asp-for="AdditionalTrainingDescription" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">Additional training information (optional)</label>
                  <p class="govuk-body">This could include:</p>
                  <ul class="govuk-list govuk-list--bullet">
                      <li>further information about the training provider</li>
@@ -47,7 +47,7 @@
                  </ul>
                  <p class="govuk-body">Do not include what the training course will teach. We’ll automatically display the skills an apprentice will learn during this course.</p>
                  <span esfa-validation-message-for="AdditionalTrainingDescription" class="govuk-error-message"></span>
-                 <textarea asp-for="AdditionalTrainingDescription" class="govuk-textarea html-editor" rows="5" maxlength="4000" ></textarea>
+                 <textarea asp-for="AdditionalTrainingDescription" class="govuk-textarea html-editor" rows="5" maxlength="4000" aria-labelledby="AdditionalTrainingDescription"></textarea>
              </div>
 
              <div class="govuk-button-group">
@@ -61,8 +61,11 @@
 
 @section FooterJS 
 {
-    <script src="/lib/tinymce-4.9.2/tinymce.min.js" no-cdn></script>
-    <script nws-csp-add-nonce="true">
-        initializeHtmlEditors();
+    <script type="module" nws-csp-add-nonce="true">
+        import { initHtmlEditor } from "./../../../../../javascripts/html-editor.mjs";
+        document.addEventListener("DOMContentLoaded", () => {
+            initHtmlEditor(document.querySelector('#TrainingDescription'))
+            initHtmlEditor(document.querySelector('#AdditionalTrainingDescription'))
+        });
     </script>
 }
