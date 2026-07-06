@@ -360,7 +360,7 @@ a.app-card:focus .app-card__heading-text {
 }
 
 .html-editor-toolbar button.active {
-    background-color: #cccccc !important;
+    background-color: #cccccc;
 }
 
 .html-editor-textarea {
