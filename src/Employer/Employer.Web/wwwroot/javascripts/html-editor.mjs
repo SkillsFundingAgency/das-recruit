@@ -67,7 +67,7 @@ function copyAriaAttributes(attrs, el) {
     }, attrs)
 }
 
-function createToolbarBtn(name) {
+function createToolbarBtn(name, ariaLabelName) {
     if (!buttons.hasOwnProperty(name)) {
         return
     }
@@ -78,7 +78,12 @@ function createToolbarBtn(name) {
     const path = document.createElementNS("http://www.w3.org/2000/svg", "path")
 
     btn.setAttribute('aria-pressed', 'false')
-    btn.setAttribute('aria-label', buttons[name]['aria-label'])
+    
+    if (ariaLabelName) {
+        btn.setAttribute('aria-label', `${buttons[name]['aria-label']} for ${ariaLabelName}`)
+    } else {
+        btn.setAttribute('aria-label', buttons[name]['aria-label'])
+    }
     btn.classList.add('govuk-button')
     btn.classList.add('govuk-button--secondary')
 
@@ -97,10 +102,19 @@ function createToolbarBtn(name) {
     return btn
 }
 
-function createToolbar(target, id) {
+function createToolbar(target, id, targetId) {
+
+    let label = undefined
+    if (targetId) {
+        const labelCtl = document.getElementById(`${targetId}-Label`)
+        if (labelCtl) {
+            label = labelCtl.innerText.trim()
+        }
+    }
+    
     const container = document.createElement('div')
     const toolbar = document.createElement('div')
-    const bulletListBtn = createToolbarBtn('bullet-list')
+    const bulletListBtn = createToolbarBtn('bullet-list', label)
 
     // if we have 3 or more buttons, then:
     //  - set this: toolbar.setAttribute('role', 'toolbar')
@@ -121,9 +135,10 @@ function createToolbar(target, id) {
 
 function initHtmlEditor(el) {
     hideTargetControl(el)
+    const targetId = el.getAttribute('id')
+
     const id = crypto.randomUUID()
-    
-    const { toolbar, container, bulletListBtn } = createToolbar(el, id)
+    const { toolbar, container, bulletListBtn } = createToolbar(el, id, targetId)
 
     // Custom keyboard shortcut to focus this instance's toolbar
     const CustomKeyboardShortcuts = Extension.create({
