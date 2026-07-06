@@ -97,13 +97,20 @@ function createToolbarBtn(name) {
     return btn
 }
 
-function createToolbar(target) {
+function createToolbar(target, id) {
     const container = document.createElement('div')
     const toolbar = document.createElement('div')
     const bulletListBtn = createToolbarBtn('bullet-list')
+
+    // if we have 3 or more buttons, then:
+    //  - set this: toolbar.setAttribute('role', 'toolbar')
+    //  - move aria-controls to the toolbar: toolbar.setAttribute('aria-controls', id)
+    //  - remove aria-controls from individual buttons
+
+    bulletListBtn.setAttribute('tabindex', 0)
+    bulletListBtn.setAttribute('aria-controls', id)
     
     toolbar.classList.add('html-editor-toolbar')
-    toolbar.setAttribute('role', 'toolbar')
     
     target.insertAdjacentElement("afterend", toolbar)
     toolbar.insertAdjacentElement("afterend", container)
@@ -114,8 +121,9 @@ function createToolbar(target) {
 
 function initHtmlEditor(el) {
     hideTargetControl(el)
+    const id = crypto.randomUUID()
     
-    const { toolbar, container, bulletListBtn } = createToolbar(el)
+    const { toolbar, container, bulletListBtn } = createToolbar(el, id)
 
     // Custom keyboard shortcut to focus this instance's toolbar
     const CustomKeyboardShortcuts = Extension.create({
@@ -132,7 +140,7 @@ function initHtmlEditor(el) {
 
     // Default attributes for the editor
     let attrs = {
-        id: crypto.randomUUID(),
+        id: id,
         class: 'html-editor-textarea govuk-textarea',
         role: 'textbox',
         'aria-multiline': 'true',

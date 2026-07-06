@@ -350,8 +350,7 @@ a.app-card:focus .app-card__heading-text {
 .html-editor-toolbar button {
     display: block;
     align-items: center;
-    margin-bottom: 0 !important;
-    box-shadow: none !important;
+    margin-bottom: 0.2em !important;
 }
 
 .html-editor-toolbar button span svg {
