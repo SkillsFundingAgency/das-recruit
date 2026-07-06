@@ -11,14 +11,15 @@ public class EmployerLocationValidationTests : VacancyValidationTestsBase
     {
         var vacancy = new Vacancy
         {
-            EmployerLocation = new Address
+            EmployerLocations = [new Address
             {
                 AddressLine1 = "address line 1",
                 AddressLine2 = "address line 2",
                 AddressLine3 = "address line 3",
                 Postcode = "SW1 1AB",
                 Country = "England"
-            }
+            }],
+            EmployerLocationOption = AvailableWhere.OneLocation
         };
 
         MockLocationsService.Setup(p => p.IsPostcodeInEnglandAsync("SW1 1AB")).ReturnsAsync(true);
@@ -34,18 +35,22 @@ public class EmployerLocationValidationTests : VacancyValidationTestsBase
     {
         var vacancy = new Vacancy
         {
-            EmployerLocation = new Address
+            EmployerLocations = [new Address
             {
-                Postcode = "AB1 2CD"
-            },
+                AddressLine1 = "address line 1",
+                AddressLine2 = "address line 2",
+                AddressLine3 = "address line 3",
+                Postcode = "CF10 3RB",
+                Country = "Wales"
+            }],
             EmployerLocationOption = AvailableWhere.OneLocation
         };
 
-        MockLocationsService.Setup(p => p.IsPostcodeInEnglandAsync("AB1 2CD")).ReturnsAsync(false);
+        MockLocationsService.Setup(p => p.IsPostcodeInEnglandAsync("CF10 3RB")).ReturnsAsync(false);
 
         var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerAddress);
 
         result.HasErrors.Should().BeTrue();
-        result.Errors.Should().HaveCount(1);
+        result.Errors.Should().HaveCount(2);
     }
 }
