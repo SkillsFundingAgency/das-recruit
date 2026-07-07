@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Cache;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Providers;
@@ -15,9 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 {
     public class ProviderRelationshipsService(IEmployerAccountProvider employerAccountProvider,
         IOuterApiClient outerApiClient,
-        IEncodingService encodingService,
-        ICache cache,
-        ITimeProvider timeProvider)
+        IEncodingService encodingService)
         : IProviderRelationshipsService
     {
         private readonly Dictionary<string, object> _apiLoggingContext = new()
@@ -71,22 +67,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
         private async Task<List<LegalEntityDto>> GetProviderPermissionsForEmployer(long ukprn, string accountHashedId, List<OperationType> operationTypes)
         {
             var accountId = encodingService.Decode(accountHashedId, EncodingType.AccountId);
-            var operationsKey = string.Join(",", operationTypes
-                .Select(x => x.ToString())
-                .OrderBy(x => x));
-           
-            return await cache.CacheAsideAsync($"{CacheKeys.ProviderPermissions}_{ukprn}_{accountId}_{operationsKey.GetHashCode()}",
-                timeProvider.NextDay,
-                async () =>
-                {
-                    var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-                    var permissions = await retryPolicy.Execute(_ => outerApiClient.Get<GetProviderPermissionsByUkprnAndAccountIdApiResponse>(
-                            new GetProviderPermissionsByUkprnAndAccountIdApiRequest(ukprn, accountId, operationTypes)),
-                        _apiLoggingContext);
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-                    return MapToLegalEntities(permissions.AccountProviderLegalEntities);
-                });
+            var permissions = await retryPolicy.Execute(_ => outerApiClient.Get<GetProviderPermissionsByUkprnAndAccountIdApiResponse>(
+                    new GetProviderPermissionsByUkprnAndAccountIdApiRequest(ukprn, accountId, operationTypes)),
+                _apiLoggingContext);
+
+            return MapToLegalEntities(permissions.AccountProviderLegalEntities);
         }
 
         private async Task<ProviderPermissions> GetProviderPermissionsByUkprn(long ukprn, List<OperationType> operationTypes)
@@ -99,19 +87,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 
         private async Task<ProviderPermissions> GetProviderPermissionsByAccountHashedId(string accountHashedId, OperationType operationType)
         {
-            var operationsKey = string.Join(",", new[] { operationType }.OrderBy(x => x));
-            return await cache.CacheAsideAsync($"{CacheKeys.ProviderPermissions}_{accountHashedId}_{operationsKey.GetHashCode()}",
-                timeProvider.NextDay,
-                async () =>
-                {
-                    var retryPolicy = PollyRetryPolicy.GetPolicy();
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-                    var permissions = await retryPolicy.Execute(_ => outerApiClient.Get<GetProviderPermissionsByUkprnApiResponse>(
-                            new GetEmployerPermissionsByAccountHashedIdApiRequest(accountHashedId, [operationType])),
-                        _apiLoggingContext);
+            var permissions = await retryPolicy.Execute(_ => outerApiClient.Get<GetProviderPermissionsByUkprnApiResponse>(
+                    new GetEmployerPermissionsByAccountHashedIdApiRequest(accountHashedId, [operationType])),
+                _apiLoggingContext);
 
-                    return MapToProviderPermissions(permissions.AccountProviderLegalEntities);
-                });
+            return MapToProviderPermissions(permissions.AccountProviderLegalEntities);
         }
 
         private static ProviderPermissions MapToProviderPermissions(
