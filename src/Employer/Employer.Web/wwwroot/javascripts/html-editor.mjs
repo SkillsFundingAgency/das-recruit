@@ -117,13 +117,13 @@ function createToolbar(target, id, targetId) {
     const bulletListBtn = createToolbarBtn('bullet-list', label)
 
     // if we have 3 or more buttons, then:
+    //  - need to implement toolbar keyboard navigation for accessbility
     //  - set this: toolbar.setAttribute('role', 'toolbar')
     //  - move aria-controls to the toolbar: toolbar.setAttribute('aria-controls', id)
     //  - remove aria-controls from individual buttons
+    //  - add tab index from 0 to buttons
 
-    bulletListBtn.setAttribute('tabindex', 0)
     bulletListBtn.setAttribute('aria-controls', id)
-    
     toolbar.classList.add('html-editor-toolbar')
     
     target.insertAdjacentElement("afterend", toolbar)
