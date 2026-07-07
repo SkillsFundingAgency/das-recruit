@@ -91,27 +91,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 
         private async Task<ProviderPermissions> GetProviderPermissionsByUkprn(long ukprn, List<OperationType> operationTypes)
         {
-            // var operationsKey = string.Join(",", operationTypes
-            //     .Select(x => x.ToString())
-            //     .OrderBy(x => x));
-             
             var permissions = await outerApiClient.Get<GetProviderPermissionsByUkprnApiResponse>(
                     new GetProviderPermissionsByUkprnApiRequest(ukprn, operationTypes));
 
             return MapToProviderPermissions(permissions.AccountProviderLegalEntities);
-            
-            
-            // return await cache.CacheAsideAsync($"{CacheKeys.ProviderPermissions}_{ukprn}_{operationsKey.GetHashCode()}",
-            //     timeProvider.NextDay,
-            //     async () =>
-            //     {
-            //         var retryPolicy = PollyRetryPolicy.GetPolicy();
-            //         var permissions = await retryPolicy.Execute(_ => outerApiClient.Get<GetProviderPermissionsByUkprnApiResponse>(
-            //                 new GetProviderPermissionsByUkprnApiRequest(ukprn, operationTypes)),
-            //             _apiLoggingContext);
-            //
-            //         return MapToProviderPermissions(permissions.AccountProviderLegalEntities);
-            //     });
         }
 
         private async Task<ProviderPermissions> GetProviderPermissionsByAccountHashedId(string accountHashedId, OperationType operationType)

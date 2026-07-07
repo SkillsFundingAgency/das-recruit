@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
             _clientMock.Verify(c => c.SetupProviderAsync(Ukprn), Times.Once);
         }
 
-        private ITrainingProviderAgreementService GetService(bool? pasHasAgreement)
+        private TrainingProviderAgreementService GetService(bool? pasHasAgreement)
         {
             _clientMock = new Mock<IProviderVacancyClient>();
             

@@ -38,7 +38,6 @@ public class VacancyTaskListOrchestrator(
         {
             throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, routeModel.Ukprn));
         }
-        //providerEditVacancyInfo = await providerVacancyClient.GetProviderEditVacancyInfoAsync(routeModel.Ukprn);
     
         return new VacancyTaskListViewModel
         {
