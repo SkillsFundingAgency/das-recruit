@@ -27,24 +27,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             }
         };
 
-        public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(long ukprn, List<OperationType> operationTypes)
-        {
-            var providerPermissions = await GetProviderPermissionsByUkprn(ukprn, operationTypes);
-
-            return await GetEmployerInfosAsync(providerPermissions);
-        }
-
         public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProvider(long ukprn, string accountHashedId,
             List<OperationType> operationTypes)
         {
             var providerPermissions = await GetProviderPermissionsByUkprn(ukprn, operationTypes);
 
-            var filteredProviderPermissions = new ProviderPermissions
+            var filteredProviderPermissions = !string.IsNullOrEmpty(accountHashedId) ? new ProviderPermissions
             {
                 AccountProviderLegalEntities = providerPermissions.AccountProviderLegalEntities
                     .Where(p => p.AccountHashedId == accountHashedId)
                     .ToList()
-            };
+            } : providerPermissions;
 
             return await GetEmployerInfosAsync(filteredProviderPermissions);
         }

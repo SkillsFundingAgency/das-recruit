@@ -46,114 +46,62 @@ public class LegalEntityAndEmployerOrchestrator(
             ? requestedPageNo.Value > 0
                 ? requestedPageNo.Value : 1 : 1;
 
-        if (feature.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles))
+    
+        // Only include employer accounts where the provider has recruitment permission
+        var allLegalEntities = await providerRelationshipsService.GetLegalEntitiesForProvider(
+            vrm.Ukprn, "",[OperationType.Recruitment, OperationType.RecruitmentRequiresReview]);
+            
+        var legalEntities = allLegalEntities.ToList();
+            
+        if (legalEntities.Count == 0)
         {
-            // Only include employer accounts where the provider has recruitment permission
-            var allLegalEntities = await providerRelationshipsService.GetLegalEntitiesForProviderAsync(
-                vrm.Ukprn, [OperationType.Recruitment]);
-                
-            var legalEntities = allLegalEntities.ToList();
-                
-            if (legalEntities.Count == 0)
-            {
-                throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vrm.Ukprn));
-            }
-                
-            var sortColumn = sortByType switch
-            {
-                SortByType.EmployerName => "Name",
-                _ => "PublicHashedId"
-            };
-            var isAscending = sortOrder == SortOrder.Ascending;
-
-            var employerAccountIds = legalEntities
-                .Select(x => x.EmployerAccountId)
-                .Distinct()
-                .ToList();
-
-            var accountLegal = await employerAccountProvider.GetAllLegalEntitiesConnectedToAccountAsync(
-                employerAccountIds,
-                searchTerm,
-                setPage,
-                MaxLegalEntitiesPerPage,
-                sortColumn,
-                isAscending);
-
-            vm = new LegalEntityAndEmployerViewModel
-            {
-                Employers = accountLegal.LegalEntities.GroupBy(x=>x.DasAccountId).Select((grouping) => new EmployerViewModel
-                {
-                    Id = grouping.FirstOrDefault()!.DasAccountId,
-                    Name = grouping.FirstOrDefault()!.Name
-                }),
-                Organisations = accountLegal.LegalEntities.Select(x => new OrganisationsViewModel
-                {
-                    AccountLegalEntityName = x.Name,
-                    EmployerName = x.AccountName,
-                    Id = x.AccountLegalEntityPublicHashedId,
-                    EmployerAccountId = x.DasAccountId
-                }),
-                TotalNumberOfLegalEntities = legalEntities.SelectMany(c=>c.LegalEntities).Count(),
-                SearchTerm = searchTerm,
-                VacancyId = vrm.VacancyId,
-                SortByNameType = sortByType,
-                SortByAscDesc = sortOrder,
-                Ukprn = vrm.Ukprn,
-                NoOfSearchResults = accountLegal.PageInfo.TotalCount
-            };
-            filteredLegalEntitiesTotal = accountLegal.PageInfo.TotalCount;
+            throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vrm.Ukprn));
         }
-        else
+            
+        var sortColumn = sortByType switch
         {
-            //#TODO: Remove this when the code block once MongoMigrationEmployerProfiles goes LIVE
-            var editVacancyInfo = await providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
+            SortByType.EmployerName => "Name",
+            _ => "PublicHashedId"
+        };
+        var isAscending = sortOrder == SortOrder.Ascending;
 
-            if (editVacancyInfo?.Employers == null || editVacancyInfo.Employers.Any() == false)
+        var employerAccountIds = legalEntities
+            .Select(x => x.EmployerAccountId)
+            .Distinct()
+            .ToList();
+
+        var accountLegal = await employerAccountProvider.GetAllLegalEntitiesConnectedToAccountAsync(
+            employerAccountIds,
+            searchTerm,
+            setPage,
+            MaxLegalEntitiesPerPage,
+            sortColumn,
+            isAscending);
+
+        vm = new LegalEntityAndEmployerViewModel
+        {
+            Employers = accountLegal.LegalEntities.GroupBy(x=>x.DasAccountId).Select((grouping) => new EmployerViewModel
             {
-                throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vrm.Ukprn));
-            }
-            var accountLegalEntities = (await providerVacancyClient.GetProviderEmployerVacancyDatasAsync(vrm.Ukprn, editVacancyInfo.Employers.Select(info => info.EmployerAccountId).ToList())).ToList();
-            vm = new LegalEntityAndEmployerViewModel
+                Id = grouping.FirstOrDefault()!.DasAccountId,
+                Name = grouping.FirstOrDefault()!.Name
+            }),
+            Organisations = accountLegal.LegalEntities.Select(x => new OrganisationsViewModel
             {
-                Employers = editVacancyInfo.Employers.Select(e => new EmployerViewModel { Id = e.EmployerAccountId, Name = e.Name }),
-                Organisations = GetLegalEntityAndEmployerViewModels(accountLegalEntities).OrderBy(a => a.EmployerName),
-                TotalNumberOfLegalEntities = accountLegalEntities.Sum(c => c.LegalEntities.Count),
-                SearchTerm = searchTerm,
-                VacancyId = vrm.VacancyId,
-                SortByNameType = sortByType,
-                SortByAscDesc = sortOrder,
-                Ukprn = vrm.Ukprn
-            };
-
-            var filterOrgs = vm.Organisations
-                .Where(le => string.IsNullOrEmpty(searchTerm) ||
-                             le.EmployerName.Replace(" ", "").Contains(searchTerm.Replace(" ", ""), StringComparison.OrdinalIgnoreCase) ||
-                             le.AccountLegalEntityName.Replace(" ", "").Contains(searchTerm.Replace(" ", ""), StringComparison.OrdinalIgnoreCase));
-
-            List<OrganisationsViewModel> filterAndOrdered;
-            if (sortOrder is SortOrder.Ascending)
-            {
-                vm.SortByAscDesc = SortOrder.Descending;
-                filterAndOrdered = filterOrgs.OrderBy(c => sortByType is SortByType.LegalEntityName ? c.AccountLegalEntityName : c.EmployerName).ToList();
-            }
-            else
-            {
-                vm.SortByAscDesc = SortOrder.Ascending;
-                filterAndOrdered = filterOrgs.OrderByDescending(c => sortByType is SortByType.LegalEntityName ? c.AccountLegalEntityName : c.EmployerName).ToList();
-            }
-
-
-            vm.NoOfSearchResults = filterAndOrdered.Count;
-            filteredLegalEntitiesTotal = filterAndOrdered.Count;
-            var totalNumberOfPages = PagingHelper.GetTotalNoOfPages(MaxLegalEntitiesPerPage, filteredLegalEntitiesTotal);
-
-            vm.SortByNameType = sortByType;
-
-            setPage = GetPageNo(setPage, totalNumberOfPages);
-
-            SetFilteredOrganisationsForPage(setPage, vm, filterAndOrdered);
-        }
-
+                AccountLegalEntityName = x.Name,
+                EmployerName = x.AccountName,
+                Id = x.AccountLegalEntityPublicHashedId,
+                EmployerAccountId = x.DasAccountId
+            }),
+            TotalNumberOfLegalEntities = legalEntities.SelectMany(c=>c.LegalEntities).Count(),
+            SearchTerm = searchTerm,
+            VacancyId = vrm.VacancyId,
+            SortByNameType = sortByType,
+            SortByAscDesc = sortOrder,
+            Ukprn = vrm.Ukprn,
+            NoOfSearchResults = accountLegal.PageInfo.TotalCount
+        };
+        filteredLegalEntitiesTotal = accountLegal.PageInfo.TotalCount;
+        
         var routeParams = new Dictionary<string, string>();
         if (!string.IsNullOrEmpty(searchTerm))
             routeParams.Add(nameof(searchTerm), searchTerm);
@@ -203,8 +151,8 @@ public class LegalEntityAndEmployerOrchestrator(
         {
             //Implement
             // Only include employer accounts where the provider has recruitment permission
-            var allLegalEntities = await providerRelationshipsService.GetLegalEntitiesForProviderAsync(
-                vacancyRouteModel.Ukprn, [OperationType.Recruitment]);
+            var allLegalEntities = await providerRelationshipsService.GetLegalEntitiesForProvider(
+                vacancyRouteModel.Ukprn,"", [OperationType.Recruitment, OperationType.RecruitmentRequiresReview]);
                 
             var legalEntities = allLegalEntities.ToList();
                 

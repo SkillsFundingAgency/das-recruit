@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
             {
                 logger.LogInformation($"Processing {nameof(SetupProviderEvent)} for Ukprn: {{Ukprn}}", eventData.Ukprn);
 
-                var employerInfosTask = providerRelationshipService.GetLegalEntitiesForProviderAsync(eventData.Ukprn, [OperationType.Recruitment]);
+                var employerInfosTask = providerRelationshipService.GetLegalEntitiesForProvider(eventData.Ukprn,"", [OperationType.Recruitment]);
                 var providerStatus = providerStatusClient.GetProviderStatus(eventData.Ukprn);
 
                 await Task.WhenAll(employerInfosTask, providerStatus);
