@@ -30,7 +30,7 @@ public class VacancyLocationService(
     {
         ArgumentNullException.ThrowIfNull(vacancy);
         var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
-        var providerData = await providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn);
+        var providerData = await providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn, vacancy.EmployerAccountId);
         var employerInfo = providerData.Employers.Single(e => e.EmployerAccountId == vacancy.EmployerAccountId);
         var legalEntity = employerInfo.LegalEntities.FirstOrDefault(l => l.AccountLegalEntityPublicHashedId == employerProfile.AccountLegalEntityPublicHashedId);
         

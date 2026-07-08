@@ -1,7 +1,6 @@
 ﻿using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
@@ -14,33 +13,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
         private const long Ukprn = 99999999;
 
         [Fact]
-        public async Task HasAgreement_ShouldReturnFalseIfNoMatchingProvider()
-        {
-            var sut = GetService(null, null);
-
-            var result = await sut.HasAgreementAsync(Ukprn);
-
-            result.Should().BeFalse();
-            _pasAccountProviderMock.Verify(c => c.GetProviderStatus(It.IsAny<long>()), Times.Never);
-            _clientMock.Verify(c => c.SetupProviderAsync(It.IsAny<long>()), Times.Never);
-        }
-
-        [Fact]
-        public async Task HasAgreement_ShouldNotCheckPasWhenHasAgreement()
-        {
-            var sut = GetService(true, true);
-
-            var result = await sut.HasAgreementAsync(Ukprn);
-
-            result.Should().BeTrue();
-            _pasAccountProviderMock.Verify(c => c.GetProviderStatus(It.IsAny<long>()), Times.Never);
-            _clientMock.Verify(c => c.SetupProviderAsync(It.IsAny<long>()), Times.Never);
-        }
-
-        [Fact]
         public async Task HasAgreement_ShouldReturnFalseWhenPasHasNoAgreement()
         {
-            var sut = GetService(false, false);
+            var sut = GetService(false);
 
             var result = await sut.HasAgreementAsync(Ukprn);
 
@@ -53,7 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
         [Fact]
         public async Task HasAgreement_ShouldReturnTrueAndSetupProviderWhenPasHasAgreement()
         {
-            var sut = GetService(false, true);
+            var sut = GetService(true);
 
             var result = await sut.HasAgreementAsync(Ukprn);
 
@@ -64,18 +39,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
             _clientMock.Verify(c => c.SetupProviderAsync(Ukprn), Times.Once);
         }
 
-        private ITrainingProviderAgreementService GetService(bool? providerEditVacancyHasAgreement, bool? pasHasAgreement)
+        private TrainingProviderAgreementService GetService(bool? pasHasAgreement)
         {
             _clientMock = new Mock<IProviderVacancyClient>();
-
-            if (providerEditVacancyHasAgreement.HasValue)
-            {
-                _clientMock.Setup(c => c.GetProviderEditVacancyInfoAsync(Ukprn))
-                    .ReturnsAsync(new ProviderEditVacancyInfo
-                    {
-                        HasProviderAgreement = providerEditVacancyHasAgreement.Value
-                    });
-            }
             
             _pasAccountProviderMock = new Mock<IGetProviderStatusClient>();
 
