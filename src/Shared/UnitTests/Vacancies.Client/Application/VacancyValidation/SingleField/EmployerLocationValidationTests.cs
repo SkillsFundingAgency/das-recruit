@@ -1,12 +1,13 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
 
+[TestFixture]
 public class EmployerLocationValidationTests : VacancyValidationTestsBase
 {
-    [Fact]
+    [Test]
     public void NoErrorsWhenLocationIsValid()
     {
         var vacancy = new Vacancy
@@ -30,7 +31,7 @@ public class EmployerLocationValidationTests : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
 
-    [Fact]
+    [Test]
     public void ErrorWhenLocationIsOutOfArea()
     {
         var vacancy = new Vacancy
