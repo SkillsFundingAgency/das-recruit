@@ -200,7 +200,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         private async Task<List<Address>> GetAllAvailableLocationsAsync(EmployerProfile employerProfile, Vacancy vacancy, long ukprn)
         {
-            var providerData = await providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn);
+            var providerData = await providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn, vacancy.EmployerAccountId);
             var employerInfo = providerData.Employers.Single(e => e.EmployerAccountId == vacancy.EmployerAccountId);
             var legalEntity = employerInfo.LegalEntities.First(l => l.AccountLegalEntityPublicHashedId == employerProfile.AccountLegalEntityPublicHashedId);
             var locations = new List<Address> {legalEntity.Address.ConvertToDomainAddress()};

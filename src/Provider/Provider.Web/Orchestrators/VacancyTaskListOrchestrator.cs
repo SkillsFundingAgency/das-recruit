@@ -18,12 +18,12 @@ public class VacancyTaskListOrchestrator(
 {
     public async Task<VacancyTaskListViewModel> GetVacancyTaskListModel(VacancyRouteModel routeModel)
     {
-        var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(routeModel, RouteNames.ProviderTaskListGet);
-        var editVacancyInfoTask = providerVacancyClient.GetProviderEditVacancyInfoAsync(routeModel.Ukprn);
-        var employerInfoTask = providerVacancyClient.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn, vacancyTask.Result.EmployerAccountId);
-        await Task.WhenAll(vacancyTask, editVacancyInfoTask, employerInfoTask);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(routeModel, RouteNames.ProviderTaskListGet);
+        var editVacancyInfoTask = providerVacancyClient.GetProviderEditVacancyInfoAsync(routeModel.Ukprn, vacancy.EmployerAccountId);
+        var employerInfoTask = providerVacancyClient.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn, vacancy.EmployerAccountId);
+        await Task.WhenAll(editVacancyInfoTask, employerInfoTask);
 
-        var vacancy = vacancyTask.Result;
+        
         var taskListStateView = new ProviderTaskListStateView(
             await taskListValidator.GetItemStatesAsync(vacancy, ProviderTaskListSectionFlags.All),
             vacancy
@@ -31,22 +31,14 @@ public class VacancyTaskListOrchestrator(
 
         var providerEditVacancyInfo = editVacancyInfoTask.Result;
         var employerInfo = employerInfoTask.Result;
-        if (providerEditVacancyInfo == null)
-        {
-            var providerAccountResponse = await providerStatusClient.GetProviderStatus(routeModel.Ukprn);
+        
+        var providerAccountResponse = await providerStatusClient.GetProviderStatus(routeModel.Ukprn);
 
-            if (providerAccountResponse.CanAccessService)
-            {
-                await providerVacancyClient.SetupProviderAsync(routeModel.Ukprn);
-            }
-            else
-            {
-                throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, routeModel.Ukprn));
-            }
-            providerEditVacancyInfo = await providerVacancyClient.GetProviderEditVacancyInfoAsync(routeModel.Ukprn);
+        if (!providerAccountResponse.CanAccessService)
+        {
+            throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, routeModel.Ukprn));
         }
-        
-        
+    
         return new VacancyTaskListViewModel
         {
             AccountCount = providerEditVacancyInfo.Employers.Count(),
@@ -64,7 +56,7 @@ public class VacancyTaskListOrchestrator(
     public async Task<VacancyTaskListViewModel> GetCreateVacancyTaskListModel(VacancyRouteModel vrm, string employerAccountId)
     {
         var employerInfoTask = providerVacancyClient.GetProviderEmployerVacancyDataAsync(vrm.Ukprn, employerAccountId);
-        var editVacancyInfoTask = providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
+        var editVacancyInfoTask = providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn, employerAccountId);
         
         await Task.WhenAll(employerInfoTask, editVacancyInfoTask);
 

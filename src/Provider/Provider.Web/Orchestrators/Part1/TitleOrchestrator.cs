@@ -134,7 +134,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         private async Task ValidateEmployerAccountIdAsync(long ukprn, string employerAccountId)
         {
-            var providerInfo = await providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn);
+            var providerInfo = await providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn, employerAccountId);
 
             if (providerInfo.Employers.Any(e => e.EmployerAccountId == employerAccountId) == false)
                 throw new AuthorisationException(string.Format(ExceptionMessages.ProviderEmployerAccountIdNotFound, ukprn, employerAccountId));
