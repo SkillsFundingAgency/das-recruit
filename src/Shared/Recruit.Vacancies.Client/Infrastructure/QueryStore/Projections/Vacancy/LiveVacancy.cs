@@ -2,8 +2,5 @@
 {
     public class LiveVacancy : VacancyProjectionBase
     {
-        public LiveVacancy() : base(QueryViewType.LiveVacancy.TypeName)
-        {
-        }
     }
 }

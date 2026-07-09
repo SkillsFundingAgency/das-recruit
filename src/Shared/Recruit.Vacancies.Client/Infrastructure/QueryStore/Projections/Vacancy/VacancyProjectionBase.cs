@@ -4,11 +4,8 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy
 {
-    public abstract class VacancyProjectionBase : QueryProjectionBase
+    public abstract class VacancyProjectionBase
     {
-        protected VacancyProjectionBase(string viewType) : base(viewType)
-        {}
-
         public Guid VacancyId { get; set; }
         public string ApplicationInstructions { get; set; }
         public string ApplicationMethod { get; set; }

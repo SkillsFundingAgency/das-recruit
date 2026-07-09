@@ -4,6 +4,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 {
     internal class ProviderPermissions
     {
-        public IEnumerable<LegalEntityDto> AccountProviderLegalEntities { get; set;}
+        public IEnumerable<LegalEntityDto> AccountProviderLegalEntities { get; set; }
     }
 }

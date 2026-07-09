@@ -15,7 +15,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
     {
         private readonly Mock<IUserWriteRepository> _mockUserWriteRepository = new Mock<IUserWriteRepository>();
         private readonly Mock<IUserRepository> _mockUserRepository = new Mock<IUserRepository>();
-        private readonly Mock<IUserNotificationPreferencesRepository> _mockUserNotificationPreferencesRepository = new Mock<IUserNotificationPreferencesRepository>();
         private readonly Mock<ITimeProvider> _mockTimeProvider = new Mock<ITimeProvider>();
         private readonly Mock<IRecruitQueueService> _mockQueueService = new Mock<IRecruitQueueService>();
         private readonly Fixture _fixture = new Fixture();
@@ -35,7 +34,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             await sut.Handle(command, new CancellationToken());
 
             _mockUserWriteRepository.Verify(u => u.UpsertUserAsync(user));
-            _mockUserNotificationPreferencesRepository.Verify(u => u.UpsertAsync(preference));
             _mockQueueService.Verify(q => q.AddMessageAsync(It.Is<UpdateEmployerUserAccountQueueMessage>(u => u.IdamsUserId == user.IdamsUserId)));
         }
 
@@ -53,7 +51,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             await sut.Handle(command, new CancellationToken());
 
             _mockUserWriteRepository.Verify(u => u.UpsertUserAsync(user));
-            _mockUserNotificationPreferencesRepository.Verify(u => u.UpsertAsync(preference));
             _mockQueueService.Verify(q => q.AddMessageAsync(It.IsAny<UpdateEmployerUserAccountQueueMessage>()), Times.Never);
         }
 
@@ -142,15 +139,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
                 _mockUserRepository.Setup(u => u.GetAsync(It.IsAny<string>())).ReturnsAsync(user);
                 _mockUserRepository.Setup(u => u.GetByDfEUserId(It.IsAny<string>())).ReturnsAsync((User)null);
             }
-            
-            _mockUserNotificationPreferencesRepository.Setup(u => u.GetAsync(user.DfEUserId)).ReturnsAsync(preference);
-            _mockUserNotificationPreferencesRepository.Setup(u => u.GetAsync(user.IdamsUserId)).ReturnsAsync(preference);
 
             return new UserSignedInCommandHandler (
                 Mock.Of<ILogger<UserSignedInCommandHandler>>(),
                 _mockUserWriteRepository.Object,
                 _mockUserRepository.Object,
-                _mockUserNotificationPreferencesRepository.Object,
                 _mockTimeProvider.Object,
                 _mockQueueService.Object
             );

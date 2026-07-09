@@ -219,7 +219,7 @@ public class LocationOrchestratorTests
 
         public void Setup()
         {
-            MockClient.Setup(x => x.GetProviderEditVacancyInfoAsync(Vacancy.TrainingProvider.Ukprn.Value)).ReturnsAsync(ProviderEditVacancyInfo);
+            MockClient.Setup(x => x.GetProviderEditVacancyInfoAsync(Vacancy.TrainingProvider.Ukprn.Value, Vacancy.EmployerAccountId)).ReturnsAsync(ProviderEditVacancyInfo);
             MockClient.Setup(x => x.GetProviderEmployerVacancyDataAsync(Vacancy.TrainingProvider.Ukprn.Value, Vacancy.EmployerAccountId)).ReturnsAsync(EmployerInfo);
             MockAddressesClient.Setup(x => x.GetAddresses(It.IsAny<string>())).ReturnsAsync(AddressesListResponse);
                 

@@ -2,7 +2,5 @@
 {
     public class ClosedVacancy : VacancyProjectionBase
     {
-        public ClosedVacancy() : base(QueryViewType.ClosedVacancy.TypeName)
-        {}
     }
 }

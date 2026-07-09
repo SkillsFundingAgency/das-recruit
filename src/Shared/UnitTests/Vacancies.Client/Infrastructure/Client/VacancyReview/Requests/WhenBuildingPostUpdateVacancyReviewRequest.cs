@@ -45,7 +45,7 @@ public class WhenBuildingPostUpdateVacancyReviewRequest
             ManualQaFieldIndicators =vReview.ManualQaFieldIndicators.Where(c=>c.IsChangeRequested)
                 .Select(c=>c.FieldIdentifier.ToString()).ToList(),
             AutomatedQaOutcome = vReview.AutomatedQaOutcome?.Decision.ToString(),
-            AutomatedQaOutcomeIndicators = vReview.AutomatedQaOutcomeIndicators?.FirstOrDefault()?.IsReferred.ToString(),
+            AutomatedQaOutcomeIndicators = vReview.AutomatedQaOutcomeIndicators.ToList(),
             DismissedAutomatedQaOutcomeIndicators = vReview.DismissedAutomatedQaOutcomeIndicators,
             UpdatedFieldIdentifiers = vReview.UpdatedFieldIdentifiers,
             VacancySnapshot = JsonConvert.SerializeObject(vReview.VacancySnapshot),

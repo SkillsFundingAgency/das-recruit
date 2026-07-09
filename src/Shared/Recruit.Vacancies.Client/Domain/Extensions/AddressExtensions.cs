@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
     {
         private const int PostcodeMinLength = 5;
         private const int IncodeLength = 3;
-
+        
         public static string PostcodeAsOutcode(this Address address)
         {
             var postcode = address.Postcode.Replace(" ", "");

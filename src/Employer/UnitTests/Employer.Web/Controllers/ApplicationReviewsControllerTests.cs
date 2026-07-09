@@ -27,9 +27,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         private ApplicationReviewsController _controller;
         private Guid _vacancyId;
         private Guid _applicationReviewId;
-        private Guid _applicationReviewIdTwo;
         private string _employerAccountId;
-        protected Mock<IProfanityListProvider> _mockProfanityListProvider;
+        private Mock<IProfanityListProvider> _mockProfanityListProvider;
 
         [SetUp]
         public void Setup()
@@ -38,14 +37,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             _orchestrator = new Mock<IApplicationReviewsOrchestrator>();
             _vacancyId = Guid.NewGuid();
             _applicationReviewId = Guid.NewGuid();
-            _applicationReviewIdTwo = Guid.NewGuid();
             _employerAccountId = "ADGFHAS";
             _mockProfanityListProvider = new Mock<IProfanityListProvider>();
             _mockProfanityListProvider.Setup(x => x.GetProfanityListAsync()).Returns(GetProfanityListAsync());
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
-            {
-                new Claim(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier, _applicationReviewId.ToString()),
-            }));
+            var user = new ClaimsPrincipal(new ClaimsIdentity([
+                new Claim(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier, _applicationReviewId.ToString())
+            ]));
             var httpContext = new DefaultHttpContext();
             var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
             _controller = new ApplicationReviewsController(_orchestrator.Object)
@@ -66,10 +63,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             var applicationReview1 = _fixture.Create<ApplicationReview>();
             var applicationReview2 = _fixture.Create<ApplicationReview>();
             var applicationReview3 = _fixture.Create<ApplicationReview>();
-            var applications = new List<ApplicationReview> { };
-            applications.Add(applicationReview1);
-            applications.Add(applicationReview2);
-            applications.Add(applicationReview3);
+            var applications = new List<ApplicationReview>
+            {
+                applicationReview1,
+                applicationReview2,
+                applicationReview3
+            };
 
             _orchestrator.Setup(o =>
                     o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel), It.Is<SortColumn>(x => x.Equals(SortColumn.DateApplied)), It.Is<SortOrder>(x => x.Equals(SortOrder.Descending))))
@@ -127,10 +126,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             var applicationReview1 = _fixture.Create<ApplicationReview>();
             var applicationReview2 = _fixture.Create<ApplicationReview>();
             var applicationReview3 = _fixture.Create<ApplicationReview>();
-            var applications = new List<ApplicationReview> { };
-            applications.Add(applicationReview1);
-            applications.Add(applicationReview2);
-            applications.Add(applicationReview3);
+            var applications = new List<ApplicationReview>
+            {
+                applicationReview1,
+                applicationReview2,
+                applicationReview3
+            };
 
             _orchestrator.Setup(o =>
             o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel), It.Is<SortColumn>(x => x.Equals(SortColumn.Default)), It.Is<SortOrder>(x => x.Equals(SortOrder.Default))))
@@ -158,8 +159,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         public async Task POST_ApplicationReviewsToUnsuccessfulAsync_RedirectsToAction()
         {
             // Arrange
-            var listOfApplicationReviews = new List<Guid>();
-            listOfApplicationReviews.Add(_applicationReviewId);
+            var listOfApplicationReviews = new List<Guid> {_applicationReviewId};
             var request = _fixture
                 .Build<ApplicationReviewsToUnsuccessfulViewModel>()
                 .With(x => x.VacancyId, _vacancyId)
@@ -210,7 +210,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             Assert.That(routeModel.VacancyId, Is.EqualTo(actual.VacancyId));
             Assert.That(routeModel.EmployerAccountId, Is.EqualTo(actual.EmployerAccountId));
             Assert.That("Give feedback to the unsuccessful applicants", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackHeaderTitle));
-            Assert.That("Your feedback will be sent to all applicants you have selected as unsuccessful.", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackDescription)); 
+            Assert.That("Help the applicants understand why their application was unsuccessful. Your feedback will be sent to all applicants you have selected as unsuccessful.", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackDescription)); 
         }
 
         [Test]
@@ -243,7 +243,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             Assert.That(routeModel.VacancyId, Is.EqualTo(actual.VacancyId));
             Assert.That(routeModel.EmployerAccountId, Is.EqualTo(actual.EmployerAccountId));
             Assert.That("Give feedback to the unsuccessful applicant", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackHeaderTitle));
-            Assert.That("Your feedback will be sent to the applicant you have selected as unsuccessful.", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackDescription));
+            Assert.That("Help the applicant understand why their application was unsuccessful. Your message will be sent to the applicant.", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackDescription));
         }
 
         [Test, MoqAutoData]
@@ -278,7 +278,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 .With(x => x.EmployerAccountId, _employerAccountId)
                 .With(x => x.Outcome, ApplicationReviewStatus.Unsuccessful)
                 .With(x=>x.CandidateFeedback, "")
-                .With(x=>x.ApplicationsToUnsuccessful, new List<VacancyApplication>{new VacancyApplication()})
+                .With(x=>x.ApplicationsToUnsuccessful, [new VacancyApplication()])
                 .With(x=>x.IsMultipleApplications, false)
                 .Create();
             var validator = new ApplicationReviewsFeedbackModelValidator(_mockProfanityListProvider.Object);
@@ -296,15 +296,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         public async Task GET_ApplicationReviewsToUnsuccessfulConfirmation_ReturnsViewModelWithMultipleApplicationsText()
         {
             // Arrange
-            var listOfApplicationReviews = new List<Guid>();
-            listOfApplicationReviews.Add(_applicationReviewId);
-            listOfApplicationReviews.Add(_applicationReviewIdTwo);
-
             var vacancyApplication1 = _fixture.Create<VacancyApplication>();
             var vacancyApplication2 = _fixture.Create<VacancyApplication>();
-            var vacancyApplications = new List<VacancyApplication> { };
-            vacancyApplications.Add(vacancyApplication1);
-            vacancyApplications.Add(vacancyApplication2);
+            var vacancyApplications = new List<VacancyApplication>
+            {
+                vacancyApplication1,
+                vacancyApplication2
+            };
 
             var routeModel = _fixture
                 .Build<ApplicationReviewsToUnsuccessfulRouteModel>()
@@ -331,7 +329,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             Assert.That(actual.VacancyApplicationsToUnsuccessful.Count(), Is.EqualTo(2));
             Assert.That(routeModel.VacancyId, Is.EqualTo(actual.VacancyId));
             Assert.That(routeModel.EmployerAccountId, Is.EqualTo(actual.EmployerAccountId));
-            Assert.That("Make multiple applications unsuccessful", Is.EqualTo(actual.ApplicationReviewsConfirmationHeaderTitle));
+            Assert.That("Give feedback to the unsuccessful applicants", Is.EqualTo(actual.ApplicationReviewsConfirmationHeaderTitle));
             Assert.That("You will make these applications unsuccessful:", Is.EqualTo(actual.ApplicationReviewsConfirmationHeaderDescription));
             Assert.That("These applicants will be notified with this message:", Is.EqualTo(actual.ApplicationsReviewsConfirmationNotificationMessage));
             Assert.That("Do you want to make these applications unsuccessful?", Is.EqualTo(actual.ApplicationsReviewsConfirmationLegendMessage));
@@ -341,12 +339,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         public async Task GET_ApplicationReviewsToUnsuccessfulConfirmation_ReturnsViewModelWithSingleApplicationsText()
         {
             // Arrange
-            var listOfApplicationReviews = new List<Guid>();
-            listOfApplicationReviews.Add(_applicationReviewId);
-
             var vacancyApplication1 = _fixture.Create<VacancyApplication>();
-            var vacancyApplications = new List<VacancyApplication> { };
-            vacancyApplications.Add(vacancyApplication1);
+            var vacancyApplications = new List<VacancyApplication>
+            {
+                vacancyApplication1
+            };
 
             var routeModel = _fixture
                 .Build<ApplicationReviewsToUnsuccessfulRouteModel>()
@@ -372,7 +369,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             Assert.That(actual.VacancyApplicationsToUnsuccessful.Count(), Is.EqualTo(1));
             Assert.That(routeModel.VacancyId, Is.EqualTo(actual.VacancyId));
             Assert.That(routeModel.EmployerAccountId, Is.EqualTo(actual.EmployerAccountId));
-            Assert.That("Make application unsuccessful", Is.EqualTo(actual.ApplicationReviewsConfirmationHeaderTitle));
+            Assert.That("Give feedback to the unsuccessful applicant", Is.EqualTo(actual.ApplicationReviewsConfirmationHeaderTitle));
             Assert.That("You will make this application unsuccessful:", Is.EqualTo(actual.ApplicationReviewsConfirmationHeaderDescription));
             Assert.That("This applicant will be notified with this message:", Is.EqualTo(actual.ApplicationsReviewsConfirmationNotificationMessage));
             Assert.That("Do you want to make this application unsuccessful?", Is.EqualTo(actual.ApplicationsReviewsConfirmationLegendMessage));
@@ -383,8 +380,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         {
             // Arrange
             var vacancyApplication1 = _fixture.Create<VacancyApplication>();
-            var vacancyApplications = new List<VacancyApplication> { };
-            vacancyApplications.Add(vacancyApplication1);
+            var vacancyApplications = new List<VacancyApplication>
+            {
+                vacancyApplication1
+            };
             var request = _fixture
                 .Build<ApplicationReviewsToUnsuccessfulConfirmationViewModel>()
                 .With(x => x.VacancyId, _vacancyId)
@@ -409,8 +408,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         {
             // Arrange
             var vacancyApplication1 = _fixture.Create<VacancyApplication>();
-            var vacancyApplications = new List<VacancyApplication> { };
-            vacancyApplications.Add(vacancyApplication1);
+            var vacancyApplications = new List<VacancyApplication>
+            {
+                vacancyApplication1
+            };
             var request = _fixture
                 .Build<ApplicationReviewsToUnsuccessfulConfirmationViewModel>()
                 .With(x => x.VacancyId, _vacancyId)
@@ -441,9 +442,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             // Arrange
             var vacancyApplication1 = _fixture.Create<VacancyApplication>();
             var vacancyApplication2 = _fixture.Create<VacancyApplication>();
-            var vacancyApplications = new List<VacancyApplication> { };
-            vacancyApplications.Add(vacancyApplication1);
-            vacancyApplications.Add(vacancyApplication2);
+            var vacancyApplications = new List<VacancyApplication>
+            {
+                vacancyApplication1,
+                vacancyApplication2
+            };
             var request = _fixture
                 .Build<ApplicationReviewsToUnsuccessfulConfirmationViewModel>()
                 .With(x => x.VacancyId, _vacancyId)
@@ -468,9 +471,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             Assert.That(InfoMessages.ApplicationsToUnsuccessfulBannerHeader, Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage]));
         }
 
-        public Task<IEnumerable<string>> GetProfanityListAsync()
-        {
-            return Task.FromResult<IEnumerable<string>>(new[] { "bother", "dang", "balderdash", "drat" });
-        }
+        private static Task<IEnumerable<string>> GetProfanityListAsync() => 
+            Task.FromResult<IEnumerable<string>>(["bother", "dang", "balderdash", "drat"]);
     }
 }

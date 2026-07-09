@@ -1,47 +1,47 @@
 ﻿@model Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview.ApplicationStatusConfirmationViewModel
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-application-status-confirmation";
-    ViewBag.Title = "Review Application Confirmation";
+    ViewBag.Title = @Model.ShowStatusSuccessful ? "Make successful" : "Make unsuccessful";
+    var outcomeText = @Model.ShowStatusSuccessful ? "successful" : "unsuccessful";
 }
-
 @section BackLink {
     <a asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-        <div asp-show="@Model.ShowStatusSuccessful">
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-                Are you sure you want to make @Model.Name's application successful?
-            </h1>
-            <p>
-                This will notify @Model.Name that they have been offered this apprenticeship.
-            </p>
-        </div>
+        <partial name="@PartialNames.ValidationSummary" model="new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }" />
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+            Do you want to make this application @outcomeText?
+        </h1>
+        <govuk-inset>
+            <div>
+                @Model.Name
+            </div>
+            <div>
+                Application ID: @Model.FriendlyId
+            </div>
+        </govuk-inset>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
         <div asp-show="@Model.ShowStatusUnsuccessful">
-            <h1 class="govuk-heading-l govuk-!-margin-bottom-6">
-                Are you sure you want to make @Model.Name's application unsuccessful?
-            </h1>
-            <p>
-                This will notify @Model.Name that they won't be offered the apprenticeship.
-            </p>
             <h2 class="govuk-heading-s">Your message to the applicant</h2>
-            <div class="govuk-details__text govuk-!-margin-bottom-6">
-                <p class="govuk-body">@Model.CandidateFeedback</p>
+            <div class="govuk-!-margin-bottom-6">
+                <govuk-inset>
+                    @Model.CandidateFeedback
+                </govuk-inset>
             </div>
         </div>
         <div asp-show="@Model.ShowStatusEmployerUnsuccessful">
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+            <h2 class="govuk-heading-xl govuk-!-margin-bottom-6">
                 Make this application unsuccessful
-            </h1>
-            <p>
+            </h2>
+            <p class="govuk-body">
                 You will make this application unsuccessful:
             </p>
             <div class="govuk-details__text govuk-!-margin-bottom-6">
                 <p class="govuk-body">@Model.Name : @Model.FriendlyId</p>
             </div>
-            <p>
+            <p class="govuk-body">
                 This applicant will be notified with this message:
             </p>
             <div class="govuk-details__text govuk-!-margin-bottom-6">
@@ -77,7 +77,7 @@
                 </strong>
             </div>
             <div class="govuk-form-group">
-                <input type="submit" value="Confirm" class="govuk-button" />
+                <input type="submit" value="Submit" class="govuk-button" />
             </div>
         </form>
     </div>

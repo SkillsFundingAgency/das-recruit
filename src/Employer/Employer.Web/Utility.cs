@@ -1,6 +1,3 @@
-using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Models;
@@ -8,6 +5,9 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Employer.Web;
@@ -21,6 +21,7 @@ public interface IUtility
     Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm);
     Task UpdateEmployerProfile(VacancyEmployerInfoModel employerInfoModel, EmployerProfile employerProfile, Address address);
     bool IsTaskListCompleted(Vacancy vacancy);
+    Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Vacancy vacancy);
 }
     
 public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator taskListValidator) : IUtility
@@ -39,7 +40,7 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
         return vacancy;
     }
 
-    public void CheckCanEdit(Vacancy vacancy)
+    private static void CheckCanEdit(Vacancy vacancy)
     {
         if (!vacancy.CanEmployerEdit)
             throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
@@ -53,7 +54,7 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
             throw new AuthorisationException(string.Format(ExceptionMessages.UserIsNotTheOwner, OwnerType.Employer));
     }
 
-    public bool VacancyHasCompletedPartOne(Vacancy vacancy)
+    private bool VacancyHasCompletedPartOne(Vacancy vacancy)
     {
         return vacancy.ApplicationMethod != null;
     }
@@ -117,7 +118,7 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
             updateProfile = true;
             employerProfile.AccountLegalEntityPublicHashedId = employerInfoModel.AccountLegalEntityPublicHashedId;
         }
-        if (employerInfoModel != null && employerInfoModel.EmployerIdentityOption == EmployerIdentityOption.NewTradingName)
+        if (employerInfoModel is {EmployerIdentityOption: EmployerIdentityOption.NewTradingName})
         {
             updateProfile = true;
             employerProfile.TradingName = employerInfoModel.NewTradingName;
@@ -137,5 +138,12 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
     public bool IsTaskListCompleted(Vacancy vacancy)
     {
         return vacancy is not null && taskListValidator.IsCompleteAsync(vacancy, EmployerTaskListSectionFlags.All).Result;
+    }
+
+    public async Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Vacancy vacancy)
+    {
+        if (vacancy is null) return false;
+
+        return await vacancyClient.IsAllApplicationReviewsHasOutcomeAsync(vacancy.Id);
     }
 }

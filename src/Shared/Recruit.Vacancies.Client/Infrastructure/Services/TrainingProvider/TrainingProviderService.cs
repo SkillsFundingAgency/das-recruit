@@ -8,11 +8,11 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Microsoft.Extensions.Logging;
+using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
 {
-    public class TrainingProviderService(
-        ILogger<TrainingProviderService> logger,
+    public class TrainingProviderService(ILogger<TrainingProviderService> logger,
         IOuterApiClient outerApiClient)
         : ITrainingProviderService
     {
@@ -177,13 +177,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
             return result.Providers.Select(MapProvider).ToList();
         }
 
-        private Domain.Entities.TrainingProvider GetEsfaTestTrainingProvider()
+        private static Domain.Entities.TrainingProvider GetEsfaTestTrainingProvider()
         {
             return new Domain.Entities.TrainingProvider
             {
                 Ukprn = EsfaTestTrainingProvider.Ukprn,
                 Name = EsfaTestTrainingProvider.Name,
-                Address = new Domain.Entities.Address
+                Address = new Address
                 {
                     AddressLine1 = EsfaTestTrainingProvider.AddressLine1,
                     AddressLine2 = EsfaTestTrainingProvider.AddressLine2,

@@ -6,7 +6,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Commands.ManageNotifications;
 using Esfa.Recruit.Vacancies.Client.Application.Queries.ManageNotifications.GetProviderNotificationPreferences;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -14,40 +13,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators;
 
 public class ManageNotificationsOrchestrator(
     ILogger<ManageNotificationsOrchestrator> logger,
-    IRecruitVacancyClient recruitVacancyClient,
     IMediator mediator)
     : EntityValidatingOrchestrator<UserNotificationPreferences, ManageNotificationsEditModel>(logger)
 {
-    private const string NotificationTypesIsRequiredForTheFirstTime = "Choose when you'd like to receive emails";
-    private readonly EntityValidationResult _notificationTypeIsRequiredForTheFirstTime = new()
-    {
-        Errors =
-        [
-            new EntityValidationError(1100, nameof(ManageNotificationsEditModel.HasAnySubscription), NotificationTypesIsRequiredForTheFirstTime, "1100")
-        ]
-    };
-
-    public async Task<OrchestratorResponse> UpdateUserNotificationPreferencesAsync(ManageNotificationsEditModel editModel, VacancyUser vacancyUser)
-    {
-        var persistedPreferences =
-            await recruitVacancyClient.GetUserNotificationPreferencesByDfEUserIdAsync(vacancyUser.UserId,
-                vacancyUser.DfEUserId)
-            ?? await recruitVacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
-
-        if (persistedPreferences.NotificationTypes == NotificationTypes.None && !editModel.HasAnySubscription)
-        {
-            return new OrchestratorResponse(_notificationTypeIsRequiredForTheFirstTime);
-        }
-
-        var preferences = GetDomainModel(editModel, vacancyUser.UserId, vacancyUser.DfEUserId);
-
-        return await ValidateAndExecute(
-            preferences,
-            _ => recruitVacancyClient.ValidateUserNotificationPreferences(preferences),
-            _ => recruitVacancyClient.UpdateUserNotificationPreferencesAsync(preferences)
-        );
-    }
-
     public async Task<ManageNotificationsViewModelEx> NewGetManageNotificationsViewModelAsync(VacancyUser vacancyUser)
     {
         var result = await mediator.Send(new GetProviderNotificationPreferencesQuery(vacancyUser.DfEUserId));
@@ -136,27 +104,6 @@ public class ManageNotificationsOrchestrator(
         {
             preference.Frequency = NotificationFrequencyEx.Never;
         }
-    }
-
-    public Task UnsubscribeUserNotificationsAsync(VacancyUser vacancyUser) =>
-        UpdateUserNotificationPreferencesAsync(new ManageNotificationsEditModel(), vacancyUser);
-
-    private static UserNotificationPreferences GetDomainModel(ManageNotificationsEditModel sourceModel, string idamsUserId, string dfeUserId)
-    {            
-        var targetModel = new UserNotificationPreferences { Id = idamsUserId, DfeUserId = dfeUserId};
-        if (!sourceModel.HasAnySubscription) return targetModel;
-
-        targetModel.NotificationFrequency = sourceModel.IsApplicationSubmittedSelected ? sourceModel.NotificationFrequency : null;
-
-        if (sourceModel.NotificationScope.HasValue) targetModel.NotificationScope = sourceModel.NotificationScope.Value;
-
-        targetModel.NotificationTypes = 
-            (sourceModel.IsApplicationSubmittedSelected ? NotificationTypes.ApplicationSubmitted : NotificationTypes.None) 
-            | (sourceModel.IsVacancyClosingSoonSelected ? NotificationTypes.VacancyClosingSoon : NotificationTypes.None) 
-            | (sourceModel.IsVacancyRejectedSelected ? NotificationTypes.VacancyRejected : NotificationTypes.None)
-            | (sourceModel.IsVacancyRejectedByEmployerSelected ? NotificationTypes.VacancyRejectedByEmployer : NotificationTypes.None);
-                        
-        return targetModel;
     }
 
     protected override EntityToViewModelPropertyMappings<UserNotificationPreferences, ManageNotificationsEditModel> DefineMappings()

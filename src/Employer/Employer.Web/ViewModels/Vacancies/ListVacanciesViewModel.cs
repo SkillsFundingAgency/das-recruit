@@ -1,5 +1,5 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels.Alerts;
-using Esfa.Recruit.Shared.Web.ViewModels;
+﻿using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Vacancies;
 
@@ -16,4 +16,5 @@ public class ListVacanciesViewModel
     public bool ShowReferredFromMaBackLink { get; set; }
     public string NoResultsHeadingText { get; set; }
     public string NoResultsLabelText { get; set; }
+    public FilteringOptions FilteringOptions { get; set; }
 }

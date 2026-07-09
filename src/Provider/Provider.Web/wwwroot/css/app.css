@@ -1,61 +1,124 @@
 /* Dashboard */
 
+.faa-dashboard-search {
+    max-width: 540px;
+}
+
 .app-card {
-  border: 1px solid #bfc1c3;
-  height: 100%;
-  margin-bottom: 20px;
+    border: 1px solid #bfc1c3;
+    height: 100%;
+    margin-bottom: 20px;
+}
+
+a.app-card {
+    display: block;
+    text-decoration: none;
+    border-radius: 0.3rem;
+    color: #0b0c0c;
+}
+
+a.app-card:hover,
+a.app-card:focus {
+    background-color: #0f385c;
+    color: #fff;
+}
+
+a.app-card:focus {
+    outline: 3px solid #fd0;
 }
 
 @media (min-width: 40.0625em) {
-  .app-card {
-    margin-bottom: 0;
-  }
+    .app-card {
+        margin-bottom: 0;
+    }
+    a.app-card {
+        min-height: 12rem;
+    }
 }
 
 .app-card--inactive {
-  background-color: #f8f8f8;
+    background-color: #f8f8f8;
 }
 
 .app-card__heading {
-  margin-bottom: 10px;
-  font-size: 19px;
-  font-size: 1.1875rem;
-  line-height: 1.31579;
+    margin-bottom: 10px;
+    font-size: 1.1875rem;
+    line-height: 1.31579;
+    color: inherit;
+}
+
+a.app-card .app-card__heading-text {
+    color: #1a65a6;
+    text-decoration: underline;
+    text-decoration-thickness: max(1px, .0625rem);
+    text-underline-offset: .1578em;
+}
+
+a.app-card:hover .app-card__heading-text {
+    color: #fff;
+}
+
+a.app-card:active .app-card__heading-text,
+a.app-card:focus .app-card__heading-text {
+    color: #0b0c0c;
+    outline: 3px solid rgba(0, 0, 0, 0);
+    background-color: #fd0;
+    box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+    text-decoration: none;
 }
 
 @media (min-width: 40.0625em) {
-  .app-card__stat {
-    display: block;
-    font-size: 32px;
-    font-size: 2rem;
-    line-height: 1.25;
-  }
+    .app-card__stat {
+        display: block;
+        font-size: 2.25rem;
+        line-height: 1;
+        margin-bottom: 10px;
+    }
 }
 
 .app-card__content {
-  padding: 20px;
+    padding: 1rem;
+    color: inherit;
 }
 
 .app-card__description {
-  margin-bottom: 0;
-  font-size: 16px;
-  font-size: 1rem;
-  line-height: 1.25;
-}
-
-@media (min-width: 40.0625em) {
-  .app-card__row {
-    display: flex;
-    margin-bottom: 30px;
-  }
+    margin-bottom: 0;
+    font-size: 1rem;
+    line-height: 1.25;
+    color: inherit;
 }
 
 .app-card__tasks {
-  margin-top: 15px;
-  margin-bottom: 0;
-  font-size: 16px;
-  font-size: 1rem;
-  line-height: 1.25;
+    margin-top: 15px;
+    margin-bottom: 0;
+}
+
+@media (min-width: 40.0625em) {
+    .app-card__row {
+        display: flex;
+        margin-bottom: 30px;
+    }
+}
+
+/* Vacancy List */
+
+.app-vacancy-list .govuk-table__head tr th,
+.app-vacancy-list .govuk-table__body tr td {
+    font-size: 1rem;
+    padding-right: 10px;
+}
+
+@media (min-width: 40.0625em) {
+    .app-vacancy-list {
+        width: 100%;
+    }
+
+    .th-w-title { width: 164px }
+    .th-w-employer { width: 150px }
+    .th-w-ref { width: 146px }
+    .th-w-applications { width: 110px }
+    .th-w-status { width: 161px }
+    .th-w-action { width: 62px }
 }
 
 /* Status Tags */
@@ -690,6 +753,8 @@ dd.govuk-summary-list__value .faa-user-content:first-child {
 
 .das-sortable-column-header {
     display: flex !important;
+    white-space: nowrap;
+    text-decoration: none;
 }
 
 .das-pagination-container {
@@ -697,3 +762,12 @@ dd.govuk-summary-list__value .faa-user-content:first-child {
     flex-direction: row-reverse;
     justify-content: space-between;
 }
+
+.raa-archive-card {
+    background: #f3f2f1;
+    border: none;
+}
+
+    .raa-archive-card .raa-archive-card-heading {
+        margin-top: 40px !important;
+    }

@@ -5,7 +5,6 @@ using Esfa.Recruit.Employer.Web.AppStart;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
@@ -93,23 +92,6 @@ namespace Esfa.Recruit.Employer.Web
         
             services.AddDataProtection(Configuration, HostingEnvironment, applicationName: "das-employer");
             services.AddDasEncoding(Configuration);
-
-            CheckInfrastructure(services);
-        }
-
-        private void CheckInfrastructure(IServiceCollection services)
-        {
-            try
-            {
-                var serviceProvider = services.BuildServiceProvider();
-                var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
-                collectionChecker?.EnsureCollectionsExist();
-                collectionChecker?.CreateIndexes().Wait();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error checking infrastructure");
-            }
         }
     }
 }

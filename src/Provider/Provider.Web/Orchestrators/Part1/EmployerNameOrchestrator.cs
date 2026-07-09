@@ -26,16 +26,15 @@ public class EmployerNameOrchestrator(
     IUtility utility)
     : EntityValidatingOrchestrator<Vacancy, EmployerNameEditModel>(logger)
 {
-    private Expression<Func<EmployerNameEditModel, object>> _vmPropertyToMapEmployerNameTo = null;
+    private Expression<Func<EmployerNameEditModel, object>> _vmPropertyToMapEmployerNameTo;
 
     public async Task<EmployerNameViewModel> GetEmployerNameViewModelAsync(
         TaskListViewModel vrm,
-        VacancyEmployerInfoModel employerInfoModel,
-        VacancyUser user)
+        VacancyEmployerInfoModel employerInfoModel)
     {
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.EmployerName_Get);
         var accountLegalEntityPublicHashedId = employerInfoModel?.AccountLegalEntityPublicHashedId ?? vacancy.AccountLegalEntityPublicHashedId;
-        var getVacancyEditInfoTask = providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
+        var getVacancyEditInfoTask = providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn, vacancy.EmployerAccountId);
         var getEmployerProfileTask = recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, accountLegalEntityPublicHashedId);
 
         await Task.WhenAll(getVacancyEditInfoTask, getEmployerProfileTask);
@@ -43,7 +42,7 @@ public class EmployerNameOrchestrator(
         var employerInfo = getVacancyEditInfoTask.Result.Employers.Single(e => e.EmployerAccountId == vacancy.EmployerAccountId);
         var employerProfile = getEmployerProfileTask.Result;
         var legalEntity = employerInfo.LegalEntities.Single(l => l.AccountLegalEntityPublicHashedId == accountLegalEntityPublicHashedId);
-
+        
         var vm = new EmployerNameViewModel 
         {
             AnonymousName = employerInfoModel?.AnonymousName ,
@@ -55,7 +54,7 @@ public class EmployerNameOrchestrator(
             LegalEntityName = legalEntity.Name,
             NewTradingName = employerInfoModel?.NewTradingName,
             PageInfo = utility.GetPartOnePageInfo(vacancy),
-            SelectedEmployerIdentityOption = employerInfoModel?.EmployerIdentityOption ?? vacancy?.EmployerNameOption?.ConvertToModelOption(),      
+            SelectedEmployerIdentityOption = employerInfoModel?.EmployerIdentityOption ?? vacancy?.EmployerNameOption?.ConvertToModelOption(),
             Title = vacancy.Title,
             Ukprn = vrm.Ukprn,
             VacancyId = vrm.VacancyId,
@@ -63,7 +62,7 @@ public class EmployerNameOrchestrator(
 
         if (vacancy.Status == VacancyStatus.Referred)
         {
-            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, 
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.GetValueOrDefault(),
                 ReviewFieldMappingLookups.GetEmployerNameReviewFieldIndicators());
         }
 

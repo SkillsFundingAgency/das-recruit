@@ -1,5 +1,4 @@
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 
@@ -9,7 +8,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview
     {
         public ApplicationReviewStatus? Outcome { get; set; }
         public string CandidateFeedback { get; set; }
-        public bool NavigateToFeedbackPage { get; set; }
         public bool IsApplicationSharedByProvider { get; set; }
     }
 }

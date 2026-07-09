@@ -10,14 +10,6 @@ namespace Esfa.Recruit.Shared.Web.Services
     {
         public async Task<bool> HasAgreementAsync(long ukprn)
         {
-            var editVacancyInfo = await client.GetProviderEditVacancyInfoAsync(ukprn);
-
-            if (editVacancyInfo == null)
-                return false;
-
-            if (editVacancyInfo.HasProviderAgreement)
-                return true;
-
             //Agreement may have been signed since the projection was created. Check PAS.
             var providerAccountResponse = await providerStatusClient.GetProviderStatus(ukprn);
 

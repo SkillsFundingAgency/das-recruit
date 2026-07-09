@@ -14,8 +14,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.NServiceBus
 
         public static void AddDasNServiceBus(this IServiceCollection services, IConfiguration configuration)
         {
-            services
-                .AddSingleton(s =>
+            services.AddSingleton(s =>
                 {
                     var serviceBusConfiguration = new DasSharedNServiceBusConfiguration();
                     configuration.GetSection(nameof(DasSharedNServiceBusConfiguration)).Bind(serviceBusConfiguration);

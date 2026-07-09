@@ -4,7 +4,6 @@ using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.ViewModels.ManageNotifications;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers;
@@ -47,37 +46,5 @@ public class ManageNotificationsController(ManageNotificationsOrchestrator orche
             ProviderAttachedToVacancyValue = model.ProviderAttachedToVacancyValue,
         };
         return View("NewManageNotifications", vm);
-    }
-
-    [HttpGet("notifications-unsubscribe", Name = RouteNames.ConfirmUnsubscribeNotifications_Get)]
-    public IActionResult ConfirmUnsubscribeNotifications([FromRoute]long ukprn)
-    {
-        return View(new ConfirmUnsubscribeNotificationsViewModel(ukprn));
-    }
-
-    [HttpPost("notifications-unsubscribe", Name = RouteNames.ConfirmUnsubscribeNotifications_Post)]
-    public async Task<IActionResult> ConfirmUnsubscribeNotifications(ConfirmUnsubscribeNotificationsEditModel model)
-    {
-        if(!ModelState.IsValid)
-            return View(new ConfirmUnsubscribeNotificationsViewModel(model.Ukprn));
-
-        if(model.ConfirmUnsubscribe == false)
-            return RedirectToRoute(RouteNames.ManageNotifications_Get, new {ukprn = User.GetUkprn().ToString()});
-
-        await orchestrator.UnsubscribeUserNotificationsAsync(User.ToVacancyUser());
-            
-        return RedirectToRoute(RouteNames.NotificationUnsubscribedAcknowledgement_Get, new {ukprn = User.GetUkprn().ToString()});
-    }
-
-    [HttpGet("notifications-acknowledgement", Name = RouteNames.NotificationsUpdatedAcknowledgement_Get)]
-    public IActionResult NotificationsUpdatedAcknowledgement(ManageNotificationsAcknowledgementViewModel model)
-    {
-        return View(model);
-    }
-
-    [HttpGet("notifications-unsubscribed", Name = RouteNames.NotificationUnsubscribedAcknowledgement_Get)]
-    public IActionResult NotificationUnsubscribedAcknowledgement([FromRoute]long ukprn)
-    {
-        return View(ukprn);
     }
 }

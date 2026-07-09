@@ -393,7 +393,7 @@
                             </div>
                         </div>
                         <div class="govuk-radios__item" asp-hide="@Model.IsApplicationShared">
-                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.Unsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Unsuccessful ? "checked" : null)" data-aria-controls="unsuccessful-candidate-feedback">
+                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.Unsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Unsuccessful ? "checked" : null)">
                             <label for="outcome-unsuccessful" class="govuk-label govuk-radios__label">Make unsuccessful and give feedback</label>
                             <div class="govuk-hint govuk-radios__hint" id="radio-status-unsuccessful">
                                 Send a notification to the applicant telling them they won't be offered this apprenticeship.

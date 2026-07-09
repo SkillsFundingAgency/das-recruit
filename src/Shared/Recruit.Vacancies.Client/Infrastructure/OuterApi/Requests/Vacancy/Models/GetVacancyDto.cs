@@ -116,7 +116,7 @@ public class GetVacancyDto
             OwnerType = vacancy.OwnerType!.Value,
             ProgrammeId = vacancy.ProgrammeId,
             ProviderContact = vacancy.OwnerType == Domain.Entities.OwnerType.Provider ? vacancy.Contact : null,
-            ProviderReviewFieldIndicators = vacancy.ProviderReviewFieldIndicators?.Select(x => new ProviderReviewFieldIndicator() { FieldIdentifier = x.FieldIdentifier, IsChangeRequested = x.IsChangeRequested }).ToList(),
+            ProviderReviewFieldIndicators = vacancy.ProviderReviewFieldIndicators?.Select(x => new ProviderReviewFieldIndicator { FieldIdentifier = x.FieldIdentifier, IsChangeRequested = x.IsChangeRequested }).ToList(),
             Qualifications = vacancy.Qualifications,
             ReviewByUser = new VacancyUser { UserId = vacancy.ReviewRequestedByUserId },
             ReviewCount = vacancy.ReviewCount,
