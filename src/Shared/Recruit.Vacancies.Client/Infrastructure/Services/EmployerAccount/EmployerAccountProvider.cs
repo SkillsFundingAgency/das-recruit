@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -56,6 +56,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
                 var legalEntities =
                     await outerApiClient.Get<GetAccountLegalEntitiesResponse>(
                         new GetAccountLegalEntitiesRequest(accountId));
+                
+                return legalEntities.AccountLegalEntities;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to retrieve account information for account Id: {HashedAccountId}", hashedAccountId);
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<AccountLegalEntity>> GetLegalEntitiesConnectedToAccountAsync(List<string> hashedAccountId)
+        {
+            try
+            {
+                var accountId = hashedAccountId.Select(c=>encodingService.Decode(c, EncodingType.AccountId)).ToList();
+                var legalEntities =
+                    await outerApiClient.Post<GetAccountLegalEntitiesResponse>(
+                        new PostGetAccountLegalEntitiesRequest(accountId));
                 
                 return legalEntities.AccountLegalEntities;
             }
