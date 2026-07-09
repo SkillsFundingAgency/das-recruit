@@ -30,7 +30,7 @@
         </div>
         <govuk-tag-foundation asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-!-margin-bottom-4" />
         <span class="govuk-caption-l">@Model.EmployerName</span>
-        <h1 class="govuk-heading-l">@Model.Title</h1>
+        <h1 class="govuk-heading-l govuk-!-margin-top-2">@Model.Title</h1>
         <p class="govuk-body-l">Vacancy reference: VAC@(Model.VacancyReference)</p>
         <p asp-show="@Model.Status == VacancyStatus.Submitted" class="govuk-body">
             This vacancy has been sent to us for review. We’ll tell you within 1 working day if you need to make any edits to this vacancy.
@@ -71,7 +71,7 @@
                     <a asp-show="@Model.CanShowCloseVacancyLink" asp-route="@RouteNames.CloseVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Change</a>
                 </dd>
             </div>
-            <div class="govuk-summary-list__row border-bottom-none">
+            <div class="govuk-summary-list__row border-bottom-none" asp-show="@Model.CanShowStartAndClosingDates">
                 <dt class="govuk-summary-list__key">
                     Closing date
                     <br>
@@ -103,14 +103,14 @@
                 Closed vacancies can be archived when all applicants have received their outcome. You can clone an archived vacancy to advertise it again.
             </div>            
         </govuk-inset>
-        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
         <div asp-show="@Model.CanShowVacancyAnalytics">
             <h2 class="govuk-heading-m govuk-!-margin-top-0">
                 Vacancy analytics
             </h2>
             <p>To see how many people have looked at your vacancy, <a asp-route="@RouteNames.VacancyAnalytics_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">view vacancy analytics</a>.</p>
         </div>
-        <hr asp-show="@Model.CanShowVacancyAnalytics" class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
+        <hr asp-show="@Model.CanShowVacancyAnalytics" class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
     </div>
 </div>
 @if (Model.CanShowApplicationsSection)
@@ -175,7 +175,7 @@ else
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div>
-                <h2 class="govuk-heading-m">
+                <h2 class="govuk-heading-m govuk-!-margin-top-5">
                     Applications
                 </h2>
             </div>
