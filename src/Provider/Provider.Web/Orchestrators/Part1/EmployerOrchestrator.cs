@@ -11,7 +11,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
     {
         public async Task<EmployersViewModel> GetEmployersViewModelAsync(VacancyRouteModel vrm)
         {
-            var editVacancyInfo = await providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
+            var editVacancyInfo = await providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn, "");
 
             if (editVacancyInfo?.Employers == null || !editVacancyInfo.Employers.Any())
             {

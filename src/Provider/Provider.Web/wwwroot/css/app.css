@@ -341,6 +341,10 @@ a.app-card:focus .app-card__heading-text {
   border: 2px solid #0b0c0c !important;
 }
 
+.dfe-branding .mce-ico {
+    font-family: 'tinymce', Arial !important;
+}
+
 /* Hide error message spans if empty  */
 
 span.govuk-error-message:empty {
