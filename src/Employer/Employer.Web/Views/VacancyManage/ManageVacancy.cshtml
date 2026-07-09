@@ -69,7 +69,7 @@
             </p>
         </div>
         <govuk-tag-foundation asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-!-margin-bottom-4"/>
-        <h1 class="govuk-heading-l">@Model.Title</h1>
+        <h1 class="govuk-heading-l govuk-!-margin-top-2">@Model.Title</h1>
         <p class="govuk-body-l">Advert reference: VAC@(Model.VacancyReference)</p>
         <p asp-show="@Model.IsTransferred" class="govuk-inset-text">
             This advert was created by
@@ -100,8 +100,7 @@
                         asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Change</a>
                 </dd>
             </div>
-
-            <div class="govuk-summary-list__row border-bottom-none">
+            <div class="govuk-summary-list__row border-bottom-none" asp-show="@Model.CanShowStartAndClosingDates">
                 <dt class="govuk-summary-list__key">
                     Closing date
                     <br>
@@ -138,7 +137,7 @@
                 Closed adverts can be archived when all applicants have received their outcome. You can clone an archived advert to advertise it again.
             </div>
         </govuk-inset>
-        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
         <div asp-show="@Model.CanShowVacancyAnalytics">
             <h2 class="govuk-heading-m">
                 Advert analytics
@@ -149,7 +148,7 @@
             </p>
         </div>
         <hr asp-show="@Model.CanShowVacancyAnalytics"
-            class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
+            class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
     </div>
 </div>
 @if (Model.CanShowApplicationsSection)
@@ -157,7 +156,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div>
-                <h2 asp-show="@Model.ShowEmployerApplications" class="govuk-heading-m">
+                <h2 asp-show="@Model.ShowEmployerApplications" class="govuk-heading-m govuk-!-margin-top-3">
                     Applications (@Model.TotalUnfilteredApplicationsCount)
                 </h2>
             </div>
@@ -254,7 +253,7 @@ else
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div>
-                <h2 class="govuk-heading-m">
+                <h2 class="govuk-heading-m govuk-!-margin-top-3">
                     Applications
                 </h2>
             </div>
