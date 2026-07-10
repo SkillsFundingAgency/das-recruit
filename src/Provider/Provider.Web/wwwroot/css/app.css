@@ -779,3 +779,8 @@ dd.govuk-summary-list__value .faa-user-content:first-child {
 .border-bottom-none {
     border-bottom: none !important;
 }
+
+.govuk-summary-list__value.das-align-end {
+    align-self: flex-end; /* or justify-self: end for grid */
+    text-align: right;
+}
