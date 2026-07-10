@@ -1,8 +1,8 @@
-using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators;
-using FluentValidation;
 using System;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators;
+using FluentValidation;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 {

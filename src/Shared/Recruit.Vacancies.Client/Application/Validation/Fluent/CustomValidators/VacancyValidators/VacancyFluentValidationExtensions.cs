@@ -2,7 +2,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
-using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using FluentValidation;
 using FluentValidation.Results;
@@ -184,15 +184,47 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             });
         }
 
+        internal static IRuleBuilderInitial<Vacancy, Vacancy> EmployerLocationMustBeInEngland(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, ILocationsService locationsService) =>
+            (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
+            {
+                if (vacancy?.EmployerLocations == null || vacancy.EmployerLocations.Count == 0)
+                    return;
+
+                var (message, errorCode) = vacancy.EmployerLocationOption switch
+                {
+                    AvailableWhere.OneLocation => (
+                        "Location must be in England. Your apprenticeship must be in England to advertise it on this service",
+                        VacancyValidationErrorCodes.AddressCountryNotInEngland),
+
+                    AvailableWhere.MultipleLocations => (
+                        "All locations must be in England. Your apprenticeship must be in England to advertise it on this service",
+                        $"Multiple-{VacancyValidationErrorCodes.AddressCountryNotInEngland}"),
+
+                    _ => ("Location must be in England. Your apprenticeship must be in England to advertise it on this service",
+                        VacancyValidationErrorCodes.AddressCountryNotInEngland)
+                };
+
+                foreach (var address in vacancy.EmployerLocations)
+                {
+                    if (await locationsService.IsPostcodeInEnglandAsync(address.Postcode) != true)
+                    {
+                        context.AddFailure(new ValidationFailure(nameof(Vacancy.EmployerLocations), message)
+                        {
+                            ErrorCode = errorCode,
+                            CustomState = VacancyRuleSet.EmployerLocationOutOfArea
+                        });
+                    }
+                }
+            });
 
         internal static IRuleBuilderOptions<Vacancy, T> RunCondition<T>(this IRuleBuilderOptions<Vacancy, T> context, VacancyRuleSet condition)
         {
-            return context.Configure(c=>c.ApplyCondition(x => x.CanRunValidator(condition)));
+            return context.Configure(c => c.ApplyCondition(x => x.CanRunValidator(condition)));
         }
-        
+
         internal static IRuleBuilderInitial<Vacancy, T> RunCondition<T>(this IRuleBuilderInitial<Vacancy, T> context, VacancyRuleSet condition)
         {
-            return context.Configure(c=>c.ApplyCondition(x => x.CanRunValidator(condition)));
+            return context.Configure(c => c.ApplyCondition(x => x.CanRunValidator(condition)));
         }
 
         private static bool CanRunValidator<T>(this ValidationContext<T> context, VacancyRuleSet validationToCheck)
