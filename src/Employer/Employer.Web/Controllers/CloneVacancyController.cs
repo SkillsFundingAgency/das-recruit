@@ -13,20 +13,14 @@ using Esfa.Recruit.Shared.Web.ViewModels;
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class CloneVacancyController : Controller
+    public class CloneVacancyController(CloneVacancyOrchestrator orchestrator) : Controller
     {
-        private readonly CloneVacancyOrchestrator _orchestrator;
-        public CloneVacancyController(CloneVacancyOrchestrator orchestrator)
-        {
-            _orchestrator = orchestrator;
-        }
-
         [HttpGet("clone", Name = RouteNames.CloneVacancy_Get)]
         public async Task<IActionResult> Clone(VacancyRouteModel vrm)
         {
-            var vacancy = await _orchestrator.GetCloneableAuthorisedVacancyAsync(vrm);
+            var vacancy = await orchestrator.GetCloneableAuthorisedVacancyAsync(vrm);
 
-            return _orchestrator.IsNewDatesRequired(vacancy) 
+            return orchestrator.IsNewDatesRequired(vacancy) 
                 ? RedirectToRoute(RouteNames.CloneVacancyWithNewDates_Get, new {vrm.VacancyId, vrm.EmployerAccountId}) 
                 : RedirectToRoute(RouteNames.CloneVacancyDatesQuestion_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
         }
@@ -34,7 +28,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("clone-dates-question", Name = RouteNames.CloneVacancyDatesQuestion_Get)]
         public async Task<IActionResult> CloneVacancyDatesQuestion(VacancyRouteModel vrm)
         {
-            var vm = await _orchestrator.GetCloneVacancyDatesQuestionViewModelAsync(vrm);
+            var vm = await orchestrator.GetCloneVacancyDatesQuestionViewModelAsync(vrm);
             return View(vm);
         }
 
@@ -43,18 +37,18 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetCloneVacancyDatesQuestionViewModelAsync(model);
+                var vm = await orchestrator.GetCloneVacancyDatesQuestionViewModelAsync(model);
                 return View(vm);
             }
 
             if (model.HasConfirmedClone == true)
             {
-                var response = await _orchestrator.PostCloneVacancyWithSameDates(model, User.ToVacancyUser());
+                var response = await orchestrator.PostCloneVacancyWithSameDates(model, User.ToVacancyUser());
 
                 if (!response.Success)
                 {
                     response.AddErrorsToModelState(ModelState);
-                    var vm = await _orchestrator.GetCloneVacancyDatesQuestionViewModelAsync(model);
+                    var vm = await orchestrator.GetCloneVacancyDatesQuestionViewModelAsync(model);
                     return View(vm);
                 }
 
@@ -69,14 +63,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("clone-with-dates", Name = RouteNames.CloneVacancyWithNewDates_Get)]
         public async Task<IActionResult> CloneVacancyWithNewDates(VacancyRouteModel vrm)
         {
-            var vm = await _orchestrator.GetCloneVacancyWithNewDatesViewModelAsync(vrm);
+            var vm = await orchestrator.GetCloneVacancyWithNewDatesViewModelAsync(vrm);
             return View(vm);
         }
 
         [HttpPost("clone-with-dates", Name = RouteNames.CloneVacancyWithNewDates_Post)]
         public async Task<IActionResult> CloneVacancyWithNewDates(CloneVacancyWithNewDatesEditModel model)
         {
-            var response = await _orchestrator.PostCloneVacancyWithNewDates(model, User.ToVacancyUser());
+            var response = await orchestrator.PostCloneVacancyWithNewDates(model, User.ToVacancyUser());
 
             if(!response.Success)
             {
@@ -85,7 +79,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetDirtyCloneVacancyWithNewDatesViewModelAsync(model);
+                var vm = await orchestrator.GetDirtyCloneVacancyWithNewDatesViewModelAsync(model);
                 return View(vm);
             }
 
