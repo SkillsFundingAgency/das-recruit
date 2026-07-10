@@ -11,7 +11,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
         Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email);
         Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string hashedAccountId);
         Task<IEnumerable<AccountLegalEntity>> GetLegalEntitiesConnectedToAccountAsync(string hashedAccountId);
-        Task<IEnumerable<AccountLegalEntity>> GetLegalEntitiesConnectedToAccountAsync(List<string> hashedAccountId);
         Task<GetApplicationReviewStatsResponse> GetEmployerDashboardApplicationReviewStats(string hashedAccountId,
             List<long> vacancyReferences, string applicationSharedFilteringStatus);
         Task<GetEmployerDashboardApiResponse> GetEmployerDashboardStats(string hashedAccountId);

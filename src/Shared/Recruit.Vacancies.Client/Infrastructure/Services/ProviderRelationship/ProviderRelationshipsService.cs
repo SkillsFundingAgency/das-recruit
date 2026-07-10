@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             if (permittedLegalEntities.Count == 0) return false;
 
             var accountId = permittedLegalEntities[0].AccountHashedId;
-            var allLegalEntities = (await employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync([accountId])).ToList();
+            var allLegalEntities = (await employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(accountId)).ToList();
 
             var hasPermission = permittedLegalEntities
                 .Join(allLegalEntities,
@@ -130,6 +130,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                 })
                 .ToList();
 
+        private const int BatchSize = 50;
+        private const int PageSize = 500;
+
         private async Task<List<EmployerInfo>> GetEmployerInfosAsync(ProviderPermissions providerPermissions)
         {
             var employerInfos = new List<EmployerInfo>();
@@ -138,10 +141,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                 .GroupBy(p => p.AccountHashedId)
                 .ToList();
 
-            foreach (var batch in permittedEmployerAccounts.Chunk(50))
+            foreach (var batch in permittedEmployerAccounts.Chunk(BatchSize))
             {
                 var accountIds = batch.Select(g => g.Key).ToList();
-                var legalEntitiesByPublicHashedId = (await employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(accountIds))
+
+                var firstPage = await employerAccountProvider.GetAllLegalEntitiesConnectedToAccountAsync(accountIds, string.Empty, 1, PageSize, "Name", true);
+                var allLegalEntities = firstPage.LegalEntities.ToList();
+
+                for (var page = 2; page <= firstPage.PageInfo.TotalPages; page++)
+                {
+                    var nextPage = await employerAccountProvider.GetAllLegalEntitiesConnectedToAccountAsync(accountIds, string.Empty, page, PageSize, "Name", true);
+                    allLegalEntities.AddRange(nextPage.LegalEntities);
+                }
+
+                var legalEntitiesByPublicHashedId = allLegalEntities
                     .ToDictionary(le => le.AccountLegalEntityPublicHashedId);
 
                 foreach (var permittedEmployer in batch)
@@ -158,7 +171,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                         if (!legalEntitiesByPublicHashedId.TryGetValue(permittedLegalEntity.AccountLegalEntityPublicHashedId, out var matchingLegalEntity))
                             continue;
 
-                        var legalEntity = LegalEntityMapper.MapFromAccountApiLegalEntity(matchingLegalEntity);
+                        var legalEntity = LegalEntityMapper.MapFromAllAccountApiLegalEntity(matchingLegalEntity);
                         legalEntity.AccountLegalEntityPublicHashedId = permittedLegalEntity.AccountLegalEntityPublicHashedId;
                         employerInfo.LegalEntities.Add(legalEntity);
                     }
