@@ -29,14 +29,28 @@
                         <td class="govuk-table__cell" data-label="Name">@application.CandidateName</td>
                         <td class="govuk-table__cell" data-label="Status"><govuk-tag-application-review-status application-status="@application.Status" user-type="@Model.UserType" /></td>
                         <td class="govuk-table__cell" data-label="Date applied">@application.SubmittedDate.AsGdsDate()</td>
-                        <td class="govuk-table__cell" asp-show="@application.CanShowCandidateAppliedLocations" data-label="Locations">@application.CandidateAppliedLocations</td>
+                        <td class="govuk-table__cell" asp-show="@application.CanShowCandidateAppliedLocations" data-label="Locations">
+                            <ul class="govuk-list">
+                                @foreach (var location in application.CandidateAppliedLocations)
+                                {
+                                    <li>@location</li>
+                                }
+                            </ul>
+                        </td>
                     </tr>
                     <tr class="govuk-table__row" asp-show="@application.IsWithdrawn">
                         <td class="govuk-table__cell" data-label="Application ID">@application.GetFriendlyId()</td>
                         <td class="govuk-table__cell" data-label="Name">Application withdrawn by candidate</td>
                         <td class="govuk-table__cell" data-label="Status"><govuk-tag-application-review-status application-status="@application.Status" is-withdrawn="@application.IsWithdrawn" user-type="@Model.UserType" /></td>
                         <td class="govuk-table__cell" data-label="Date applied">@application.SubmittedDate.AsGdsDate()</td>
-                        <td class="govuk-table__cell" asp-show="@application.CanShowCandidateAppliedLocations" data-label="Locations">@application.CandidateAppliedLocations</td>
+                        <td class="govuk-table__cell" asp-show="@application.CanShowCandidateAppliedLocations" data-label="Locations">
+                            <ul class="govuk-list">
+                                @foreach (var location in application.CandidateAppliedLocations)
+                                {
+                                    <li>@location</li>
+                                }
+                            </ul>
+                        </td>
                     </tr>
                 }
             </tbody>

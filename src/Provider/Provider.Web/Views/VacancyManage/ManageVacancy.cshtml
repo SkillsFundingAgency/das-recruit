@@ -30,11 +30,8 @@
         </div>
         <govuk-tag-foundation asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-!-margin-bottom-4" />
         <span class="govuk-caption-l">@Model.EmployerName</span>
-        <h1 class="govuk-heading-l govuk-!-margin-top-2">@Model.Title</h1>
+        <h1 class="govuk-heading-l govuk-!-margin-top-2 govuk-!-margin-bottom-2">@Model.Title</h1>
         <p class="govuk-body-l">Vacancy reference: VAC@(Model.VacancyReference)</p>
-        <p asp-show="@Model.Status == VacancyStatus.Submitted" class="govuk-body">
-            This vacancy has been sent to us for review. We’ll tell you within 1 working day if you need to make any edits to this vacancy.
-        </p>
         <p asp-show="@Model.IsWithdrawn" class="govuk-inset-text">
             This vacancy has issues and was closed on @Model.WithdrawnDate.
         </p>
@@ -56,6 +53,9 @@
     </div>
     <div class="govuk-grid-column-two-thirds">
         <h2 class="govuk-heading-m govuk-!-margin-top-5">Vacancy summary</h2>
+        <p asp-show="@Model.Status == VacancyStatus.Submitted" class="govuk-body">
+            This vacancy has been sent to us for review. We’ll tell you within 1 working day if you need to make any edits to this vacancy.
+        </p>
         <p asp-show="@Model.Status == VacancyStatus.Review" class="govuk-body">
             This vacancy needs to be approved by the employer. Once approved, it will be sent to DfE for review.
         </p>

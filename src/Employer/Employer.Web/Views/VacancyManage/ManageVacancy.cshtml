@@ -27,7 +27,6 @@
                     next hour.</p>
             </div>
         </div>
-
         <div asp-show="@Model.CanShowApplicationsUnsuccessfulBanner"
             class="govuk-notification-banner govuk-notification-banner--success" role="alert"
             aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
@@ -42,7 +41,6 @@
                 </h3>
             </div>
         </div>
-
         <div asp-show="@Model.CanShowApplicationStatusChangeBanner"
             class="govuk-notification-banner govuk-notification-banner--success" role="alert"
             aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
@@ -59,7 +57,6 @@
         </div>
     </div>
 </div>
-
 <div asp-show="@Model.ShowEmployerApplications" class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <div asp-show="@Model.CanShowApplicationReviewStatusHeader"
@@ -69,7 +66,7 @@
             </p>
         </div>
         <govuk-tag-foundation asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-!-margin-bottom-4"/>
-        <h1 class="govuk-heading-l govuk-!-margin-top-2">@Model.Title</h1>
+        <h1 class="govuk-heading-l govuk-!-margin-top-2 govuk-!-margin-bottom-2">@Model.Title</h1>
         <p class="govuk-body-l">Advert reference: VAC@(Model.VacancyReference)</p>
         <p asp-show="@Model.IsTransferred" class="govuk-inset-text">
             This advert was created by

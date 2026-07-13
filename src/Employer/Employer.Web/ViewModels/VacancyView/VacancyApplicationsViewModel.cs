@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
             Applications?.Any(app => app.Status != ApplicationReviewStatus.Successful && app.Status != ApplicationReviewStatus.Unsuccessful) ?? false;
 
         public bool CanShowCandidateAppliedLocations => Applications?.Any(app => app.CanShowCandidateAppliedLocations) ?? false;
-        public bool CanShowLocationFilter => AvailableWhere is Esfa.Recruit.Vacancies.Client.Domain.Entities.AvailableWhere
+        public bool CanShowLocationFilter => HasApplications && AvailableWhere is Esfa.Recruit.Vacancies.Client.Domain.Entities.AvailableWhere
             .MultipleLocations;
     }
 }

@@ -92,7 +92,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                                || vacancyApplications.Any(fil => fil.CandidateAppliedLocations == null)
                 ? vacancyApplications
                 : vacancyApplications.Where(fil => fil.CandidateAppliedLocations != null 
-                                                   && fil.CandidateAppliedLocations.Contains(locationFilter, StringComparison.CurrentCultureIgnoreCase))
+                                                   && fil.CandidateAppliedLocations.Contains(locationFilter))
                     .ToList();
 
             var pager = new PagerViewModel(

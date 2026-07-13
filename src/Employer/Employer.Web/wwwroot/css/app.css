@@ -694,3 +694,8 @@ dd.govuk-summary-list__value .faa-user-content:first-child {
     align-self: flex-end; /* or justify-self: end for grid */
     text-align: right;
 }
+
+.govuk-summary-list__value .govuk-tag {
+    align-self: flex-end; /* or justify-self: end for grid */
+    font-size: 20px;
+}
