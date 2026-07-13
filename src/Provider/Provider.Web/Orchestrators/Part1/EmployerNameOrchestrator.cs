@@ -34,7 +34,7 @@ public class EmployerNameOrchestrator(
     {
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.EmployerName_Get);
         var accountLegalEntityPublicHashedId = employerInfoModel?.AccountLegalEntityPublicHashedId ?? vacancy.AccountLegalEntityPublicHashedId;
-        var getVacancyEditInfoTask = providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
+        var getVacancyEditInfoTask = providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn, vacancy.EmployerAccountId);
         var getEmployerProfileTask = recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, accountLegalEntityPublicHashedId);
 
         await Task.WhenAll(getVacancyEditInfoTask, getEmployerProfileTask);

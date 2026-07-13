@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Cache;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Providers;
@@ -15,9 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 {
     public class ProviderRelationshipsService(IEmployerAccountProvider employerAccountProvider,
         IOuterApiClient outerApiClient,
-        IEncodingService encodingService,
-        ICache cache,
-        ITimeProvider timeProvider)
+        IEncodingService encodingService)
         : IProviderRelationshipsService
     {
         private readonly Dictionary<string, object> _apiLoggingContext = new()
@@ -27,24 +23,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             }
         };
 
-        public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(long ukprn, List<OperationType> operationTypes)
-        {
-            var providerPermissions = await GetProviderPermissionsByUkprn(ukprn, operationTypes);
-
-            return await GetEmployerInfosAsync(providerPermissions);
-        }
-
         public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProvider(long ukprn, string accountHashedId,
             List<OperationType> operationTypes)
         {
             var providerPermissions = await GetProviderPermissionsByUkprn(ukprn, operationTypes);
 
-            var filteredProviderPermissions = new ProviderPermissions
+            var filteredProviderPermissions = !string.IsNullOrEmpty(accountHashedId) ? new ProviderPermissions
             {
                 AccountProviderLegalEntities = providerPermissions.AccountProviderLegalEntities
                     .Where(p => p.AccountHashedId == accountHashedId)
                     .ToList()
-            };
+            } : providerPermissions;
 
             return await GetEmployerInfosAsync(filteredProviderPermissions);
         }
@@ -78,58 +67,33 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
         private async Task<List<LegalEntityDto>> GetProviderPermissionsForEmployer(long ukprn, string accountHashedId, List<OperationType> operationTypes)
         {
             var accountId = encodingService.Decode(accountHashedId, EncodingType.AccountId);
-            var operationsKey = string.Join(",", operationTypes
-                .Select(x => x.ToString())
-                .OrderBy(x => x));
-           
-            return await cache.CacheAsideAsync($"{CacheKeys.ProviderPermissions}_{ukprn}_{accountId}_{operationsKey.GetHashCode()}",
-                timeProvider.NextDay,
-                async () =>
-                {
-                    var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-                    var permissions = await retryPolicy.Execute(_ => outerApiClient.Get<GetProviderPermissionsByUkprnAndAccountIdApiResponse>(
-                            new GetProviderPermissionsByUkprnAndAccountIdApiRequest(ukprn, accountId, operationTypes)),
-                        _apiLoggingContext);
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-                    return MapToLegalEntities(permissions.AccountProviderLegalEntities);
-                });
+            var permissions = await retryPolicy.Execute(_ => outerApiClient.Get<GetProviderPermissionsByUkprnAndAccountIdApiResponse>(
+                    new GetProviderPermissionsByUkprnAndAccountIdApiRequest(ukprn, accountId, operationTypes)),
+                _apiLoggingContext);
+
+            return MapToLegalEntities(permissions.AccountProviderLegalEntities);
         }
 
         private async Task<ProviderPermissions> GetProviderPermissionsByUkprn(long ukprn, List<OperationType> operationTypes)
         {
-            var operationsKey = string.Join(",", operationTypes
-                .Select(x => x.ToString())
-                .OrderBy(x => x));
-             
-            return await cache.CacheAsideAsync($"{CacheKeys.ProviderPermissions}_{ukprn}_{operationsKey.GetHashCode()}",
-                timeProvider.NextDay,
-                async () =>
-                {
-                    var retryPolicy = PollyRetryPolicy.GetPolicy();
-                    var permissions = await retryPolicy.Execute(_ => outerApiClient.Get<GetProviderPermissionsByUkprnApiResponse>(
-                            new GetProviderPermissionsByUkprnApiRequest(ukprn, operationTypes)),
-                        _apiLoggingContext);
+            var permissions = await outerApiClient.Get<GetProviderPermissionsByUkprnApiResponse>(
+                    new GetProviderPermissionsByUkprnApiRequest(ukprn, operationTypes));
 
-                    return MapToProviderPermissions(permissions.AccountProviderLegalEntities);
-                });
+            return MapToProviderPermissions(permissions.AccountProviderLegalEntities);
         }
 
         private async Task<ProviderPermissions> GetProviderPermissionsByAccountHashedId(string accountHashedId, OperationType operationType)
         {
-            var operationsKey = string.Join(",", new[] { operationType }.OrderBy(x => x));
-            return await cache.CacheAsideAsync($"{CacheKeys.ProviderPermissions}_{accountHashedId}_{operationsKey.GetHashCode()}",
-                timeProvider.NextDay,
-                async () =>
-                {
-                    var retryPolicy = PollyRetryPolicy.GetPolicy();
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-                    var permissions = await retryPolicy.Execute(_ => outerApiClient.Get<GetProviderPermissionsByUkprnApiResponse>(
-                            new GetEmployerPermissionsByAccountHashedIdApiRequest(accountHashedId, [operationType])),
-                        _apiLoggingContext);
+            var permissions = await retryPolicy.Execute(_ => outerApiClient.Get<GetProviderPermissionsByUkprnApiResponse>(
+                    new GetEmployerPermissionsByAccountHashedIdApiRequest(accountHashedId, [operationType])),
+                _apiLoggingContext);
 
-                    return MapToProviderPermissions(permissions.AccountProviderLegalEntities);
-                });
+            return MapToProviderPermissions(permissions.AccountProviderLegalEntities);
         }
 
         private static ProviderPermissions MapToProviderPermissions(
@@ -166,38 +130,56 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                 })
                 .ToList();
 
+        private const int BatchSize = 50;
+        private const int PageSize = 500;
+
         private async Task<List<EmployerInfo>> GetEmployerInfosAsync(ProviderPermissions providerPermissions)
         {
             var employerInfos = new List<EmployerInfo>();
 
-            var permittedEmployerAccounts = providerPermissions.AccountProviderLegalEntities.GroupBy(p => p.AccountHashedId);
+            var permittedEmployerAccounts = providerPermissions.AccountProviderLegalEntities
+                .GroupBy(p => p.AccountHashedId)
+                .ToList();
 
-            foreach (var permittedEmployer in permittedEmployerAccounts)
+            foreach (var batch in permittedEmployerAccounts.Chunk(BatchSize))
             {
-                var employerInfo = new EmployerInfo
-                {
-                    EmployerAccountId = permittedEmployer.Key,
-                    Name = permittedEmployer.First().AccountName, //should be same in all the items hence read from first
-                    LegalEntities = []
-                };
+                var accountIds = batch.Select(g => g.Key).ToList();
 
-                var legalEntityViewModels = await employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(permittedEmployer.Key);
-                var accountLegalEntities = legalEntityViewModels.ToList();
-                foreach (LegalEntityDto permittedLegalEntity in permittedEmployer)
-                {
-                    if (accountLegalEntities.Count <= 0) continue;
-                    
-                    var matchingLegalEntity = accountLegalEntities.FirstOrDefault(e => e.AccountLegalEntityPublicHashedId == permittedLegalEntity.AccountLegalEntityPublicHashedId);
+                var firstPage = await employerAccountProvider.GetAllLegalEntitiesConnectedToAccountAsync(accountIds, string.Empty, 1, PageSize, "Name", true);
+                var allLegalEntities = firstPage.LegalEntities.ToList();
 
-                    if (matchingLegalEntity == null) continue;
-                    
-                    var legalEntity = LegalEntityMapper.MapFromAccountApiLegalEntity(matchingLegalEntity);
-                    legalEntity.AccountLegalEntityPublicHashedId = permittedLegalEntity.AccountLegalEntityPublicHashedId;
-                    employerInfo.LegalEntities.Add(legalEntity);
+                for (var page = 2; page <= firstPage.PageInfo.TotalPages; page++)
+                {
+                    var nextPage = await employerAccountProvider.GetAllLegalEntitiesConnectedToAccountAsync(accountIds, string.Empty, page, PageSize, "Name", true);
+                    allLegalEntities.AddRange(nextPage.LegalEntities);
                 }
 
-                employerInfos.Add(employerInfo);
+                var legalEntitiesByPublicHashedId = allLegalEntities
+                    .ToDictionary(le => le.AccountLegalEntityPublicHashedId);
+
+                foreach (var permittedEmployer in batch)
+                {
+                    var employerInfo = new EmployerInfo
+                    {
+                        EmployerAccountId = permittedEmployer.Key,
+                        Name = permittedEmployer.First().AccountName,
+                        LegalEntities = []
+                    };
+
+                    foreach (LegalEntityDto permittedLegalEntity in permittedEmployer)
+                    {
+                        if (!legalEntitiesByPublicHashedId.TryGetValue(permittedLegalEntity.AccountLegalEntityPublicHashedId, out var matchingLegalEntity))
+                            continue;
+
+                        var legalEntity = LegalEntityMapper.MapFromAllAccountApiLegalEntity(matchingLegalEntity);
+                        legalEntity.AccountLegalEntityPublicHashedId = permittedLegalEntity.AccountLegalEntityPublicHashedId;
+                        employerInfo.LegalEntities.Add(legalEntity);
+                    }
+
+                    employerInfos.Add(employerInfo);
+                }
             }
+
             return employerInfos;
         }
     }

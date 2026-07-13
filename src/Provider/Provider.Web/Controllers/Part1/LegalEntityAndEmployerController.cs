@@ -56,13 +56,13 @@ public class LegalEntityAndEmployerController(
             ModelState.AddModelError(nameof(m.SelectedOrganisationId), ValidationMessages.EmployerSelectionMessages.EmployerMustBeSelectedMessage);
         }
 
-        var vm = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(new VacancyRouteModel
-        {
-            Ukprn = m.Ukprn,
-            VacancyId = m.VacancyId
-        }, m.SearchTerm, m.Page);
         if (!ModelState.IsValid)
         {
+            var vm = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(new VacancyRouteModel
+            {
+                Ukprn = m.Ukprn,
+                VacancyId = m.VacancyId
+            }, m.SearchTerm, m.Page);
             return View(vm);
         }
         if(m.VacancyId != null)
