@@ -69,7 +69,14 @@
                     <td class="govuk-table__cell" data-label="Response"><govuk-tag-application-review-status application-status="@application.Status" user-type="@Model.UserType" /></td>
                     <td class="govuk-table__cell" data-label="Date reviewed">@application.DateReviewedText</td>
                     <td class="govuk-table__cell" data-label="Date shared">@application.DateSharedWithEmployer.AsGdsDate()</td>
-                    <td class="govuk-table__cell" asp-show="@application.CanShowCandidateAppliedLocations" data-label="Locations">@application.CandidateAppliedLocations</td>
+                    <td class="govuk-table__cell" asp-show="@application.CanShowCandidateAppliedLocations" data-label="Locations">
+                        <ul class="govuk-list">
+                            @foreach (var location in application.CandidateAppliedLocations)
+                            {
+                                <li>@location</li>
+                            }
+                        </ul>
+                    </td>
 
                 </tr>
                 <tr class="govuk-table__row" asp-show="@application.IsWithdrawn">
@@ -77,7 +84,14 @@
                     <td class="govuk-table__cell" data-label="Response">Withdrawn</td>
                     <td class="govuk-table__cell" data-label="Date reviewed">@application.DateReviewedText</td>
                     <td class="govuk-table__cell" data-label="Date shared">@application.DateSharedWithEmployer.AsGdsDate()</td>
-                    <td class="govuk-table__cell" asp-show="@application.CanShowCandidateAppliedLocations" data-label="Locations">@application.CandidateAppliedLocations</td>
+                    <td class="govuk-table__cell" asp-show="@application.CanShowCandidateAppliedLocations" data-label="Locations">
+                        <ul class="govuk-list">
+                            @foreach (var location in application.CandidateAppliedLocations)
+                            {
+                                <li>@location</li>
+                            }
+                        </ul>
+                    </td>
                 </tr>
             }
         </tbody>

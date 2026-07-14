@@ -30,8 +30,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool ShowDisability { get; internal set; }
         public bool VacancySharedByProvider { get; internal set; }
         public bool CanShowMultipleApplicationsUnsuccessfulLink =>
-            Applications?.Any(app => app.Status != ApplicationReviewStatus.Successful && app.Status != ApplicationReviewStatus.Unsuccessful) ?? false;
-
+            (Applications?.Any(app => app.Status != ApplicationReviewStatus.Successful
+                                      && app.Status != ApplicationReviewStatus.Unsuccessful) ?? false)
+            && TotalUnfilteredApplicationsCount > 1;
         public bool CanShowCandidateAppliedLocations => Applications?.Any(app => app.CanShowCandidateAppliedLocations) ?? false;
         public bool CanShowLocationFilter => HasApplications && AvailableWhere is Esfa.Recruit.Vacancies.Client.Domain.Entities.AvailableWhere
             .MultipleLocations;

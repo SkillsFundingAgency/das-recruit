@@ -32,10 +32,14 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyView
         public bool ShowDisability { get; internal set; }
 
         public bool CanShowShareMultipleApplicationsLink =>
-            Applications?.Any(app => app.Status is ApplicationReviewStatus.New or ApplicationReviewStatus.InReview) ?? false;
+            (Applications?.Any(app => app.Status is ApplicationReviewStatus.New or ApplicationReviewStatus.InReview) ??
+             false)
+            && TotalUnfilteredApplicationsCount > 1;
 
         public bool CanShowMultipleApplicationsUnsuccessfulLink =>
-          Applications?.Any(app => app.Status != ApplicationReviewStatus.Successful && app.Status != ApplicationReviewStatus.Unsuccessful) ?? false;
+            (Applications?.Any(app => app.Status != ApplicationReviewStatus.Successful
+                                      && app.Status != ApplicationReviewStatus.Unsuccessful) ?? false)
+            && TotalUnfilteredApplicationsCount > 1;
 
         public bool CanShowCandidateAppliedLocations => Applications?.Any(app => app.CanShowCandidateAppliedLocations) ?? false;
 

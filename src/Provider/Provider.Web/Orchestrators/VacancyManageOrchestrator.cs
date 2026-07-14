@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             }
 
             var vacancyApplications = await client.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.GetValueOrDefault(), sortColumn, sortOrder);
-            var totalUnfilteredApplicationsCount = vacancyApplications?.Count ?? 0;
+            var totalUnfilteredApplicationsCount = vacancyApplications?.Count(x => !x.IsWithdrawn) ?? 0;
 
             var applications = string.IsNullOrEmpty(locationFilter)
                                || locationFilter.Equals("All", StringComparison.CurrentCultureIgnoreCase)

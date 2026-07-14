@@ -78,8 +78,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 viewModel.WithdrawnDate = vacancy.ClosedDate?.AsGdsDate();
             }
             
-            var vacancyApplications = await vacancyClient.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, sortColumn, sortOrder, vacancy.CanEmployerReviewApplications);
-            var totalUnfilteredApplicationsCount = vacancyApplications?.Count ?? 0;
+            var vacancyApplications = await vacancyClient.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.GetValueOrDefault(), sortColumn, sortOrder, vacancy.CanEmployerReviewApplications);
+            var totalUnfilteredApplicationsCount = vacancyApplications?.Count(x => !x.IsWithdrawn) ?? 0;
 
             if (vacancy.CanEmployerReviewApplications && vacancyApplications is { Count: 0 })
             {
