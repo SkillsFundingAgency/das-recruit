@@ -13,24 +13,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
-    public class ShortDescriptionOrchestrator : VacancyValidatingOrchestrator<ShortDescriptionEditModel>
+    public class ShortDescriptionOrchestrator(
+        IRecruitVacancyClient recruitVacancyClient,
+        ILogger<ShortDescriptionOrchestrator> logger,
+        IReviewSummaryService reviewSummaryService,
+        IUtility utility)
+        : VacancyValidatingOrchestrator<ShortDescriptionEditModel>(logger)
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ShortDescription;
-        private readonly IRecruitVacancyClient _recruitVacancyClient;
-        private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IUtility _utility;
-
-        public ShortDescriptionOrchestrator(IRecruitVacancyClient recruitVacancyClient, ILogger<ShortDescriptionOrchestrator> logger, 
-            IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
-        {
-            _recruitVacancyClient = recruitVacancyClient;
-            _reviewSummaryService = reviewSummaryService;
-            _utility = utility;
-        }
 
         public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.ShortDescription_Get);
+            var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.ShortDescription_Get);
 
             var vm = new ShortDescriptionViewModel
             {
@@ -42,11 +36,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+                vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.GetValueOrDefault(),
                     ReviewFieldMappingLookups.GetShortDescriptionReviewFieldIndicators());
             }
 
-            vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
+            vm.IsTaskListCompleted = utility.IsTaskListCompleted(vacancy);
 
             return vm;
         }
@@ -62,32 +56,22 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostShortDescriptionEditModelAsync(ShortDescriptionEditModel m, VacancyUser user)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.ShortDescription_Post);
+            var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.ShortDescription_Post);
 
             SetVacancyWithProviderReviewFieldIndicators(
                 vacancy.ShortDescription,
                 FieldIdResolver.ToFieldId(v => v.ShortDescription),
                 vacancy,
-                (v) =>
-                {
-                    return v.ShortDescription = m.ShortDescription;
-                });
+                v => v.ShortDescription = m.ShortDescription);
 
             return await ValidateAndExecute(
                 vacancy, 
-                v => _recruitVacancyClient.Validate(v, ValidationRules),
-                v => _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+                v => recruitVacancyClient.Validate(v, ValidationRules),
+                v => recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user)
             );
         }
 
-        protected override EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionEditModel> DefineMappings()
-        {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionEditModel>();
-
-            mappings.Add(e => e.ShortDescription, vm => vm.ShortDescription);
-
-            return mappings;
-        }
+        protected override EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionEditModel> DefineMappings() => 
+            new() { { e => e.ShortDescription, vm => vm.ShortDescription } };
     }
-
 }
