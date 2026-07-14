@@ -187,7 +187,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 Wage = new Wage
                 {
                     WageType = WageType.NationalMinimumWage,
-                    CompanyBenefitsInformation = new String('a', 50) + invalidCharacter + new String('a', 50)
+                    CompanyBenefitsInformation = new String('a', 200) + invalidCharacter + new String('a', 200)
                 }
             };
 
@@ -216,7 +216,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 Wage = new Wage
                 {
                     WageType = WageType.NationalMinimumWage,
-                    CompanyBenefitsInformation = new string('a', 252)
+                    CompanyBenefitsInformation = new string('a', 502)
                 }
             };
 
