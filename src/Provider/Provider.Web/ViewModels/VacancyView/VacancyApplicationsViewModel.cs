@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyView
 
         public bool CanShowCandidateAppliedLocations => Applications?.Any(app => app.CanShowCandidateAppliedLocations) ?? false;
 
-        public bool CanShowLocationFilter => HasApplications && AvailableWhere is Esfa.Recruit.Vacancies.Client.Domain.Entities.AvailableWhere
+        public bool CanShowLocationFilter => (TotalUnfilteredApplicationsCount > 0) && AvailableWhere is Esfa.Recruit.Vacancies.Client.Domain.Entities.AvailableWhere
             .MultipleLocations;
     }
 }
