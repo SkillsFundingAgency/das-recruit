@@ -165,7 +165,14 @@
         <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications" />
         <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">
             <govuk-inset asp-show="@Model.CanShowNoApplicationsInsetText">
-                Applications will be displayed here once you start receiving them.
+                @if (Model.IsVacancyClosed)
+                {
+                    <span>You didn't receive any applications for this vacancy.</span>
+                }
+                else
+                {
+                    <span>Applications will be displayed here once you start receiving them.</span>
+                }
             </govuk-inset>
         </p>
     </div>
