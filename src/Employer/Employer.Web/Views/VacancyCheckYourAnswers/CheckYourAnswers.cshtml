@@ -73,6 +73,9 @@
         <h1 class="govuk-heading-xl">
             Check your answers before submitting your advert
         </h1>
+        <div class="govuk-inset-text">
+            Proofread your advert before submitting. Spelling or formatting errors will delay it going live.
+        </div>
         <h2 class="govuk-heading-m">Advert summary</h2>
         <dl class="app-summary-list govuk-!-margin-bottom-9">
             <field-review-message field-name="@FieldIdentifiers.Title" model="@Model"></field-review-message>
@@ -740,8 +743,8 @@
             <div class="govuk-warning-text">
                 <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                 <strong class="govuk-warning-text__text">
-                    <span class="govuk-warning-text__assistive">Warning</span>
-                    Proofread your advert for spelling and formatting to avoid it being rejected by our QA team.
+                    <span class="govuk-visually-hidden">Warning</span>
+                    Proofread your advert before you submit. Spelling or formatting errors will delay it going live.
                 </strong>
             </div>
             <p class="govuk-body"><a asp-route="@RouteNames.VacancyAdvertPreview"
