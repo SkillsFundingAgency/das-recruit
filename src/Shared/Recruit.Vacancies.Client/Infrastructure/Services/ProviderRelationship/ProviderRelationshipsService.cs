@@ -130,38 +130,56 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                 })
                 .ToList();
 
+        private const int BatchSize = 50;
+        private const int PageSize = 500;
+
         private async Task<List<EmployerInfo>> GetEmployerInfosAsync(ProviderPermissions providerPermissions)
         {
             var employerInfos = new List<EmployerInfo>();
 
-            var permittedEmployerAccounts = providerPermissions.AccountProviderLegalEntities.GroupBy(p => p.AccountHashedId);
+            var permittedEmployerAccounts = providerPermissions.AccountProviderLegalEntities
+                .GroupBy(p => p.AccountHashedId)
+                .ToList();
 
-            foreach (var permittedEmployer in permittedEmployerAccounts)
+            foreach (var batch in permittedEmployerAccounts.Chunk(BatchSize))
             {
-                var employerInfo = new EmployerInfo
-                {
-                    EmployerAccountId = permittedEmployer.Key,
-                    Name = permittedEmployer.First().AccountName, //should be same in all the items hence read from first
-                    LegalEntities = []
-                };
+                var accountIds = batch.Select(g => g.Key).ToList();
 
-                var legalEntityViewModels = await employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(permittedEmployer.Key);
-                var accountLegalEntities = legalEntityViewModels.ToList();
-                foreach (LegalEntityDto permittedLegalEntity in permittedEmployer)
-                {
-                    if (accountLegalEntities.Count <= 0) continue;
-                    
-                    var matchingLegalEntity = accountLegalEntities.FirstOrDefault(e => e.AccountLegalEntityPublicHashedId == permittedLegalEntity.AccountLegalEntityPublicHashedId);
+                var firstPage = await employerAccountProvider.GetAllLegalEntitiesConnectedToAccountAsync(accountIds, string.Empty, 1, PageSize, "Name", true);
+                var allLegalEntities = firstPage.LegalEntities.ToList();
 
-                    if (matchingLegalEntity == null) continue;
-                    
-                    var legalEntity = LegalEntityMapper.MapFromAccountApiLegalEntity(matchingLegalEntity);
-                    legalEntity.AccountLegalEntityPublicHashedId = permittedLegalEntity.AccountLegalEntityPublicHashedId;
-                    employerInfo.LegalEntities.Add(legalEntity);
+                for (var page = 2; page <= firstPage.PageInfo.TotalPages; page++)
+                {
+                    var nextPage = await employerAccountProvider.GetAllLegalEntitiesConnectedToAccountAsync(accountIds, string.Empty, page, PageSize, "Name", true);
+                    allLegalEntities.AddRange(nextPage.LegalEntities);
                 }
 
-                employerInfos.Add(employerInfo);
+                var legalEntitiesByPublicHashedId = allLegalEntities
+                    .ToDictionary(le => le.AccountLegalEntityPublicHashedId);
+
+                foreach (var permittedEmployer in batch)
+                {
+                    var employerInfo = new EmployerInfo
+                    {
+                        EmployerAccountId = permittedEmployer.Key,
+                        Name = permittedEmployer.First().AccountName,
+                        LegalEntities = []
+                    };
+
+                    foreach (LegalEntityDto permittedLegalEntity in permittedEmployer)
+                    {
+                        if (!legalEntitiesByPublicHashedId.TryGetValue(permittedLegalEntity.AccountLegalEntityPublicHashedId, out var matchingLegalEntity))
+                            continue;
+
+                        var legalEntity = LegalEntityMapper.MapFromAllAccountApiLegalEntity(matchingLegalEntity);
+                        legalEntity.AccountLegalEntityPublicHashedId = permittedLegalEntity.AccountLegalEntityPublicHashedId;
+                        employerInfo.LegalEntities.Add(legalEntity);
+                    }
+
+                    employerInfos.Add(employerInfo);
+                }
             }
+
             return employerInfos;
         }
     }
