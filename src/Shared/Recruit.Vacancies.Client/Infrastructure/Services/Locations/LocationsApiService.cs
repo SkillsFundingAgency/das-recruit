@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
@@ -38,6 +39,7 @@ public class LocationsService(ILocationsClient locationsClient) : ILocationsServ
         return null;
     }
 
+    // Returns true if the postcode is in England, false if it is not, and null if the postcode is invalid or not found.
     private async Task<bool?> GetCountryForPostcodeAsync(string postcode)
     {
         var result = await locationsClient.GetPostcodeData(postcode);
@@ -45,11 +47,12 @@ public class LocationsService(ILocationsClient locationsClient) : ILocationsServ
         {
             null => null,
             { Result: null } => null,
-            { Result.Country: "England" } => true,
+            { Result.Country: Constants.EnglandCountryCode } => true,
             _ => false
         };
     }
 
+    // The outer postcode is the part of the postcode before the inward code (the last 3 characters). For example, for postcode "SW1A 1AA", the outer postcode is "SW1A".
     private static string GetOuterPostcode(string postcode)
     {
         if (string.IsNullOrWhiteSpace(postcode))

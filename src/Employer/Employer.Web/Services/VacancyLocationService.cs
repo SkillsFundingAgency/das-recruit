@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -75,7 +76,7 @@ public class VacancyLocationService(
             return;
         }
         
-        var nonEnglishAddresses = locations.Where(x => x.Country is not ("England" or null)).ToArray();
+        var nonEnglishAddresses = locations.Where(x => x.Country is not (Constants.EnglandCountryCode or null)).ToArray();
         if (nonEnglishAddresses.Length is not 0)
         {
             // fail fast since we know this will fail validation anyway
