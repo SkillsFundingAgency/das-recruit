@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Esfa.Recruit.Employer.Web;
+﻿using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
@@ -51,7 +50,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
         [Test]
         [MoqInlineAutoData("")]
         [MoqInlineAutoData(null)]
-        public async Task GetApplicationStatusConfirmationViewModelAsync_Returns_Default_CandidateFeedBack(string? candidateFeedback)
+        public async Task GetApplicationStatusConfirmationViewModelAsync_Returns_Default_CandidateFeedBack(string candidateFeedback)
         {
             var model = _fixture.Create<ApplicationReviewStatusConfirmationEditModel>();
             model.CandidateFeedback = candidateFeedback;

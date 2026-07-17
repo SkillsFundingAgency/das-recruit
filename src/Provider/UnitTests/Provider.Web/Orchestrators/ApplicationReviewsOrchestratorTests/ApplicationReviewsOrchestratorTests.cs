@@ -85,7 +85,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             viewModel.ApplicationsToUnsuccessful.Should().BeEquivalentTo(vacancyApplications);
             viewModel.CandidateFeedback.Should().Be(vacancyApplications.First().CandidateFeedback);
             Assert.That(viewModel.ApplicationsToUnsuccessful, Is.Not.Empty);
-            Assert.That(viewModel.ApplicationsToUnsuccessful.Count(), Is.EqualTo(vacancyApplications.Count));
+            Assert.That(viewModel.ApplicationsToUnsuccessful.Count, Is.EqualTo(vacancyApplications.Count));
             Assert.That(viewModel.Ukprn, Is.EqualTo(request.Ukprn));
             Assert.That(viewModel.VacancyId, Is.EqualTo(request.VacancyId));
         }
@@ -93,7 +93,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
         [Test]
         [MoqInlineAutoData("")]
         [MoqInlineAutoData(null)]
-        public async Task GetApplicationReviewsToUnsuccessfulConfirmationViewModel_ReturnsView_Default_CandidateFeedback(string? candidateFeedback,
+        public async Task GetApplicationReviewsToUnsuccessfulConfirmationViewModel_ReturnsView_Default_CandidateFeedback(string candidateFeedback,
             List<VacancyApplication> vacancyApplications,
             ApplicationReviewsToUnsuccessfulRouteModel request,
             [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
@@ -114,7 +114,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             viewModel.ApplicationsToUnsuccessful.Should().BeEquivalentTo(vacancyApplications);
             viewModel.CandidateFeedback.Should().Be(Constants.DefaultCandidateFeedback);
             Assert.That(viewModel.ApplicationsToUnsuccessful, Is.Not.Empty);
-            Assert.That(viewModel.ApplicationsToUnsuccessful.Count(), Is.EqualTo(vacancyApplications.Count));
+            Assert.That(viewModel.ApplicationsToUnsuccessful.Count, Is.EqualTo(vacancyApplications.Count));
             Assert.That(viewModel.Ukprn, Is.EqualTo(request.Ukprn));
             Assert.That(viewModel.VacancyId, Is.EqualTo(request.VacancyId));
         }
@@ -122,7 +122,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
         [Test]
         [MoqInlineAutoData("")]
         [MoqInlineAutoData(null)]
-        public async Task GetApplicationReviewsFeedbackViewModel_ReturnsView_Default_CandidateFeedback(string? candidateFeedback,
+        public async Task GetApplicationReviewsFeedbackViewModel_ReturnsView_Default_CandidateFeedback(string candidateFeedback,
             List<VacancyApplication> vacancyApplications,
             ApplicationReviewsToUnsuccessfulRouteModel request,
             [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
@@ -143,7 +143,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             viewModel.ApplicationsToUnsuccessful.Should().BeEquivalentTo(vacancyApplications);
             viewModel.CandidateFeedback.Should().Be(Constants.DefaultCandidateFeedback);
             Assert.That(viewModel.ApplicationsToUnsuccessful, Is.Not.Empty);
-            Assert.That(viewModel.ApplicationsToUnsuccessful.Count(), Is.EqualTo(vacancyApplications.Count));
+            Assert.That(viewModel.ApplicationsToUnsuccessful.Count, Is.EqualTo(vacancyApplications.Count));
             Assert.That(viewModel.Ukprn, Is.EqualTo(request.Ukprn));
             Assert.That(viewModel.VacancyId, Is.EqualTo(request.VacancyId));
         }

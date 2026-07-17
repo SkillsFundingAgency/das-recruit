@@ -112,7 +112,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
         [Test]
         [MoqInlineAutoData("")]
         [MoqInlineAutoData(null)]
-        public async Task GetApplicationReviewFeedbackViewModelAsync_Returns_DefaultCandidateFeedback(string? candidateFeedback)
+        public async Task GetApplicationReviewFeedbackViewModelAsync_Returns_DefaultCandidateFeedback(string candidateFeedback)
         {
             var routeModel = _fixture.Create<VacancyRouteModel>();
             var model = _fixture.Build<ApplicationReviewEditModel>()
@@ -144,7 +144,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
         [Test]
         [MoqInlineAutoData("")]
         [MoqInlineAutoData(null)]
-        public async Task GetApplicationStatusConfirmationViewModelAsync_Returns_DefaultCandidateFeedback(string? candidateFeedback)
+        public async Task GetApplicationStatusConfirmationViewModelAsync_Returns_DefaultCandidateFeedback(string candidateFeedback)
         {
             var routeModel = _fixture.Create<ApplicationReviewRouteModel>();
             var model = _fixture.Build<ApplicationReviewEditModel>()
