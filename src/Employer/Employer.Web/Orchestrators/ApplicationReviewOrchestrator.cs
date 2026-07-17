@@ -6,6 +6,7 @@ using Esfa.Recruit.Employer.Web.Mappings.Extensions;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using ApplicationReviewViewModel = Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel;
@@ -98,7 +99,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 EmployerAccountId = m.EmployerAccountId,
                 VacancyId = m.VacancyId,
                 ApplicationReviewId = m.ApplicationReviewId,
-                CandidateFeedback = m.CandidateFeedback,
+                CandidateFeedback = string.IsNullOrWhiteSpace(m.CandidateFeedback)
+                    ? Constants.DefaultCandidateFeedback
+                    : m.CandidateFeedback,
                 Outcome = m.Outcome,
                 Name = applicationReview.Application.FullName,
                 FriendlyId = applicationReview.GetFriendlyId()
@@ -124,7 +127,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             return new ApplicationReviewFeedbackViewModel
             {
-                CandidateFeedback = rm.CandidateFeedback,
+                CandidateFeedback = string.IsNullOrWhiteSpace(rm.CandidateFeedback)
+                    ? Constants.DefaultCandidateFeedback
+                    : rm.CandidateFeedback,
                 Outcome = rm.Outcome,
                 ApplicationReviewId = rm.ApplicationReviewId,
                 Name = applicationReviewVm.Name,

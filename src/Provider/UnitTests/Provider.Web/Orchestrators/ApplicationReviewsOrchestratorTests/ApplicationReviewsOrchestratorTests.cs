@@ -4,6 +4,7 @@ using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
@@ -90,6 +91,64 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
         }
 
         [Test]
+        [MoqInlineAutoData("")]
+        [MoqInlineAutoData(null)]
+        public async Task GetApplicationReviewsToUnsuccessfulConfirmationViewModel_ReturnsView_Default_CandidateFeedback(string? candidateFeedback,
+            List<VacancyApplication> vacancyApplications,
+            ApplicationReviewsToUnsuccessfulRouteModel request,
+            [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
+            ApplicationReviewsOrchestrator orchestrator)
+        {
+            foreach (VacancyApplication vacancyApplication in vacancyApplications)
+            {
+                vacancyApplication.CandidateFeedback = candidateFeedback;
+            }
+            
+            vacancyClient.Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(request.VacancyId.Value,
+                    ApplicationReviewStatus.PendingToMakeUnsuccessful))
+                .ReturnsAsync(vacancyApplications);
+
+
+            var viewModel = await orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(request);
+
+            viewModel.ApplicationsToUnsuccessful.Should().BeEquivalentTo(vacancyApplications);
+            viewModel.CandidateFeedback.Should().Be(Constants.DefaultCandidateFeedback);
+            Assert.That(viewModel.ApplicationsToUnsuccessful, Is.Not.Empty);
+            Assert.That(viewModel.ApplicationsToUnsuccessful.Count(), Is.EqualTo(vacancyApplications.Count));
+            Assert.That(viewModel.Ukprn, Is.EqualTo(request.Ukprn));
+            Assert.That(viewModel.VacancyId, Is.EqualTo(request.VacancyId));
+        }
+
+        [Test]
+        [MoqInlineAutoData("")]
+        [MoqInlineAutoData(null)]
+        public async Task GetApplicationReviewsFeedbackViewModel_ReturnsView_Default_CandidateFeedback(string? candidateFeedback,
+            List<VacancyApplication> vacancyApplications,
+            ApplicationReviewsToUnsuccessfulRouteModel request,
+            [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
+            ApplicationReviewsOrchestrator orchestrator)
+        {
+            foreach (VacancyApplication vacancyApplication in vacancyApplications)
+            {
+                vacancyApplication.CandidateFeedback = candidateFeedback;
+            }
+
+            vacancyClient.Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(request.VacancyId.Value,
+                    ApplicationReviewStatus.PendingToMakeUnsuccessful))
+                .ReturnsAsync(vacancyApplications);
+
+
+            var viewModel = await orchestrator.GetApplicationReviewsFeedbackViewModel(request);
+
+            viewModel.ApplicationsToUnsuccessful.Should().BeEquivalentTo(vacancyApplications);
+            viewModel.CandidateFeedback.Should().Be(Constants.DefaultCandidateFeedback);
+            Assert.That(viewModel.ApplicationsToUnsuccessful, Is.Not.Empty);
+            Assert.That(viewModel.ApplicationsToUnsuccessful.Count(), Is.EqualTo(vacancyApplications.Count));
+            Assert.That(viewModel.Ukprn, Is.EqualTo(request.Ukprn));
+            Assert.That(viewModel.VacancyId, Is.EqualTo(request.VacancyId));
+        }
+
+        [Test]
         public async Task GetApplicationReviewsToShareViewModelAsync_ReturnsViewModelWithCorrectData()
         {
             // Arrange
@@ -169,9 +228,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             var request = _fixture.Create<ShareApplicationReviewsRequest>();
             var vacancyApplication1 = _fixture.Create<VacancyApplication>();
             var vacancyApplication2 = _fixture.Create<VacancyApplication>();
-            var vacancyApplications = new List<VacancyApplication> { };
-            vacancyApplications.Add(vacancyApplication1);
-            vacancyApplications.Add(vacancyApplication2);
+            var vacancyApplications = new List<VacancyApplication>
+            {
+                vacancyApplication1,
+                vacancyApplication2
+            };
 
             _vacancyClient.Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(request.VacancyId!.Value,ApplicationReviewStatus.PendingShared))
                 .ReturnsAsync(vacancyApplications);
