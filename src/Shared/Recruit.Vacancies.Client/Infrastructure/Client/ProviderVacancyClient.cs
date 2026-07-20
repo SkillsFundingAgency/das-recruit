@@ -115,9 +115,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
         }
 
-        public async Task<ProviderEditVacancyInfo> GetProviderEditVacancyInfoAsync(long ukprn)
+        public async Task<ProviderEditVacancyInfo> GetProviderEditVacancyInfoAsync(long ukprn, string employerAccountId)
         {
-            var getEmployerInfos = await providerRelationshipsService.GetLegalEntitiesForProviderAsync(ukprn,
+            var getEmployerInfos = await providerRelationshipsService.GetLegalEntitiesForProvider(ukprn, employerAccountId,
                 [OperationType.Recruitment, OperationType.RecruitmentRequiresReview]);
 
             var employerInfos = getEmployerInfos.ToList();

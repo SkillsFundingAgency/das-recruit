@@ -4,10 +4,9 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using FluentValidation;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
@@ -22,6 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
         private readonly IProfanityListProvider _profanityListProvider;
         private readonly IProviderRelationshipsService _providerRelationshipService;
+        private readonly ILocationsService _locationsService;
 
         public FluentVacancyValidator(
             ITimeProvider timeProvider,
@@ -30,9 +30,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             IReferenceDataClient referenceDataClient,
             IHtmlSanitizerService htmlSanitizerService,
             ITrainingProviderSummaryProvider trainingProviderSummaryProvider,
-            ITrainingProviderService trainingProviderService,
             IProfanityListProvider profanityListProvider,
-            IProviderRelationshipsService providerRelationshipService)
+            IProviderRelationshipsService providerRelationshipService,
+            ILocationsService locationsService)
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;
@@ -42,6 +42,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
             _profanityListProvider = profanityListProvider;
             _providerRelationshipService = providerRelationshipService;
+            _locationsService = locationsService;
 
             SingleFieldValidations();
             CrossFieldValidations();
@@ -203,7 +204,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("604")
                     .WithState(_ => VacancyRuleSet.EmployerNameOption)
                     .RunCondition(VacancyRuleSet.EmployerNameOption)
-
             );
 
             RuleFor(x => x.EmployerNameOption)
@@ -235,6 +235,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 RuleForEach(x => x.EmployerLocations)
                     .SetValidator(new AddressValidator((long)VacancyRuleSet.EmployerAddress))
                     .RunCondition(VacancyRuleSet.EmployerAddress);
+
+                RuleFor(x => x)
+                    .EmployerLocationMustBeInEngland(_locationsService)
+                    .RunCondition(VacancyRuleSet.EmployerAddress);
             });
             
             When(v => v.EmployerLocationOption == AvailableWhere.MultipleLocations, () =>
@@ -249,6 +253,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 RuleForEach(x => x.EmployerLocations)
                     .SetValidator(new AddressValidator((long)VacancyRuleSet.EmployerAddress))
                     .RunCondition(VacancyRuleSet.EmployerAddress);
+
+                RuleFor(x => x)
+                    .EmployerLocationMustBeInEngland(_locationsService)
+                    .RunCondition(VacancyRuleSet.EmployerAddress);
             });
 
             When(v => v.EmployerLocationOption == AvailableWhere.AcrossEngland, () =>
@@ -261,7 +269,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Information about where the apprentice will work must be 500 characters or less")
                     .WithState(_ => VacancyRuleSet.EmployerAddress)
                     .ProfanityCheck(_profanityListProvider)
-                    .WithMessage($"Additional information must not contain a banned word or phrase")
+                    .WithMessage("Additional information must not contain a banned word or phrase")
                     .WithState(_ => VacancyRuleSet.EmployerAddress)
                     .RunCondition(VacancyRuleSet.EmployerAddress);
             });
@@ -282,25 +290,25 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             RuleFor(x => x.ShortDescription)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty()
-                .WithMessage($"Enter a short description of the {VacancyContext}")
+                    .WithMessage($"Enter a short description of the {VacancyContext}")
                     .WithErrorCode("12")
-                .WithState(_ => VacancyRuleSet.ShortDescription)
+                    .WithState(_ => VacancyRuleSet.ShortDescription)
                 .MaximumLength(350)
                     .WithMessage($"Summary of the {VacancyContext} must not exceed {{MaxLength}} characters")
                     .WithErrorCode("13")
-                .WithState(_ => VacancyRuleSet.ShortDescription)
+                    .WithState(_ => VacancyRuleSet.ShortDescription)
                 .MinimumLength(50)
                     .WithMessage($"Summary of the {VacancyContext} must be at least {{MinLength}} characters")
                     .WithErrorCode("14")
-                .WithState(_ => VacancyRuleSet.ShortDescription)
+                    .WithState(_ => VacancyRuleSet.ShortDescription)
                 .ValidHtmlCharacters(_htmlSanitizerService)
                     .WithMessage($"Short description of the {VacancyContext} contains some invalid characters")
                     .WithErrorCode("15")
-                .WithState(_ => VacancyRuleSet.ShortDescription)
+                    .WithState(_ => VacancyRuleSet.ShortDescription)
                 .ProfanityCheck(_profanityListProvider)
-                .WithMessage($"Short description of the {VacancyContext} must not contain a banned word or phrase.")
-                .WithErrorCode("605")
-                .WithState(_ => VacancyRuleSet.ShortDescription)
+                    .WithMessage($"Short description of the {VacancyContext} must not contain a banned word or phrase.")
+                    .WithErrorCode("605")
+                    .WithState(_ => VacancyRuleSet.ShortDescription)
                 .RunCondition(VacancyRuleSet.ShortDescription);
         }
 
@@ -508,7 +516,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .RunCondition(VacancyRuleSet.Wage);
 
                 RuleFor(x => x.Wage.WageAdditionalInformation)
-                    .MaximumLength(250)
+                    .MaximumLength(500)
                         .WithMessage("Information about pay must be {MaxLength} characters or less")
                         .WithErrorCode("44")
                     .WithState(_ => VacancyRuleSet.Wage)
@@ -523,7 +531,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .RunCondition(VacancyRuleSet.Wage);
                
                 RuleFor(x => x.Wage.CompanyBenefitsInformation)
-                    .MaximumLength(250)
+                    .MaximumLength(500)
                     .WithMessage("Company benefits must be {MaxLength} characters or less")
                     .WithErrorCode("44")
                     .WithState(_ => VacancyRuleSet.Wage)

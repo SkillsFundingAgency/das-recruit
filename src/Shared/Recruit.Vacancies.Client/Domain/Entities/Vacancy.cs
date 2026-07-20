@@ -67,16 +67,10 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
             set => _apprenticeshipType = value;
         }
 
-        public string ShortDescription  
+        public string? ShortDescription
         {
-            get
-            {
-                return _shortDescription;
-            }
-            set
-            {
-                if (value != null) _shortDescription = value.Replace(Environment.NewLine, " ");
-            }
+            get => _shortDescription;
+            set => _shortDescription = value?.Replace(Environment.NewLine, " ");
         }
 
         public List<string> Skills { get; set; }
