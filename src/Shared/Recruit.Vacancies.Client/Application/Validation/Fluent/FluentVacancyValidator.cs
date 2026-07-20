@@ -516,7 +516,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .RunCondition(VacancyRuleSet.Wage);
 
                 RuleFor(x => x.Wage.WageAdditionalInformation)
-                    .MaximumLength(250)
+                    .MaximumLength(500)
                         .WithMessage("Information about pay must be {MaxLength} characters or less")
                         .WithErrorCode("44")
                     .WithState(_ => VacancyRuleSet.Wage)
@@ -531,7 +531,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .RunCondition(VacancyRuleSet.Wage);
                
                 RuleFor(x => x.Wage.CompanyBenefitsInformation)
-                    .MaximumLength(250)
+                    .MaximumLength(500)
                     .WithMessage("Company benefits must be {MaxLength} characters or less")
                     .WithErrorCode("44")
                     .WithState(_ => VacancyRuleSet.Wage)
