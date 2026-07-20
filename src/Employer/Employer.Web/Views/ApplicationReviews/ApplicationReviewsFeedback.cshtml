@@ -1,7 +1,8 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews.ApplicationReviewsFeedbackViewModel
 @{
     ViewBag.GaData.Vpv = "/recruitment/employer/page-application-reviews-feedback";
-    ViewBag.Title = "Give feedback";
+    ViewBag.Title = "Give feedback (single and multiple applications)";
+    var applicantsText = Model.IsMultipleApplications ? "applicants" : "applicant";
 }
 @section BackLink {
     <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
@@ -11,8 +12,13 @@
         <partial name="@PartialNames.ValidationSummary" model="new ValidationSummaryViewModel { ModelState = ViewData.ModelState }" />
         <div>
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-                @Model.ApplicationsToUnsuccessfulFeedbackHeaderTitle
+                Give feedback to the unsuccessful @applicantsText
             </h1>
+            <p class="govuk-body">
+                A standard message will be emailed to the selected @applicantsText. You can edit this message before sending.
+                <br />
+                We will include links to support and other apprenticeships in the email.
+            </p>
             <govuk-inset>
                 @foreach (var applicant in Model.ApplicationsToUnsuccessful)
                 {
@@ -32,15 +38,22 @@
             <div esfa-validation-marker-for="CandidateFeedback" id="Multiple-unsuccessful-candidate-feedback" class="govuk-form-group">
                 <div class="govuk-character-count" id="employer-character-count" data-module="govuk-character-count" data-maxwords="200">
                     <span esfa-validation-message-for="CandidateFeedback" class="govuk-error-message"></span>
-                    <span class="govuk-hint">@Model.ApplicationsToUnsuccessfulFeedbackDescription</span>
+                    <span class="govuk-label govuk-!-font-weight-bold">Your message to the @applicantsText</span>
                     <textarea asp-for="CandidateFeedback" class="govuk-textarea govuk-js-character-count" id="employer-multiple-candidate-feedback" name="CandidateFeedback" rows="6"></textarea>
                     <div id="employer-multiple-candidate-feedback-info" class="govuk-hint govuk-character-count__message">
                         You have 200 words remaining
                     </div>
                 </div>
             </div>
-            <div class="govuk-form-group" id="employer-multiple-candidate-feedback-confirm">
-                <input class="govuk-button" type="submit" value="Confirm" />
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    Feedback will be sent to the @applicantsText. This cannot be undone.
+                </strong>
+            </div>
+            <div class="govuk-button-group" id="employer-multiple-candidate-feedback-confirm">
+                <input class="govuk-button" type="submit" value="Submit" />
+                <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
             </div>
         </form>
     </div>
