@@ -9,19 +9,17 @@ using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Esfa.Recruit.Provider.Web.Middleware
 {
     public class ProviderAccountHandler(
-        IWebHostEnvironment hostingEnvironment,
         ITempDataProvider tempDataProvider,
         ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
         : AuthorizationHandler<ProviderAccountRequirement>
     {
-        private readonly Predicate<Claim> _ukprnClaimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier) 
+        private readonly Predicate<Claim> _ukprnClaimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier)
                                                                             || c.Type.Equals(ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier);
         private readonly Dictionary<string, object> _dict = new();
 
@@ -32,16 +30,10 @@ namespace Esfa.Recruit.Provider.Web.Middleware
             if (context.User.HasClaim(_ukprnClaimFinderPredicate))
             {
                 var ukprnFromClaim = context.User.FindFirst(_ukprnClaimFinderPredicate).Value;
-
-                var isOnRoatp = await HasRoatpAuthorizationAsync(context, ukprnFromClaim);
+                var isOnRoatp = await HasRoatpAuthorizationAsync(ukprnFromClaim);
 
                 if (hasIdentityServerAuthorization && isOnRoatp)
                 {
-                    if (!HasDoneOncePerAuthorizedSessionActions(context))
-                    {
-                        SetOncePerAuthorizedSessionActionsCompleted(context);
-                    }
-
                     if (context.HasFailed)
                     {
                         var mvcContext = (AuthorizationFilterContext)context.Resource;
@@ -70,6 +62,28 @@ namespace Esfa.Recruit.Provider.Web.Middleware
             return false;
         }
 
+        private async Task<bool> HasRoatpAuthorizationAsync(string ukprnFromClaim)
+        {
+            try
+            {
+                if (!long.TryParse(ukprnFromClaim, out var ukprn))
+                    return false;
+
+                if (ukprn == EsfaTestTrainingProvider.Ukprn)
+                    return true;
+
+                var provider = await trainingProviderSummaryProvider.GetAsync(ukprn);
+
+                _dict.Add(TempDataKeys.ProviderName, provider.ProviderName);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         private bool HasUkprnAuthorization(AuthorizationHandlerContext context)
         {
             if (context.Resource is AuthorizationFilterContext mvcContext && mvcContext.RouteData.Values.TryGetValue(RouteValues.Ukprn, out var value))
@@ -96,58 +110,5 @@ namespace Esfa.Recruit.Provider.Web.Middleware
             return false;
         }
 
-        private async Task<bool> HasRoatpAuthorizationAsync(AuthorizationHandlerContext context, string ukprnFromClaim)
-        {
-            if (HasDoneOncePerAuthorizedSessionActions(context))
-                return true;
-
-            try
-            {
-                if (!long.TryParse(ukprnFromClaim, out var ukprn))
-                    return false;
-
-                if (ukprn == EsfaTestTrainingProvider.Ukprn)
-                    return true;
-
-                var provider = await trainingProviderSummaryProvider.GetAsync(ukprn);
-                
-                _dict.Add(TempDataKeys.ProviderName, provider.ProviderName);
-
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        private bool HasDoneOncePerAuthorizedSessionActions(AuthorizationHandlerContext context)
-        {
-            if (context.Resource is not AuthorizationFilterContext mvcContext)
-                return false;
-
-            var ukprn = context.User.FindFirst(_ukprnClaimFinderPredicate).Value;
-
-            var cookieKey = GetOncePerAuthorizedSessionCookieKey(ukprn);
-            var cookie = mvcContext.HttpContext.Request.Cookies[cookieKey];
-
-            return cookie != null;
-        }
-
-        private void SetOncePerAuthorizedSessionActionsCompleted(AuthorizationHandlerContext context)
-        {
-            if (context.Resource is not AuthorizationFilterContext mvcContext)
-                return;
-
-            var ukprn = context.User.FindFirst(_ukprnClaimFinderPredicate).Value;
-            var cookieKey = GetOncePerAuthorizedSessionCookieKey(ukprn);
-
-            mvcContext.HttpContext.Response.Cookies.Append(cookieKey, "1", EsfaCookieOptions.GetDefaultHttpCookieOption(hostingEnvironment));
-        }
-
-        private static string GetOncePerAuthorizedSessionCookieKey(string ukprn)
-        {
-            return string.Format(CookieNames.SetupProvider, ukprn);
-        }
     }
 }
