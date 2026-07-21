@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 EmployerAccountId = vacancy.EmployerAccountId,
                 Title = vacancy.Title,
                 Status = vacancy.Status,
-                VacancyReference = vacancy.VacancyReference.Value.ToString()
+                VacancyReference = vacancy.VacancyReference.GetValueOrDefault().ToString()
             };
 
             viewModel.ClosingDate = viewModel.Status == VacancyStatus.Closed ? vacancy.ClosedDate?.AsGdsDate() : vacancy.ClosingDate?.AsGdsDate();
@@ -78,12 +78,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 viewModel.WithdrawnDate = vacancy.ClosedDate?.AsGdsDate();
             }
             
-            var vacancyApplications = await vacancyClient.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, sortColumn, sortOrder, vacancy.CanEmployerReviewApplications);
-            var totalUnfilteredApplicationsCount = vacancyApplications?.Count ?? 0;
+            var vacancyApplications = await vacancyClient.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.GetValueOrDefault(), sortColumn, sortOrder, vacancy.CanEmployerReviewApplications);
+            var totalUnfilteredApplicationsCount = vacancyApplications?.Count(x => !x.IsWithdrawn) ?? 0;
 
             if (vacancy.CanEmployerReviewApplications && vacancyApplications is { Count: 0 })
             {
-                //If there are no applications the employer user shouldnt be here
+                //If there are no applications the employer user shouldn't be here
                 throw new AuthorisationException(string.Format(ExceptionMessages.UserIsNotTheOwner, OwnerType.Employer));
             }
             
@@ -92,7 +92,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                                || vacancyApplications.Any(fil => fil.CandidateAppliedLocations == null)
                 ? vacancyApplications
                 : vacancyApplications.Where(fil => fil.CandidateAppliedLocations != null 
-                                                   && fil.CandidateAppliedLocations.Contains(locationFilter, StringComparison.CurrentCultureIgnoreCase))
+                                                   && fil.CandidateAppliedLocations.Contains(locationFilter))
                     .ToList();
 
             var pager = new PagerViewModel(

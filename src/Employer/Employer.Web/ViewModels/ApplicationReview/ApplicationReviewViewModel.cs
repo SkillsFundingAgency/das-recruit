@@ -81,9 +81,9 @@ public class ApplicationReviewViewModel : ApplicationReviewRouteModel
     public bool IsFaaV2Application { get; set; }
     public string WhatIsYourInterest { get; set; }
     public bool IsFoundation { get; set; }
-    public string CandidateAppliedLocations { get; set; }
-    public bool CanShowCandidateAppliedLocations => !string.IsNullOrEmpty(CandidateAppliedLocations);
-    public List<string> AppliedLocations => CandidateAppliedLocations.SplitCitiesToList();
+    public List<string> CandidateAppliedLocations { get; set; }
+    public bool CanShowCandidateAppliedLocations => CandidateAppliedLocations != null && CandidateAppliedLocations.Any();
+    public List<string> AppliedLocations => CandidateAppliedLocations ?? [];
     public List<QualificationTypeDisplay> QualificationTypes
     {
         get

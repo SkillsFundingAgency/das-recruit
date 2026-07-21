@@ -206,7 +206,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
                 foreach (var address in vacancy.EmployerLocations)
                 {
-                    if (await locationsService.IsPostcodeInEnglandAsync(address.Postcode) != true)
+                    if (await locationsService.IsPostcodeInEnglandAsync(address.Postcode) == false)
                     {
                         context.AddFailure(new ValidationFailure(nameof(Vacancy.EmployerLocations), message)
                         {
