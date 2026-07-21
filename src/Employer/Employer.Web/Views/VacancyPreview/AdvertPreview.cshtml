@@ -14,8 +14,12 @@
 
 <h1 class="govuk-heading-xl">Preview your advert</h1>
 
-<div class="govuk-inset-text">
-    Proofread your advert before submitting. We might reject your advert if it has spelling or formatting errors.
+<div class="govuk-warning-text">
+    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+    <strong class="govuk-warning-text__text">
+        <span class="govuk-visually-hidden">Warning</span>
+        Check your spelling and formatting. Errors will delay your advert from going live.
+    </strong>
 </div>
 
 <partial name="_vacancyApprenticeshipPreview" model="@Model" />
