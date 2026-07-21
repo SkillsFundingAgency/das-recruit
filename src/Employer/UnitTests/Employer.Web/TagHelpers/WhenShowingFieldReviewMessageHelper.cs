@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.TagHelpers
         [Test, MoqAutoData]
         public void Then_If_There_Are_No_Errors_Then_No_Message_Created(
             [Frozen] Mock<TagHelperContext> context,
-            FieldReviewMessageHelper fieldReviewMessageHelper)
+            [NoAutoProperties] FieldReviewMessageHelper fieldReviewMessageHelper)
         {
             fieldReviewMessageHelper.Model = new VacancyPreviewViewModel
             {
@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.TagHelpers
         public void Then_If_There_Are_Review_Fields_Then_Returned_In_Content(
             ReviewSummaryViewModel model,
             [Frozen] Mock<TagHelperContext> context, 
-            FieldReviewMessageHelper fieldReviewMessageHelper)
+            [NoAutoProperties] FieldReviewMessageHelper fieldReviewMessageHelper)
         {
             fieldReviewMessageHelper.Model = new VacancyPreviewViewModel
             {
@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.TagHelpers
             string errorMessage,
             ReviewSummaryViewModel model,
             [Frozen] Mock<TagHelperContext> context, 
-            FieldReviewMessageHelper fieldReviewMessageHelper)
+            [NoAutoProperties] FieldReviewMessageHelper fieldReviewMessageHelper)
         {
             var modelState = new ModelStateDictionary();
             modelState.AddModelError(model.FieldIndicators.FirstOrDefault().ReviewFieldIdentifier,errorMessage);
@@ -86,7 +86,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.TagHelpers
             string errorMessage,
             ReviewSummaryViewModel model,
             [Frozen] Mock<TagHelperContext> context, 
-            FieldReviewMessageHelper fieldReviewMessageHelper)
+            [NoAutoProperties] FieldReviewMessageHelper fieldReviewMessageHelper)
         {
             var modelState = new ModelStateDictionary();
             modelState.AddModelError(model.FieldIndicators.FirstOrDefault().ReviewFieldIdentifier,errorMessage);
