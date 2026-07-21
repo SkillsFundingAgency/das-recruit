@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
@@ -10,7 +9,6 @@ using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
-using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -40,6 +38,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpPost("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Post)]
+        [RequestFormLimits(ValueCountLimit = 4096)]
         public async Task<IActionResult> ApplicationReviewsToUnsuccessful(ApplicationReviewsToUnsuccessfulRequest request, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
             Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);

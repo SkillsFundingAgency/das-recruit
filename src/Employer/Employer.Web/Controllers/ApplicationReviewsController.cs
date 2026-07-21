@@ -35,6 +35,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpPost("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Post)]
+        [RequestFormLimits(ValueCountLimit = 4096)]
         public async Task<IActionResult> ApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulViewModel rm)
         {
             if (!ModelState.IsValid)
