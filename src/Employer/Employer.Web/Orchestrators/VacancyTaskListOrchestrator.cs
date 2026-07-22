@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Domain;

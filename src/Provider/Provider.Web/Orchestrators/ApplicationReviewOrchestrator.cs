@@ -49,7 +49,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             viewModel.EmployerFeedback = applicationReview.EmployerFeedback;
             viewModel.VacancyTitle = vacancy.Title;
             viewModel.IsFoundation = vacancy.ApprenticeshipType == ApprenticeshipTypes.Foundation;
-            viewModel.CandidateAppliedLocations = applicationReview.Application.CandidateAppliedLocations;
+            viewModel.CandidateAppliedLocations = applicationReview.Application is not null
+                ? applicationReview.Application.CandidateAppliedLocations
+                : [];
             viewModel.Name = applicationReview.Application.FullName;
 
             return viewModel;

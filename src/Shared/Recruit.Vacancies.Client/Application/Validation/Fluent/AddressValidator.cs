@@ -64,8 +64,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             RuleFor(x => x.Country)
                 // null here means we can't determine country from the postcode - could be new, so don't fail
-                .Must(x => x is null or "England")
-                .WithMessage("Country must be England")
+                .Must(x => x is null or Constants.EnglandCountryCode)
+                .WithMessage($"Country must be {Constants.EnglandCountryCode}")
                 .WithErrorCode(VacancyValidationErrorCodes.AddressCountryNotInEngland)
                 .WithState(_ => ruleId);
         }

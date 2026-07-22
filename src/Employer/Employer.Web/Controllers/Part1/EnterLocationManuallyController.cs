@@ -20,8 +20,8 @@ public class EnterLocationManuallyController(IUtility utility) : Controller
     public async Task<IActionResult> EnterLocationManually(AddLocationJourneyModel model)
     {
         ModelState.ThrowIfBindingErrors();
-        string returnRoute = TempData.Peek(TempDataKeys.AddLocationReturnPath) as string;
-        string postcode = TempData.Peek(TempDataKeys.Postcode) as string;
+        var returnRoute = TempData.Peek(TempDataKeys.AddLocationReturnPath) as string;
+        var postcode = TempData.Peek(TempDataKeys.Postcode) as string;
         var viewModel = await GetEnterLocationManuallyViewModel(utility, model, RouteNames.EnterAddressManually_Get, new Address { Postcode = postcode }, returnRoute);
         return View(viewModel);
     }
@@ -34,16 +34,16 @@ public class EnterLocationManuallyController(IUtility utility) : Controller
     {
         if (!ModelState.IsValid)
         {
-            string returnRoute = TempData.Peek(TempDataKeys.AddLocationReturnPath) as string;
+            var returnRoute = TempData.Peek(TempDataKeys.AddLocationReturnPath) as string;
             var viewModel = await GetEnterLocationManuallyViewModel(utility, model, RouteNames.EnterAddressManually_Get, model.ToDomain(), returnRoute);
             return View(viewModel);
         }
 
-        bool? isPostcodeEnglish = await locationsService.IsPostcodeInEnglandAsync(model.Postcode);
+        var isPostcodeEnglish = await locationsService.IsPostcodeInEnglandAsync(model.Postcode);
         if (isPostcodeEnglish is false)
         {
             ModelState.AddModelError(nameof(AddLocationEditModel.Postcode), AddLocationEditModelValidator.MustBeEnglishPostcode);
-            string returnRoute = TempData.Peek(TempDataKeys.AddLocationReturnPath) as string;
+            var returnRoute = TempData.Peek(TempDataKeys.AddLocationReturnPath) as string;
             var viewModel = await GetEnterLocationManuallyViewModel(utility, model, RouteNames.EnterAddressManually_Get, model.ToDomain(), returnRoute);
             return View(viewModel);
         }
