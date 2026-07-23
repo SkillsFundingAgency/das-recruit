@@ -143,9 +143,11 @@
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.ShortDescription">Summary of the apprenticeship
                 </dt>
                 <dd class="app-summary-list__value">
-                    @Html.Raw(Model.ShortDescription)
+                    <div class="app-ugc-wrap">
+                        @Html.Raw(Model.ShortDescription)
+                    </div>
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.ShortDescription"
-                        tag-name="strong" model="@Model" />
+                                      tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ShortDescription_Get"

@@ -24,16 +24,15 @@
         <form asp-route="@RouteNames.AddExtraInformation_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             @Html.HiddenFor(model => model.WageType)
             <div esfa-validation-marker-for="WageAdditionalInformation" class="govuk-form-group">
-                
                     <span esfa-validation-message-for="WageAdditionalInformation" class="govuk-error-message"></span>
-                    <label asp-for="WageAdditionalInformation" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">Information about pay (optional)</label>
+                    <label id="WageAdditionalInformation-Label" asp-for="WageAdditionalInformation" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">Information about pay (optional)</label>
                     <div id="extra-info-hint" class="govuk-hint">
                         Mention anything that affects this apprenticeship’s wage. For example, a planned salary increase. This will be displayed next to the annual wage 
                     </div>
                     <div class="govuk-character-count" data-module="govuk-character-count" data-minlength="50"
                          data-maxlength="500">
                         <textarea asp-for="WageAdditionalInformation" class="govuk-textarea govuk-!-width-three-quarters govuk-js-character-count html-editor"
-                                  id="WageAdditionalInformation" name="WageAdditionalInformation" rows="5"></textarea>
+                                  id="WageAdditionalInformation" name="WageAdditionalInformation" rows="5" aria-labelledby="WageAdditionalInformation-Label"></textarea>
                         <div id="WageAdditionalInformation-info" class="govuk-hint govuk-character-count__message"
                              aria-live="polite">
                             You can enter up to 500 characters
@@ -42,11 +41,11 @@
             </div>
             <div esfa-validation-marker-for="CompanyBenefitsInformation" class="govuk-form-group">
                 <span esfa-validation-message-for="CompanyBenefitsInformation" class="govuk-error-message"></span>
-                <label asp-for="CompanyBenefitsInformation" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">Company benefits (optional)</label>
+                <label id="CompanyBenefitsInformation-Label" asp-for="CompanyBenefitsInformation" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">Company benefits (optional)</label>
                 <div id="extra-info-hint" class="govuk-hint">Mention benefits your company offers. For example, you pay for a gym membership. This will be displayed in the section about your company </div>
                 <div class="govuk-character-count" data-module="govuk-character-count" data-minlength="50"data-maxlength="500">
                     <textarea asp-for="CompanyBenefitsInformation" class="govuk-textarea govuk-!-width-three-quarters govuk-js-character-count html-editor"
-                               id="CompanyBenefitsInformation" name="CompanyBenefitsInformation" rows="5"></textarea>
+                               id="CompanyBenefitsInformation" name="CompanyBenefitsInformation" rows="5" aria-labelledby="CompanyBenefitsInformation-Label"></textarea>
                     <div id="CompanyBenefitsInformation-info" class="govuk-hint govuk-character-count__message"
                          aria-live="polite">
                         You can enter up to 500 characters
@@ -66,8 +65,11 @@
 
 @section FooterJS 
 {
-    <script src="/lib/tinymce-4.9.2/tinymce.min.js" no-cdn></script>
-    <script nws-csp-add-nonce="true">
-        initializeHtmlEditors();
+    <script type="module" nws-csp-add-nonce="true">
+        import { initHtmlEditor } from "./../../../../../javascripts/html-editor.mjs";
+        document.addEventListener("DOMContentLoaded", (event) => {
+            initHtmlEditor(document.querySelector('#WageAdditionalInformation'))
+            initHtmlEditor(document.querySelector('#CompanyBenefitsInformation'))
+        });
     </script>
 }
