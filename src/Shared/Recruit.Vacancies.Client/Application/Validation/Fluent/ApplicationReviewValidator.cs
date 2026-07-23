@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             var words = inputText.Split([' '], StringSplitOptions.RemoveEmptyEntries);
 
-            return words.Length <= ApplicationReviewValidator.CandidateFeedbackMaxWordLength;
+            return words.Length <= CandidateFeedbackMaxWordLength;
         }
     }
 }

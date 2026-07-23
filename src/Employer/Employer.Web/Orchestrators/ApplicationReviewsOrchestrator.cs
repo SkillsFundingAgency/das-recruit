@@ -5,6 +5,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -44,7 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 VacancyId = vacancy.Id,
                 EmployerAccountId = vacancy.EmployerAccountId,
                 VacancyReference = vacancy.VacancyReference.Value,
-                VacancyApplications = vacancyApplications
+                VacancyApplications = vacancyApplications,
             };
         }
         
@@ -59,7 +60,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 EmployerAccountId = rm.EmployerAccountId,
                 ApplicationsToUnsuccessful = applicationsToUnsuccessful,
                 Outcome = ApplicationReviewStatus.Unsuccessful,
-                IsMultipleApplications = applicationsToUnsuccessful.Count > 1
+                IsMultipleApplications = applicationsToUnsuccessful.Count > 1,
+                CandidateFeedback = Constants.DefaultCandidateFeedback,
             };
         }
 
@@ -74,7 +76,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 VacancyId = rm.VacancyId,
                 EmployerAccountId = rm.EmployerAccountId,
                 VacancyApplicationsToUnsuccessful = applicationsToUnsuccessful,
-                CandidateFeedback = applicationsToUnsuccessful.FirstOrDefault()!.CandidateFeedback,
+                CandidateFeedback = string.IsNullOrWhiteSpace(applicationsToUnsuccessful.FirstOrDefault()!.CandidateFeedback)
+                    ? Constants.DefaultCandidateFeedback
+                    : applicationsToUnsuccessful.FirstOrDefault()?.CandidateFeedback,
                 IsMultipleApplications = applicationsToUnsuccessful.Count > 1
             };
         }

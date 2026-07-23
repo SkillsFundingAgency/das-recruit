@@ -4,7 +4,7 @@
     ViewBag.Title = "Give feedback (single and multiple applications)";
 }
 @section BackLink {
-    <a asp-route="@RouteNames.VacancyManage_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-route="@RouteNames.ApplicationReview_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -13,6 +13,11 @@
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
                 Give feedback to the unsuccessful applicant
             </h1>
+            <p class="govuk-body">
+                A standard message will be emailed to the selected applicant. You can edit this message before sending.
+                <br/>
+                We will include links to support and other apprenticeships in the email.
+            </p>
             <govuk-inset>
                 <div>
                     @Model.Name
@@ -27,18 +32,24 @@
             @Html.HiddenFor(model => model.Name)
             <span esfa-validation-message-for="Outcome" class="govuk-error-message"></span>
             <div esfa-validation-marker-for="CandidateFeedback" id="Employer-unsuccessful-candidate-feedback" class="govuk-form-group">
-                <div class="govuk-character-count"
-                     id="conditional-contact-3" data-module="govuk-character-count" data-maxwords="200">
+                <div class="govuk-character-count" id="conditional-contact-3" data-module="govuk-character-count" data-maxwords="200">
                     <span esfa-validation-message-for="CandidateFeedback" class="govuk-error-message"></span>
-                    <span class="govuk-hint">Help the applicant understand why their application was unsuccessful. Your message will be sent to the applicant.</span>
+                    <span class="govuk-label govuk-!-font-weight-bold">Your message to the applicant</span>
                     <textarea asp-for="CandidateFeedback" class="govuk-textarea govuk-js-character-count" id="CandidateFeedback" name="CandidateFeedback" rows="6"></textarea>
                     <div id="CandidateFeedback-info" class="govuk-hint govuk-character-count__message">
                         You have 200 words remaining
                     </div>
                 </div>
             </div>
-            <div class="govuk-form-group">
-                <input type="submit" value="Confirm" class="govuk-button" />
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    Feedback will be sent to the applicant. This cannot be undone.
+                </strong>
+            </div>
+            <div class="govuk-button-group">
+                <input type="submit" value="Submit" class="govuk-button" />
+                <a asp-route="@RouteNames.ApplicationReview_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
             </div>
         </form>
     </div>

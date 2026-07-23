@@ -8,6 +8,7 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using ApplicationReviewViewModel = Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel;
@@ -87,7 +88,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             return new ApplicationStatusConfirmationViewModel
             {
-                CandidateFeedback = applicationReviewStatusConfirmationEditModel.CandidateFeedback,
+                CandidateFeedback = string.IsNullOrWhiteSpace(applicationReviewStatusConfirmationEditModel.CandidateFeedback) 
+                    ? Constants.DefaultCandidateFeedback 
+                    : applicationReviewStatusConfirmationEditModel.CandidateFeedback,
                 Outcome = applicationReviewStatusConfirmationEditModel.Outcome,
                 ApplicationReviewId = applicationReviewStatusConfirmationEditModel.ApplicationReviewId,
                 Name = applicationReview.Application.FullName,
@@ -113,7 +116,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             return new ApplicationReviewFeedbackViewModel
             {
-                CandidateFeedback = rm.CandidateFeedback,
+                CandidateFeedback = string.IsNullOrWhiteSpace(rm.CandidateFeedback) 
+                    ? Constants.DefaultCandidateFeedback 
+                    : rm.CandidateFeedback,
                 Outcome = rm.Outcome,
                 ApplicationReviewId = rm.ApplicationReviewId,
                 Name = applicationReviewVm.Name,
@@ -129,7 +134,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             return new ApplicationStatusConfirmationViewModel
             {
-                CandidateFeedback = rm.CandidateFeedback,
+                CandidateFeedback = string.IsNullOrWhiteSpace(rm.CandidateFeedback) 
+                    ? Constants.DefaultCandidateFeedback 
+                    : rm.CandidateFeedback,
                 FriendlyId = applicationReviewVm.FriendlyId,
                 Status = applicationReviewVm.Status,
                 Outcome = rm.Outcome,
@@ -147,6 +154,5 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             return await vacancyClient.IsAllApplicationReviewsHasOutcomeAsync(vacancyId.Value);
         }
-
     }
 }

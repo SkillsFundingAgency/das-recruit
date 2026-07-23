@@ -304,9 +304,9 @@
                     <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
                         <div asp-show="@Model.CanShowRadioButtonReview" class="govuk-radios__item">
                             <input asp-for="Outcome" class="govuk-radios__input" id="outcome-reviewed" type="radio" value="@ApplicationReviewStatus.InReview.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.InReview ? "checked" : null)">
-                            <label for="outcome-reviewed" class="govuk-label govuk-radios__label">Review</label>
+                            <label for="outcome-reviewed" class="govuk-label govuk-radios__label">Move to 'In Review'</label>
                             <div class="govuk-hint govuk-radios__hint" id="radio-status-reviewed">
-                                Change this application's status to 'in review' and make a decision later. Does not notify the applicant.
+                                Does not notify the applicant.
                             </div>
                         </div>
                         <div asp-show="@Model.CanShowRadioButtonShared" class="govuk-radios__item">
@@ -318,23 +318,23 @@
                         </div>
                         <div asp-show="@Model.CanShowRadioButtonInterviewing" class="govuk-radios__item">
                             <input asp-for="Outcome" class="govuk-radios__input" id="outcome-interviewing" type="radio" value="@ApplicationReviewStatus.Interviewing.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Interviewing ? "checked" : null)">
-                            <label for="outcome-interviewing" class="govuk-label govuk-radios__label">Mark application for interviewing with the employer</label>
+                            <label for="outcome-interviewing" class="govuk-label govuk-radios__label">Mark application for interview</label>
                             <div class="govuk-hint govuk-radios__hint" id="radio-status-interviewing">
-                                Change this application's status to 'interviewing' because the employer will interview this applicant. Does not notify the applicant.
+                                You will need to notify the applicant directly.
                             </div>
                         </div>
                         <div class="govuk-radios__item">
                             <input asp-for="Outcome" class="govuk-radios__input" id="outcome-successful" type="radio" value="@ApplicationReviewStatus.Successful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Successful ? "checked" : null)">
                             <label for="outcome-successful" class="govuk-label govuk-radios__label">Make successful</label>
                             <div class="govuk-hint govuk-radios__hint" id="radio-status-successful">
-                                Send a notification to the applicant offering them this apprenticeship.
+                                Sends a notification to the applicant offering them this apprenticeship.
                             </div>
                         </div>
                         <div class="govuk-radios__item">
                             <input asp-for="Outcome" class="govuk-radios__input" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.Unsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Unsuccessful ? "checked" : null)">
-                            <label for="outcome-unsuccessful" class="govuk-label govuk-radios__label">Make unsuccessful and give feedback</label>
+                            <label for="outcome-unsuccessful" class="govuk-label govuk-radios__label">Make unsuccessful</label>
                             <div class="govuk-hint govuk-radios__hint" id="radio-status-unsuccessful">
-                                Send a notification to the applicant telling them they won't be offered this apprenticeship.
+                                Notify the applicant with our standard message or edit with specific feedback.
                             </div>
                         </div>
                     </div>
