@@ -1,6 +1,9 @@
+using System.Linq;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyView;
+using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Humanizer;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
 {
@@ -47,5 +50,20 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public bool CanShowApplicationsStatusChangeBanner => !string.IsNullOrEmpty(ApplicationReviewStatusChangeBannerHeader);
         public ApprenticeshipTypes ApprenticeshipType { get; internal set; }
         public FilteringOptions FilteringOptions { get; internal set; }
+        public int TotalOutstandingApplicationsCount =>
+            Applications.Applications.Count(x => x.Status == ApplicationReviewStatus.New && x.IsNotWithdrawn);
+        public bool CanShowOutstandingApplicationsBannerMessage => (IsVacancyLive || IsVacancyClosed) && TotalOutstandingApplicationsCount > 0;
+        public string TotalOutstandingApplicationsBannerMessage
+        {
+            get
+            {
+                var isPlural = TotalOutstandingApplicationsCount > 1;
+                var applicantWord = isPlural ? Constants.ApplicantWord.Pluralize() : Constants.ApplicantWord;
+                var verbWord = isPlural ? "are" : "is";
+
+                return $"{TotalOutstandingApplicationsCount} {applicantWord} {verbWord} waiting for a response. " +
+                       "Notify them with our standard message or edit with feedback.";
+            }
+        }
     }
 }
