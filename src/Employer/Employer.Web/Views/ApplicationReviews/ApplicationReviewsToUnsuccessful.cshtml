@@ -71,7 +71,7 @@
                                             <td class="govuk-table__cell">@vacancyApplication.GetFriendlyId()</td>
                                             <td class="govuk-table__cell"><govuk-tag-application-review-status application-status="@vacancyApplication.Status" user-type="@UserType.Employer" /></td>
                                             <td class="govuk-table__cell">@vacancyApplication.SubmittedDate.AsGdsDate()</td>
-                                            <td class="govuk-table__cell">
+                                            <td class="govuk-table__cell" asp-show="@vacancyApplication.CanShowCandidateAppliedLocations" data-label="Locations">
                                                 <ul class="govuk-list">
                                                     @foreach (var location in vacancyApplication.CandidateAppliedLocations)
                                                     {
