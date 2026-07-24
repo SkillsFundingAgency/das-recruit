@@ -175,7 +175,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 if (hasPermission)
                     return;
                 
-                var failure = new ValidationFailure(string.Empty, "Training provider does not have permission to create vacancies for this employer")
+                var failure = new ValidationFailure("Provider", "Training provider does not have permission to create vacancies for this employer")
                 {
                     ErrorCode = ErrorCodes.TrainingProviderMustHaveEmployerPermission,
                     CustomState = VacancyRuleSet.TrainingProvider
