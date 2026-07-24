@@ -27,15 +27,15 @@
         </div>
         <form method="post" id="multiple_applications_unsuccessful_actions_form" asp-route="todo">
             <div class="govuk-form-group" id="ApplicationsToUnsuccessful">
-                <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
+                <partial name="@PartialNames.ValidationSummary" model="new ValidationSummaryViewModel { ModelState = ViewData.ModelState }" />
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading">
                             Make multiple applications unsuccessful
                         </h1>
                     </legend>
-                    <div id="share-multiple-applications-checkbox-hint" class="govuk-hint">
-                        Select the applications that are unsuccessful. This will notify the applicants that they won't be offered the apprenticeship.
+                    <div id="share-multiple-applications-checkbox-hint" class="govuk-hint govuk-!-margin-top-5 govuk-!-margin-bottom-5">
+                        Select the applications you want to make unsuccessful. Notify them using our standard message or edit it with specific feedback.
                     </div>
                     <span esfa-validation-message-for="ApplicationsToUnsuccessful" class="govuk-error-message"></span>
                     <div esfa-validation-marker-for="ApplicationsToUnsuccessful" id="Multiple-unsuccessful-candidate-feedback" class="govuk-form-group">
@@ -71,7 +71,7 @@
                                             <td class="govuk-table__cell">@vacancyApplication.GetFriendlyId()</td>
                                             <td class="govuk-table__cell"><govuk-tag-application-review-status application-status="@vacancyApplication.Status" user-type="@UserType.Employer" /></td>
                                             <td class="govuk-table__cell">@vacancyApplication.SubmittedDate.AsGdsDate()</td>
-                                            <td class="govuk-table__cell">
+                                            <td class="govuk-table__cell" asp-show="@vacancyApplication.CanShowCandidateAppliedLocations" data-label="Locations">
                                                 <ul class="govuk-list">
                                                     @foreach (var location in vacancyApplication.CandidateAppliedLocations)
                                                     {
