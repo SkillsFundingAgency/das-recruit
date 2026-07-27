@@ -63,7 +63,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
                 CandidateAppliedLocations = applicationReview.Application?.CandidateAppliedLocations
             };
 
-            if (applicationReview.IsWithdrawn == false)
+            if (!applicationReview.IsWithdrawn)
             {
                 projection.ApplicationId = applicationReview.Application?.ApplicationId;
                 projection.VacancyReference = applicationReview.Application?.VacancyReference;

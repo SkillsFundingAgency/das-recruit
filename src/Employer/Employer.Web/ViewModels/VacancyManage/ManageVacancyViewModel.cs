@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public string PossibleStartDate { get; internal set; }
         public bool IsDisabilityConfident { get; internal set; }
         public bool IsApplyThroughFaaVacancy { get; internal set; }
-        public bool IsWithdrawn => string.IsNullOrEmpty(WithdrawnDate) == false;
+        public bool IsWithdrawn => !string.IsNullOrEmpty(WithdrawnDate);
         public bool IsClosedBlockedByQa { get; set; }
         public VacancyApplicationsViewModel Applications { get; internal set; }
         public bool HasApplications => TotalUnfilteredApplicationsCount > 0;
@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool IsVacancyClosed => Status == VacancyStatus.Closed;
         public bool IsVacancyArchived => Status == VacancyStatus.Archived;
         public bool IsVacancyRejected => Status == VacancyStatus.Rejected;
-        public bool IsTransferred => string.IsNullOrWhiteSpace(TransferredProviderName) == false && string.IsNullOrWhiteSpace(TransferredOnDate) == false;
+        public bool IsTransferred => !string.IsNullOrWhiteSpace(TransferredProviderName) && !string.IsNullOrWhiteSpace(TransferredOnDate);
         public bool CanClone { get; internal set; }
         public string ViewBagTitle => ShowEmployerApplications ? "Manage Advert" : $"{Title} shared applications";
         public string ApplicationReviewsUnsuccessfulBannerHeader { get; internal set; }
