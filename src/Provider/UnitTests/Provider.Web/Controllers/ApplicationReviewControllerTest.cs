@@ -1,25 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using AutoFixture;
 using Esfa.Recruit.Provider.Web.Configuration;
-using Esfa.Recruit.Provider.Web.Controllers;
-using Esfa.Recruit.Provider.Web.Orchestrators;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Provider.Web.Controllers;
 using Esfa.Recruit.Provider.Web.Extensions;
-using Esfa.Recruit.Provider.Web.RouteModel;
-using Newtonsoft.Json;
 using Esfa.Recruit.Provider.Web.Models;
+using Esfa.Recruit.Provider.Web.Orchestrators;
+using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Newtonsoft.Json;
+using NUnit.Framework;
 using ApplicationReviewViewModel = Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
@@ -294,35 +290,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
 
         [Test]
-        public async Task POST_ApplicationStatusConfirmation_StatusUnsuccessful_RedirectsToManageVacancyPageWithTempData()
-        {
-            //Arrange
-            var editModel = _fixture.Build<ApplicationReviewStatusConfirmationEditModel>()
-                .With(x => x.Outcome, ApplicationReviewStatus.Unsuccessful)
-                .With(x => x.VacancyId, _vacancyId)
-                .With(x => x.Ukprn, _ukprn)
-                .With(x => x.ApplicationReviewId, _applicationReviewId)
-                .Create();
-            _orchestrator.Setup(o => o.PostApplicationReviewStatusChangeModelAsync(It.Is<ApplicationReviewStatusConfirmationEditModel>(y => y == editModel), It.IsAny<VacancyUser>()))
-                .ReturnsAsync(new ApplicationReviewStatusChangeInfo
-                {
-                    CandidateName = _candidateName,
-                    ShouldMakeOthersUnsuccessful = false
-                });
-
-            // Act
-            var redirectResult = await _controller.ApplicationStatusConfirmation(editModel) as RedirectToRouteResult;
-
-            // Assert
-            Assert.That(redirectResult, Is.Not.Null);
-            Assert.That(RouteNames.VacancyManage_Get, Is.EqualTo(redirectResult.RouteName));
-            Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
-            Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
-            Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage), Is.True);
-            Assert.That(string.Format(InfoMessages.ApplicationEmployerUnsuccessfulHeader, _candidateName), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage]));
-        }
-
-        [Test]
         public async Task POST_ApplicationStatusConfirmation_ShouldMakeOthersUnsuccessfulTrue_RedirectsToApplicationReviewsToUnsuccessfulPageWithTempData()
         {
             //Arrange
@@ -420,30 +387,240 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
 
         [Test]
-        public async Task POST_ApplicationFeedback_ReturnsRedirectToRouteResult()
+        public async Task POST_ApplicationFeedback_InvalidModelState_PopulatesDisplayDataAndReturnsView()
         {
-            _orchestrator.Setup(o => o.GetApplicationReviewFeedbackViewModelAsync(It.IsAny<ApplicationReviewFeedbackViewModel>()))
-                .ReturnsAsync(new Dictionary<string, string>()
-                {
-                    {"Name", "Some name"},
-                    {"FriendlyId", "Some friendly id"}
-                });
+            // Arrange
+            var request = _fixture
+                .Build<ApplicationReviewFeedbackViewModel>()
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .Create();
 
-            var applicationReviewFeedbackViewModel = new ApplicationReviewFeedbackViewModel
-            {
-                ApplicationReviewId = Guid.NewGuid(),
-                VacancyId = Guid.NewGuid(),
-                Ukprn = 1234
-            };
+            var displayData = new Dictionary<string, string>
+    {
+        { "Name", "John Smith" },
+        { "FriendlyId", "VAC001" }
+    };
 
-            var result = await _controller.ApplicationFeedback(applicationReviewFeedbackViewModel);
+            _controller.ModelState.AddModelError("CandidateFeedback", "Required");
 
-            Assert.That(result, Is.InstanceOf<RedirectToRouteResult>());
-            var redirectResult = (RedirectToRouteResult)result;
-            Assert.That(RouteNames.ApplicationReviewConfirmation_Get, Is.EqualTo(redirectResult.RouteName));
-            Assert.That(applicationReviewFeedbackViewModel.ApplicationReviewId, Is.EqualTo(redirectResult.RouteValues["ApplicationReviewId"]));
-            Assert.That(applicationReviewFeedbackViewModel.VacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
-            Assert.That(applicationReviewFeedbackViewModel.Ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
+            _orchestrator.Setup(o => o.GetApplicationReviewFeedbackViewModelAsync(request))
+                .ReturnsAsync(displayData);
+
+            // Act
+            var result = await _controller.ApplicationFeedback(request) as ViewResult;
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Model, Is.EqualTo(request));
+            Assert.That(request.Name, Is.EqualTo("John Smith"));
+            Assert.That(request.FriendlyId, Is.EqualTo("VAC001"));
+            _orchestrator.Verify(o => o.PostApplicationReviewStatusChangeModelAsync(
+                It.IsAny<ApplicationReviewStatusChangeModel>(),
+                It.IsAny<VacancyUser>()), Times.Never);
+        }
+
+        [Test]
+        public async Task POST_ApplicationFeedback_ValidModel_PostsCorrectStatusChangeModel()
+        {
+            // Arrange
+            var request = _fixture
+                .Build<ApplicationReviewFeedbackViewModel>()
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .Create();
+
+            var statusChangeInfo = _fixture
+                .Build<ApplicationReviewStatusChangeInfo>()
+                .With(x => x.ShouldMakeOthersUnsuccessful, false)
+                .Create();
+
+            _orchestrator.Setup(o => o.PostApplicationReviewStatusChangeModelAsync(
+                    It.IsAny<ApplicationReviewStatusChangeModel>(),
+                    It.IsAny<VacancyUser>()))
+                .ReturnsAsync(statusChangeInfo);
+
+            _orchestrator.Setup(o => o.IsAllApplicationReviewsHasOutcomeAsync(_vacancyId))
+                .ReturnsAsync(false);
+
+            // Act
+            await _controller.ApplicationFeedback(request);
+
+            // Assert
+            _orchestrator.Verify(o => o.PostApplicationReviewStatusChangeModelAsync(
+                It.Is<ApplicationReviewStatusChangeModel>(m =>
+                    m.CandidateFeedback == request.CandidateFeedback &&
+                    m.IsApplicationSharedByProvider == request.IsApplicationSharedByProvider &&
+                    m.Outcome == request.Outcome &&
+                    m.ApplicationReviewId == request.ApplicationReviewId &&
+                    m.VacancyId == request.VacancyId &&
+                    m.Ukprn == request.Ukprn),
+                It.IsAny<VacancyUser>()),
+                Times.Once);
+        }
+
+        [Test]
+        public async Task POST_ApplicationFeedback_ShouldMakeOthersUnsuccessful_RedirectsToApplicationReviewsToUnsuccessful()
+        {
+            // Arrange
+            var request = _fixture
+                .Build<ApplicationReviewFeedbackViewModel>()
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .Create();
+
+            var statusChangeInfo = _fixture
+                .Build<ApplicationReviewStatusChangeInfo>()
+                .With(x => x.ShouldMakeOthersUnsuccessful, true)
+                .Create();
+
+            _orchestrator.Setup(o => o.PostApplicationReviewStatusChangeModelAsync(
+                    It.IsAny<ApplicationReviewStatusChangeModel>(),
+                    It.IsAny<VacancyUser>()))
+                .ReturnsAsync(statusChangeInfo);
+
+            // Act
+            var redirectResult = await _controller.ApplicationFeedback(request) as RedirectToRouteResult;
+
+            // Assert
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(redirectResult.RouteName, Is.EqualTo(RouteNames.ApplicationReviewsToUnsuccessful_Get));
+            Assert.That(redirectResult.RouteValues["VacancyId"], Is.EqualTo(_vacancyId));
+            Assert.That(redirectResult.RouteValues["Ukprn"], Is.EqualTo(_ukprn));
+            Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage), Is.True);
+            Assert.That(_controller.TempData[TempDataKeys.ApplicationReviewStatusInfoMessage],
+                Is.EqualTo(InfoMessages.ApplicationProviderUnsuccessfulHeader));
+            _orchestrator.Verify(o => o.IsAllApplicationReviewsHasOutcomeAsync(It.IsAny<Guid>()), Times.Never);
+        }
+
+        [Test]
+        public async Task POST_ApplicationFeedback_ShouldMakeOthersUnsuccessful_DoesNotCheckAllApplicationsOutcome()
+        {
+            // Arrange
+            var request = _fixture
+                .Build<ApplicationReviewFeedbackViewModel>()
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .Create();
+
+            var statusChangeInfo = _fixture
+                .Build<ApplicationReviewStatusChangeInfo>()
+                .With(x => x.ShouldMakeOthersUnsuccessful, true)
+                .Create();
+
+            _orchestrator.Setup(o => o.PostApplicationReviewStatusChangeModelAsync(
+                    It.IsAny<ApplicationReviewStatusChangeModel>(),
+                    It.IsAny<VacancyUser>()))
+                .ReturnsAsync(statusChangeInfo);
+
+            // Act
+            await _controller.ApplicationFeedback(request);
+
+            // Assert
+            _orchestrator.Verify(o => o.IsAllApplicationReviewsHasOutcomeAsync(It.IsAny<Guid>()), Times.Never);
+        }
+
+        [Test]
+        public async Task POST_ApplicationFeedback_AllApplicationsHaveOutcome_RedirectsToArchiveVacancy()
+        {
+            // Arrange
+            var request = _fixture
+                .Build<ApplicationReviewFeedbackViewModel>()
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .Create();
+
+            var statusChangeInfo = _fixture
+                .Build<ApplicationReviewStatusChangeInfo>()
+                .With(x => x.ShouldMakeOthersUnsuccessful, false)
+                .Create();
+
+            _orchestrator.Setup(o => o.PostApplicationReviewStatusChangeModelAsync(
+                    It.IsAny<ApplicationReviewStatusChangeModel>(),
+                    It.IsAny<VacancyUser>()))
+                .ReturnsAsync(statusChangeInfo);
+
+            _orchestrator.Setup(o => o.IsAllApplicationReviewsHasOutcomeAsync(_vacancyId))
+                .ReturnsAsync(true);
+
+            // Act
+            var redirectResult = await _controller.ApplicationFeedback(request) as RedirectToRouteResult;
+
+            // Assert
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(redirectResult.RouteName, Is.EqualTo(RouteNames.ArchiveVacancy_Get));
+            Assert.That(redirectResult.RouteValues["VacancyId"], Is.EqualTo(_vacancyId));
+            Assert.That(redirectResult.RouteValues["Ukprn"], Is.EqualTo(_ukprn));
+            Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ArchiveVacancyInfoMessage), Is.True);
+            Assert.That(_controller.TempData[TempDataKeys.ArchiveVacancyInfoMessage],
+                Is.EqualTo(InfoMessages.VacancyApplicantsOutcomeNotified));
+        }
+
+        [Test]
+        public async Task POST_ApplicationFeedback_NotAllApplicationsHaveOutcome_RedirectsToVacancyManage()
+        {
+            // Arrange
+            var request = _fixture
+                .Build<ApplicationReviewFeedbackViewModel>()
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .Create();
+
+            var statusChangeInfo = _fixture
+                .Build<ApplicationReviewStatusChangeInfo>()
+                .With(x => x.ShouldMakeOthersUnsuccessful, false)
+                .Create();
+
+            _orchestrator.Setup(o => o.PostApplicationReviewStatusChangeModelAsync(
+                    It.IsAny<ApplicationReviewStatusChangeModel>(),
+                    It.IsAny<VacancyUser>()))
+                .ReturnsAsync(statusChangeInfo);
+
+            _orchestrator.Setup(o => o.IsAllApplicationReviewsHasOutcomeAsync(_vacancyId))
+                .ReturnsAsync(false);
+
+            // Act
+            var redirectResult = await _controller.ApplicationFeedback(request) as RedirectToRouteResult;
+
+            // Assert
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(redirectResult.RouteName, Is.EqualTo(RouteNames.VacancyManage_Get));
+            Assert.That(redirectResult.RouteValues["VacancyId"], Is.EqualTo(_vacancyId));
+            Assert.That(redirectResult.RouteValues["Ukprn"], Is.EqualTo(_ukprn));
+            Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage), Is.True);
+            Assert.That(_controller.TempData[TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage],
+                Is.EqualTo(InfoMessages.ApplicationProviderUnsuccessfulHeader));
+        }
+
+        [Test]
+        public async Task POST_ApplicationFeedback_NotAllApplicationsHaveOutcome_DoesNotSetArchiveTempData()
+        {
+            // Arrange
+            var request = _fixture
+                .Build<ApplicationReviewFeedbackViewModel>()
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .Create();
+
+            var statusChangeInfo = _fixture
+                .Build<ApplicationReviewStatusChangeInfo>()
+                .With(x => x.ShouldMakeOthersUnsuccessful, false)
+                .Create();
+
+            _orchestrator.Setup(o => o.PostApplicationReviewStatusChangeModelAsync(
+                    It.IsAny<ApplicationReviewStatusChangeModel>(),
+                    It.IsAny<VacancyUser>()))
+                .ReturnsAsync(statusChangeInfo);
+
+            _orchestrator.Setup(o => o.IsAllApplicationReviewsHasOutcomeAsync(_vacancyId))
+                .ReturnsAsync(false);
+
+            // Act
+            await _controller.ApplicationFeedback(request);
+
+            // Assert
+            Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ArchiveVacancyInfoMessage), Is.False);
+            Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage), Is.False);
         }
     }
 }

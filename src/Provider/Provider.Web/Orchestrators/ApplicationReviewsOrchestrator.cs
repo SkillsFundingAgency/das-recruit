@@ -142,7 +142,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task PostApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulConfirmationViewModel request, VacancyUser user)
         {
-            await client.SetApplicationReviewsToUnsuccessful(request.ApplicationsToUnsuccessful.Select(c=>c.ApplicationReviewId), request.CandidateFeedback, user, request.VacancyId!.Value!);
+            await client.SetApplicationReviewsToUnsuccessful(request.ApplicationsToUnsuccessful.Select(c => c.ApplicationReviewId), request.CandidateFeedback, user, request.VacancyId!.Value!);
         }
 
         public async Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid? vacancyId)

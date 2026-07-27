@@ -72,66 +72,40 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             {
                 return View(request);
             }
-            await orchestrator.PostApplicationReviewPendingUnsuccessfulFeedback
-            (
-                new ApplicationReviewStatusModel
-                {
-                    VacancyId = request.VacancyId!,
-                    CandidateFeedback = request.CandidateFeedback
-                }, 
-                User.ToVacancyUser(), 
-                ApplicationReviewStatus.PendingToMakeUnsuccessful
-            );
 
-            return RedirectToRoute(RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Get, new
+            var confirmationModel = new ApplicationReviewsToUnsuccessfulConfirmationViewModel
             {
-                request.EmployerAccountId,
-                request.VacancyId
-            });
-        }
+                CandidateFeedback = request.CandidateFeedback,
+                ApplicationsUnsuccessfulConfirmed = true,
+                VacancyApplicationsToUnsuccessful = request.ApplicationsToUnsuccessful,
+                Outcome = request.Outcome,
+                VacancyId = request.VacancyId,
+                EmployerAccountId = request.EmployerAccountId,
+            };
 
-        [HttpGet("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Get)]
-        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulConfirmation(ApplicationReviewsToUnsuccessfulRouteModel rm)
-        {
-            var viewModel = await orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(rm);
+            await orchestrator.PostApplicationReviewsToUnsuccessfulAsync(confirmationModel, User.ToVacancyUser());
 
-            return View(viewModel);
-        }
+            var routeValues = new { request.EmployerAccountId, request.VacancyId };
 
-        [HttpPost("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Post)]
-        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulConfirmation(ApplicationReviewsToUnsuccessfulConfirmationViewModel rm)
-        {
-            if (!ModelState.IsValid)
+            if (await orchestrator.IsAllApplicationReviewsHasOutcomeAsync(request.VacancyId))
             {
-                var viewModel = await orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(rm);
-                return View(viewModel);
+                TempData.TryAdd(TempDataKeys.ArchiveAdvertInfoMessage, InfoMessages.AdvertApplicantsOutcomeNotified);
+                return RedirectToRoute(RouteNames.ArchiveVacancy_Get, routeValues);
             }
 
-            if (rm.ApplicationsUnsuccessfulConfirmed == true)
-            {
-                await orchestrator.PostApplicationReviewsToUnsuccessfulAsync(rm, User.ToVacancyUser());
+            SetApplicationsReviewsToUnsuccessfulBannerMessage(request.ApplicationsToUnsuccessful.Count > 1);
 
-                var isAllApplicationsHasOutcome = await orchestrator.IsAllApplicationReviewsHasOutcomeAsync(rm.VacancyId);
-                if (isAllApplicationsHasOutcome)
-                {
-                    TempData.TryAdd(TempDataKeys.ArchiveAdvertInfoMessage, InfoMessages.AdvertApplicantsOutcomeNotified);
-                    return RedirectToRoute(RouteNames.ArchiveVacancy_Get, new {rm.EmployerAccountId, rm.VacancyId, });
-                }
-
-                rm.IsMultipleApplications = rm.VacancyApplicationsToUnsuccessful.Count > 1;
-                SetApplicationsReviewsToUnsuccessfulBannerMessage(rm);
-            }
-
-            return RedirectToRoute(RouteNames.VacancyManage_Get, new { rm.EmployerAccountId, rm.VacancyId });
+            return RedirectToRoute(RouteNames.VacancyManage_Get, routeValues);
         }
-        private void SetApplicationsReviewsToUnsuccessfulBannerMessage(ApplicationReviewsToUnsuccessfulConfirmationViewModel model)
+
+        private void SetApplicationsReviewsToUnsuccessfulBannerMessage(bool isMultipleApplications)
         {
-            if (model.IsMultipleApplications) 
+            if (isMultipleApplications) 
             {
-                TempData.Add(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage, InfoMsg.ApplicationsToUnsuccessfulBannerHeader);
+                TempData.Add(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage, InfoMsg.ApplicationsEmployerUnsuccessfulHeader);
                 return;
             }
-            TempData.Add(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage, string.Format(InfoMsg.ApplicationReviewUnsuccessStatusHeader));
+            TempData.Add(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage, string.Format(InfoMsg.ApplicationEmployerUnsuccessfulHeader));
         }
     }
 }
