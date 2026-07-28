@@ -18,6 +18,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship
 using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
+using Constants = Esfa.Recruit.Vacancies.Client.Application.Constants;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators;
 
@@ -133,9 +134,9 @@ public class VacancyCheckYourAnswersOrchestratorTests
 
         var postcodeLookupResults = new Dictionary<string, PostcodeData>
         {
-            { address1.Postcode, new PostcodeData(address1.Postcode, "England", 1, 1) },
+            { address1.Postcode, new PostcodeData(address1.Postcode, Constants.EnglandCountryCode, 1, 1) },
             { address2.Postcode, null },
-            { address3.Postcode, new PostcodeData(address1.Postcode, "Northern Ireland", 2, 2) },
+            { address3.Postcode, new PostcodeData(address1.Postcode, Constants.NorthernIrelandCountryCode, 2, 2) },
         };
             
         utility.Setup(x => x.GetAuthorisedVacancyAsync(submitEditModel, It.IsAny<string>())).ReturnsAsync(vacancy);
@@ -147,8 +148,8 @@ public class VacancyCheckYourAnswersOrchestratorTests
         // assert
         recruitVacancyClient.Verify(x => x.UpdateDraftVacancyAsync(vacancy, user), Times.Once);
             
-        vacancy.EmployerLocations[0].Country.Should().Be("England");
+        vacancy.EmployerLocations[0].Country.Should().Be(Constants.EnglandCountryCode);
         vacancy.EmployerLocations[1].Country.Should().Be(null);
-        vacancy.EmployerLocations[2].Country.Should().Be("Northern Ireland");
+        vacancy.EmployerLocations[2].Country.Should().Be(Constants.NorthernIrelandCountryCode);
     }
 }

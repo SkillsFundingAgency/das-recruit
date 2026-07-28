@@ -1,33 +1,7 @@
 @using Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
 @model VacancyApplicationsViewModel
 <div asp-show="Model.CanShowLocationFilter">
-    <form method="get" autocomplete="off">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-one-third">
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="locationFilter">Filter by location</label>
-                    <select class="govuk-select"
-                            id="locationFilter"
-                            name="locationFilter"
-                            data-ays-ignore="true">
-                        <option value="All">All locations</option>
-                        @foreach (var location in Model.EmploymentLocations)
-                        {
-                            if (location == Model.SelectedLocation)
-                            {
-                                <option value="@location" selected>@location</option>
-                            }
-                            else
-                            {
-                                <option value="@location">@location</option>
-                            }
-                        }
-                    </select>
-                </div>
-            </div>
-        </div>
-    </form>
-    <div class="govuk-grid-row">
+    <div class="govuk-grid-row" asp-show="@Model.ShowFilteredApplicationsLabelText">
         <div class="govuk-grid-column-two-thirds">
             <div>
                 <h2 class="govuk-heading-s">
@@ -69,7 +43,14 @@
                     <td class="govuk-table__cell" data-label="Response"><govuk-tag-application-review-status application-status="@application.Status" user-type="@Model.UserType" /></td>
                     <td class="govuk-table__cell" data-label="Date reviewed">@application.DateReviewedText</td>
                     <td class="govuk-table__cell" data-label="Date shared">@application.DateSharedWithEmployer.AsGdsDate()</td>
-                    <td class="govuk-table__cell" asp-show="@application.CanShowCandidateAppliedLocations" data-label="Locations">@application.CandidateAppliedLocations</td>
+                    <td class="govuk-table__cell" asp-show="@application.CanShowCandidateAppliedLocations" data-label="Locations">
+                        <ul class="govuk-list">
+                            @foreach (var location in application.CandidateAppliedLocations)
+                            {
+                                <li>@location</li>
+                            }
+                        </ul>
+                    </td>
 
                 </tr>
                 <tr class="govuk-table__row" asp-show="@application.IsWithdrawn">
@@ -77,7 +58,14 @@
                     <td class="govuk-table__cell" data-label="Response">Withdrawn</td>
                     <td class="govuk-table__cell" data-label="Date reviewed">@application.DateReviewedText</td>
                     <td class="govuk-table__cell" data-label="Date shared">@application.DateSharedWithEmployer.AsGdsDate()</td>
-                    <td class="govuk-table__cell" asp-show="@application.CanShowCandidateAppliedLocations" data-label="Locations">@application.CandidateAppliedLocations</td>
+                    <td class="govuk-table__cell" asp-show="@application.CanShowCandidateAppliedLocations" data-label="Locations">
+                        <ul class="govuk-list">
+                            @foreach (var location in application.CandidateAppliedLocations)
+                            {
+                                <li>@location</li>
+                            }
+                        </ul>
+                    </td>
                 </tr>
             }
         </tbody>

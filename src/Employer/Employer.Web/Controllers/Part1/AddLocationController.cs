@@ -10,7 +10,6 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.FeatureManagement.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1;
 
@@ -35,8 +34,12 @@ public class AddLocationController(IUtility utility) : Controller
     {
         if (ModelState.IsValid)
         {
-            bool? isPostcodeEnglish = await locationsService.IsPostcodeInEnglandAsync(model.Postcode);
-            if (isPostcodeEnglish is not false)
+            var isPostcodeEnglish = await locationsService.IsPostcodeInEnglandAsync(model.Postcode);
+            if (isPostcodeEnglish is false)
+            {
+                ModelState.AddModelError(nameof(AddLocationEditModel.Postcode), AddLocationEditModelValidator.MustBeEnglishPostcode);
+            }
+            else
             {
                 var response = await getAddressesClient.GetAddresses(model.Postcode);
                 if (response is not null)
@@ -44,12 +47,8 @@ public class AddLocationController(IUtility utility) : Controller
                     TempData[TempDataKeys.Postcode] = model.Postcode.ToUpperInvariant();
                     return RedirectToRoute(RouteNames.SelectAnAddress_Get, new { model.VacancyId, model.EmployerAccountId, model.Wizard, model.Origin });
                 }
-            
+
                 ModelState.AddModelError(nameof(AddLocationEditModel.Postcode), AddLocationEditModelValidator.InvalidPostcodeErrorMessage);
-            }
-            else
-            {
-                ModelState.AddModelError(nameof(AddLocationEditModel.Postcode), AddLocationEditModelValidator.MustBeEnglishPostcode);    
             }
         }
         

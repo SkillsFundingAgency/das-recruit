@@ -685,3 +685,17 @@ dd.govuk-summary-list__value .faa-user-content:first-child {
     flex-direction: row-reverse;
     justify-content: space-between;
 }
+
+.border-bottom-none {
+    border-bottom: none !important;
+}
+
+.govuk-summary-list__value.das-align-end {
+    align-self: flex-end; /* or justify-self: end for grid */
+    text-align: right;
+}
+
+.govuk-summary-list__value .govuk-tag {
+    align-self: flex-end; /* or justify-self: end for grid */
+    font-size: 20px;
+}

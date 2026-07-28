@@ -305,7 +305,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             await Task.WhenAll(tasks);
         }
 
-        private string GetCandidateAppliedLocation(List<Responses.Address> addresses)
+        private List<string> GetCandidateAppliedLocation(List<Responses.Address> addresses)
         {
             if (addresses == null || addresses.Count == 0)
                 return null;
@@ -373,7 +373,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             // For each selected address:
             foreach (var addr in selectedParsed)
             {
-                bool hasMultiple = cityCounts.TryGetValue(addr.City, out int count) && count > 1;
+                var hasMultiple = cityCounts.TryGetValue(addr.City, out var count) && count > 1;
                 if (hasMultiple && !string.IsNullOrWhiteSpace(addr.AddressLine1))
                 {
                     results.Add($"{addr.City} ({addr.AddressLine1})");
@@ -385,7 +385,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                 }
             }
 
-            return string.Join(", ", results);
+            return results;
         }
 
         private Domain.Entities.ApplicationReview MapToDomainApplicationReview(Responses.ApplicationReview response)

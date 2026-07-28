@@ -12,7 +12,7 @@ public class LocationsServiceTests
     private const string Postcode = "CV1 2WT";
     
     [Test, MoqAutoData]
-    public async Task IsPostcodeInEnglandAsync_Should_Return_Null_If_Postcode_Location_Is_Unknown(
+    public async Task IsPostcodeInEnglandAsync_Should_Return_False_If_Postcode_Location_Is_Unknown(
         [Frozen] Mock<ILocationsClient> locationsClient,
         [Greedy] LocationsService sut)
     {
@@ -22,14 +22,14 @@ public class LocationsServiceTests
             .ReturnsAsync(new GetPostcodeDataResponse(Postcode, null));
 
         // act
-        bool? result = await sut.IsPostcodeInEnglandAsync(Postcode);
+        var result = await sut.IsPostcodeInEnglandAsync(Postcode);
 
         // assert
-        result.Should().BeNull();
+        result.Should().BeFalse();
     }
     
     [Test, MoqAutoData]
-    public async Task IsPostcodeInEnglandAsync_Should_Return_Null_If_No_Api_Result(
+    public async Task IsPostcodeInEnglandAsync_Should_Return_False_If_No_Api_Result(
         [Frozen] Mock<ILocationsClient> locationsClient,
         [Greedy] LocationsService sut)
     {
@@ -39,10 +39,10 @@ public class LocationsServiceTests
             .ReturnsAsync(null as GetPostcodeDataResponse);
 
         // act
-        bool? result = await sut.IsPostcodeInEnglandAsync(Postcode);
+        var result = await sut.IsPostcodeInEnglandAsync(Postcode);
 
         // assert
-        result.Should().BeNull();
+        result.Should().BeFalse();
     }
     
     [Test]
@@ -63,7 +63,7 @@ public class LocationsServiceTests
             .ReturnsAsync(new GetPostcodeDataResponse(Postcode, new PostcodeData(Postcode, country, 1, 1)));
 
         // act
-        bool? result = await sut.IsPostcodeInEnglandAsync(Postcode);
+        var result = await sut.IsPostcodeInEnglandAsync(Postcode);
 
         // assert
         result.Should().Be(expectedResult);

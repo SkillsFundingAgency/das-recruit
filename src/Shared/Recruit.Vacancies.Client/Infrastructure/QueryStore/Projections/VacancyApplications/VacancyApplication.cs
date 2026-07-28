@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 
@@ -39,8 +41,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public long? VacancyReference { get; set; }
         public string CandidateFeedback { get; set; }
         public Guid? ApplicationId { get; set; }
-        public string CandidateAppliedLocations { get; set; }
-        public bool CanShowCandidateAppliedLocations => !string.IsNullOrEmpty(CandidateAppliedLocations);
+        public List<string> CandidateAppliedLocations { get; set; } = [];
+        public bool CanShowCandidateAppliedLocations => CandidateAppliedLocations != null && CandidateAppliedLocations.Any();
 
 
         public static implicit operator VacancyApplication(Domain.Entities.ApplicationReview applicationReview)

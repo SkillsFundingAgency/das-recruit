@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
                 NumberClosingSoonWithNoApplications = 2,
                 NumberClosingSoon = 4,
                 NumberOfNewApplications = 3,
-                NumberOfSharedApplications = 2
+                NumberOfAllSharedApplications = 2
             });
 
             var actualDashboard = await dashboardOrchestrator.GetDashboardViewModelAsync(EmployerAccountId, _user);
@@ -42,6 +42,22 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
             actualDashboard.NoOfSharedApplications.Should().Be(2);
             actualDashboard.Alerts.Should().NotBeNull();
             actualDashboard.HasEmployerReviewPermission.Should().BeTrue();
+        }
+
+        [Test]
+        public async Task WhenSharedApplicationsHaveProgressed_NoOfSharedApplications_ShouldIncludeAllSharedNotJustNew()
+        {
+            var dashboardOrchestrator = GetSut(new EmployerDashboardSummary
+            {
+                Live = 2,
+                NumberOfSharedApplications = 1,
+                NumberOfAllSharedApplications = 3
+            });
+
+            var actualDashboard = await dashboardOrchestrator.GetDashboardViewModelAsync(EmployerAccountId, _user);
+
+            actualDashboard.NoOfSharedApplications.Should().Be(3);
+            actualDashboard.HasSharedApplications.Should().BeTrue();
         }
 
         [Test]

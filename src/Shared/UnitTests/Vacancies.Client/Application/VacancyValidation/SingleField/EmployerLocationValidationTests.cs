@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Validation;
+﻿using Esfa.Recruit.Vacancies.Client.Application;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using NUnit.Framework;
 
@@ -18,7 +19,7 @@ public class EmployerLocationValidationTests : VacancyValidationTestsBase
                 AddressLine2 = "address line 2",
                 AddressLine3 = "address line 3",
                 Postcode = "SW1 1AB",
-                Country = "England"
+                Country = Constants.EnglandCountryCode
             }],
             EmployerLocationOption = AvailableWhere.OneLocation
         };

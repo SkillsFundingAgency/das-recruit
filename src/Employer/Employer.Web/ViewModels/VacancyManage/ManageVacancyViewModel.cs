@@ -18,11 +18,13 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public VacancyApplicationsViewModel Applications { get; internal set; }
         public bool HasApplications => TotalUnfilteredApplicationsCount > 0;
         public bool HasNoApplications => TotalUnfilteredApplicationsCount == 0;
+        public bool CanShowNoApplicationsInsetText => !IsVacancyArchived && !IsVacancyRejected;
         public int TotalUnfilteredApplicationsCount => Applications?.TotalUnfilteredApplicationsCount ?? 0;
         public bool ShowEmployerApplications => !Applications.VacancySharedByProvider;
         public bool ShowSharedApplications => HasApplications && Applications.VacancySharedByProvider;
         public bool CanShowMultipleApplicationsUnsuccessfulLink => (IsVacancyLive || IsVacancyClosed || IsVacancyArchived) && Applications.CanShowMultipleApplicationsUnsuccessfulLink && ShowEmployerApplications;
-
+        public bool CanShowApplicationsSection => Status is not (VacancyStatus.Review or VacancyStatus.Draft or VacancyStatus.Submitted);
+        public bool CanShowStartAndClosingDates => !IsVacancyArchived;
         public bool CanShowEditVacancyLink { get; internal set; }
         public bool CanShowCloseVacancyLink { get; internal set; }
         public bool CanShowDeleteLink { get; internal set; }
@@ -41,6 +43,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool IsVacancyLive => Status == VacancyStatus.Live;
         public bool IsVacancyClosed => Status == VacancyStatus.Closed;
         public bool IsVacancyArchived => Status == VacancyStatus.Archived;
+        public bool IsVacancyRejected => Status == VacancyStatus.Rejected;
         public bool IsTransferred => string.IsNullOrWhiteSpace(TransferredProviderName) == false && string.IsNullOrWhiteSpace(TransferredOnDate) == false;
         public bool CanClone { get; internal set; }
         public string ViewBagTitle => ShowEmployerApplications ? "Manage Advert" : $"{Title} shared applications";

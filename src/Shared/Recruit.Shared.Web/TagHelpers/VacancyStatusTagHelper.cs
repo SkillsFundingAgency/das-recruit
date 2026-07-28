@@ -1,4 +1,5 @@
-﻿using System.Text.Encodings.Web;
+﻿using System.Collections.Generic;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Esfa.Recruit.Shared.Web.TagHelpers;
 
-[HtmlTargetElement(VacancyStatusTagHelper.TagName)]
+[HtmlTargetElement(TagName)]
 public class VacancyStatusTagHelper: RaaTagsTagHelper
 {
     public new const string TagName = "govuk-tag-vacancy-status";
@@ -19,45 +20,31 @@ public class VacancyStatusTagHelper: RaaTagsTagHelper
     {
         await base.ProcessAsync(context, output);
 
-        var modifier = GetModifierClass();
-
-        if (!string.IsNullOrEmpty(modifier))
+        foreach (var cssClass in GetModifierClasses(Status))
         {
-            output.AddClass(modifier, HtmlEncoder.Default);
+            output.AddClass(cssClass, HtmlEncoder.Default);
         }
-
     }
 
-    private string GetModifierClass()
+    private static IEnumerable<string> GetModifierClasses(VacancyStatus? status) => status switch
     {
-        if (Status.HasValue)
-        {
-            return Status switch
-            {
-                VacancyStatus.Draft => "govuk-tag--grey",
-                VacancyStatus.Review => "govuk-tag--blue",    // pending employer review
-                VacancyStatus.Submitted => "govuk-tag--blue", // pending DfE review / ready for review
-                VacancyStatus.Referred => "govuk-tag--red",   // rejected by employer
-                VacancyStatus.Rejected => "govuk-tag--red",
-                VacancyStatus.Live => "govuk-tag--turquoise",
-                VacancyStatus.Closed => "govuk-tag--grey",
-                VacancyStatus.Approved => "govuk-tag--green",
-                VacancyStatus.Archived => "govuk-tag--grey",
-                _ => string.Empty
-            };
-        }
-        return string.Empty;
-    }
+        VacancyStatus.Draft => ["govuk-tag--grey"],
+        VacancyStatus.Review => ["govuk-tag", "govuk-tag--blue"],    // pending employer review
+        VacancyStatus.Submitted => ["govuk-tag", "govuk-tag--blue"], // pending DfE review / ready for review
+        VacancyStatus.Referred => ["govuk-tag--red"],                           // rejected by employer
+        VacancyStatus.Rejected => ["govuk-tag--red"],
+        VacancyStatus.Live => ["govuk-tag--turquoise"],
+        VacancyStatus.Closed => ["govuk-tag--grey"],
+        VacancyStatus.Approved => ["govuk-tag--green"],
+        VacancyStatus.Archived => ["govuk-tag--grey"],
+        _ => []
+    };
 
     protected override Task<IHtmlContent> GetContent(TagHelperOutput output)
     {
-        if (Status.HasValue)
-        {
-            var display = Status.GetDisplayName(UserType);
-            return Task.FromResult<IHtmlContent>(new HtmlString(display));
-        }
+        if (!Status.HasValue) return base.GetContent(output);
 
-        return base.GetContent(output);
+        var display = Status.GetDisplayName(UserType);
+        return Task.FromResult<IHtmlContent>(new HtmlString(display));
     } 
 }
-

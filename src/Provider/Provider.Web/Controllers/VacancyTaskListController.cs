@@ -11,15 +11,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers;
 
 [Route(RoutePaths.VacanciesRoutePath)]
 [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-public class VacancyTaskListController : Controller
+public class VacancyTaskListController(VacancyTaskListOrchestrator orchestrator) : Controller
 {
-    private readonly VacancyTaskListOrchestrator _orchestrator;
-
-    public VacancyTaskListController (VacancyTaskListOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
-        
     [HttpGet("create/start", Name=RouteNames.CreateVacancyStart)]
     public IActionResult StartVacancyCreate(VacancyRouteModel vrm)
     {
@@ -29,7 +22,7 @@ public class VacancyTaskListController : Controller
     [HttpGet("create/task-list", Name = RouteNames.ProviderTaskListCreateGet)]
     public async Task<IActionResult> CreateProviderTaskList(VacancyRouteModel vrm, [FromQuery] string employerAccountId)
     {
-        var viewModel = await _orchestrator.GetCreateVacancyTaskListModel(vrm, employerAccountId);
+        var viewModel = await orchestrator.GetCreateVacancyTaskListModel(vrm, employerAccountId);
         return View("ProviderTaskList", viewModel);
     }
         
@@ -37,7 +30,7 @@ public class VacancyTaskListController : Controller
         
     public async Task<IActionResult> ProviderTaskList(VacancyRouteModel vrm)
     {
-        var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm);
+        var viewModel = await orchestrator.GetVacancyTaskListModel(vrm);
             
         if (TempData[TempDataKeys.LegalEntityChanged] is bool legalEntityChanged)
         {
