@@ -8,7 +8,7 @@
     <a asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-full">
         <div asp-show="@Model.CanShowShouldMakeOthersUnsuccessfulBanner" class="govuk-notification-banner govuk-notification-banner--success" role="alert"
              aria-labelledby="govuk-notification-banner-title"
              data-module="govuk-notification-banner">
@@ -30,10 +30,14 @@
                     Make multiple applications unsuccessful
                 </h1>
             </legend>
-            <div id="unsuccessful-multiple-applications-checkbox-hint" class="govuk-hint govuk-!-margin-top-5 govuk-!-margin-bottom-5">
-                Select the applications you want to make unsuccessful. Notify them using our standard message or edit it with specific feedback.
-            </div>
         </fieldset>
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div id="unsuccessful-multiple-applications-checkbox-hint" class="govuk-hint govuk-!-margin-top-5 govuk-!-margin-bottom-5">
+            Select the applications you want to make unsuccessful. Notify them using our standard message or edit it with specific feedback.
+        </div>
     </div>
 </div>
 <div class="govuk-grid-row">
