@@ -170,7 +170,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             if (!isMultipleApplications)
             {
-                TempData.Add(TempDataKeys.ApplicationsToUnsuccessfulHeader, string.Format(InfoMessages.ApplicationProviderUnsuccessfulHeader));
+                TempData.Add(TempDataKeys.ApplicationsToUnsuccessfulHeader, InfoMessages.ApplicationProviderUnsuccessfulHeader);
                 return;
             }
 
