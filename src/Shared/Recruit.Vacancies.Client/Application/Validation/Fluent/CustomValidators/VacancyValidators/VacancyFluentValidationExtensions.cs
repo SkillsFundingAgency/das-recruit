@@ -162,27 +162,39 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 
             });
         }
-        
-        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingProviderVacancyMustHaveEmployerPermission(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IProviderRelationshipsService providerRelationshipService)
+
+        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingProviderVacancyMustHaveEmployerPermission(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder,
+            IProviderRelationshipsService providerRelationshipService)
         {
-            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
+            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
             {
                 if (vacancy.OwnerType != OwnerType.Provider)
                     return;
 
-                var hasPermission = await providerRelationshipService.HasProviderGotEmployersPermissionAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.Recruitment);
-
-                if (hasPermission)
-                    return;
-                
-                var failure = new ValidationFailure("Provider", "Training provider does not have permission to create vacancies for this employer")
+                if (vacancy.TrainingProvider?.Ukprn is not { } ukprn)
                 {
-                    ErrorCode = ErrorCodes.TrainingProviderMustHaveEmployerPermission,
-                    CustomState = VacancyRuleSet.TrainingProvider
-                };
-                context.AddFailure(failure);
+                    context.AddFailure(ProviderPermissionFailure());
+                    return;
+                }
+
+                var hasPermission = await providerRelationshipService
+                    .HasProviderGotEmployersPermissionAsync(
+                        ukprn,
+                        vacancy.EmployerAccountId,
+                        vacancy.AccountLegalEntityPublicHashedId,
+                        OperationType.Recruitment);
+
+                if (!hasPermission)
+                    context.AddFailure(ProviderPermissionFailure());
             });
         }
+
+        private static ValidationFailure ProviderPermissionFailure() =>
+            new("Provider", "Training provider does not have permission to create vacancies for this employer")
+            {
+                ErrorCode = ErrorCodes.TrainingProviderMustHaveEmployerPermission,
+                CustomState = VacancyRuleSet.TrainingProvider
+            };
 
         internal static IRuleBuilderInitial<Vacancy, Vacancy> EmployerLocationMustBeInEngland(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, ILocationsService locationsService) =>
             (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
