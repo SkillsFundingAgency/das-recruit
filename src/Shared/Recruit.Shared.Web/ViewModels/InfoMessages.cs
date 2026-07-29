@@ -40,8 +40,6 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
 
         public const string ApplicationEmployerInterviewingBody = "The applicant’s contact details are now shown in their application. Your response has been sent to your training provider.";
 
-        public const string ApplicationEmployerUnsuccessfulHeader = "Application made unsuccessful.";
-
         public const string ApplicationEmployerUnsuccessfulBody = "Your response has been sent to your training provider.";
 
         public const string SharedMultipleApplicationsBannerHeader = "Multiple applications shared with employer.";
@@ -55,5 +53,10 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public const string SharedSingleApplicationsBannerMessage = "This application has been sent to the employer's apprenticeship service account.";
 
         public const string ApplicationStatusChangeBannerHeader = "{0}'s application status changed to '{1}'.";
+
+        public const string ApplicationProviderUnsuccessfulHeader = "Feedback sent to applicant.";
+        public const string ApplicationsProviderUnsuccessfulHeader = "Feedback sent to applicants.";
+        public const string ApplicationEmployerUnsuccessfulHeader = "Feedback sent to applicant.";
+        public const string ApplicationsEmployerUnsuccessfulHeader = "Feedback sent to applicants.";
     }
 }
