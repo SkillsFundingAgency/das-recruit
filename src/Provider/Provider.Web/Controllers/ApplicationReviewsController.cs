@@ -81,51 +81,29 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return View(request);
             }
 
-            await orchestrator.PostApplicationReviewPendingUnsuccessfulFeedback
-            (
-                new ApplicationReviewStatusModel
-                {
-                    VacancyId = request.VacancyId!.Value!,
-                    CandidateFeedback = request.CandidateFeedback
-                }, 
-                User.ToVacancyUser(), 
-                ApplicationReviewStatus.PendingToMakeUnsuccessful
-            );
-            
-            return RedirectToRoute(RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Get, new { request.IsMultipleApplications, request.Ukprn, request.VacancyId });
-        }
-
-        [HttpGet("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Get)]
-        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulConfirmation(ApplicationReviewsToUnsuccessfulRouteModel request)
-        {
-            var applicationReviewsToUnsuccessfulConfirmationViewModel = await orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(request);
-            return View(applicationReviewsToUnsuccessfulConfirmationViewModel);
-        }
-
-        [HttpPost("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Post)]
-        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulConfirmation(ApplicationReviewsToUnsuccessfulConfirmationViewModel request)
-        {
-            if (!ModelState.IsValid)
+            var confirmationModel = new ApplicationReviewsToUnsuccessfulConfirmationViewModel
             {
-                var applicationReviewsToUnsuccessfulConfirmationViewModel = await orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(request);
-                return View(applicationReviewsToUnsuccessfulConfirmationViewModel);
+                CandidateFeedback = request.CandidateFeedback,
+                ApplicationsToUnsuccessful = request.ApplicationsToUnsuccessful,
+                ApplicationsToUnsuccessfulConfirmed = true,
+                Outcome = request.Outcome,
+                VacancyId = request.VacancyId,
+                Ukprn = request.Ukprn,
+            };
+
+            await orchestrator.PostApplicationReviewsToUnsuccessfulAsync(confirmationModel, User.ToVacancyUser());
+
+            var routeValues = new { request.Ukprn, request.VacancyId };
+
+            if (await orchestrator.IsAllApplicationReviewsHasOutcomeAsync(request.VacancyId))
+            {
+                TempData.TryAdd(TempDataKeys.ArchiveVacancyInfoMessage, InfoMessages.VacancyApplicantsOutcomeNotified);
+                return RedirectToRoute(RouteNames.ArchiveVacancy_Get, routeValues);
             }
 
-            if (request.ApplicationsToUnsuccessfulConfirmed == true)
-            {
-                await orchestrator.PostApplicationReviewsToUnsuccessfulAsync(request, User.ToVacancyUser());
+            SetApplicationsToUnsuccessfulBannerMessageViaTempData(request.ApplicationsToUnsuccessful.Count > 1);
 
-                var isAllApplicationsHasOutcome = await orchestrator.IsAllApplicationReviewsHasOutcomeAsync(request.VacancyId);
-                if (isAllApplicationsHasOutcome)
-                {
-                    TempData.TryAdd(TempDataKeys.ArchiveVacancyInfoMessage, InfoMessages.VacancyApplicantsOutcomeNotified);
-                    return RedirectToRoute(RouteNames.ArchiveVacancy_Get, new { request.Ukprn, request.VacancyId, });
-                }
-
-                SetApplicationsToUnsuccessfulBannerMessageViaTempData(request.IsMultipleApplications);
-            }
-
-            return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
+            return RedirectToRoute(RouteNames.VacancyManage_Get, routeValues);
         }
 
         [HttpGet("", Name = RouteNames.ApplicationReviewsToShare_Get)]
@@ -187,15 +165,16 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
         }
+
         private void SetApplicationsToUnsuccessfulBannerMessageViaTempData(bool isMultipleApplications)
         {
             if (!isMultipleApplications)
             {
-                TempData.Add(TempDataKeys.ApplicationsToUnsuccessfulHeader, string.Format(InfoMessages.ApplicationEmployerUnsuccessfulHeader));
+                TempData.Add(TempDataKeys.ApplicationsToUnsuccessfulHeader, InfoMessages.ApplicationProviderUnsuccessfulHeader);
                 return;
             }
 
-            TempData.Add(TempDataKeys.ApplicationsToUnsuccessfulHeader, InfoMessages.ApplicationsToUnsuccessfulBannerHeader);
+            TempData.Add(TempDataKeys.ApplicationsToUnsuccessfulHeader, InfoMessages.ApplicationsProviderUnsuccessfulHeader);
         }
 
         private void SetSharedApplicationsBannerMessageViaTempData(bool isMultipleSharedApplications)
