@@ -14,7 +14,7 @@
              data-module="govuk-notification-banner">
             <div class="govuk-notification-banner__header">
                 <h2 class="govuk-notification-banner__title">
-                    Done
+                    Success
                 </h2>
             </div>
             <div class="govuk-notification-banner__content">
@@ -30,9 +30,9 @@
             </p>
         </div>
         <govuk-banner asp-show="@Model.CanShowOutstandingApplicationsBannerMessage" type="BannerStyle.Important">
-            <p class="govuk-body govuk-!-font-weight-bold">
+            <h3 class="govuk-notification-banner__heading">
                 @Model.TotalOutstandingApplicationsBannerMessage
-            </p>
+            </h3>
         </govuk-banner>
         <govuk-tag-foundation asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-!-margin-bottom-4" />
         <span class="govuk-caption-l">@Model.EmployerName</span>

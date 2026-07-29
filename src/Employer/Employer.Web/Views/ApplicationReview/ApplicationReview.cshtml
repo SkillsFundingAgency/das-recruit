@@ -272,7 +272,7 @@
                         <!-- Not Shared Options-->
                         <div class="govuk-radios__item" asp-show="Model.CanShowRadioButtonReview">
                             <input asp-for="Outcome" class="govuk-radios__input" id="outcome-reviewed" type="radio" value="@ApplicationReviewStatus.InReview.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.InReview ? "checked" : null)">
-                            <label for="outcome-reviewed" class="govuk-label govuk-radios__label">Move to 'In Review'</label>
+                            <label for="outcome-reviewed" class="govuk-label govuk-radios__label">Move to 'In review'</label>
                             <div class="govuk-hint govuk-radios__hint" id="radio-status-reviewed">
                                 Does not notify the applicant.
                             </div>
@@ -303,7 +303,7 @@
                                 <label asp-for="CandidateFeedback" class="govuk-label govuk-!-font-weight-bold">Feedback</label>
                                 <span esfa-validation-message-for="CandidateFeedback" class="govuk-error-message"></span>
                                 <span class="govuk-hint">@Model.FormRadioButtonNoFeedbackText</span>
-                                <textarea asp-for="CandidateFeedback" class="govuk-textarea govuk-js-character-count govuk-!-margin-top-4" id="CandidateFeedback" name="CandidateFeedback" rows="6"></textarea>
+                                <textarea asp-for="CandidateFeedback" class="govuk-textarea govuk-js-character-count govuk-!-margin-top-4" id="CandidateFeedback" name="CandidateFeedback" rows="8" aria-label="Candidate Feedback"></textarea>
                                 <div id="CandidateFeedbackEmployerUnsuccessful-info" class="govuk-hint govuk-character-count__message">
                                     You have 200 words remaining
                                 </div>
