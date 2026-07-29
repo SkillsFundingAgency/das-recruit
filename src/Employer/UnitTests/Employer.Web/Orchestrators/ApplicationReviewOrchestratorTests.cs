@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using Esfa.Recruit.Employer.Web;
+﻿using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
@@ -45,6 +45,27 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             Assert.That(applicationReview.Id, Is.EqualTo(result.ApplicationReviewId));
             Assert.That(applicationReview.GetFriendlyId(), Is.EqualTo(result.FriendlyId));
             Assert.That(applicationReview.Application.FullName, Is.EqualTo(result.Name));
+        }
+
+        [Test]
+        [MoqInlineAutoData("")]
+        [MoqInlineAutoData(null)]
+        public async Task GetApplicationStatusConfirmationViewModelAsync_Returns_Default_CandidateFeedBack(string candidateFeedback)
+        {
+            var model = _fixture.Create<ApplicationReviewStatusConfirmationEditModel>();
+            model.CandidateFeedback = candidateFeedback;
+            var vacancyUser = _fixture.Create<VacancyUser>();
+
+            var applicationReview = _fixture.Create<ApplicationReview>();
+
+            _utility.Setup(x => x.GetAuthorisedApplicationReviewAsync(model))
+                .ReturnsAsync(applicationReview);
+            _employerVacancyClient.Setup(x => x.SetApplicationReviewStatus(model.ApplicationReviewId, model.Outcome, model.CandidateFeedback, vacancyUser))
+                .ReturnsAsync(false);
+
+            var result = await _orchestrator.GetApplicationStatusConfirmationViewModelAsync(model);
+
+            Assert.That(result.CandidateFeedback, Is.EqualTo(Constants.DefaultCandidateFeedback));
         }
 
         [Test]

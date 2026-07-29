@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                         ? InfoMessages.ApplicationEmployerInterviewingBody
                         : InfoMessages.ApplicationEmployerUnsuccessfulBody);
 
-                return RedirectToRoute( RouteNames.VacancyManage_Get, new {editModel.VacancyId, editModel.EmployerAccountId});
+                return RedirectToRoute(RouteNames.VacancyManage_Get, new {editModel.VacancyId, editModel.EmployerAccountId});
             }
 
             if (editModel.Outcome is ApplicationReviewStatus.InReview or ApplicationReviewStatus.Interviewing)
@@ -116,14 +116,31 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return View(applicationReviewFeedbackEditModel);
             }
 
-            TempData[TempDataArModel] = JsonConvert.SerializeObject(applicationReviewFeedbackEditModel);
-            return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get,
-                new
-                {
-                    applicationReviewFeedbackEditModel.ApplicationReviewId,
-                    applicationReviewFeedbackEditModel.VacancyId,
-                    applicationReviewFeedbackEditModel.EmployerAccountId
-                });
+            var statusInfo = await orchestrator.PostApplicationReviewConfirmationEditModelAsync(new ApplicationReviewStatusConfirmationEditModel
+            {
+                CandidateFeedback = applicationReviewFeedbackEditModel.CandidateFeedback,
+                Outcome = applicationReviewFeedbackEditModel.Outcome,
+                ApplicationReviewId = applicationReviewFeedbackEditModel.ApplicationReviewId,
+                VacancyId = applicationReviewFeedbackEditModel.VacancyId,
+                EmployerAccountId = applicationReviewFeedbackEditModel.EmployerAccountId,
+                NotifyCandidate = true,
+            }, User.ToVacancyUser());
+
+            if (statusInfo.ShouldMakeOthersUnsuccessful)
+            {
+                TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, InfoMessages.ApplicationEmployerUnsuccessfulHeader);
+                return RedirectToRoute(RouteNames.ApplicationReviewsToUnsuccessful_Get, new { applicationReviewFeedbackEditModel.VacancyId, applicationReviewFeedbackEditModel.EmployerAccountId });
+            }
+
+            var isAllApplicationsHasOutcome = await orchestrator.IsAllApplicationReviewsHasOutcomeAsync(applicationReviewFeedbackEditModel.VacancyId);
+            if (isAllApplicationsHasOutcome)
+            {
+                TempData.TryAdd(TempDataKeys.ArchiveAdvertInfoMessage, InfoMessages.AdvertApplicantsOutcomeNotified);
+                return RedirectToRoute(RouteNames.ArchiveVacancy_Get, new { applicationReviewFeedbackEditModel.VacancyId, applicationReviewFeedbackEditModel.EmployerAccountId, });
+            }
+
+            TempData.Add(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage, InfoMessages.ApplicationEmployerUnsuccessfulHeader);
+            return RedirectToRoute(RouteNames.VacancyManage_Get, new { applicationReviewFeedbackEditModel.VacancyId, applicationReviewFeedbackEditModel.EmployerAccountId });
         }
 
         [HttpGet("status", Name = RouteNames.ApplicationReviewConfirmation_Get)]
