@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
+using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
@@ -35,7 +36,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 VacancyId = request.VacancyId,
                 Ukprn = request.Ukprn,
                 ApplicationsToUnsuccessful= applicationsToUnsuccessful,
-                CandidateFeedback = applicationsToUnsuccessful.FirstOrDefault()!.CandidateFeedback,
+                CandidateFeedback = string.IsNullOrWhiteSpace(applicationsToUnsuccessful.FirstOrDefault()!.CandidateFeedback) 
+                    ? Constants.DefaultCandidateFeedback
+                    : applicationsToUnsuccessful.FirstOrDefault()?.CandidateFeedback,
                 IsMultipleApplications = applicationsToUnsuccessful.Count > 1,
             };
         }
@@ -73,7 +76,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Ukprn = rm.Ukprn,
                 ApplicationsToUnsuccessful = applicationsToUnsuccessful,
                 Outcome = ApplicationReviewStatus.Unsuccessful,
-                IsMultipleApplications = applicationsToUnsuccessful.Count > 1
+                IsMultipleApplications = applicationsToUnsuccessful.Count > 1,
+                CandidateFeedback = Constants.DefaultCandidateFeedback
             };
         }
 
@@ -138,7 +142,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task PostApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulConfirmationViewModel request, VacancyUser user)
         {
-            await client.SetApplicationReviewsToUnsuccessful(request.ApplicationsToUnsuccessful.Select(c=>c.ApplicationReviewId), request.CandidateFeedback, user, request.VacancyId!.Value!);
+            await client.SetApplicationReviewsToUnsuccessful(request.ApplicationsToUnsuccessful.Select(c => c.ApplicationReviewId), request.CandidateFeedback, user, request.VacancyId!.Value!);
         }
 
         public async Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid? vacancyId)

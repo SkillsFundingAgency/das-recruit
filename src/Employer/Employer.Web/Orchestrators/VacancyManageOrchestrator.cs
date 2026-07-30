@@ -43,93 +43,97 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vacancy;
         }
 
-        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy,
+        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(
+            Vacancy vacancy,
             int pageNumber,
             int pageSize,
             SortColumn sortColumn,
             SortOrder sortOrder,
             string locationFilter = "All")
         {
-            var viewModel = new ManageVacancyViewModel
+            var vacancyReference = vacancy.VacancyReference.GetValueOrDefault();
+            var isClosed = vacancy.Status == VacancyStatus.Closed;
+
+            var applicationsTask = vacancyClient.GetVacancyApplicationsSortedAsync(
+                vacancyReference, sortColumn, sortOrder, vacancy.CanEmployerReviewApplications);
+            var canArchiveTask = vacancy.CanArchive
+                ? utility.IsAllApplicationReviewsHasOutcomeAsync(vacancy)
+                : Task.FromResult(false);
+
+            // WhenAll so both are observed even if one faults.
+            await Task.WhenAll(applicationsTask, canArchiveTask);
+
+            var vacancyApplications = await applicationsTask ?? [];
+            var canShowArchive = await canArchiveTask;
+
+            if (vacancy.CanEmployerReviewApplications && vacancyApplications.Count == 0)
+            {
+                // If there are no applications the employer user shouldn't be here.
+                throw new AuthorisationException(
+                    string.Format(ExceptionMessages.UserIsNotTheOwner, OwnerType.Employer));
+            }
+
+            var applyLocationFilter =
+                !string.IsNullOrEmpty(locationFilter)
+                && !locationFilter.Equals("All", StringComparison.OrdinalIgnoreCase)
+                && vacancyApplications.All(x => x.CandidateAppliedLocations is not null);
+
+            var applications = applyLocationFilter
+                ? vacancyApplications.Where(x => x.CandidateAppliedLocations!.Contains(locationFilter)).ToList()
+                : vacancyApplications;
+
+            var page = Math.Max(pageNumber, 1);
+            var filteredCount = applications.Count;
+
+            return new ManageVacancyViewModel
             {
                 VacancyId = vacancy.Id,
                 EmployerAccountId = vacancy.EmployerAccountId,
                 Title = vacancy.Title,
                 Status = vacancy.Status,
-                VacancyReference = vacancy.VacancyReference.GetValueOrDefault().ToString()
-            };
-
-            viewModel.ClosingDate = viewModel.Status == VacancyStatus.Closed ? vacancy.ClosedDate?.AsGdsDate() : vacancy.ClosingDate?.AsGdsDate();
-            viewModel.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
-            viewModel.IsDisabilityConfident = vacancy.IsDisabilityConfident;
-            viewModel.IsApplyThroughFaaVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
-            viewModel.TransferredProviderName = vacancy.TransferInfo?.ProviderName;
-            viewModel.TransferredOnDate = vacancy.TransferInfo?.TransferredDate.AsGdsDate();
-            viewModel.CanShowEditVacancyLink = vacancy.CanExtendStartAndClosingDates;
-            viewModel.CanShowCloseVacancyLink = vacancy.CanClose;
-            viewModel.CanShowDeleteLink = vacancy.CanDelete;
-            viewModel.CanShowArchiveLink = vacancy.CanArchive && await utility.IsAllApplicationReviewsHasOutcomeAsync(vacancy);
-            viewModel.IsClosedBlockedByQa = vacancy.Status == VacancyStatus.Closed && vacancy.ClosureReason == ClosureReason.BlockedByQa;
-            viewModel.CanClone = vacancy.CanClone;
-            viewModel.ApprenticeshipType = vacancy.GetApprenticeshipType();
-
-            if (vacancy.Status == VacancyStatus.Closed && vacancy.ClosureReason == ClosureReason.WithdrawnByQa)
-            {
-                viewModel.WithdrawnDate = vacancy.ClosedDate?.AsGdsDate();
-            }
-            
-            var vacancyApplications = await vacancyClient.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.GetValueOrDefault(), sortColumn, sortOrder, vacancy.CanEmployerReviewApplications);
-            var totalUnfilteredApplicationsCount = vacancyApplications?.Count(x => !x.IsWithdrawn) ?? 0;
-
-            if (vacancy.CanEmployerReviewApplications && vacancyApplications is { Count: 0 })
-            {
-                //If there are no applications the employer user shouldn't be here
-                throw new AuthorisationException(string.Format(ExceptionMessages.UserIsNotTheOwner, OwnerType.Employer));
-            }
-            
-            var applications = string.IsNullOrEmpty(locationFilter)
-                               || locationFilter.Equals("All", StringComparison.CurrentCultureIgnoreCase)
-                               || vacancyApplications.Any(fil => fil.CandidateAppliedLocations == null)
-                ? vacancyApplications
-                : vacancyApplications.Where(fil => fil.CandidateAppliedLocations != null 
-                                                   && fil.CandidateAppliedLocations.Contains(locationFilter))
-                    .ToList();
-
-            var pager = new PagerViewModel(
-                applications?.Count ?? 0,
-                pageSize,
-                pageNumber,
-                "Showing {0} to {1} of {2} applications",
-                RouteNames.VacancyManage_Get,
-                new Dictionary<string, string>
+                VacancyReference = vacancyReference.ToString(),
+                ApprenticeshipType = vacancy.GetApprenticeshipType(),
+                ClosingDate = isClosed ? vacancy.ClosedDate?.AsGdsDate() : vacancy.ClosingDate?.AsGdsDate(),
+                PossibleStartDate = vacancy.StartDate?.AsGdsDate(),
+                IsDisabilityConfident = vacancy.IsDisabilityConfident,
+                IsApplyThroughFaaVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship,
+                TransferredProviderName = vacancy.TransferInfo?.ProviderName,
+                TransferredOnDate = vacancy.TransferInfo?.TransferredDate.AsGdsDate(),
+                CanShowEditVacancyLink = vacancy.CanExtendStartAndClosingDates,
+                CanShowCloseVacancyLink = vacancy.CanClose,
+                CanShowDeleteLink = vacancy.CanDelete,
+                CanShowArchiveLink = canShowArchive,
+                CanClone = vacancy.CanClone,
+                IsClosedBlockedByQa = isClosed && vacancy.ClosureReason == ClosureReason.BlockedByQa,
+                WithdrawnDate = isClosed && vacancy.ClosureReason == ClosureReason.WithdrawnByQa
+                    ? vacancy.ClosedDate?.AsGdsDate()
+                    : null,
+                Applications = new VacancyApplicationsViewModel
                 {
-                    { "locationFilter", locationFilter },
-                    { "SortColumn", sortColumn.ToString() },
-                    { "SortOrder", sortColumn.ToString() }
-                });
-
-            // Apply pagination: skip and take
-            var pagedApplications = applications?
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
-            viewModel.Applications = new VacancyApplicationsViewModel
-            {
-                Applications = pagedApplications,
-                TotalUnfilteredApplicationsCount = totalUnfilteredApplicationsCount,
-                TotalFilteredApplicationsCount = applications?.Count ?? 0,
-                EmploymentLocations = vacancy.EmployerLocations.GetCityDisplayList(),
-                SelectedLocation = locationFilter,
-                ShowDisability = vacancy.IsDisabilityConfident,
-                VacancyId = vacancy.Id,
-                EmployerAccountId = vacancy.EmployerAccountId,
-                VacancySharedByProvider = vacancy.CanEmployerReviewApplications,
-                AvailableWhere = vacancy.EmployerLocationOption,
-                Pager = pager,
+                    Applications = applications.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
+                    TotalUnfilteredApplicationsCount = vacancyApplications.Count,
+                    TotalFilteredApplicationsCount = filteredCount,
+                    EmploymentLocations = vacancy.EmployerLocations.GetCityDisplayList(),
+                    SelectedLocation = locationFilter,
+                    ShowDisability = vacancy.IsDisabilityConfident,
+                    VacancyId = vacancy.Id,
+                    EmployerAccountId = vacancy.EmployerAccountId,
+                    VacancySharedByProvider = vacancy.CanEmployerReviewApplications,
+                    AvailableWhere = vacancy.EmployerLocationOption,
+                    Pager = new PagerViewModel(
+                        filteredCount,
+                        pageSize,
+                        page,
+                        "Showing {0} to {1} of {2} applications",
+                        RouteNames.VacancyManage_Get,
+                        new Dictionary<string, string>
+                        {
+                            { "locationFilter", locationFilter },
+                            { "SortColumn", sortColumn.ToString() },
+                            { "SortOrder", sortOrder.ToString() },
+                        })
+                }
             };
-
-            return viewModel;
         }
 
         public async Task<EditVacancyViewModel> GetEditVacancyViewModel(VacancyRouteModel vrm, DateTime? proposedClosingDate, DateTime? proposedStartDate)
