@@ -1,5 +1,3 @@
-using System;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Esfa.Recruit.Provider.Web.AppStart;
@@ -24,7 +22,6 @@ namespace Esfa.Recruit.Provider.Web
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly AuthenticationConfiguration _authConfig;
         private readonly ILoggerFactory _loggerFactory;
-        private readonly ILogger<Startup> _logger;
 
         public Startup(IConfiguration config, IWebHostEnvironment env, ILoggerFactory loggerFactory, ILogger<Startup> logger)
         {
@@ -55,7 +52,6 @@ namespace Esfa.Recruit.Provider.Web
             
             _dfEOidcConfig = _configuration.GetSection("DfEOidcConfiguration").Get<DfEOidcConfiguration>(); // read the configuration from SFA.DAS.Provider.DfeSignIn
             _loggerFactory = loggerFactory;
-            _logger = logger;
         }
         
         // This method gets called by the runtime. Use this method to add services to the container.

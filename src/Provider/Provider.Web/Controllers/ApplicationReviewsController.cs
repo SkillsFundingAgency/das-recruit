@@ -38,7 +38,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpPost("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Post)]
-        [RequestFormLimits(ValueCountLimit = 4096)]
         public async Task<IActionResult> ApplicationReviewsToUnsuccessful(ApplicationReviewsToUnsuccessfulRequest request, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
             Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
@@ -75,7 +74,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpPost("unsuccessful-feedback", Name = RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Post)]
-        [RequestFormLimits(ValueCountLimit = 4096)]
         public async Task<IActionResult> ApplicationReviewsFeedback(ApplicationReviewsFeedbackViewModel request)
         {
             if (!ModelState.IsValid)
@@ -120,7 +118,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpPost("", Name = RouteNames.ApplicationReviewsToShare_Post)]
-        [RequestFormLimits(ValueCountLimit = 4096)]
         public async Task<IActionResult> ApplicationReviewsToShare(ApplicationReviewsToShareRouteModel rm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
             Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
@@ -152,7 +149,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpPost("share", Name = RouteNames.ApplicationReviewsToShareConfirmation_Post)]
-        [RequestFormLimits(ValueCountLimit = 4096)]
         public async Task<IActionResult> ApplicationReviewsToShareConfirmation(ShareApplicationReviewsPostRequest request)
         {
             if (request.ShareApplicationsConfirmed)
