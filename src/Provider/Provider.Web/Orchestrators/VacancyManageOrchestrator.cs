@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 !string.IsNullOrEmpty(locationFilter)
                 && !locationFilter.Equals("All", StringComparison.OrdinalIgnoreCase)
                 && vacancyApplications.All(x => x.CandidateAppliedLocations is not null);
-
+            
             var applications = applyLocationFilter
                 ? vacancyApplications.Where(x => x.CandidateAppliedLocations!.Contains(locationFilter)).ToList()
                 : vacancyApplications;
@@ -107,7 +107,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                             { "SortColumn", sortColumn.ToString() },
                             { "SortOrder", sortOrder.ToString() },
                         })
-                }
+                },
+                TotalOutstandingApplicationsCount = applications.Count(x => x.Status == ApplicationReviewStatus.New && x.IsNotWithdrawn)
             };
         }
 
