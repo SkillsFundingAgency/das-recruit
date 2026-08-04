@@ -1,4 +1,5 @@
-﻿@model Esfa.Recruit.Provider.Web.ViewModels.VacancyManage.ManageVacancyViewModel
+﻿@using Esfa.Recruit.Shared.Web.TagHelpers
+@model Esfa.Recruit.Provider.Web.ViewModels.VacancyManage.ManageVacancyViewModel
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-manage-vacancy";
     ViewBag.Title = "Manage vacancy";
@@ -13,7 +14,7 @@
              data-module="govuk-notification-banner">
             <div class="govuk-notification-banner__header">
                 <h2 class="govuk-notification-banner__title">
-                    Done
+                    Success
                 </h2>
             </div>
             <div class="govuk-notification-banner__content">
@@ -28,6 +29,11 @@
                 @Model.ApplicationReviewStatusHeaderInfoMessage
             </p>
         </div>
+        <govuk-banner asp-show="@Model.CanShowOutstandingApplicationsBannerMessage" type="BannerStyle.Important">
+            <h3 class="govuk-notification-banner__heading">
+                @Model.TotalOutstandingApplicationsBannerMessage
+            </h3>
+        </govuk-banner>
         <govuk-tag-foundation asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-!-margin-bottom-4" />
         <span class="govuk-caption-l">@Model.EmployerName</span>
         <h1 class="govuk-heading-l govuk-!-margin-top-2 govuk-!-margin-bottom-2">@Model.Title</h1>
