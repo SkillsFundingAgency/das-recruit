@@ -51,7 +51,7 @@ public class VacancyListItemViewModel
     public static VacancyListItemViewModel From(VacancyListItem item, string employerAccountId, FilteringOptions filteringOptions) => 
         From(item, new KeyValuePair<string, string>("employerAccountId", employerAccountId), filteringOptions);
 
-    public static VacancyListItemViewModel From(VacancyListItem item, KeyValuePair<string, string> route, FilteringOptions filteringOptions) =>
+    private static VacancyListItemViewModel From(VacancyListItem item, KeyValuePair<string, string> route, FilteringOptions filteringOptions) =>
         new()
         {
             ApplicationMethod = item.ApplicationMethod,
