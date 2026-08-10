@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Shared.Web.ViewModels;
+﻿using System.Collections.Generic;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses.Vacancies;
 using NUnit.Framework;
@@ -26,5 +27,52 @@ public class WhenMappingVacancyListItemViewModel
         result.NoOfSharedApplications.Should().Be(item.Stats!.Value.SharedApplications);
         result.NoOfSuccessfulApplications.Should().Be(item.Stats!.Value.SuccessfulApplications);
         result.NoOfUnsuccessfulApplications.Should().Be(item.Stats!.Value.UnsuccessfulApplications);
+    }
+    
+    [Test, MoqAutoData]
+    public void Then_The_Application_Counts_Are_Mapped(
+        int ukprn,
+        FilteringOptions filteringOptions,
+        VacancyListItem item)
+    {
+        // act
+        var result = VacancyListItemViewModel.From(item, ukprn, filteringOptions);
+
+        // assert
+        result.HasApplications.Should().BeTrue();
+        result.NoOfApplications.Should().Be(item.Stats!.Value.Applications);
+        result.Applications.Should().Be($"{item.Stats!.Value.Applications}");
+        result.NoOfAllSharedApplications.Should().Be(item.Stats!.Value.AllSharedApplications);
+        result.NoOfEmployerReviewedApplications.Should().Be(item.Stats!.Value.EmployerReviewedApplications);
+        result.NoOfNewApplications.Should().Be(item.Stats!.Value.NewApplications);
+        result.NoOfSharedApplications.Should().Be(item.Stats!.Value.SharedApplications);
+        result.NoOfSuccessfulApplications.Should().Be(item.Stats!.Value.SuccessfulApplications);
+        result.NoOfUnsuccessfulApplications.Should().Be(item.Stats!.Value.UnsuccessfulApplications);
+    }
+    
+    [Test, MoqAutoData]
+    public void Then_The_EmployerAccountId_Route_Is_Mapped_Correctly(
+        string employerAccountId,
+        FilteringOptions filteringOptions,
+        VacancyListItem item)
+    {
+        // act
+        var result = VacancyListItemViewModel.From(item, employerAccountId, filteringOptions);
+
+        // assert
+        result.RouteDictionary.Should().ContainEquivalentOf(new KeyValuePair<string, string>("employerAccountId", employerAccountId));
+    }
+    
+    [Test, MoqAutoData]
+    public void Then_The_Ukprn_Route_Is_Mapped_Correctly(
+        int ukprn,
+        FilteringOptions filteringOptions,
+        VacancyListItem item)
+    {
+        // act
+        var result = VacancyListItemViewModel.From(item, ukprn, filteringOptions);
+
+        // assert
+        result.RouteDictionary.Should().ContainEquivalentOf(new KeyValuePair<string, string>("ukprn", ukprn.ToString()));
     }
 }
