@@ -54,8 +54,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool CanShowApplicationsUnsuccessfulBanner => !string.IsNullOrEmpty(ApplicationReviewsUnsuccessfulBannerHeader);
         public ApprenticeshipTypes ApprenticeshipType { get; internal set; }
         public FilteringOptions FilteringOptions { get; internal set; }
-        public int TotalOutstandingApplicationsCount =>
-            Applications.Applications.Count(x => x.Status == ApplicationReviewStatus.New && x.IsNotWithdrawn);
+        public int TotalOutstandingApplicationsCount { get; init; }
         public bool CanShowOutstandingApplicationsBannerMessage => (IsVacancyLive || IsVacancyClosed) && TotalOutstandingApplicationsCount > 0;
         public string TotalOutstandingApplicationsBannerMessage
         {

@@ -132,7 +132,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                             { "SortColumn", sortColumn.ToString() },
                             { "SortOrder", sortOrder.ToString() },
                         })
-                }
+                },
+                TotalOutstandingApplicationsCount = applications.Count(x => x.Status == ApplicationReviewStatus.New && x.IsNotWithdrawn)
             };
         }
 
