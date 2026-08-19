@@ -37,7 +37,8 @@ public class VacancyCheckYourAnswersOrchestrator(
                                                        VacancyRuleSet.TrainingProviderDeliverCourse |
                                                        VacancyRuleSet.TrainingProgramme |
                                                        VacancyRuleSet.EmployerWebsiteUrl |
-                                                       VacancyRuleSet.ApplicationMethod;
+                                                       VacancyRuleSet.ApplicationMethod |
+                                                       VacancyRuleSet.TrainingProvider;
 
     private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
 
