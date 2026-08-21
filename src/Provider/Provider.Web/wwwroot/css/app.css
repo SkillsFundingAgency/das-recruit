@@ -273,25 +273,37 @@ a.app-card:focus .app-card__heading-text {
 
 /* Analytics styles for vacancies */
 
+.app-analytics-container {
+    display: flex;
+    gap: 10px;
+}
+
 .app-analytics {
-  background: #f3f2f1;
+    background: #f3f2f1;
+    flex: 1;
+    min-width: 190px;
 }
 
 .app-analytics__heading {
-  padding: 5px 10px;
-  background: #ddd;
-  margin: 0;
+    padding: 5px 10px;
+    font-weight: 700;
+    margin: 0;
+    font-size: 16px;
+    white-space: nowrap;
 }
 
 .app-analytics__data {
-  padding: 10px;
-  font-weight: 700;
-  margin: 0;
+    padding: 5px 10px;
+    font-weight: 700;
+    margin: 0;
+    font-size: 27px;
 }
 
 .app-analytics__summary {
-  border-top: 1px solid #ccc;
-  padding: 5px 10px;
+    padding: 5px 10px;
+    font-size: 16px;
+    white-space: nowrap;
+    margin-bottom: 0px;
 }
 
 /* Local overrides to the das-task-list component */
