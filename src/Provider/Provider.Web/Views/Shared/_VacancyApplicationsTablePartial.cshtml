@@ -1,15 +1,4 @@
 ﻿@model Esfa.Recruit.Provider.Web.ViewModels.VacancyView.VacancyApplicationsViewModel
-<div asp-show="Model.CanShowLocationFilter">
-    <div class="govuk-grid-row" asp-show="@Model.ShowFilteredApplicationsLabelText">
-        <div class="govuk-grid-column-two-thirds">
-            <div>
-                <h2 class="govuk-heading-s">
-                    @Model.FilteredApplicationsLabelText
-                </h2>
-            </div>
-        </div>
-    </div>
-</div>
 <div asp-show="@Model.HasApplications">
     <table class="govuk-table das-table--responsive">
         <thead class="govuk-table__head">
@@ -78,7 +67,14 @@
     </nav>
 </div>
 <div asp-show="@Model.HasNoApplications">
-    <p class="govuk-body">
-        No applications for @Model.SelectedLocation have been received.
-    </p>
+    @if (Model.ShowLocationNoResultsLabel)
+    {
+        <p class="govuk-label govuk-!-font-weight-bold">@Model.NoResultsLabelText</p>
+        <p class="govuk-body">@Model.NoResultsHintText</p>
+    }
+    else if (Model.ShowCombinedOrApplicantNoResultsLabel)
+    {
+        <p class="govuk-label govuk-!-font-weight-bold">@Model.NoResultsLabelText</p>
+        <p class="govuk-body">@Model.NoResultsHintText</p>
+    }
 </div>
