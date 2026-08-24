@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyView
 
                 return (hasApplicant, hasLocation) switch
                 {
-                    (true, true) => $"0 applications found for '{SelectedApplicantName}' in '{SelectedLocation}'",
+                    (true, true) => $"0 results found for '{SelectedApplicantName}' in '{SelectedLocation}'",
                     (true, false) => $"0 results for '{SelectedApplicantName}'",
                     (false, true) => $"0 results for '{SelectedLocation}'",
                     _ => string.Empty
