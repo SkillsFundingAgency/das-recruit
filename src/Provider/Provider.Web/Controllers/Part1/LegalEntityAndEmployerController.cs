@@ -12,6 +12,8 @@ using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer;
+using Esfa.Recruit.Shared.Web.Models;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
 
@@ -24,12 +26,14 @@ public class LegalEntityAndEmployerController(
 {
     [HttpGet("employer-legal-entity", Name = RouteNames.LegalEntityEmployer_Get)]
     [HttpGet("{VacancyId}/change-employer-legal-entity", Name = RouteNames.LegalEntityEmployerChange_Get)]
-    public async Task<IActionResult> LegalEntityAndEmployer(VacancyRouteModel vrm, [FromQuery]string searchTerm, [FromQuery]int? page, [FromQuery] string sortOrder, [FromQuery] string sortByType)
+    public async Task<IActionResult> LegalEntityAndEmployer(VacancyRouteModel vrm, SortParams<SortByType> sortParams, [FromQuery]string searchTerm, [FromQuery]int? page)
     {
-        Enum.TryParse<SortOrder>(sortOrder, out var outputSort);
-        Enum.TryParse<SortByType>(sortByType, out var outputSortByType);
-        
-        var vm = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(vrm, searchTerm, page, outputSort, outputSortByType);
+        var sortOrder = sortParams.SortOrder switch {
+            ColumnSortOrder.Desc => SortOrder.Descending,
+            _ => SortOrder.Ascending
+        };
+
+        var vm = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(vrm, searchTerm, page, sortOrder, sortParams.SortColumn);
         if (vm.HasOnlyOneOrganisation)
         {
             var result =
