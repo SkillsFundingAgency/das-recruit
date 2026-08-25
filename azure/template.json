@@ -123,9 +123,6 @@
         "apiCustomHostname": {
             "type": "string"
         },
-        "apiKeyvaultCertificateName": {
-            "type": "string"
-        },
         "wafOutboundIPAddresses": {
             "type": "array"
         },
@@ -185,7 +182,6 @@
         "providerRecruitAppServiceName": "[concat(variables('resourceNamePrefix'), '-pr-as')]",
         "webjobAppServiceName": "[concat(variables('resourceNamePrefix'), '-webjob-as')]",
         "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]",
-        "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
         "apiConfigNames": "SFA.DAS.Recruit.Api,SFA.DAS.Encoding",
         "providerWebConfigNames": "SFA.DAS.Recruit.Provider,SFA.DAS.Provider.DfeSignIn,SFA.DAS.Encoding",
         "employerWebConfigNames": "SFA.DAS.Recruit.Employer,SFA.DAS.Employer.GovSignIn,SFA.DAS.Encoding",
@@ -967,148 +963,6 @@
                     }
                 }
             }
-        },
-        {
-            "apiVersion": "2020-10-01",
-            "name": "[concat('recruit-api-app-service-certificate-', parameters('utcValue'))]",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-certificate.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "keyVaultCertificateName": {
-                        "value": "[parameters('apiKeyvaultCertificateName')]"
-                    },
-                    "keyVaultName": {
-                        "value": "[parameters('sharedKeyVaultName')]"
-                    },
-                    "keyVaultResourceGroup": {
-                        "value": "[parameters('sharedManagementResourceGroup')]"
-                    }
-                }
-            }
-        },
-        {
-            "apiVersion": "2020-10-01",
-            "name": "[concat('api-application-insights-', parameters('utcValue'))]",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[variables('resourceGroupName')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'application-insights.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "appInsightsName": {
-                        "value": "[variables('apiAppServiceName')]"
-                    },
-                    "attachedService": {
-                        "value": "[variables('apiAppServiceName')]"
-                    },
-                    "logAnalyticsWorkspaceId": {
-                        "value": "[resourceId(parameters('logAnalyticsSubscriptionId'),parameters('sharedManagementResourceGroup'),'Microsoft.OperationalInsights/workspaces',parameters('logAnalyticsWorkspaceName'))]"
-                    }
-                }
-            },
-            "dependsOn": [
-                "[variables('resourceGroupName')]"
-            ]
-        },
-        {
-            "condition": "[parameters('deployPrivateLinkedScopedResource')]",
-            "apiVersion": "2021-04-01",
-            "name": "[concat(variables('apiAppServiceName'), '-private-link-scoped-', parameters('utcValue'))]",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'private-linked-scoped-resource.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "privateLinkScopeName": {
-                        "value": "[variables('privateLinkScopeName')]"
-                    },
-                    "scopedResourceName": {
-                        "value": "[variables('apiAppServiceName')]"
-                    },
-                    "scopedResourceId": {
-                        "value": "[reference(concat('api-application-insights-', parameters('utcValue'))).outputs.AppInsightsResourceId.value]"
-                    }
-                }
-            }
-        },
-        {
-            "apiVersion": "2020-10-01",
-            "name": "[concat('api-app-service-', parameters('utcValue'))]",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[variables('resourceGroupName')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-v2.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "appServiceName": {
-                        "value": "[variables('apiAppServiceName')]"
-                    },
-                    "appServicePlanName": {
-                        "value": "[parameters('sharedBackEndAppServicePlanName')]"
-                    },
-                    "appServicePlanResourceGroup": {
-                        "value": "[parameters('sharedEnvResourceGroup')]"
-                    },
-                    "subnetResourceId": {
-                        "value": "[parameters('sharedBackEndSubnetResourceId')]"
-                    },
-                    "appServiceAppSettings": {
-                        "value": {
-                            "array": [
-                                {
-                                    "name": "ConfigurationStorageConnectionString",
-                                    "value": "[parameters('configurationStorageConnectionString')]"
-                                },
-                                {
-                                    "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-                                    "value": "[reference(concat('api-application-insights-', parameters('utcValue'))).outputs.ConnectionString.value]"
-                                },
-                                {
-                                    "name": "Environment",
-                                    "value": "[toUpper(parameters('environmentName'))]"
-                                },
-                                {
-                                    "name": "LoggingRedisConnectionString",
-                                    "value": "[parameters('loggingRedisConnectionString')]"
-                                },
-                                {
-                                    "name": "ConfigNames",
-                                    "value": "[variables('apiConfigNames')]"
-                                },
-                                {
-                                    "name": "ResourceEnvironmentName",
-                                    "value": "[toUpper(parameters('resourceEnvironmentName'))]"
-                                }
-                            ]
-                        }
-                    },
-                    "customHostName": {
-                        "value": "[parameters('apiCustomHostname')]"
-                    },
-                    "certificateThumbprint": {
-                        "value": "[reference(concat('recruit-api-app-service-certificate-', parameters('utcValue'))).outputs.certificateThumbprint.value]"
-                    },
-                    "ipSecurityRestrictions": {
-                        "value": "[parameters('wafOutboundIPAddresses')]"
-                    }
-                }
-            }
         }
     ],
     "outputs": {
@@ -1127,10 +981,6 @@
         "JobsAppServiceName": {
             "type": "string",
             "value": "[variables('webjobAppServiceName')]"
-        },
-        "ApiAppServiceName": {
-            "type": "string",
-            "value": "[variables('apiAppServiceName')]"
         },
         "StorageAccountName": {
             "type": "string",

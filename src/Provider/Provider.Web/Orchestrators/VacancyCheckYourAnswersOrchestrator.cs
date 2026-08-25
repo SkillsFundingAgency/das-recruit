@@ -44,7 +44,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                                                            VacancyRuleSet.TrainingProgramme |
                                                            VacancyRuleSet.TrainingProviderDeliverCourse |
                                                            VacancyRuleSet.EmployerWebsiteUrl |
-                                                           VacancyRuleSet.ApplicationMethod;
+                                                           VacancyRuleSet.ApplicationMethod |
+                                                           VacancyRuleSet.TrainingProvider;
 
         public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel routeModel)
         {

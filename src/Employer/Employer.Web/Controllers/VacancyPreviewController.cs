@@ -71,36 +71,33 @@ public class VacancyPreviewController(VacancyPreviewOrchestrator orchestrator) :
     {
         if (!ModelState.IsValid)
         {
-            return View("ApproveJobAdvert");
+            return View(vm);
         }
 
-        if (vm.ApproveJobAdvert.GetValueOrDefault())
+        if (!vm.ApproveJobAdvert.GetValueOrDefault())
+            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vm.VacancyId, vm.EmployerAccountId});
+
+        var response = await orchestrator.ApproveJobAdvertAsync(vm, User.ToVacancyUser());
+        if (!response.Success)
         {
-            var response = await orchestrator.ApproveJobAdvertAsync(vm, User.ToVacancyUser());
-            if (!response.Success)
-            {
-                response.AddErrorsToModelState(ModelState);
-            }
-
-            if (ModelState.IsValid)
-            {
-                if (response.Data.IsSubmitted)
-                    return RedirectToRoute(RouteNames.JobAdvertConfirmation_Get, new {vm.VacancyId, vm.EmployerAccountId});
-
-                if (response.Data.HasLegalEntityAgreement == false)
-                    return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get, new {vm.VacancyId, vm.EmployerAccountId});
-
-                throw new Exception("Unknown submit state");
-            }
+            response.AddErrorsToModelState(ModelState);
         }
-            
-        return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vm.VacancyId, vm.EmployerAccountId});
+
+        return ModelState.IsValid switch
+        {
+            true when response.Data.IsSubmitted => RedirectToRoute(RouteNames.JobAdvertConfirmation_Get,
+                new {vm.VacancyId, vm.EmployerAccountId}),
+            true when !response.Data.HasLegalEntityAgreement => RedirectToRoute(
+                RouteNames.LegalEntityAgreement_HardStop_Get, new {vm.VacancyId, vm.EmployerAccountId}),
+            true => throw new Exception("Unknown submit state"),
+            _ => RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vm.VacancyId, vm.EmployerAccountId})
+        };
     }
 
     [HttpGet("reject-advert", Name = RouteNames.RejectJobAdvert_Get)]
     public async Task<IActionResult> RejectJobAdvert(VacancyRouteModel vm)
     {
-        var viewModel = await orchestrator.GetVacancyRejectJobAdvertAsync(vm);          
+        var viewModel = await orchestrator.GetVacancyRejectJobAdvertAsync(vm);
 
         return View(viewModel);
     }
