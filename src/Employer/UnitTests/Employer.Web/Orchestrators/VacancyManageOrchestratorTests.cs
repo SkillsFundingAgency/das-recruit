@@ -86,10 +86,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             Assert.That(vacancyApplications.Count, Is.EqualTo(viewModel.Applications.Applications.Count()));
             Assert.That(vacancyApplications[0].CandidateName, Is.EqualTo(viewModel.Applications.Applications.First().CandidateName));
             Assert.That(viewModel.Applications.Applications.First().ShowCandidateName, Is.True);
-            Assert.That(viewModel.Applications.Applications.First().ShowApplicantID, Is.False);
+            Assert.That(viewModel.Applications.Applications.First().ShowApplicantId, Is.False);
             Assert.That(vacancyApplications[1].CandidateName, Is.EqualTo(viewModel.Applications.Applications.ElementAt(1).CandidateName));
             Assert.That(viewModel.Applications.Applications.ElementAt(1).ShowCandidateName, Is.False);
-            Assert.That(viewModel.Applications.Applications.ElementAt(1).ShowApplicantID, Is.True);
+            Assert.That(viewModel.Applications.Applications.ElementAt(1).ShowApplicantId, Is.True);
 
         }
 
