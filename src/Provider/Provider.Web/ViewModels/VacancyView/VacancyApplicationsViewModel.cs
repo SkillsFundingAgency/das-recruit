@@ -17,14 +17,55 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyView
 
         public List<string> EmploymentLocations { get; set; } = [];
         public string? SelectedLocation { get; set; }
-        public int TotalUnfilteredApplicationsCount { get; set; } = 0;
-        public int TotalFilteredApplicationsCount { get; set; } = 0;
+        public string? SelectedApplicantName { get; set; }
+        public int TotalUnfilteredApplicationsCount { get; set; }
+        public int TotalFilteredApplicationsCount { get; set; }
+        public bool ShowLocationNoResultsLabel =>
+            TotalFilteredApplicationsCount == 0
+            && IsActiveFilter(SelectedLocation)
+            && !IsActiveFilter(SelectedApplicantName);
 
-        public string FilteredApplicationsLabelText => TotalFilteredApplicationsCount == 1
-            ? $"1 result for '{SelectedLocation}'"
-            : $"{TotalFilteredApplicationsCount} results for '{SelectedLocation}'";
+        public bool ShowCombinedOrApplicantNoResultsLabel =>
+            TotalFilteredApplicationsCount == 0
+            && IsActiveFilter(SelectedApplicantName);
 
-        public bool ShowFilteredApplicationsLabelText => !string.IsNullOrEmpty(SelectedLocation) && !string.Equals(SelectedLocation, "All", StringComparison.InvariantCultureIgnoreCase);
+        public string NoResultsLabelText
+        {
+            get
+            {
+                var hasApplicant = IsActiveFilter(SelectedApplicantName);
+                var hasLocation = IsActiveFilter(SelectedLocation);
+
+                return (hasApplicant, hasLocation) switch
+                {
+                    (true, true) => $"0 results found for '{SelectedApplicantName}' in '{SelectedLocation}'",
+                    (true, false) => $"0 results for '{SelectedApplicantName}'",
+                    (false, true) => $"0 results for '{SelectedLocation}'",
+                    _ => string.Empty
+                };
+            }
+        }
+
+        public string NoResultsHintText
+        {
+            get
+            {
+                var hasApplicant = IsActiveFilter(SelectedApplicantName);
+                var hasLocation = IsActiveFilter(SelectedLocation);
+
+                return (hasApplicant, hasLocation) switch
+                {
+                    (true, true) => "Check your spelling or remove the location filter.",
+                    (true, false) => "Check your spelling or search for a different name.",
+                    (false, true) => "No applications for this location have been received.",
+                    _ => string.Empty
+                };
+            }
+        }
+
+        private static bool IsActiveFilter(string filter) =>
+            !string.IsNullOrEmpty(filter)
+            && !filter.Equals("All", StringComparison.OrdinalIgnoreCase);
 
         public bool HasApplications => Applications is not null && Applications.Count > 0;
         public bool HasNoApplications => !HasApplications;

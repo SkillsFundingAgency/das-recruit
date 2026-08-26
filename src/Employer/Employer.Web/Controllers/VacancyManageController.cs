@@ -30,6 +30,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             [FromQuery] string sortColumn,
             [FromQuery] string sortOrder,
             [FromQuery] string locationFilter = "All",
+            [FromQuery] string applicantFilter = "",
             [FromQuery] int page = 1,
             [FromQuery] FilteringOptions filteringOptions = FilteringOptions.All)
         {
@@ -45,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return HandleRedirectOfEditableVacancy(vacancy);
             }
 
-            var viewModel = await orchestrator.GetManageVacancyViewModel(vacancy, page, PageSize, outputSortColumn, outputSortOrder,  locationFilter);
+            var viewModel = await orchestrator.GetManageVacancyViewModel(vacancy, page, PageSize, outputSortColumn, outputSortOrder, locationFilter, applicantFilter);
 
             if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
                 viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();

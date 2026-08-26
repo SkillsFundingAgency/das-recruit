@@ -1,22 +1,26 @@
 ﻿using System;
-using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Mappings;
-using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels.VacancyManage;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
-using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.Mappings;
+using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels.VacancyAnalytics;
+using Esfa.Recruit.Employer.Web.ViewModels.VacancyManage;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Helpers;
+using Esfa.Recruit.Shared.Web.Mappers;
+using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -49,41 +53,22 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             int pageSize,
             SortColumn sortColumn,
             SortOrder sortOrder,
-            string locationFilter = "All")
+            string locationFilter = "All",
+            string applicantFilter = "")
         {
             var vacancyReference = vacancy.VacancyReference.GetValueOrDefault();
             var isClosed = vacancy.Status == VacancyStatus.Closed;
 
-            var applicationsTask = vacancyClient.GetVacancyApplicationsSortedAsync(
-                vacancyReference, sortColumn, sortOrder, vacancy.CanEmployerReviewApplications);
-            var canArchiveTask = vacancy.CanArchive
-                ? utility.IsAllApplicationReviewsHasOutcomeAsync(vacancy)
-                : Task.FromResult(false);
-
-            // WhenAll so both are observed even if one faults.
-            await Task.WhenAll(applicationsTask, canArchiveTask);
-
-            var vacancyApplications = await applicationsTask ?? [];
-            var canShowArchive = await canArchiveTask;
+            var (vacancyApplications, canShowArchive) = await GetApplicationsAndArchiveStatusAsync(vacancy, vacancyReference, sortColumn, sortOrder);
 
             if (vacancy.CanEmployerReviewApplications && vacancyApplications.Count == 0)
-            {
-                // If there are no applications the employer user shouldn't be here.
                 throw new AuthorisationException(
                     string.Format(ExceptionMessages.UserIsNotTheOwner, OwnerType.Employer));
-            }
 
-            var applyLocationFilter =
-                !string.IsNullOrEmpty(locationFilter)
-                && !locationFilter.Equals("All", StringComparison.OrdinalIgnoreCase)
-                && vacancyApplications.All(x => x.CandidateAppliedLocations is not null);
-
-            var applications = applyLocationFilter
-                ? vacancyApplications.Where(x => x.CandidateAppliedLocations!.Contains(locationFilter)).ToList()
-                : vacancyApplications;
+            var applications = ApplyFilters(vacancyApplications, locationFilter, applicantFilter);
 
             var page = Math.Max(pageNumber, 1);
-            var filteredCount = applications.Count;
+            var pagedApplications = applications.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             return new ManageVacancyViewModel
             {
@@ -108,34 +93,78 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 WithdrawnDate = isClosed && vacancy.ClosureReason == ClosureReason.WithdrawnByQa
                     ? vacancy.ClosedDate?.AsGdsDate()
                     : null,
+                SelectedApplicantName = applicantFilter,
                 Applications = new VacancyApplicationsViewModel
                 {
-                    Applications = applications.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
+                    Applications = pagedApplications,
                     TotalUnfilteredApplicationsCount = vacancyApplications.Count,
-                    TotalFilteredApplicationsCount = filteredCount,
+                    TotalFilteredApplicationsCount = applications.Count,
                     EmploymentLocations = vacancy.EmployerLocations.GetCityDisplayList(),
                     SelectedLocation = locationFilter,
+                    SelectedApplicantName = applicantFilter,
                     ShowDisability = vacancy.IsDisabilityConfident,
                     VacancyId = vacancy.Id,
                     EmployerAccountId = vacancy.EmployerAccountId,
                     VacancySharedByProvider = vacancy.CanEmployerReviewApplications,
                     AvailableWhere = vacancy.EmployerLocationOption,
                     Pager = new PagerViewModel(
-                        filteredCount,
+                        applications.Count,
                         pageSize,
                         page,
                         "Showing {0} to {1} of {2} applications",
                         RouteNames.VacancyManage_Get,
                         new Dictionary<string, string>
                         {
-                            { "locationFilter", locationFilter },
-                            { "SortColumn", sortColumn.ToString() },
-                            { "SortOrder", sortOrder.ToString() },
+                    { "locationFilter", locationFilter },
+                    { "SortColumn", sortColumn.ToString() },
+                    { "SortOrder", sortOrder.ToString() },
                         })
                 },
-                TotalOutstandingApplicationsCount = applications.Count(x => x.Status == ApplicationReviewStatus.New && x.IsNotWithdrawn)
+                TotalOutstandingApplicationsCount = applications.Count(x =>
+                    x.Status == ApplicationReviewStatus.New && x.IsNotWithdrawn),
+                VacancyAnalyticsViewModel = await GetVacancyAnalytics(vacancy)
             };
         }
+
+        private async Task<(List<VacancyApplication> Applications, bool CanShowArchive)> GetApplicationsAndArchiveStatusAsync(
+            Vacancy vacancy,
+            long vacancyReference,
+            SortColumn sortColumn,
+            SortOrder sortOrder)
+        {
+            var applicationsTask = vacancyClient.GetVacancyApplicationsSortedAsync(
+                vacancyReference, sortColumn, sortOrder, vacancy.CanEmployerReviewApplications);
+            var canArchiveTask = vacancy.CanArchive
+                ? utility.IsAllApplicationReviewsHasOutcomeAsync(vacancy)
+                : Task.FromResult(false);
+
+            await Task.WhenAll(applicationsTask, canArchiveTask);
+
+            return (await applicationsTask ?? [], await canArchiveTask);
+        }
+
+        private static List<VacancyApplication> ApplyFilters(
+            List<VacancyApplication> applications,
+            string locationFilter,
+            string applicantFilter)
+        {
+            IEnumerable<VacancyApplication> filtered = applications;
+
+            if (IsActiveFilter(locationFilter))
+                filtered = filtered.Where(x =>
+                    x.CandidateAppliedLocations?.Contains(locationFilter) == true);
+
+            if (IsActiveFilter(applicantFilter, minLength: 3))
+                filtered = filtered.Where(x =>
+                    x.CandidateName?.Contains(applicantFilter, StringComparison.InvariantCultureIgnoreCase) == true);
+
+            return [.. filtered];
+        }
+
+        private static bool IsActiveFilter(string filter, int minLength = 0) =>
+            !string.IsNullOrEmpty(filter)
+            && !filter.Equals("All", StringComparison.OrdinalIgnoreCase)
+            && filter.Length > minLength;
 
         public async Task<EditVacancyViewModel> GetEditVacancyViewModel(VacancyRouteModel vrm, DateTime? proposedClosingDate, DateTime? proposedStartDate)
         {
@@ -181,6 +210,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             };
 
             return mappings;
+        }
+
+        private async Task<VacancyAnalyticsViewModel> GetVacancyAnalytics(Vacancy vacancy)
+        {
+            var viewModel = new VacancyAnalyticsViewModel();
+            var vacancyAnalyticsTask = await vacancyClient.GetVacancyAnalyticsSummaryAsync(vacancy.VacancyReference.GetValueOrDefault());
+            var analyticsSummary = vacancyAnalyticsTask ?? new VacancyAnalyticsSummary();
+
+            viewModel.AnalyticsSummary = VacancyAnalyticsSummaryMapper.MapToVacancyAnalyticsSummaryViewModel(analyticsSummary, vacancy.LiveDate.GetValueOrDefault());
+            return viewModel;
         }
     }
 }
