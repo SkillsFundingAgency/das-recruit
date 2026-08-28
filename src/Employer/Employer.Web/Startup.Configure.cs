@@ -62,7 +62,8 @@ namespace Esfa.Recruit.Employer.Web
                         "wss://*.zendesk.com",
                         "wss://*.zopim.com",
                         "https://*.rcrsv.io",
-                        "https://esm.sh"
+                        "https://esm.sh",
+                        "https://unpkg.com"
                         );
                     //s.UnsafeInline();
                 })

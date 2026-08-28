@@ -7,9 +7,16 @@ import Paragraph from 'https://esm.sh/@tiptap/extension-paragraph'
 import ListKeymap from 'https://esm.sh/@tiptap/extension-list-keymap'
 import { CharacterCount, UndoRedo } from 'https://esm.sh/@tiptap/extensions'
 
-// create our own list item type to avoid the unwanted tab/shift+tab shortcuts
-// the default implementation has to create nested lists, we just want those
-// shortcuts to tab out of the control
+// Extend BulletList to remove the Control+Shift+8 shortcut, 
+// it could interfere with screen reader shortcuts
+const CustomBulletList = BulletList.extend({
+    addKeyboardShortcuts() {
+        return {}
+    },
+})
+
+// Extend ListItem to avoid the unwanted tab/shift+tab shortcuts,
+// tab should exit the control
 const CustomListItem = ListItem.extend({
     addKeyboardShortcuts() {
         return {
@@ -18,6 +25,7 @@ const CustomListItem = ListItem.extend({
     },
 })
 
+// Create an extension to handle pasting of html text to strip certain elements
 const CleanStylesExtension = Extension.create({
     name: 'cleanStyles',
     transformPastedHTML(html) {
@@ -117,14 +125,17 @@ function createToolbar(target, id, targetId) {
     const bulletListBtn = createToolbarBtn('bullet-list', label)
 
     // if we have 3 or more buttons, then:
-    //  - need to implement toolbar keyboard navigation for accessbility
+    //  - need to implement toolbar keyboard navigation for accessibility
     //  - set this: toolbar.setAttribute('role', 'toolbar')
     //  - move aria-controls to the toolbar: toolbar.setAttribute('aria-controls', id)
     //  - remove aria-controls from individual buttons
     //  - add tab index from 0 to buttons
 
     bulletListBtn.setAttribute('aria-controls', id)
+    bulletListBtn.setAttribute('tabindex', '-1')
+    bulletListBtn.setAttribute('aria-keyshortcuts', 'Control+[ Control+] Meta+[ Meta+]')
     toolbar.classList.add('html-editor-toolbar')
+    toolbar.setAttribute('aria-keyshortcuts', 'Alt+F10')
     
     target.insertAdjacentElement("afterend", toolbar)
     toolbar.insertAdjacentElement("afterend", container)
@@ -148,7 +159,21 @@ function initHtmlEditor(el) {
                 'Alt-F10': () => {
                     bulletListBtn.focus()
                     return true
-                }
+                },
+                'Mod-]': () => {
+                    if (!this.editor.isActive('bulletList'))
+                    {
+                        this.editor.commands.toggleBulletList()
+                    }
+                    return true
+                },
+                'Mod-[': () => {
+                    if (this.editor.isActive('bulletList'))
+                    {
+                        this.editor.commands.toggleBulletList()
+                    }
+                    return true
+                },
             }
         }
     })
@@ -173,7 +198,7 @@ function initHtmlEditor(el) {
             Document,
             Text,
             Paragraph,
-            BulletList,
+            CustomBulletList,
             CustomListItem,
             ListKeymap,
             CustomKeyboardShortcuts,
@@ -203,6 +228,7 @@ function initHtmlEditor(el) {
         }
     })
 
+    
     bulletListBtn.addEventListener('click', buttons['bullet-list']['click'](editor))
     return editor;
 }
