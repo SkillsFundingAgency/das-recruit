@@ -784,3 +784,33 @@ dd.govuk-summary-list__value .faa-user-content:first-child {
     align-self: flex-end; /* or justify-self: end for grid */
     text-align: right;
 }
+
+[aria-sort] button,
+[aria-sort] button:hover {
+    display: inline-flex;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    color: #005ea5;
+    background-color: transparent;
+    -webkit-box-shadow: 0 0 0 0;
+    -moz-box-shadow: 0 0 0 0;
+    box-shadow: 0 0 0 0;
+    font-family: inherit;
+    font-size: inherit;
+    font-size: 1em;
+    font-weight: inherit;
+    text-align: inherit;
+    cursor: pointer;
+    align-items: center;
+}
+
+[aria-sort] button:focus {
+    outline: none;
+    color: #0b0c0c;
+    background-color: #fd0;
+    box-shadow:
+            0 -2px #fd0,
+            0 4px #0b0c0c;
+}
