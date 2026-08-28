@@ -16,11 +16,10 @@
     <None Include="package.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <Content Remove="wwwroot\javascripts\tiptap-imports.js" />
-    <None Include="wwwroot\javascripts\tiptap-imports.js" />
-    <Content Update="wwwroot\javascripts\tiptap.min.js">
+    <Content Remove="wwwroot\javascripts\html-editor.js" />
+    <None Include="wwwroot\javascripts\html-editor.js">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>
+    </None>
     
   </ItemGroup>  
   <ItemGroup>

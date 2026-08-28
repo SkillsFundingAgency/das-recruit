@@ -3,17 +3,10 @@ import { terser } from "rollup-plugin-terser";
 import { nodeResolve } from "@rollup/plugin-node-resolve"
 
 export default {
-    input: "wwwroot/javascripts/tiptap-imports.js",
+    input: "wwwroot/javascripts/html-editor.js",
     output: [
-        // useful for debug
-        // {
-        //     file: "wwwroot/javascripts/tiptap-rollup.js",
-        //     format: "es",
-        //     name: "window",
-        //     extend: true
-        // },
         {
-            file: "wwwroot/javascripts/tiptap.min.js",
+            file: "wwwroot/javascripts/html-editor.min.js",
             format: "es",
             name: "window",
             extend: true,

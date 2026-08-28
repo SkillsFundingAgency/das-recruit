@@ -1,14 +1,32 @@
-﻿import { CharacterCount, UndoRedo, Editor, Extension, ListItem, Document, Text, Paragraph, ListKeymap, BulletList } from '/javascripts/tiptap.min.js'
+/*
+    Html editor source
+      - uses tiptap headless editor, see https://github.com/ueberdosis/tiptap
+      - customises the editor to improve accessibility and control formatting 
+*/
+import { Editor, Extension } from '@tiptap/core'
+import BulletList from '@tiptap/extension-bullet-list'
+import ListItem from '@tiptap/extension-list-item'
+import Document from '@tiptap/extension-document'
+import Text from '@tiptap/extension-text'
+import Paragraph from '@tiptap/extension-paragraph'
+import ListKeymap from '@tiptap/extension-list-keymap'
+import { CharacterCount, UndoRedo } from '@tiptap/extensions'
 
-// Extend BulletList to remove the Control+Shift+8 shortcut, 
-// it could interfere with screen reader shortcuts
+/*
+    Extend BulletList to:
+        - remove the Control+Shift+8 shortcut, it could interfere with screen reader shortcuts - achieved by not declaring the shortcut which the base control declares
+*/
 const CustomBulletList = BulletList.extend({
     addKeyboardShortcuts() {
         return {}
     },
 })
 
-// Extend ListItem to avoid the unwanted tab/shift+tab shortcuts,
+/*
+    Extend ListItem to:
+        - avoid the 'tab trap' to improve accessibility - achieved by not declaring the tab key shortcuts the base control declares
+        - allow the 'Enter' key to split a list item and create a new item on the new line 
+ */
 // tab should exit the control
 const CustomListItem = ListItem.extend({
     addKeyboardShortcuts() {
@@ -18,7 +36,12 @@ const CustomListItem = ListItem.extend({
     },
 })
 
-// Create an extension to handle pasting of html text to strip certain elements
+/*
+    Create an extension to:
+        - handle pasting of html text to strip
+            - ul - we want to avoid nested lists where possible
+            - p - we don't want paragraphs in an li element
+*/
 const CleanStylesExtension = Extension.create({
     name: 'cleanStyles',
     transformPastedHTML(html) {
@@ -54,10 +77,12 @@ const buttons = {
 const copyAttr = ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-required', 'required']
 const attrMap = { 'required': 'aria-required' }
 
+/*
+    Copy aria attributes if specified
+    Also maps attributes into aria ones as per the attrMap above, this is because the editor is not a standard semantic control
+ */
 function copyAriaAttributes(attrs, el) {
-    // Copy aria attributes if specified
-    // Also maps attributes into aria ones as per the attrMap above,
-    // this is because the editor is not a standard semantic control
+    
     copyAttr.reduce((acc, val) => {
         if (el.hasAttribute(val)) {
             let attrVal = el.getAttribute(val)
@@ -67,6 +92,37 @@ function copyAriaAttributes(attrs, el) {
         return acc
     }, attrs)
 }
+
+/*
+    Factory method to create custom keyboard shortcuts to control the toolbar behaviour
+*/
+const CreateCustomKeyboardShortcuts = (focusButton) => Extension.create({
+    name: 'customShortcuts',
+    addKeyboardShortcuts() {
+        return {
+            'Alt-F10': () => {
+                focusButton.focus()
+                return true
+            },
+            'Mod-]': () => {
+                if (!this.editor.isActive('bulletList'))
+                {
+                    this.editor.commands.toggleBulletList()
+                }
+                return true
+            },
+            'Mod-[': () => {
+                if (this.editor.isActive('bulletList'))
+                {
+                    this.editor.commands.toggleBulletList()
+                }
+                return true
+            },
+        }
+    }
+})
+
+
 
 function createToolbarBtn(name, ariaLabelName) {
     if (!buttons.hasOwnProperty(name)) {
@@ -140,36 +196,9 @@ function createToolbar(target, id, targetId) {
 function initHtmlEditor(el) {
     hideTargetControl(el)
     const targetId = el.getAttribute('id')
-
     const id = crypto.randomUUID()
     const { toolbar, container, bulletListBtn } = createToolbar(el, id, targetId)
-
-    // Custom keyboard shortcut to focus this instance's toolbar
-    const CustomKeyboardShortcuts = Extension.create({
-        name: 'customShortcuts',
-        addKeyboardShortcuts() {
-            return {
-                'Alt-F10': () => {
-                    bulletListBtn.focus()
-                    return true
-                },
-                'Mod-]': () => {
-                    if (!this.editor.isActive('bulletList'))
-                    {
-                        this.editor.commands.toggleBulletList()
-                    }
-                    return true
-                },
-                'Mod-[': () => {
-                    if (this.editor.isActive('bulletList'))
-                    {
-                        this.editor.commands.toggleBulletList()
-                    }
-                    return true
-                },
-            }
-        }
-    })
+    const CustomKeyboardShortcuts = CreateCustomKeyboardShortcuts(bulletListBtn)
 
     // Default attributes for the editor
     let attrs = {
@@ -220,7 +249,6 @@ function initHtmlEditor(el) {
             }
         }
     })
-
 
     bulletListBtn.addEventListener('click', buttons['bullet-list']['click'](editor))
     return editor;

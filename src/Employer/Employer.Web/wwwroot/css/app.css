@@ -341,7 +341,7 @@ a.app-card:focus .app-card__heading-text {
 /* Html editor */
 
 .html-editor-toolbar {
-    padding: 0.3em;
+    padding: 0.2em;
     border-left: 2px solid #0b0c0c;
     border-top: 2px solid #0b0c0c;
     border-right: 2px solid #0b0c0c;
@@ -367,6 +367,7 @@ a.app-card:focus .app-card__heading-text {
     max-height: 350px;
     overflow: auto;
     resize: none;
+    border-top: 2px solid #aaa !important;
 }
 
 .html-editor-textarea li p {
