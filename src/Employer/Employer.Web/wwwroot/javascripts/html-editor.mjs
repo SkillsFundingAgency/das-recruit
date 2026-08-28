@@ -1,11 +1,4 @@
-﻿import { Editor, Extension } from 'https://esm.sh/@tiptap/core'
-import BulletList from 'https://esm.sh/@tiptap/extension-bullet-list'
-import ListItem from 'https://esm.sh/@tiptap/extension-list-item'
-import Document from 'https://esm.sh/@tiptap/extension-document'
-import Text from 'https://esm.sh/@tiptap/extension-text'
-import Paragraph from 'https://esm.sh/@tiptap/extension-paragraph'
-import ListKeymap from 'https://esm.sh/@tiptap/extension-list-keymap'
-import { CharacterCount, UndoRedo } from 'https://esm.sh/@tiptap/extensions'
+﻿import { CharacterCount, UndoRedo, Editor, Extension, ListItem, Document, Text, Paragraph, ListKeymap, BulletList } from '/javascripts/tiptap.min.js'
 
 // Extend BulletList to remove the Control+Shift+8 shortcut, 
 // it could interfere with screen reader shortcuts
@@ -33,7 +26,7 @@ const CleanStylesExtension = Extension.create({
         {
             return html
         }
-        
+
         // if we're within a list already, strip out additional <ul> or <p> tags
         // we do this to try and avoid formatting we don't want e.g. nested lists
         return html.replace(/<\/?(?:ul|p)+>/g, '')
@@ -86,7 +79,7 @@ function createToolbarBtn(name, ariaLabelName) {
     const path = document.createElementNS("http://www.w3.org/2000/svg", "path")
 
     btn.setAttribute('aria-pressed', 'false')
-    
+
     if (ariaLabelName) {
         btn.setAttribute('aria-label', `${buttons[name]['aria-label']} for ${ariaLabelName}`)
     } else {
@@ -106,7 +99,7 @@ function createToolbarBtn(name, ariaLabelName) {
     svg.appendChild(path)
     span.appendChild(svg)
     btn.appendChild(span)
-    
+
     return btn
 }
 
@@ -119,7 +112,7 @@ function createToolbar(target, id, targetId) {
             label = labelCtl.innerText.trim()
         }
     }
-    
+
     const container = document.createElement('div')
     const toolbar = document.createElement('div')
     const bulletListBtn = createToolbarBtn('bullet-list', label)
@@ -136,11 +129,11 @@ function createToolbar(target, id, targetId) {
     bulletListBtn.setAttribute('aria-keyshortcuts', 'Control+[ Control+] Meta+[ Meta+]')
     toolbar.classList.add('html-editor-toolbar')
     toolbar.setAttribute('aria-keyshortcuts', 'Alt+F10')
-    
+
     target.insertAdjacentElement("afterend", toolbar)
     toolbar.insertAdjacentElement("afterend", container)
     toolbar.appendChild(bulletListBtn)
-    
+
     return { toolbar, container, bulletListBtn }
 }
 
@@ -214,7 +207,7 @@ function initHtmlEditor(el) {
             el.value = html === '<p></p>'
                 ? null
                 : html
-                
+
             el.dispatchEvent(new Event('input'))
         },
         onSelectionUpdate({ editor }) {
@@ -228,7 +221,7 @@ function initHtmlEditor(el) {
         }
     })
 
-    
+
     bulletListBtn.addEventListener('click', buttons['bullet-list']['click'](editor))
     return editor;
 }

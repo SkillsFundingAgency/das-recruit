@@ -1,0 +1,29 @@
+{
+  "name": "recruit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "rollup" : "rollup -c"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-replace": "^6.0.3",
+    "rollup": "^2.80.0",
+    "rollup-plugin-terser": "^7.0.2"
+  },
+  "dependencies": {
+    "@tiptap/core": "^3.30.5",
+    "@tiptap/extension-bullet-list": "^3.30.5",
+    "@tiptap/extension-document": "^3.30.5",
+    "@tiptap/extension-list-item": "^3.30.5",
+    "@tiptap/extension-list-keymap": "^3.30.5",
+    "@tiptap/extension-paragraph": "^3.30.5",
+    "@tiptap/extension-text": "^3.30.5",
+    "@tiptap/extensions": "^3.30.5"
+  }
+}
