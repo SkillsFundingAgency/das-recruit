@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Microsoft.AspNetCore.Authorization;
 using Esfa.Recruit.Provider.Web.Middleware;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Startup;
@@ -78,6 +79,12 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 options.Cookie.Name = CookieNames.AntiForgeryCookie;
                 options.FormFieldName = "_csrfToken";
                 options.HeaderName = "X-XSRF-TOKEN";
+            });
+            services.Configure<FormOptions>(options =>
+            {
+                options.ValueCountLimit = int.MaxValue;
+                options.KeyLengthLimit = int.MaxValue;
+                options.ValueLengthLimit = int.MaxValue;
             });
             services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();

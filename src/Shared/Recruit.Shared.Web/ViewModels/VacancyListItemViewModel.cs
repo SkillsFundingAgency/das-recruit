@@ -14,6 +14,7 @@ public class VacancyListItemViewModel
     public string EmployerName { get; set; }
     public Guid Id { get; set; }
     public bool IsTaskListCompleted { get; set; }
+    public int NoOfApplications { get; set; }
     public int NoOfAllSharedApplications { get; set; }
     public int NoOfEmployerReviewedApplications { get; set; }
     public int NoOfNewApplications { get; set; }
@@ -41,45 +42,17 @@ public class VacancyListItemViewModel
     public bool HasSharedApplications => NoOfAllSharedApplications > 0;
     public bool HasVacancyReference => VacancyReference is not null;
     public bool IsSubmittable => Status is VacancyStatus.Draft or VacancyStatus.Referred or VacancyStatus.Rejected;
-    public int NoOfApplications => NoOfNewApplications + NoOfSuccessfulApplications + NoOfUnsuccessfulApplications;
     public bool IsTransferredVacancy => !string.IsNullOrEmpty(TransferInfo);
     public string ActionBtnText { get; set; }
 
-    public static VacancyListItemViewModel From(VacancyListItem item, int ukprn, FilteringOptions filteringOptions)
-    {
-        return new VacancyListItemViewModel
-        {
-            ApplicationMethod = item.ApplicationMethod,
-            Applications = $"{item.Stats?.Applications ?? '-'}",
-            ApprenticeshipType = item.ApprenticeshipType,
-            ClosingDate = item.ClosingDate,
-            EmployerName = item.LegalEntityName,
-            Id = item.Id,
-            IsTaskListCompleted = item.OwnerType is OwnerType.Provider or OwnerType.Employer && item.HasSubmittedAdditionalQuestions is true,
-            NoOfAllSharedApplications = item.Stats?.AllSharedApplications ?? 0,
-            NoOfEmployerReviewedApplications = item.Stats?.EmployerReviewedApplications ?? 0,
-            NoOfNewApplications = item.Stats?.NewApplications ?? 0,
-            NoOfSharedApplications = item.Stats?.SharedApplications ?? 0,
-            NoOfSuccessfulApplications = item.Stats?.SuccessfulApplications ?? 0,
-            NoOfUnsuccessfulApplications = item.Stats?.UnsuccessfulApplications ?? 0,
-            RouteDictionary = new Dictionary<string, string>
-            {
-                ["ukprn"] = $"{ukprn}",
-                ["vacancyId"] = $"{item.Id}",
-                ["filteringOptions"] = $"{filteringOptions}"
-            },
-            SourceOrigin = item.SourceOrigin,
-            Status = item.Status,
-            Title = item.Title,
-            VacancyReference = item.VacancyReference,
-            TransferInfo = item.TransferInfo,
-            ActionBtnText = GetLinkText(filteringOptions, item.Status)
-        };
-    }
+    public static VacancyListItemViewModel From(VacancyListItem item, int ukprn, FilteringOptions filteringOptions) =>
+        From(item, new KeyValuePair<string, string>("ukprn", $"{ukprn}"), filteringOptions);
     
-    public static VacancyListItemViewModel From(VacancyListItem item, string employerAccountId, FilteringOptions filteringOptions)
-    {
-        return new VacancyListItemViewModel
+    public static VacancyListItemViewModel From(VacancyListItem item, string employerAccountId, FilteringOptions filteringOptions) => 
+        From(item, new KeyValuePair<string, string>("employerAccountId", employerAccountId), filteringOptions);
+
+    private static VacancyListItemViewModel From(VacancyListItem item, KeyValuePair<string, string> route, FilteringOptions filteringOptions) =>
+        new()
         {
             ApplicationMethod = item.ApplicationMethod,
             Applications = $"{item.Stats?.Applications ?? '-'}",
@@ -88,6 +61,7 @@ public class VacancyListItemViewModel
             EmployerName = item.LegalEntityName,
             Id = item.Id,
             IsTaskListCompleted = item.OwnerType is OwnerType.Provider or OwnerType.Employer && item.HasSubmittedAdditionalQuestions is true,
+            NoOfApplications = item.Stats?.Applications ?? 0,
             NoOfAllSharedApplications = item.Stats?.AllSharedApplications ?? 0,
             NoOfEmployerReviewedApplications = item.Stats?.EmployerReviewedApplications ?? 0,
             NoOfNewApplications = item.Stats?.NewApplications ?? 0,
@@ -96,7 +70,7 @@ public class VacancyListItemViewModel
             NoOfUnsuccessfulApplications = item.Stats?.UnsuccessfulApplications ?? 0,
             RouteDictionary = new Dictionary<string, string>
             {
-                ["employerAccountId"] = $"{employerAccountId}",
+                [route.Key] = route.Value,
                 ["vacancyId"] = $"{item.Id}",
                 ["filteringOptions"] = $"{filteringOptions}"
             },
@@ -107,7 +81,6 @@ public class VacancyListItemViewModel
             TransferInfo = item.TransferInfo,
             ActionBtnText = GetLinkText(filteringOptions, item.Status)
         };
-    }
 
     private static string GetLinkText(FilteringOptions filteringOptions, VacancyStatus status) =>
         filteringOptions switch

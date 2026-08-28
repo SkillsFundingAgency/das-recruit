@@ -30,7 +30,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return vacancy;
         }
 
-        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy,
+        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(
+            Vacancy vacancy,
             VacancyRouteModel vacancyRouteModel,
             int pageNumber,
             int pageSize,
@@ -38,78 +39,77 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             SortOrder sortOrder,
             string locationFilter = "All")
         {
-            var viewModel = new ManageVacancyViewModel
+            var vacancyReference = vacancy.VacancyReference.GetValueOrDefault();
+            var isClosed = vacancy.Status == VacancyStatus.Closed;
+
+            var applicationsTask = client.GetVacancyApplicationsSortedAsync(vacancyReference, sortColumn, sortOrder);
+            var canArchiveTask = vacancy.CanArchive
+                ? utility.IsAllApplicationReviewsHasOutcomeAsync(vacancy)
+                : Task.FromResult(false);
+
+            var vacancyApplications = await applicationsTask ?? [];
+            var canShowArchive = await canArchiveTask;
+
+            var applyLocationFilter =
+                !string.IsNullOrEmpty(locationFilter)
+                && !locationFilter.Equals("All", StringComparison.OrdinalIgnoreCase)
+                && vacancyApplications.All(x => x.CandidateAppliedLocations is not null);
+            
+            var applications = applyLocationFilter
+                ? vacancyApplications.Where(x => x.CandidateAppliedLocations!.Contains(locationFilter)).ToList()
+                : vacancyApplications;
+
+            var page = Math.Max(pageNumber, 1);
+            var filteredCount = applications.Count;
+
+            return new ManageVacancyViewModel
             {
                 Title = vacancy.Title,
                 Status = vacancy.Status,
-                VacancyReference = vacancy.VacancyReference.GetValueOrDefault().ToString(),
+                VacancyReference = vacancyReference.ToString(),
                 Ukprn = vacancyRouteModel.Ukprn,
                 VacancyId = vacancyRouteModel.VacancyId,
                 ApprenticeshipType = vacancy.GetApprenticeshipType(),
-            };
-
-            viewModel.ClosingDate = viewModel.Status == VacancyStatus.Closed ? vacancy.ClosedDate?.AsGdsDate() : vacancy.ClosingDate?.AsGdsDate();
-            viewModel.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
-            viewModel.IsDisabilityConfident = vacancy.IsDisabilityConfident;
-            viewModel.IsApplyThroughFaaVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
-            viewModel.IsApplyThroughFatVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindATraineeship;
-            viewModel.CanShowEditVacancyLink = vacancy.CanExtendStartAndClosingDates;
-            viewModel.CanShowCloseVacancyLink = vacancy.CanClose;
-            viewModel.CanShowCloneVacancyLink = vacancy.CanClone;
-            viewModel.CanShowDeleteVacancyLink = vacancy.CanDelete;
-            viewModel.CanShowArchiveVacancyLink = vacancy.CanArchive && await utility.IsAllApplicationReviewsHasOutcomeAsync(vacancy);
-            viewModel.EmployerName = vacancy.EmployerName;
-
-            if (vacancy.Status == VacancyStatus.Closed && vacancy.ClosureReason == ClosureReason.WithdrawnByQa)
-            {
-                viewModel.WithdrawnDate = vacancy.ClosedDate?.AsGdsDate();
-            }
-
-            var vacancyApplications = await client.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.GetValueOrDefault(), sortColumn, sortOrder);
-            var totalUnfilteredApplicationsCount = vacancyApplications?.Count(x => !x.IsWithdrawn) ?? 0;
-
-            var applications = string.IsNullOrEmpty(locationFilter)
-                               || locationFilter.Equals("All", StringComparison.CurrentCultureIgnoreCase)
-                               || vacancyApplications.Any(fil => fil.CandidateAppliedLocations == null)
-                ? vacancyApplications
-                : vacancyApplications.Where(fil => fil.CandidateAppliedLocations != null 
-                                                   && fil.CandidateAppliedLocations.Contains(locationFilter))
-                    .ToList();
-
-            var pager = new PagerViewModel(
-                applications?.Count ?? 0,
-                pageSize,
-                pageNumber,
-                "Showing {0} to {1} of {2} applications",
-                RouteNames.VacancyManage_Get,
-                new Dictionary<string, string>
+                ClosingDate = isClosed ? vacancy.ClosedDate?.AsGdsDate() : vacancy.ClosingDate?.AsGdsDate(),
+                PossibleStartDate = vacancy.StartDate?.AsGdsDate(),
+                IsDisabilityConfident = vacancy.IsDisabilityConfident,
+                IsApplyThroughFaaVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship,
+                IsApplyThroughFatVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindATraineeship,
+                CanShowEditVacancyLink = vacancy.CanExtendStartAndClosingDates,
+                CanShowCloseVacancyLink = vacancy.CanClose,
+                CanShowCloneVacancyLink = vacancy.CanClone,
+                CanShowDeleteVacancyLink = vacancy.CanDelete,
+                CanShowArchiveVacancyLink = canShowArchive,
+                EmployerName = vacancy.EmployerName,
+                WithdrawnDate = isClosed && vacancy.ClosureReason == ClosureReason.WithdrawnByQa
+                    ? vacancy.ClosedDate?.AsGdsDate()
+                    : null,
+                Applications = new VacancyApplicationsViewModel
                 {
-                    { "locationFilter", locationFilter },
-                    { "SortColumn", sortColumn.ToString() },
-                    { "SortOrder", sortColumn.ToString() }
-                });
-
-            // Apply pagination: skip and take
-            var pagedApplications = applications?
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
-            viewModel.Applications = new VacancyApplicationsViewModel
-            {
-                Applications = pagedApplications,
-                TotalUnfilteredApplicationsCount = totalUnfilteredApplicationsCount,
-                TotalFilteredApplicationsCount = applications?.Count ?? 0,
-                EmploymentLocations = vacancy.EmployerLocations.GetCityDisplayList(),
-                SelectedLocation = locationFilter,
-                ShowDisability = vacancy.IsDisabilityConfident,
-                Ukprn = vacancyRouteModel.Ukprn,
-                VacancyId = vacancyRouteModel.VacancyId,
-                AvailableWhere = vacancy.EmployerLocationOption,
-                Pager = pager
+                    Applications = applications.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
+                    TotalUnfilteredApplicationsCount = vacancyApplications.Count,
+                    TotalFilteredApplicationsCount = filteredCount,
+                    EmploymentLocations = vacancy.EmployerLocations.GetCityDisplayList(),
+                    SelectedLocation = locationFilter,
+                    ShowDisability = vacancy.IsDisabilityConfident,
+                    Ukprn = vacancyRouteModel.Ukprn,
+                    VacancyId = vacancyRouteModel.VacancyId,
+                    AvailableWhere = vacancy.EmployerLocationOption,
+                    Pager = new PagerViewModel(
+                        filteredCount,
+                        pageSize,
+                        page,
+                        "Showing {0} to {1} of {2} applications",
+                        RouteNames.VacancyManage_Get,
+                        new Dictionary<string, string>
+                        {
+                            { "locationFilter", locationFilter },
+                            { "SortColumn", sortColumn.ToString() },
+                            { "SortOrder", sortOrder.ToString() },
+                        })
+                },
+                TotalOutstandingApplicationsCount = applications.Count(x => x.Status == ApplicationReviewStatus.New && x.IsNotWithdrawn)
             };
-
-            return viewModel;
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, ProposedChangesEditModel> DefineMappings()

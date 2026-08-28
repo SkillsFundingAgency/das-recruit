@@ -10,7 +10,6 @@ using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.LiveVacancy;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview;
-using Esfa.Recruit.Vacancies.Jobs.Jobs;
 using Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,9 +26,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             // Add Jobs
             services.AddScoped<DomainEventsQueueTrigger>();
             services.AddScoped<VacancyStatusQueueTrigger>();
-            services.AddScoped<TransferVacanciesFromEmployerReviewToQAReviewQueueTrigger>();
             services.AddScoped<UpdateProvidersQueueTrigger>();
-            services.AddScoped<TransferVacanciesFromEmployerReviewToQAReviewJob>();
             
             // Domain Event Queue Handlers
 

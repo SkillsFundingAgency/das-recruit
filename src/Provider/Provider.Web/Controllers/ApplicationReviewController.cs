@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
@@ -123,20 +122,51 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var applicationReviewFeedbackViewModel = await orchestrator.GetApplicationReviewFeedbackViewModelAsync(applicationReviewFeedbackEditModel);
-                applicationReviewFeedbackEditModel.Name = applicationReviewFeedbackViewModel.GetValueOrDefault("Name");
-                applicationReviewFeedbackEditModel.FriendlyId = applicationReviewFeedbackViewModel.GetValueOrDefault("FriendlyId");
+                var displayData = await orchestrator.GetApplicationReviewFeedbackViewModelAsync(
+                    applicationReviewFeedbackEditModel);
+
+                applicationReviewFeedbackEditModel.Name = displayData.GetValueOrDefault("Name");
+                applicationReviewFeedbackEditModel.FriendlyId = displayData.GetValueOrDefault("FriendlyId");
+
                 return View(applicationReviewFeedbackEditModel);
             }
 
-            TempData[TempDataArModel] = JsonConvert.SerializeObject(applicationReviewFeedbackEditModel);
-            return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get,
-                new
-                {
-                    applicationReviewFeedbackEditModel.ApplicationReviewId,
-                    applicationReviewFeedbackEditModel.VacancyId,
-                    applicationReviewFeedbackEditModel.Ukprn
-                });
+            var statusChangeModel = new ApplicationReviewStatusChangeModel
+            {
+                CandidateFeedback = applicationReviewFeedbackEditModel.CandidateFeedback,
+                IsApplicationSharedByProvider = applicationReviewFeedbackEditModel.IsApplicationSharedByProvider,
+                Outcome = applicationReviewFeedbackEditModel.Outcome,
+                ApplicationReviewId = applicationReviewFeedbackEditModel.ApplicationReviewId,
+                VacancyId = applicationReviewFeedbackEditModel.VacancyId,
+                Ukprn = applicationReviewFeedbackEditModel.Ukprn,
+            };
+
+            var statusChangeInfo = await orchestrator.PostApplicationReviewStatusChangeModelAsync(
+                statusChangeModel, User.ToVacancyUser());
+
+            var routeValues = new
+            {
+                applicationReviewFeedbackEditModel.VacancyId,
+                applicationReviewFeedbackEditModel.Ukprn
+            };
+
+            if (statusChangeInfo.ShouldMakeOthersUnsuccessful)
+            {
+                TempData.TryAdd(TempDataKeys.ApplicationReviewStatusInfoMessage, InfoMessages.ApplicationProviderUnsuccessfulHeader);
+                return RedirectToRoute(RouteNames.ApplicationReviewsToUnsuccessful_Get, routeValues);
+            }
+
+            var isAllApplicationsHasOutcome = await orchestrator.IsAllApplicationReviewsHasOutcomeAsync(
+                applicationReviewFeedbackEditModel.VacancyId);
+
+            if (isAllApplicationsHasOutcome)
+            {
+                TempData.TryAdd(TempDataKeys.ArchiveVacancyInfoMessage, InfoMessages.VacancyApplicantsOutcomeNotified);
+                return RedirectToRoute(RouteNames.ArchiveVacancy_Get, routeValues);
+            }
+
+            TempData.TryAdd(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage, InfoMessages.ApplicationProviderUnsuccessfulHeader);
+            return RedirectToRoute(RouteNames.VacancyManage_Get, routeValues);
         }
 
         [HttpGet("status", Name = RouteNames.ApplicationReviewConfirmation_Get)]
@@ -197,10 +227,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                     case ApplicationReviewStatus.Successful:
                         TempData.Add(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage,
                             InfoMessages.ApplicationReviewSingleSuccessStatusHeader);
-                        break;
-                    case ApplicationReviewStatus.Unsuccessful:
-                        TempData.Add(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage,
-                            InfoMessages.ApplicationEmployerUnsuccessfulHeader);
                         break;
                     default:
                         TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage,
