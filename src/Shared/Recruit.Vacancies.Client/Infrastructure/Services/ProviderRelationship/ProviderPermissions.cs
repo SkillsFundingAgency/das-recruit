@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
+
+public class ProviderPermissions
 {
-    internal class ProviderPermissions
-    {
-        public IEnumerable<LegalEntityDto> AccountProviderLegalEntities { get; set; }
-    }
+    public IEnumerable<LegalEntityDto> AccountProviderLegalEntities { get; set; }
 }
