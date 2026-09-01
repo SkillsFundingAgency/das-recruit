@@ -70,5 +70,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
             }
         }
         public VacancyAnalyticsViewModel VacancyAnalyticsViewModel { get; set; } = new();
+        public string? SelectedApplicantName { get; set; }
     }
 }
