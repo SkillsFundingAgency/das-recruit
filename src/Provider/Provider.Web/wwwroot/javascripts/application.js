@@ -721,3 +721,25 @@ if (printLinks.length > 0) {
         });
     }
 }
+
+function initSortableGrid() {
+    const grids = document.querySelectorAll("[data-sortable-grid]")
+    for (const grid of grids) {
+        const formName = grid.getAttribute("data-sortable-form")
+        grid.removeAttribute("data-sortable-form")
+        grid.removeAttribute("data-sortable-grid")
+        const form = document.getElementById(formName)
+        const buttons = grid.querySelectorAll("th button")
+        for (const button of buttons) {
+            button.setAttribute("form", formName)
+            const sortColumn = button.getAttribute("data-sort-column")
+            const nextSortOrder = button.getAttribute("data-sort-order")
+            button.removeAttribute("data-sort-column")
+            button.removeAttribute("data-sort-order")
+            button.onclick = () => {
+                form.querySelector("[name='SortColumn']").value = sortColumn
+                form.querySelector("[name='SortOrder']").value = nextSortOrder
+            };
+        }
+    }
+}
