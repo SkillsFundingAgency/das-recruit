@@ -24,13 +24,17 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
-            providerRelationshipsService.Setup(x => x.GetLegalEntitiesForProvider(vacancyRouteModel.Ukprn, "",
-                    It.IsAny<List<OperationType>>()))
-                .ReturnsAsync(new List<EmployerInfo>());
-
+            List<OperationType>? captureOperationTypes = null;
+            providerRelationshipsService
+                .Setup(x => x.GetProviderPermissionsByUkprn(vacancyRouteModel.Ukprn, It.IsAny<List<OperationType>>()))
+                .Callback<long, List<OperationType>>((_, operationTypes) => captureOperationTypes = operationTypes)
+                .ReturnsAsync(new ProviderPermissions { AccountProviderLegalEntities = []});
+            
             Assert.ThrowsAsync<MissingPermissionsException>(() =>
                 orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel,
                     "", 1, SortOrder.Ascending, SortByType.EmployerName));
+
+            captureOperationTypes.Should().BeEquivalentTo([OperationType.Recruitment, OperationType.RecruitmentRequiresReview]);
         }
 
 
