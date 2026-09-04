@@ -67,12 +67,7 @@
     </nav>
 </div>
 <div asp-show="@Model.HasNoApplications">
-    @if (Model.ShowLocationNoResultsLabel)
-    {
-        <p class="govuk-label govuk-!-font-weight-bold">@Model.NoResultsLabelText</p>
-        <p class="govuk-body">@Model.NoResultsHintText</p>
-    }
-    else if (Model.ShowCombinedOrApplicantNoResultsLabel)
+    @if (Model.ShowLocationNoResultsLabel || Model.ShowCombinedOrApplicantNoResultsLabel)
     {
         <p class="govuk-label govuk-!-font-weight-bold">@Model.NoResultsLabelText</p>
         <p class="govuk-body">@Model.NoResultsHintText</p>

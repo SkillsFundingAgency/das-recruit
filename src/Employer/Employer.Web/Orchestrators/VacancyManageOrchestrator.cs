@@ -49,26 +49,21 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(
             Vacancy vacancy,
-            int pageNumber,
-            int pageSize,
-            SortColumn sortColumn,
-            SortOrder sortOrder,
-            string locationFilter = "All",
-            string applicantFilter = "")
+            VacancyQueryOptions queryOptions)
         {
             var vacancyReference = vacancy.VacancyReference.GetValueOrDefault();
             var isClosed = vacancy.Status == VacancyStatus.Closed;
 
-            var (vacancyApplications, canShowArchive) = await GetApplicationsAndArchiveStatusAsync(vacancy, vacancyReference, sortColumn, sortOrder);
+            var (vacancyApplications, canShowArchive) = await GetApplicationsAndArchiveStatusAsync(vacancy, vacancyReference, queryOptions.SortColumn, queryOptions.SortOrder);
 
             if (vacancy.CanEmployerReviewApplications && vacancyApplications.Count == 0)
                 throw new AuthorisationException(
                     string.Format(ExceptionMessages.UserIsNotTheOwner, OwnerType.Employer));
 
-            var applications = ApplyFilters(vacancyApplications, locationFilter, applicantFilter);
+            var applications = ApplyFilters(vacancyApplications, queryOptions.LocationFilter, queryOptions.ApplicantFilter);
 
-            var page = Math.Max(pageNumber, 1);
-            var pagedApplications = applications.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var page = Math.Max(queryOptions.PageNumber, 1);
+            var pagedApplications = applications.Skip((page - 1) * queryOptions.PageSize).Take(queryOptions.PageSize).ToList();
 
             return new ManageVacancyViewModel
             {
@@ -93,15 +88,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 WithdrawnDate = isClosed && vacancy.ClosureReason == ClosureReason.WithdrawnByQa
                     ? vacancy.ClosedDate?.AsGdsDate()
                     : null,
-                SelectedApplicantName = applicantFilter,
+                SelectedApplicantName = queryOptions.ApplicantFilter,
                 Applications = new VacancyApplicationsViewModel
                 {
                     Applications = pagedApplications,
                     TotalUnfilteredApplicationsCount = vacancyApplications.Count,
                     TotalFilteredApplicationsCount = applications.Count,
                     EmploymentLocations = vacancy.EmployerLocations.GetCityDisplayList(),
-                    SelectedLocation = locationFilter,
-                    SelectedApplicantName = applicantFilter,
+                    SelectedLocation = queryOptions.LocationFilter,
+                    SelectedApplicantName = queryOptions.ApplicantFilter,
                     ShowDisability = vacancy.IsDisabilityConfident,
                     VacancyId = vacancy.Id,
                     EmployerAccountId = vacancy.EmployerAccountId,
@@ -109,15 +104,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                     AvailableWhere = vacancy.EmployerLocationOption,
                     Pager = new PagerViewModel(
                         applications.Count,
-                        pageSize,
-                        page,
+                        queryOptions.PageSize,
+                        queryOptions.PageNumber,
                         "Showing {0} to {1} of {2} applications",
                         RouteNames.VacancyManage_Get,
                         new Dictionary<string, string>
                         {
-                    { "locationFilter", locationFilter },
-                    { "SortColumn", sortColumn.ToString() },
-                    { "SortOrder", sortOrder.ToString() },
+                    { "locationFilter", queryOptions.LocationFilter },
+                    { "SortColumn", queryOptions.SortColumn.ToString() },
+                    { "SortOrder", queryOptions.SortOrder.ToString() },
                         })
                 },
                 TotalOutstandingApplicationsCount = applications.Count(x =>
@@ -154,7 +149,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 filtered = filtered.Where(x =>
                     x.CandidateAppliedLocations?.Contains(locationFilter) == true);
 
-            if (IsActiveFilter(applicantFilter, minLength: 3))
+            if (IsActiveFilter(applicantFilter))
                 filtered = filtered.Where(x =>
                     x.CandidateName?.Contains(applicantFilter, StringComparison.InvariantCultureIgnoreCase) == true);
 

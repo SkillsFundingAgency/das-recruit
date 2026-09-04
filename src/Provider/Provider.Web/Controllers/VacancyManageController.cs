@@ -4,6 +4,7 @@ using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.VacancyManage;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using InfoMsg = Esfa.Recruit.Shared.Web.ViewModels.InfoMessages;
@@ -35,7 +36,15 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return HandleRedirectOfEditableVacancy(vacancy);
             }
 
-            var viewModel = await orchestrator.GetManageVacancyViewModel(vacancy, vrm, page, PageSize, outputSortColumn, outputSortOrder, locationFilter, applicantFilter);
+            var options = new VacancyQueryOptions(
+                PageNumber: page, 
+                PageSize: PageSize,
+                SortColumn: outputSortColumn,
+                SortOrder: outputSortOrder,
+                LocationFilter: locationFilter,
+                ApplicantFilter: applicantFilter);
+
+            var viewModel = await orchestrator.GetManageVacancyViewModel(vacancy, vrm, options);
 
             if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
                 viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();

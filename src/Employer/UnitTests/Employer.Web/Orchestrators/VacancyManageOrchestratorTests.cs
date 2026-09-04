@@ -4,6 +4,7 @@ using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.ViewModels.VacancyManage;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -74,7 +75,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
                 .ReturnsAsync(vacancyApplications);
 
             // Act
-            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy, 1, 20, sortColumn, sortOrder);
+            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy, new VacancyQueryOptions(1, 20, sortColumn, sortOrder));
 
             // Assert
             Assert.That(_vacancyId, Is.EqualTo(viewModel.VacancyId));
@@ -90,8 +91,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             Assert.That(vacancyApplications[1].CandidateName, Is.EqualTo(viewModel.Applications.Applications.ElementAt(1).CandidateName));
             Assert.That(viewModel.Applications.Applications.ElementAt(1).ShowCandidateName, Is.False);
             Assert.That(viewModel.Applications.Applications.ElementAt(1).ShowApplicantID, Is.True);
-
         }
-
     }
 }

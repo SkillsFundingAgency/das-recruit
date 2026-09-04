@@ -37,17 +37,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(
             Vacancy vacancy,
             VacancyRouteModel vacancyRouteModel,
-            int pageNumber,
-            int pageSize,
-            SortColumn sortColumn,
-            SortOrder sortOrder,
-            string locationFilter = "All",
-            string applicantFilter = "")
+            VacancyQueryOptions queryOptions)
         {
             var vacancyReference = vacancy.VacancyReference.GetValueOrDefault();
             var isClosed = vacancy.Status == VacancyStatus.Closed;
 
-            var applicationsTask = client.GetVacancyApplicationsSortedAsync(vacancyReference, sortColumn, sortOrder);
+            var applicationsTask = client.GetVacancyApplicationsSortedAsync(vacancyReference, queryOptions.SortColumn, queryOptions.SortOrder);
             var canArchiveTask = vacancy.CanArchive
                 ? utility.IsAllApplicationReviewsHasOutcomeAsync(vacancy)
                 : Task.FromResult(false);
@@ -56,20 +51,20 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             IEnumerable<VacancyApplication> filtered = vacancyApplications;
 
-            if (IsActiveFilter(locationFilter))
+            if (IsActiveFilter(queryOptions.LocationFilter))
                 filtered = filtered.Where(x =>
-                    x.CandidateAppliedLocations?.Contains(locationFilter) == true);
+                    x.CandidateAppliedLocations?.Contains(queryOptions.LocationFilter) == true);
 
-            if (IsActiveFilter(applicantFilter, minLength: 3))
+            if (IsActiveFilter(queryOptions.ApplicantFilter))
                 filtered = filtered.Where(x =>
-                    x.CandidateName?.Contains(applicantFilter, StringComparison.InvariantCultureIgnoreCase) == true);
+                    x.CandidateName?.Contains(queryOptions.ApplicantFilter, StringComparison.InvariantCultureIgnoreCase) == true);
 
             var applications = filtered.ToList();
 
-            var page = Math.Max(pageNumber, 1);
+            var page = Math.Max(queryOptions.PageNumber, 1);
             var pagedApplications = applications
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
+                .Skip((page - 1) * queryOptions.PageSize)
+                .Take(queryOptions.PageSize)
                 .ToList();
 
             return new ManageVacancyViewModel
@@ -94,30 +89,30 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 WithdrawnDate = isClosed && vacancy.ClosureReason == ClosureReason.WithdrawnByQa
                     ? vacancy.ClosedDate?.AsGdsDate()
                     : null,
-                SelectedApplicantName = applicantFilter,
+                SelectedApplicantName = queryOptions.ApplicantFilter,
                 Applications = new VacancyApplicationsViewModel
                 {
                     Applications = pagedApplications,
                     TotalUnfilteredApplicationsCount = vacancyApplications.Count,
                     TotalFilteredApplicationsCount = applications.Count,
                     EmploymentLocations = vacancy.EmployerLocations.GetCityDisplayList(),
-                    SelectedLocation = locationFilter,
-                    SelectedApplicantName = applicantFilter,
+                    SelectedLocation = queryOptions.LocationFilter,
+                    SelectedApplicantName = queryOptions.ApplicantFilter,
                     ShowDisability = vacancy.IsDisabilityConfident,
                     Ukprn = vacancyRouteModel.Ukprn,
                     VacancyId = vacancyRouteModel.VacancyId,
                     AvailableWhere = vacancy.EmployerLocationOption,
                     Pager = new PagerViewModel(
                         applications.Count,
-                        pageSize,
-                        page,
+                        queryOptions.PageSize,
+                        queryOptions.PageNumber,
                         "Showing {0} to {1} of {2} applications",
                         RouteNames.VacancyManage_Get,
                         new Dictionary<string, string>
                         {
-                    { "locationFilter", locationFilter },
-                    { "SortColumn", sortColumn.ToString() },
-                    { "SortOrder", sortOrder.ToString() },
+                            { "locationFilter", queryOptions.LocationFilter },
+                            { "SortColumn", queryOptions.SortColumn.ToString() },
+                            { "SortOrder", queryOptions.SortOrder.ToString() },
                         })
                 },
                 TotalOutstandingApplicationsCount = applications.Count(x =>
