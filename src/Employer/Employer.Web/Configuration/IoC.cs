@@ -119,7 +119,6 @@ public static class IoC
         services.AddTransient<QualificationsOrchestrator>();
         services.AddTransient<VacancyManageOrchestrator>();
         services.AddTransient<VacancyViewOrchestrator>();
-        services.AddTransient<IVacancyAnalyticsOrchestrator, VacancyAnalyticsOrchestrator>();
         services.AddTransient<IApplicationReviewOrchestrator, ApplicationReviewOrchestrator>();
         services.AddTransient<IApplicationReviewsOrchestrator, ApplicationReviewsOrchestrator>();
         services.AddTransient<EditVacancyDatesOrchestrator>();

@@ -4,14 +4,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.VacancyAnalytics;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyManage;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyView;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
@@ -108,7 +111,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                             { "SortOrder", sortOrder.ToString() },
                         })
                 },
-                TotalOutstandingApplicationsCount = applications.Count(x => x.Status == ApplicationReviewStatus.New && x.IsNotWithdrawn)
+                TotalOutstandingApplicationsCount = applications.Count(x => x.Status == ApplicationReviewStatus.New && x.IsNotWithdrawn),
+                VacancyAnalyticsViewModel = await GetVacancyAnalytics(vacancy)
             };
         }
 
@@ -121,6 +125,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             };
 
             return mappings;
+        }
+
+        private async Task<VacancyAnalyticsViewModel> GetVacancyAnalytics(Vacancy vacancy)
+        {
+            var viewModel = new VacancyAnalyticsViewModel();
+            var vacancyAnalyticsTask = await client.GetVacancyAnalyticsSummaryAsync(vacancy.VacancyReference.GetValueOrDefault());
+            var analyticsSummary = vacancyAnalyticsTask ?? new VacancyAnalyticsSummary();
+            
+            viewModel.AnalyticsSummary = VacancyAnalyticsSummaryMapper.MapToVacancyAnalyticsSummaryViewModel(analyticsSummary, vacancy.LiveDate.GetValueOrDefault());
+
+            return viewModel;
         }
     }
 }
