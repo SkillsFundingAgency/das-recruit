@@ -1,3 +1,4 @@
+#nullable enable
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyAnalytics;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyView;
@@ -66,5 +67,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
             }
         }
         public VacancyAnalyticsViewModel VacancyAnalyticsViewModel { get; set; } = new();
+        public string? SelectedApplicantName { get; set; }
     }
 }

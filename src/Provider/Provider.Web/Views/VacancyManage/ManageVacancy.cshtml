@@ -148,9 +148,26 @@
                 </p>
             </div>
         </div>
-        <div class="govuk-grid-column-one-third" asp-show="Model.Applications is { CanShowLocationFilter: true }">
-            <form method="get" autocomplete="off">
-                <div class="govuk-form-group govuk-!-margin-top-8">
+    </div>
+    <div class="govuk-grid-row govuk-!-margin-top-3">
+        <form method="get" autocomplete="off">
+            <div class="govuk-grid-column-two-thirds">
+                <div class="govuk-form-group">
+                    <label for="applicantFilter" class="govuk-label">
+                        Search by applicant name
+                    </label>
+                    <div class="das-search-form__group">
+                        <input id="applicantFilter" name="applicantFilter" title="Search" class="govuk-input das-search-form__input" type="text" maxlength="200" value="@Model.SelectedApplicantName" />
+                        <div class="das-search-form__button-wrap">
+                            <button class="govuk-button das-search-form__button" type="submit">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="govuk-grid-column-one-third" asp-show="Model.Applications is { CanShowLocationFilter: true }">
+                <div class="govuk-form-group">
                     <label class="govuk-label" for="locationFilter">Filter by location</label>
                     <select class="govuk-select"
                             id="locationFilter"
@@ -170,8 +187,8 @@
                         }
                     </select>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
     <div asp-show="@(Model.IsApplyThroughFaaVacancy || Model.IsApplyThroughFatVacancy)">
         <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications" />
@@ -204,5 +221,3 @@ else
         </div>
     </div>
 }
-
-   
