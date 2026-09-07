@@ -12,12 +12,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
     {
         private readonly IRecruitQueueService _queueService;
         private readonly IUserRepository _userRepository;
-        private readonly IUserNotificationPreferencesRepository _userNotificationPreferenceRepository;
 
-        public EmployerUserAccountExternalSystemEventsHandler(IRecruitQueueService queueService, IUserRepository userRepository, IUserNotificationPreferencesRepository userNotificationPreferenceRepository)
+        public EmployerUserAccountExternalSystemEventsHandler(IRecruitQueueService queueService, IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            _userNotificationPreferenceRepository = userNotificationPreferenceRepository;
             _queueService = queueService;
         }
 

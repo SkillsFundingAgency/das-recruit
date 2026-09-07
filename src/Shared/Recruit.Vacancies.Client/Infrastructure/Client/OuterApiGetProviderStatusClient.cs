@@ -1,23 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
-    public class OuterApiGetProviderStatusClient : IGetProviderStatusClient
+    public class OuterApiGetProviderStatusClient(
+        IOuterApiClient outerApiClient,
+        ICache cache,
+        ITimeProvider timeProvider,
+        ILogger<OuterApiGetProviderStatusClient> logger)
+        : IGetProviderStatusClient
     {
-        private readonly IOuterApiClient _outerApiClient;
-        private readonly ILogger<OuterApiGetAddressesClient> _logger;
-
-        public OuterApiGetProviderStatusClient(IOuterApiClient outerApiClient, ILogger<OuterApiGetAddressesClient> logger)
-        {
-            _outerApiClient = outerApiClient;
-            _logger = logger;
-        }
-
         public async Task<ProviderAccountResponse> GetProviderStatus(long ukprn)
         {
             if (ukprn == EsfaTestTrainingProvider.Ukprn)
@@ -29,13 +29,28 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             }
             try
             {
-                return await _outerApiClient.Get<ProviderAccountResponse>(new GetProviderStatusDetails(ukprn));
+                return await cache.CacheAsideAsync($"{CacheKeys.ProviderAccountsPermissions}_{ukprn}",
+                    timeProvider.NextDay,
+                    async () =>
+                    {
+                        var retryPolicy = PollyRetryPolicy.GetPolicy();
+
+                        var response = await retryPolicy.Execute(_ => 
+                                outerApiClient.Get<ProviderAccountResponse>(new GetProviderStatusDetails(ukprn)),
+                            new Dictionary<string, object>
+                            {
+                                {
+                                    "apiCall", "ProviderAccounts"
+                                }
+                            });
+
+                        return response;
+                    });
             }
             catch (Exception e)
             {
-                string message = $"Get Provider Status failed for ukprn number: {ukprn}.";
-                _logger.LogDebug(message);
-                throw new Exception(message, e);
+                logger.LogInformation("Get Provider Status failed for ukprn number: {Ukprn}. Exception: {Exception}", ukprn, e.Message);
+                throw new Exception();
             }
         }
     }

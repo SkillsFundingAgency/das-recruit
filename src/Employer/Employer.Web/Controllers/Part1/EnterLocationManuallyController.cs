@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Models.AddLocation;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.AddLocation;
@@ -11,7 +10,6 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.FeatureManagement.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1;
 
@@ -22,8 +20,8 @@ public class EnterLocationManuallyController(IUtility utility) : Controller
     public async Task<IActionResult> EnterLocationManually(AddLocationJourneyModel model)
     {
         ModelState.ThrowIfBindingErrors();
-        string returnRoute = TempData.Peek(TempDataKeys.AddLocationReturnPath) as string;
-        string postcode = TempData.Peek(TempDataKeys.Postcode) as string;
+        var returnRoute = TempData.Peek(TempDataKeys.AddLocationReturnPath) as string;
+        var postcode = TempData.Peek(TempDataKeys.Postcode) as string;
         var viewModel = await GetEnterLocationManuallyViewModel(utility, model, RouteNames.EnterAddressManually_Get, new Address { Postcode = postcode }, returnRoute);
         return View(viewModel);
     }
@@ -36,23 +34,23 @@ public class EnterLocationManuallyController(IUtility utility) : Controller
     {
         if (!ModelState.IsValid)
         {
-            string returnRoute = TempData.Peek(TempDataKeys.AddLocationReturnPath) as string;
+            var returnRoute = TempData.Peek(TempDataKeys.AddLocationReturnPath) as string;
             var viewModel = await GetEnterLocationManuallyViewModel(utility, model, RouteNames.EnterAddressManually_Get, model.ToDomain(), returnRoute);
             return View(viewModel);
         }
 
-        bool? isPostcodeEnglish = await locationsService.IsPostcodeInEnglandAsync(model.Postcode);
+        var isPostcodeEnglish = await locationsService.IsPostcodeInEnglandAsync(model.Postcode);
         if (isPostcodeEnglish is false)
         {
             ModelState.AddModelError(nameof(AddLocationEditModel.Postcode), AddLocationEditModelValidator.MustBeEnglishPostcode);
-            string returnRoute = TempData.Peek(TempDataKeys.AddLocationReturnPath) as string;
+            var returnRoute = TempData.Peek(TempDataKeys.AddLocationReturnPath) as string;
             var viewModel = await GetEnterLocationManuallyViewModel(utility, model, RouteNames.EnterAddressManually_Get, model.ToDomain(), returnRoute);
             return View(viewModel);
         }
         
         var newAddress = model.ToDomain();
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model);
-        await vacancyLocationService.SaveEmployerAddress(User.ToVacancyUser(), vacancy, newAddress);
+        await vacancyLocationService.SaveEmployerAddress(vacancy, newAddress);
         
         TempData[TempDataKeys.AddedLocation] = newAddress.ToAddressString();
         TempData.Remove(TempDataKeys.Postcode);

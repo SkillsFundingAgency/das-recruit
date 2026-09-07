@@ -56,9 +56,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
 
         private async Task ExecuteHandler(string eventType, string data)
         {
-            var handler = _handlerLookup[eventType];
-
-            await handler.HandleAsync(data);
+            if (_handlerLookup.TryGetValue(eventType, out var handler))
+            {
+                await handler.HandleAsync(data);
+            }
         }
 
         private IDictionary<string, IDomainEventHandler<IEvent>> BuildHandlerLookup(IEnumerable<IDomainEventHandler<IEvent>> handlers)

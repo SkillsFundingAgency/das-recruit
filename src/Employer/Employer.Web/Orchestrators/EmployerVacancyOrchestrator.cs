@@ -20,12 +20,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _employerVacancyClient = employerVacancyClient;
         }
 
-        public async Task<bool> HasNoVacancies(string employerAccountId)
-        {
-            var vacancyCount = await _employerVacancyClient.GetVacancyCount(employerAccountId, null, null);
-            return vacancyCount == 0;
-        }
-
         public async Task<TrainingProviderSummary> GetProviderUkprn(string ukprn)
         {
             if (long.TryParse(ukprn, out long validUkprn) == false)
@@ -38,7 +32,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             if (string.IsNullOrWhiteSpace(programmeId))
                 return null;
-            var programmes = await _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+            var programmes = await _vacancyClient.GetActiveApprenticeshipProgrammesAsync(includePlaceholderProgramme:true);
             return programmes.SingleOrDefault(p => p.Id == programmeId);
         }
     }

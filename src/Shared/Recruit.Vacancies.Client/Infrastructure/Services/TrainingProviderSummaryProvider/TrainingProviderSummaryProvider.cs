@@ -12,22 +12,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
     /// <summary>
     /// Returns providers from RoATP (Register of Apprenticeship Training Providers)
     /// </summary>
-    public class TrainingProviderSummaryProvider : ITrainingProviderSummaryProvider
+    public class TrainingProviderSummaryProvider(ITrainingProviderService trainingProviderService)
+        : ITrainingProviderSummaryProvider
     {
-        private readonly ITrainingProviderService _trainingProviderService;
-        
-        public TrainingProviderSummaryProvider(ITrainingProviderService trainingProviderService)
-        {
-            _trainingProviderService = trainingProviderService;
-        }
-
         public async Task<IEnumerable<TrainingProviderSummary>> FindAllAsync()
         {
-            var response = await _trainingProviderService.FindAllAsync();
+            var response = await trainingProviderService.FindAllAsync();
 
             return response.Select(r => new TrainingProviderSummary
             {
-                Ukprn = r.Ukprn.Value,
+                Ukprn = r.Ukprn.GetValueOrDefault(),
                 ProviderName = r.Name
             });
         }
@@ -37,15 +31,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
             if (ukprn == EsfaTestTrainingProvider.Ukprn)
                 return new TrainingProviderSummary { Ukprn = EsfaTestTrainingProvider.Ukprn, ProviderName = EsfaTestTrainingProvider.Name, IsTrainingProviderMainOrEmployerProfile = true};
 
-            var provider = await _trainingProviderService.GetProviderDetails(ukprn);
-            
+            var provider = await trainingProviderService.GetProviderDetails(ukprn);
+
             return new TrainingProviderSummary
             {
                 Ukprn = provider.Ukprn,
                 ProviderName = provider.Name,
-                IsTrainingProviderMainOrEmployerProfile = (provider.ProviderTypeId.Equals((short) ProviderTypeIdentifier.MainProvider) ||
-                                                           provider.ProviderTypeId.Equals((short) ProviderTypeIdentifier.EmployerProvider)) &&
-                                                          !provider.StatusId.Equals((short) ProviderStatusType.ActiveButNotTakingOnApprentices)
+                IsTrainingProviderMainOrEmployerProfile = (provider.ProviderTypeId.Equals((short)ProviderTypeIdentifier.MainProvider) ||
+                                                           provider.ProviderTypeId.Equals((short)ProviderTypeIdentifier.EmployerProvider)) &&
+                                                          !provider.StatusId.Equals((short)ProviderStatusType.ActiveButNotTakingOnApprentices)
             };
         }
     }

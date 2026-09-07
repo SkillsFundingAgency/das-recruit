@@ -9,7 +9,5 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Submitted
         public bool IsResubmit { get; set; }
 
         public bool HasVacancyReference => !string.IsNullOrEmpty(VacancyReference);
-        public bool HasNotificationsSet { get; set; }
-        public bool IsVacancyRejectedByESFANotificationSelected { get; set; }
     }
 }

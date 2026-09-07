@@ -21,8 +21,10 @@ public static class RouteNames
 
     public const string Dashboard_Get = "Dashboard_Get";
 
-    public const string Vacancies_Get = "Dashboard_Index_Get";
-        
+    public const string ArchiveVacancy_Get = nameof(ArchiveVacancy_Get);
+    public const string ArchiveVacancy_Post = nameof(ArchiveVacancy_Post);
+    public const string VacanciesGetAll = nameof(VacanciesGetAll);
+    
     public const string Dashboard_AccountsRename = "Dashboard_AccountsRename";
     public const string Dashboard_AccountsFinance = "Dashboard_AccountsFinance";
     public const string Dashboard_AccountsAgreements = "Dashboard_AccountsAgreements";
@@ -169,6 +171,8 @@ public static class RouteNames
     public const string ApplicationReviewsToUnsuccessfulFeedback_Post = "ApplicationReviewsToUnsuccessfulFeedback_Post";
     public const string ApplicationReviewsToUnsuccessfulConfirmation_Get = "ApplicationReviewsToUnsuccessfulConfirmation_Get";
     public const string ApplicationReviewsToUnsuccessfulConfirmation_Post = "ApplicationReviewsToUnsuccessfulConfirmation_Post";
+    public const string ApplicationReviewFeedback_Get = "ApplicationReviewFeedback_Get";
+    public const string ApplicationReviewFeedback_Post = "ApplicationReviewFeedback_Post";
 
     public const string VacancyManage_Get = "VacancyManage_Get";
     public const string VacancyEdit_Get = "VacancyEdit_Get";

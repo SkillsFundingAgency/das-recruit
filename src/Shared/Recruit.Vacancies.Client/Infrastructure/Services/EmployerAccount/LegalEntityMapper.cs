@@ -19,6 +19,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             };
         }
 
+        public static LegalEntity MapFromAllAccountApiLegalEntity(GetAllAccountLegalEntitiesApiResponse.LegalEntity data)
+        {
+            return new LegalEntity
+            {
+                AccountLegalEntityPublicHashedId = data.AccountLegalEntityPublicHashedId,
+                Name = data.Name,
+                Address = MapFromAddressLine(data.Address),
+                HasLegalEntityAgreement = data.Agreements?.Any() == true
+            };
+        }
+
         internal static Address MapFromAddressLine(string address)
         {
             const string splitChar = ",";

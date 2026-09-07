@@ -9,12 +9,14 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks
     {
         public const string AccountLegalEntityPublicHashedId123 = "ABC123";
         public const string AccountLegalEntityPublicHashedId456 = "ABC456";
+        public const string EmployerAccountId = "EMPLOYER ACCOUNT ID";
+
 
         internal static Vacancy GetPart1CompleteVacancy()
         {
             return new Vacancy
             {
-                EmployerAccountId = "EMPLOYER ACCOUNT ID",
+                EmployerAccountId = EmployerAccountId,
                 AccountLegalEntityPublicHashedId = AccountLegalEntityPublicHashedId123,
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",

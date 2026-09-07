@@ -44,36 +44,4 @@ public class ManageNotificationsController(ManageNotificationsOrchestrator orche
         };
         return View("NewManageNotifications", vm);
     }
-
-    [HttpGet("notifications-unsubscribe", Name = RouteNames.ConfirmUnsubscribeNotifications_Get)]
-    public IActionResult ConfirmUnsubscribeNotifications(ManageNotificationsRouteModel model)
-    {
-        return View(new ConfirmUnsubscribeNotificationsViewModel{EmployerAccountId = model.EmployerAccountId});
-    }
-
-    [HttpPost("notifications-unsubscribe", Name = RouteNames.ConfirmUnsubscribeNotifications_Post)]
-    public async Task<IActionResult> ConfirmUnsubscribeNotifications(ConfirmUnsubscribeNotificationsEditModel model)
-    {
-        if(!ModelState.IsValid)
-            return View(new ConfirmUnsubscribeNotificationsViewModel{EmployerAccountId = model.EmployerAccountId});
-
-        if(model.ConfirmUnsubscribe == false)
-            return RedirectToRoute(RouteNames.ManageNotifications_Get, new {model.EmployerAccountId});
-
-        await orchestrator.UnsubscribeUserNotificationsAsync(User.ToVacancyUser());
-            
-        return RedirectToRoute(RouteNames.NotificationUnsubscribedAcknowledgement_Get, new {model.EmployerAccountId});
-    }
-
-    [HttpGet("notifications-acknowledgement", Name = RouteNames.NotificationsUpdatedAcknowledgement_Get)]
-    public IActionResult NotificationsUpdatedAcknowledgement(ManageNotificationsAcknowledgementViewModel model)
-    {
-        return View(model);
-    }
-
-    [HttpGet("notifications-unsubscribed", Name = RouteNames.NotificationUnsubscribedAcknowledgement_Get)]
-    public IActionResult NotificationUnsubscribedAcknowledgement(ManageNotificationsRouteModel routeModel)
-    {
-        return View(routeModel);
-    }
 }

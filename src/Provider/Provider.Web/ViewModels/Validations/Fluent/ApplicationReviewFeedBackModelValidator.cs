@@ -1,5 +1,4 @@
-﻿using Esfa.Recruit.Shared.Web.Models;
-using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
+﻿using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;

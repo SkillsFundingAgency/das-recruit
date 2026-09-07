@@ -1,15 +1,10 @@
-﻿using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Shared.Web.ViewModels;
+﻿using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyAnalytics
 {
-    public class VacancyAnalyticsViewModel : VacancyRouteModel
+    public class VacancyAnalyticsViewModel
     {
-        public long VacancyReference { get; internal set; }
         public VacancyAnalyticsSummaryViewModel AnalyticsSummary { get; internal set; }
-        public string ViewBagTitle => "Advert Analytics";
         public bool HasAnalytics => AnalyticsSummary != null;
-        public bool IsApplyThroughFaaVacancy { get; internal set; }
-        public bool IsApplyThroughExternalApplicationSiteVacancy => !IsApplyThroughFaaVacancy;
     }
 }

@@ -219,7 +219,7 @@ public class LocationOrchestratorTests
 
         public void Setup()
         {
-            MockClient.Setup(x => x.GetProviderEditVacancyInfoAsync(Vacancy.TrainingProvider.Ukprn.Value)).ReturnsAsync(ProviderEditVacancyInfo);
+            MockClient.Setup(x => x.GetProviderEditVacancyInfoAsync(Vacancy.TrainingProvider.Ukprn.Value, Vacancy.EmployerAccountId)).ReturnsAsync(ProviderEditVacancyInfo);
             MockClient.Setup(x => x.GetProviderEmployerVacancyDataAsync(Vacancy.TrainingProvider.Ukprn.Value, Vacancy.EmployerAccountId)).ReturnsAsync(EmployerInfo);
             MockAddressesClient.Setup(x => x.GetAddresses(It.IsAny<string>())).ReturnsAsync(AddressesListResponse);
                 
@@ -228,10 +228,10 @@ public class LocationOrchestratorTests
             MockRecruitVacancyClient.Setup(x => x.GetEmployerProfileAsync(Vacancy.EmployerAccountId, AlternateEmployerProfile.AccountLegalEntityPublicHashedId)).ReturnsAsync(AlternateEmployerProfile);
             MockRecruitVacancyClient.Setup(x => x.Validate(Vacancy, ValidationRules)).Returns(new EntityValidationResult());
             MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
-            MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
+            MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>()));
 
-            Sut = new LocationOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<LocationOrchestrator>>(), 
-                Mock.Of<IReviewSummaryService>(), MockAddressesClient.Object, new Utility(MockRecruitVacancyClient.Object, Mock.Of<ITaskListValidator>()));
+            Sut = new LocationOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<LocationOrchestrator>>(),
+                MockAddressesClient.Object, new Utility(MockRecruitVacancyClient.Object, Mock.Of<ITaskListValidator>()));
         }
 
         public async Task PostLocationEditModelAsync(LocationEditModel model, VacancyEmployerInfoModel vacancyEmployerInfoModel = null)

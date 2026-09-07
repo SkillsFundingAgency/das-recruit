@@ -14,24 +14,23 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public OwnerType OwnerType { get; set; }
         public SourceOrigin SourceOrigin { get; set; }
         public SourceType SourceType { get; set; }
+        public ArchiveType? ArchiveType { get; set; }
         public long? SourceVacancyReference { get; set; }
         public DateTime? ClosedDate { get; set; }
-        public VacancyUser ClosedByUser { get; set; }
         public DateTime? CreatedDate { get; set; }
         public VacancyUser CreatedByUser { get; set; }
         public DateTime? SubmittedDate { get; set; }
         public VacancyUser SubmittedByUser { get; set; }
         public DateTime? ReviewDate { get; set; }
+        public DateTime? ArchivedDate { get; set; }
         public VacancyUser ReviewByUser { get; set; }
+        public string ArchivedByUserId { get; set; }
         public int ReviewCount { get; set; }
         public DateTime? ApprovedDate { get; set; }
         public DateTime? LiveDate { get; set; }
-
         public DateTime? LastUpdatedDate { get; set; }
-        public VacancyUser LastUpdatedByUser { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? DeletedDate { get; set; }
-        public VacancyUser DeletedByUser { get; set; }
         public string AnonymousReason { get; set; }
         public string ApplicationInstructions { get; set; }
         public ApplicationMethod? ApplicationMethod { get; set; }
@@ -68,16 +67,10 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
             set => _apprenticeshipType = value;
         }
 
-        public string ShortDescription  
+        public string? ShortDescription
         {
-            get
-            {
-                return _shortDescription;
-            }
-            set
-            {
-                if (value != null) _shortDescription = value.Replace(Environment.NewLine, " ");
-            }
+            get => _shortDescription;
+            set => _shortDescription = value?.Replace(Environment.NewLine, " ");
         }
 
         public List<string> Skills { get; set; }
@@ -89,13 +82,9 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public TrainingProvider TrainingProvider { get; set; }
         public Wage Wage { get; set; }
         public ClosureReason? ClosureReason { get; set; }
-        public string ClosureExplanation { get; set; }
         public TransferInfo TransferInfo { get; set; }
         public bool CanClose => Status == VacancyStatus.Live;
-        public bool CanClone => (Status == VacancyStatus.Live || 
-                                 Status == VacancyStatus.Closed || 
-                                 Status == VacancyStatus.Submitted || 
-                                 Status == VacancyStatus.Review);
+        public bool CanClone => Status is VacancyStatus.Live or VacancyStatus.Closed or VacancyStatus.Submitted or VacancyStatus.Review or VacancyStatus.Archived;
         /// <summary>
         /// We can only delete draft vacancies that have not been deleted
         /// </summary>
@@ -103,6 +92,13 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
                                   Status == VacancyStatus.Referred ||
                                   Status == VacancyStatus.Rejected )
                                  && IsDeleted == false) || (Status == VacancyStatus.Submitted && ClosingDate <= DateTime.UtcNow && !IsDeleted);
+
+        /// <summary>
+        /// We can only archive closed vacancies that have not been deleted
+        /// </summary>
+        public bool CanArchive => Status == VacancyStatus.Closed
+                                  && !IsDeleted;
+
         /// <summary>
         /// We can only edit draft & referred & rejected vacancies that have not been deleted
         /// </summary>

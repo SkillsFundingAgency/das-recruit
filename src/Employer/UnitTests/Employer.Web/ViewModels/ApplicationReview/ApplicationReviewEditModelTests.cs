@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
         public void Setup()
         {
             _mockProfanityListProvider = new Mock<IProfanityListProvider>();
-            _mockProfanityListProvider.Setup(x => x.GetProfanityListAsync()).Returns(GetProfanityListAsync());
+            _mockProfanityListProvider.Setup(x => x.GetProfanityListAsync()).Returns(ProfanityListAsync);
         }
 
 
@@ -49,8 +49,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
         {
             var m = new ApplicationReviewEditModel
             {
-                Outcome = ApplicationReviewStatus.Unsuccessful,
-                CandidateFeedback = candidateFeedback
+                Outcome = ApplicationReviewStatus.EmployerUnsuccessful,
+                CandidateFeedback = candidateFeedback,
+                IsApplicationSharedByProvider = true
             };
 
             var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
@@ -83,8 +84,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
         public void ShouldBeInvalid()
         {
             var m = new ApplicationReviewEditModel {
-                Outcome = ApplicationReviewStatus.Unsuccessful,
-                CandidateFeedback = "?$@#()\"\'\\!,+-=_:;.&€£*%/[] \\A-Z \a-z \0-9 your comments will be sent to the candidate."
+                Outcome = ApplicationReviewStatus.EmployerUnsuccessful,
+                CandidateFeedback = "?$@#()\"\'\\!,+-=_:;.&€£*%/[] \\A-Z \a-z \0-9 your comments will be sent to the candidate.",
+                IsApplicationSharedByProvider = true
             };
 
             var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
@@ -94,16 +96,17 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
             result.IsValid.Should().BeFalse();
         }
 
-        [TestCase(ApplicationReviewStatus.Unsuccessful, "Some candidate feedback bother")]
-        [TestCase(ApplicationReviewStatus.Unsuccessful, "dang Some candidate feedback")]
-        [TestCase(ApplicationReviewStatus.Unsuccessful, "Some candidate balderdash bother")]
-        [TestCase(ApplicationReviewStatus.Unsuccessful, "Some drat feedback bother")]
+        [TestCase(ApplicationReviewStatus.EmployerUnsuccessful, "Some candidate feedback bother")]
+        [TestCase(ApplicationReviewStatus.EmployerUnsuccessful, "dang Some candidate feedback")]
+        [TestCase(ApplicationReviewStatus.EmployerUnsuccessful, "Some candidate balderdash bother")]
+        [TestCase(ApplicationReviewStatus.EmployerUnsuccessful, "Some drat feedback bother")]
         public void ShouldBeInvalid_ForProfanityWordsInFeedback(ApplicationReviewStatus outcome, string feedback)
         {
             var m = new ApplicationReviewEditModel
             {
                 Outcome = outcome,
-                CandidateFeedback = feedback
+                CandidateFeedback = feedback,
+                IsApplicationSharedByProvider = true
             };
 
             var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
@@ -112,11 +115,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
             result.Errors.Count.Should().Be(1);
             result.Errors[0].ErrorCode.Should().Be("617");
         }
-        public Task<IEnumerable<string>> GetProfanityListAsync()
-        {
-            return Task.FromResult<IEnumerable<string>>(new[] { "bother", "dang", "balderdash", "drat" });
-        }
-    }
 
-    
+        private static Task<IEnumerable<string>> ProfanityListAsync => Task.FromResult<IEnumerable<string>>(["bother", "dang", "balderdash", "drat"]);
+    }
 }

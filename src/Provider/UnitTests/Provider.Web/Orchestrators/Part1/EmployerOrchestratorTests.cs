@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
             EmployerOrchestrator orchestrator)
         {
-            providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
+            providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn, ""))
                 .ReturnsAsync((ProviderEditVacancyInfo) null);
 
             Assert.ThrowsAsync<MissingPermissionsException>(() =>
@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
             EmployerOrchestrator orchestrator)
         {
-            providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
+            providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn, ""))
                 .ReturnsAsync(providerEditVacancyInfo);
 
             var actual = await orchestrator.GetEmployersViewModelAsync(vacancyRouteModel);

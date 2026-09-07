@@ -1,102 +1,137 @@
 /* Dashboard */
 
+.faa-dashboard-search {
+    max-width: 540px;
+}
+
 .app-card {
-  border: 1px solid #bfc1c3;
-  height: 100%;
-  margin-bottom: 20px;
+    border: 1px solid #bfc1c3;
+    height: 100%;
+    margin-bottom: 20px;
+}
+
+a.app-card {
+    display: block;
+    text-decoration: none;
+    border-radius: 0.3rem;
+    color: #0b0c0c;
+}
+
+a.app-card:hover,
+a.app-card:focus {
+    background-color: #0f385c;
+    color: #fff;
+}
+
+a.app-card:focus {
+    outline: 3px solid #fd0;
 }
 
 @media (min-width: 40.0625em) {
-  .app-card {
-    margin-bottom: 0;
-  }
+    .app-card {
+        margin-bottom: 0;
+    }
+    a.app-card {
+        min-height: 12rem;
+    }
 }
 
 .app-card--inactive {
-  background-color: #f8f8f8;
+    background-color: #f8f8f8;
 }
 
 .app-card__heading {
-  margin-bottom: 10px;
-  font-size: 19px;
-  font-size: 1.1875rem;
-  line-height: 1.31579;
+    margin-bottom: 10px;
+    font-size: 1.1875rem;
+    line-height: 1.31579;
+    color: inherit;
+}
+
+a.app-card .app-card__heading-text {
+    color: #1a65a6;
+    text-decoration: underline;
+    text-decoration-thickness: max(1px, .0625rem);
+    text-underline-offset: .1578em;
+}
+
+a.app-card:hover .app-card__heading-text {
+    color: #fff;
+}
+
+a.app-card:active .app-card__heading-text,
+a.app-card:focus .app-card__heading-text {
+    color: #0b0c0c;
+    outline: 3px solid rgba(0, 0, 0, 0);
+    background-color: #fd0;
+    box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+    text-decoration: none;
 }
 
 @media (min-width: 40.0625em) {
-  .app-card__stat {
-    display: block;
-    font-size: 32px;
-    font-size: 2rem;
-    line-height: 1.25;
-  }
+    .app-card__stat {
+        display: block;
+        font-size: 2.25rem;
+        line-height: 1;
+        margin-bottom: 10px;
+    }
 }
 
 .app-card__content {
-  padding: 20px;
+    padding: 1rem;
+    color: inherit;
 }
 
 .app-card__description {
-  margin-bottom: 0;
-  font-size: 16px;
-  font-size: 1rem;
-  line-height: 1.25;
-}
-
-@media (min-width: 40.0625em) {
-  .app-card__row {
-    display: flex;
-    margin-bottom: 30px;
-  }
+    margin-bottom: 0;
+    font-size: 1rem;
+    line-height: 1.25;
+    color: inherit;
 }
 
 .app-card__tasks {
-  margin-top: 15px;
-  margin-bottom: 0;
-  font-size: 16px;
-  font-size: 1rem;
-  line-height: 1.25;
+    margin-top: 15px;
+    margin-bottom: 0;
+}
+
+@media (min-width: 40.0625em) {
+    .app-card__row {
+        display: flex;
+        margin-bottom: 30px;
+    }
+}
+
+/* Vacancy List */
+
+.app-vacancy-list .govuk-table__head tr th,
+.app-vacancy-list .govuk-table__body tr td {
+    font-size: 1rem;
+    padding-right: 10px;
+}
+
+@media (min-width: 40.0625em) {
+    .app-vacancy-list {
+        width: 100%;
+    }
+
+    .th-w-title { width: 164px }
+    .th-w-employer { width: 150px }
+    .th-w-ref { width: 146px }
+    .th-w-applications { width: 110px }
+    .th-w-status { width: 161px }
+    .th-w-action { width: 62px }
 }
 
 /* Status Tags */
 
 .app-tag {
   font-size: inherit;
-}
-
-.app-tag--draft {
-  color: #383f43;
-  background: #eeefef;
-}
-
-.app-tag--submitted {
-  color: #6e3619;
-  background: #fcd6c3;
-}
-
-.app-tag--referred {
-  color: #942514;
-  background: #f6d7d2;
-}
-
-.app-tag--approved {
-  color: #005a30;
-  background: #cce2d8;
-}
-
-.app-tag--live {
-  color: #005a30;
-  background: #cce2d8;
-}
-
-.app-tag--closed {
-  color: #383f43;
-  background: #eeefef;
+  white-space: nowrap;
+  max-width: max-content;
 }
 
 .app-tag--transferred {
-  color: #144e81;
-  background: #d2e2f1;
+    color: #144e81;
+    background: #d2e2f1;
 }
 
 /* Vacancy preview */
@@ -238,25 +273,38 @@
 
 /* Analytics styles for vacancies */
 
+.app-analytics-container {
+    display: inline-flex;
+    gap: 10px;
+}
+
 .app-analytics {
-  background: #f3f2f1;
+    background: #f3f2f1;
+    flex: 1;
+    min-width: 190px;
+    min-height: 110px;
 }
 
 .app-analytics__heading {
-  padding: 5px 10px;
-  background: #ddd;
-  margin: 0;
+    padding: 5px 10px;
+    font-weight: 700;
+    margin: 0;
+    font-size: 16px;
+    white-space: nowrap;
 }
 
 .app-analytics__data {
-  padding: 10px;
-  font-weight: 700;
-  margin: 0;
+    padding: 5px 10px;
+    font-weight: 700;
+    margin: 0;
+    font-size: 27px;
 }
 
 .app-analytics__summary {
-  border-top: 1px solid #ccc;
-  padding: 5px 10px;
+    padding: 5px 10px;
+    font-size: 16px;
+    white-space: nowrap;
+    margin-bottom: 0px;
 }
 
 /* Local overrides to the das-task-list component */
@@ -304,6 +352,10 @@
 
 .mce-tinymce {
   border: 2px solid #0b0c0c !important;
+}
+
+.dfe-branding .mce-ico {
+    font-family: 'tinymce', Arial !important;
 }
 
 /* Hide error message spans if empty  */
@@ -692,10 +744,86 @@ dd.govuk-summary-list__value .faa-user-content:first-child {
   color: #505a5f;
 }
 
+.das-table--bordered-header {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #b1b4b6; /* outer table border */
+}
+
+    .das-table--bordered-header th,
+    .das-table--bordered-header td {
+        padding: 15px !important; /* extra space from left border */
+    }
+
+    .das-table--bordered-header thead th {
+        background-color: #f3f2f1; /* header background */
+        font-weight: 700;
+    }
+
 @media (min-width: 40.0625em) {
   .faa-summary-card {
     .govuk-summary-list__key {
       width: 50%;
     }
   }
+}
+
+.das-sortable-column-header {
+    display: flex !important;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.das-pagination-container {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+}
+
+.raa-archive-card {
+    background: #f3f2f1;
+    border: none;
+}
+
+    .raa-archive-card .raa-archive-card-heading {
+        margin-top: 40px !important;
+    }
+
+.border-bottom-none {
+    border-bottom: none !important;
+}
+
+.govuk-summary-list__value.das-align-end {
+    align-self: flex-end; /* or justify-self: end for grid */
+    text-align: right;
+}
+
+[aria-sort] button,
+[aria-sort] button:hover {
+    display: inline-flex;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    color: #005ea5;
+    background-color: transparent;
+    -webkit-box-shadow: 0 0 0 0;
+    -moz-box-shadow: 0 0 0 0;
+    box-shadow: 0 0 0 0;
+    font-family: inherit;
+    font-size: inherit;
+    font-size: 1em;
+    font-weight: inherit;
+    text-align: inherit;
+    cursor: pointer;
+    align-items: center;
+}
+
+[aria-sort] button:focus {
+    outline: none;
+    color: #0b0c0c;
+    background-color: #fd0;
+    box-shadow:
+            0 -2px #fd0,
+            0 4px #0b0c0c;
 }

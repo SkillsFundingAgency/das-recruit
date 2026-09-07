@@ -36,7 +36,7 @@ public class VacancyTaskListOrchestratorTests
     {
         providerVacancyClient.Setup(x => x.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn, employerAccountId))
             .ReturnsAsync(employerInfo);
-        providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(routeModel.Ukprn)).ReturnsAsync(providerEditVacancyInfo);
+        providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(routeModel.Ukprn, employerAccountId)).ReturnsAsync(providerEditVacancyInfo);
             
         var viewModel = await orchestrator.GetCreateVacancyTaskListModel(routeModel, employerAccountId);
         

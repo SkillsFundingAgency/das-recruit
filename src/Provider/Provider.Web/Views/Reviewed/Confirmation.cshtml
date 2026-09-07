@@ -31,19 +31,9 @@
             If the employer approves the vacancy, <abbr>DfE</abbr> will then review the vacancy. If the vacancy is approved by <abbr>DfE</abbr>, it will go live on Find an apprenticeship.
         </p>
 
-        @if (Model.IsVacancyRejectedByEmployerNotificationSelected)
-        {
-            <p class="govuk-body">
-                We'll email you if the employer rejects this vacancy. You'll need to edit the vacancy and resubmit it.
-            </p>
-        }
-        else
-        {
-            <p class="govuk-body">
-                If the employer rejects the vacancy, you will need to edit the vacancy and resubmit. <a class="govuk-link" asp-route="@RouteNames.ManageNotifications_Get" asp-route-ukprn="@Model.Ukprn">Manage your recruitment emails</a> to get an email when an employer rejects a vacancy.
-            </p>
-        }
-
+        <p>
+            If the employer rejects the vacancy, you will need to edit the vacancy and resubmit. <a class="govuk-link" asp-route="@RouteNames.ManageNotifications_Get" asp-route-ukprn="@Model.Ukprn">Manage your recruitment emails</a> to get an email when an employer rejects a vacancy.
+        </p>
         
         <p class="govuk-body">
             <a class="govuk-button" asp-route="@RouteNames.CreateVacancyStart" asp-route-ukprn="@Model.Ukprn">Create another vacancy</a>

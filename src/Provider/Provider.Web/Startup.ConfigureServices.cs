@@ -1,11 +1,8 @@
-using System;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Esfa.Recruit.Provider.Web.AppStart;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
@@ -25,7 +22,6 @@ namespace Esfa.Recruit.Provider.Web
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly AuthenticationConfiguration _authConfig;
         private readonly ILoggerFactory _loggerFactory;
-        private readonly ILogger<Startup> _logger;
 
         public Startup(IConfiguration config, IWebHostEnvironment env, ILoggerFactory loggerFactory, ILogger<Startup> logger)
         {
@@ -56,7 +52,6 @@ namespace Esfa.Recruit.Provider.Web
             
             _dfEOidcConfig = _configuration.GetSection("DfEOidcConfiguration").Get<DfEOidcConfiguration>(); // read the configuration from SFA.DAS.Provider.DfeSignIn
             _loggerFactory = loggerFactory;
-            _logger = logger;
         }
         
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -102,27 +97,6 @@ namespace Esfa.Recruit.Provider.Web
             
             services.AddAuthorizationService();
             services.AddDasEncoding(_configuration);
-
-            CheckInfrastructure(services);
-        }
-
-        private void CheckInfrastructure(IServiceCollection services)
-        {
-            try
-            {
-                var serviceProvider = services.BuildServiceProvider();
-                var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
-                collectionChecker?.EnsureCollectionsExist();
-                var timer = Stopwatch.StartNew();
-                _logger.LogInformation("Creating indexes");
-                collectionChecker?.CreateIndexes().Wait();
-                timer.Stop();
-                _logger.LogInformation($"Finished creating indexes took:{timer.Elapsed.TotalSeconds}");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error checking infrastructure");
-            }
         }
     }
 }

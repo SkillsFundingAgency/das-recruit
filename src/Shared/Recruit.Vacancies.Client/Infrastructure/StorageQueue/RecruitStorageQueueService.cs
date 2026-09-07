@@ -16,9 +16,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
             { typeof(DeleteReportsQueueMessage), QueueNames.DeleteReportsQueueName },
             { typeof(EventItem), QueueNames.DomainEventsQueueName },
             { typeof(ReportQueueMessage), QueueNames.ReportQueueName },
-            { typeof(TransferVacanciesFromProviderQueueMessage), QueueNames.TransferVacanciesFromProviderQueueName },
-            { typeof(TransferVacancyToLegalEntityQueueMessage), QueueNames.TransferVacanciesToLegalEntityQueueName },
-            { typeof(VacancyAnalyticsQueueMessage), QueueNames.GenerateVacancyAnalyticsQueueName },
             { typeof(VacancyStatusQueueMessage), QueueNames.VacancyStatusQueueName },
             { typeof(UpdateEmployerUserAccountQueueMessage), QueueNames.UpdateEmployerUserAccountQueueName },
             { typeof(DeleteStaleQueryStoreDocumentsQueueMessage), QueueNames.DeleteStaleQueryStoreDocumentsQueueName },
@@ -26,7 +23,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
             { typeof(UpdateProvidersQueueMessage), QueueNames.UpdateProvidersQueueName},
             { typeof(UpdateProviderInfoQueueMessage), QueueNames.UpdateProviderInfoQueueName},
             { typeof(TransferVacanciesFromEmployerReviewToQAReviewQueueMessage), QueueNames.TransferVacanciesFromEmployerReviewToQAReviewQueueName },
-            { typeof(VacancyAnalyticsV2QueueMessage), QueueNames.GenerateV2VacancyAnalyticsQueueName }
         };
 
         protected override string ConnectionString { get; }

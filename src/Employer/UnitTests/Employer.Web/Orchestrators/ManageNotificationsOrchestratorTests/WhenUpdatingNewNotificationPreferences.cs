@@ -36,8 +36,8 @@ public class WhenUpdatingNewNotificationPreferences
     
     [Test]
     [MoqInlineAutoData(nameof(NotificationFrequencyEx.Never), NotificationScopeEx.NotSet, NotificationFrequencyEx.Never)]
-    [MoqInlineAutoData(nameof(NotificationScopeEx.UserSubmittedVacancies), NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.NotSet)]
-    [MoqInlineAutoData(nameof(NotificationScopeEx.OrganisationVacancies), NotificationScopeEx.OrganisationVacancies, NotificationFrequencyEx.NotSet)]
+    [MoqInlineAutoData(nameof(NotificationScopeEx.UserSubmittedVacancies), NotificationScopeEx.UserSubmittedVacancies, NotificationFrequencyEx.Immediately)]
+    [MoqInlineAutoData(nameof(NotificationScopeEx.OrganisationVacancies), NotificationScopeEx.OrganisationVacancies, NotificationFrequencyEx.Immediately)]
     public async Task For_VacancyApprovedOrUpdatedByDfE_Event_It_Succeeds_When_User_Found(
         string optionValue,
         NotificationScopeEx expectedScope,

@@ -5,12 +5,9 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews
 {
-    public class ApplicationReviewsFeedbackViewModel : ApplicationReviewsToUnsuccessfulRouteModel,IApplicationReviewsEditModel
+    public class ApplicationReviewsFeedbackViewModel : ApplicationReviewsToUnsuccessfulRouteModel, IApplicationReviewsEditModel
     {
         public string CandidateFeedback { get; set; }
         public List<VacancyApplication> ApplicationsToUnsuccessful { get; set; }
-        public string ApplicationsToUnsuccessfulFeedbackHeaderTitle => IsMultipleApplications ? "Give feedback to the unsuccessful applicants" : "Give feedback to the unsuccessful applicant";
-        public string ApplicationsToUnsuccessfulFeedbackDescription =>
-            IsMultipleApplications ? "Your feedback will be sent to all applicants you have selected as unsuccessful." : "Your feedback will be sent to the applicant you have selected as unsuccessful.";
     }
 }

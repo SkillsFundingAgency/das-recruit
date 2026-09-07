@@ -46,31 +46,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
                 return;
             }
 
-            if (message.GrantedOperations.Contains(Operation.Recruitment) == false)
-            {
-                _logger.LogInformation($"Transferring vacancies from Provider {message.Ukprn} to Employer {message.AccountId}");
-
-                var employerAccountId = _encoder.Encode(message.AccountId, EncodingType.AccountId);
-
-                var legalEntity = await GetAssociatedLegalEntityAsync(message, employerAccountId);
-
-                if (legalEntity == null)
-                {
-                    throw new Exception($"Could not find matching Account Legal Entity Id {message.AccountLegalEntityId} for Employer Account {message.AccountId}");
-                }
-
-                await _recruitQueueService.AddMessageAsync(new TransferVacanciesFromProviderQueueMessage
-                {
-                    Ukprn = message.Ukprn,
-                    EmployerAccountId = employerAccountId,
-                    AccountLegalEntityPublicHashedId = legalEntity.AccountLegalEntityPublicHashedId,
-                    UserRef = message.UserRef.Value,
-                    UserEmailAddress = message.UserEmailAddress,
-                    UserName = $"{message.UserFirstName} {message.UserLastName}",
-                    TransferReason = TransferReason.EmployerRevokedPermission
-                });
-            }
-            else if (message.GrantedOperations.Contains(Operation.RecruitmentRequiresReview) == false)
+            if (message.GrantedOperations.Contains(Operation.RecruitmentRequiresReview) == false)
             {
                 _logger.LogInformation($"Transferring vacancies from Employer Review to QA Review for Provider {message.Ukprn}");
 

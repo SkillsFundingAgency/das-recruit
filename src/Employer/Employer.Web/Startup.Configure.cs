@@ -1,16 +1,17 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Collections.Generic;
-using System.Globalization;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
-using Microsoft.Extensions.Hosting;
 using SFA.DAS.GovUK.Auth.Extensions;
 
 
@@ -192,6 +193,13 @@ namespace Esfa.Recruit.Employer.Web
             // Redirect requests to root to the MA site.
             app.UseRootRedirect(externalLinks.Value.ManageApprenticeshipSiteUrl);
             app.UseHttpsRedirection();
+            app.Use(async (context, next) =>
+            {
+                var formOptions = context.RequestServices
+                    .GetRequiredService<IOptions<FormOptions>>().Value;
+                context.Features.Set<IFormFeature>(new FormFeature(context.Request, formOptions));
+                await next();
+            });
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(builder =>

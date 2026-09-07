@@ -1,13 +1,9 @@
-using System;
-using System.Linq;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
-using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using FluentValidation;
 using FluentValidation.Results;
 using SFA.DAS.VacancyServices.Wage;
@@ -166,57 +162,81 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 
             });
         }
-        
-        internal static IRuleBuilderInitial<TrainingProvider, TrainingProvider> TrainingProviderMustNotBeBlocked(this IRuleBuilder<TrainingProvider, TrainingProvider> ruleBuilder, IBlockedOrganisationQuery blockedOrganisationRep)
-        {
-            return (IRuleBuilderInitial<TrainingProvider, TrainingProvider>)ruleBuilder.CustomAsync(async (trainingProvider, context, cancellationToken) =>
-            {
-                if (trainingProvider.Ukprn != null)
-                {
-                    var organisation = await blockedOrganisationRep.GetByOrganisationIdAsync(trainingProvider.Ukprn.Value.ToString());
-                    if(organisation == null || organisation.BlockedStatus != BlockedStatus.Blocked)
-                        return;
-                }
-                
-                var failure = new ValidationFailure(nameof(Vacancy.TrainingProvider), $"{trainingProvider.Name} can no longer be used as a training provider")
-                {
-                    ErrorCode = ErrorCodes.TrainingProviderMustNotBeBlocked,
-                    CustomState = VacancyRuleSet.TrainingProvider
-                };
-                context.AddFailure(failure);
-            });
-        }
 
-        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingProviderVacancyMustHaveEmployerPermission(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IProviderRelationshipsService providerRelationshipService)
+        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingProviderVacancyMustHaveEmployerPermission(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder,
+            IProviderRelationshipsService providerRelationshipService)
         {
-            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
+            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
             {
                 if (vacancy.OwnerType != OwnerType.Provider)
                     return;
 
-                var hasPermission = await providerRelationshipService.HasProviderGotEmployersPermissionAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.Recruitment);
-
-                if (hasPermission)
-                    return;
-                
-                var failure = new ValidationFailure(string.Empty, "Training provider does not have permission to create vacancies for this employer")
+                if (vacancy.TrainingProvider?.Ukprn is not { } ukprn)
                 {
-                    ErrorCode = ErrorCodes.TrainingProviderMustHaveEmployerPermission,
-                    CustomState = VacancyRuleSet.TrainingProvider
-                };
-                context.AddFailure(failure);
+                    context.AddFailure(ProviderPermissionFailure());
+                    return;
+                }
+
+                var hasPermission = await providerRelationshipService
+                    .HasProviderGotEmployersPermissionAsync(
+                        ukprn,
+                        vacancy.EmployerAccountId,
+                        vacancy.AccountLegalEntityPublicHashedId,
+                        OperationType.Recruitment);
+
+                if (!hasPermission)
+                    context.AddFailure(ProviderPermissionFailure());
             });
         }
 
+        private static ValidationFailure ProviderPermissionFailure() =>
+            new("Provider", "Training provider does not have permission to create vacancies for this employer")
+            {
+                ErrorCode = ErrorCodes.TrainingProviderMustHaveEmployerPermission,
+                CustomState = VacancyRuleSet.TrainingProvider
+            };
+
+        internal static IRuleBuilderInitial<Vacancy, Vacancy> EmployerLocationMustBeInEngland(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, ILocationsService locationsService) =>
+            (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
+            {
+                if (vacancy?.EmployerLocations == null || vacancy.EmployerLocations.Count == 0)
+                    return;
+
+                var (message, errorCode) = vacancy.EmployerLocationOption switch
+                {
+                    AvailableWhere.OneLocation => (
+                        "Location must be in England. Your apprenticeship must be in England to advertise it on this service",
+                        VacancyValidationErrorCodes.AddressCountryNotInEngland),
+
+                    AvailableWhere.MultipleLocations => (
+                        "All locations must be in England. Your apprenticeship must be in England to advertise it on this service",
+                        $"Multiple-{VacancyValidationErrorCodes.AddressCountryNotInEngland}"),
+
+                    _ => ("Location must be in England. Your apprenticeship must be in England to advertise it on this service",
+                        VacancyValidationErrorCodes.AddressCountryNotInEngland)
+                };
+
+                foreach (var address in vacancy.EmployerLocations)
+                {
+                    if (await locationsService.IsPostcodeInEnglandAsync(address.Postcode) == false)
+                    {
+                        context.AddFailure(new ValidationFailure(nameof(Vacancy.EmployerLocations), message)
+                        {
+                            ErrorCode = errorCode,
+                            CustomState = VacancyRuleSet.EmployerLocationOutOfArea
+                        });
+                    }
+                }
+            });
 
         internal static IRuleBuilderOptions<Vacancy, T> RunCondition<T>(this IRuleBuilderOptions<Vacancy, T> context, VacancyRuleSet condition)
         {
-            return context.Configure(c=>c.ApplyCondition(x => x.CanRunValidator(condition)));
+            return context.Configure(c => c.ApplyCondition(x => x.CanRunValidator(condition)));
         }
-        
+
         internal static IRuleBuilderInitial<Vacancy, T> RunCondition<T>(this IRuleBuilderInitial<Vacancy, T> context, VacancyRuleSet condition)
         {
-            return context.Configure(c=>c.ApplyCondition(x => x.CanRunValidator(condition)));
+            return context.Configure(c => c.ApplyCondition(x => x.CanRunValidator(condition)));
         }
 
         private static bool CanRunValidator<T>(this ValidationContext<T> context, VacancyRuleSet validationToCheck)

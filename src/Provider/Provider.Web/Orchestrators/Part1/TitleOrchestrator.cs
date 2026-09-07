@@ -18,22 +18,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
-    public class TitleOrchestrator : VacancyValidatingOrchestrator<TitleEditModel>
+    public class TitleOrchestrator(
+        IProviderVacancyClient providerVacancyClient,
+        IRecruitVacancyClient recruitVacancyClient,
+        ILogger<TitleOrchestrator> logger,
+        IReviewSummaryService reviewSummaryService,
+        IUtility utility)
+        : VacancyValidatingOrchestrator<TitleEditModel>(logger)
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Title;
-        private readonly IProviderVacancyClient _providerVacancyClient;
-        private readonly IRecruitVacancyClient _recruitVacancyClient;
-        private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IUtility _utility;
-
-        public TitleOrchestrator(IProviderVacancyClient providerVacancyClient, IRecruitVacancyClient recruitVacancyClient, 
-            ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
-        {
-            _providerVacancyClient = providerVacancyClient;
-            _recruitVacancyClient = recruitVacancyClient;
-            _reviewSummaryService = reviewSummaryService;
-            _utility = utility;
-        }
 
         public async Task<TitleViewModel> GetTitleViewModelForNewVacancyAsync(string employerAccountId, long ukprn)
         {
@@ -49,21 +42,21 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task<TitleViewModel> GetTitleViewModelForExistingVacancyAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Title_Get);
+            var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Title_Get);
             var ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault();
             var vm = new TitleViewModel
             {
                 VacancyId = vacancy.Id,
                 Title = vacancy.Title,
-                PageInfo = _utility.GetPartOnePageInfo(vacancy),
+                PageInfo = utility.GetPartOnePageInfo(vacancy),
                 Ukprn = ukprn,
                 EmployerAccountId = vacancy.EmployerAccountId,
-                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
+                IsTaskListCompleted = utility.IsTaskListCompleted(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+                vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                     ReviewFieldMappingLookups.GetTitleFieldIndicators());
             }
 
@@ -92,7 +85,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         {
             if (model.VacancyId.HasValue) 
             {
-                var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Title_Post);
+                var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Title_Post);
 
                 SetVacancyWithProviderReviewFieldIndicators(
                 vacancy.Title,
@@ -105,10 +98,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
                 return await ValidateAndExecute(
                     vacancy, 
-                    v => _recruitVacancyClient.Validate(v, ValidationRules),
+                    v => recruitVacancyClient.Validate(v, ValidationRules),
                     async v =>
                     {
-                        await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+                        await recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
                         return v.Id;
                     }
                 );
@@ -124,8 +117,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             return await ValidateAndExecute(
                 newVacancy,
-                v => _recruitVacancyClient.Validate(v, ValidationRules),
-                async v => await _providerVacancyClient.CreateVacancyAsync(
+                v => recruitVacancyClient.Validate(v, ValidationRules),
+                async v => await providerVacancyClient.CreateVacancyAsync(
                         model.EmployerAccountId, ukprn, model.Title, user, null, null));
         }
 
@@ -141,7 +134,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         private async Task ValidateEmployerAccountIdAsync(long ukprn, string employerAccountId)
         {
-            var providerInfo = await _providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn);
+            var providerInfo = await providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn, employerAccountId);
 
             if (providerInfo.Employers.Any(e => e.EmployerAccountId == employerAccountId) == false)
                 throw new AuthorisationException(string.Format(ExceptionMessages.ProviderEmployerAccountIdNotFound, ukprn, employerAccountId));

@@ -31,7 +31,7 @@ public class ApplicationReviewPendingUnsuccessfulFeedbackCommandHandler(
 }
 
 public class ApplicationReviewsCommandHandler(
-    IApplicationReviewRepository applicationReviewRepository,
+    IApplicationReadRepository applicationReviewRepository,
     ITimeProvider timeProvider,
     IOuterApiClient outerApiClient,
     IVacancyRepository vacancyRepository,

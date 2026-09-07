@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
     public class ApplicationReviewService(
         IOuterApiClient outerApiClient,
         ILogger<ApplicationReviewService> logger) : IApplicationWriteRepository,
-        ISqlDbRepository
+        IApplicationReadRepository
     {
         public async Task UpdateAsync(Domain.Entities.ApplicationReview applicationReview)
         {
@@ -189,6 +189,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             return applicationReviews.Cast<T>().ToList();
         }
 
+        public async Task<List<T>> GetForVacancyAsync<T>(Guid vacancyId)
+        {
+            var response = await outerApiClient.Get<GetApplicationReviewsByVacancyIdApiResponse>(
+                new GetApplicationReviewsByVacancyIdApiRequest(vacancyId));
+
+            if (response?.ApplicationReviews == null || response.ApplicationReviews.Count == 0) return [];
+
+            var applicationReviews = response.ApplicationReviews
+                .Select(MapToDomainApplicationReview).ToList();
+
+            return applicationReviews.Cast<T>().ToList();
+        }
+
         public async Task<List<Domain.Entities.ApplicationReview>> GetForVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
         {
             var response = await outerApiClient.Get<GetApplicationReviewsByVacancyReferenceApiResponse>(
@@ -292,7 +305,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             await Task.WhenAll(tasks);
         }
 
-        private string GetCandidateAppliedLocation(List<Responses.Address> addresses)
+        private List<string> GetCandidateAppliedLocation(List<Responses.Address> addresses)
         {
             if (addresses == null || addresses.Count == 0)
                 return null;
@@ -360,7 +373,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
             // For each selected address:
             foreach (var addr in selectedParsed)
             {
-                bool hasMultiple = cityCounts.TryGetValue(addr.City, out int count) && count > 1;
+                var hasMultiple = cityCounts.TryGetValue(addr.City, out var count) && count > 1;
                 if (hasMultiple && !string.IsNullOrWhiteSpace(addr.AddressLine1))
                 {
                     results.Add($"{addr.City} ({addr.AddressLine1})");
@@ -372,7 +385,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ApplicationReview
                 }
             }
 
-            return string.Join(", ", results);
+            return results;
         }
 
         private Domain.Entities.ApplicationReview MapToDomainApplicationReview(Responses.ApplicationReview response)

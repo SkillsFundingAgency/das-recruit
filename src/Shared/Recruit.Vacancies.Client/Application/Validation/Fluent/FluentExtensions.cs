@@ -1,8 +1,8 @@
-using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators;
-using FluentValidation;
 using System;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators;
+using FluentValidation;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 {
@@ -49,6 +49,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 return false;
 
             return Uri.TryCreate(arg, UriKind.RelativeOrAbsolute, out _);
+        }
+        
+        public static IRuleBuilderOptions<T, string> MustBeValidWebsiteAsync<T>(this IRuleBuilder<T, string> rule, IExternalWebsiteHealthCheckService externalWebsiteHealthCheckService)
+        {
+            return rule.SetAsyncValidator(new WebsiteValidator<T, string>(externalWebsiteHealthCheckService));
         }
     }
 }

@@ -23,5 +23,8 @@ namespace Esfa.Recruit.Provider.Web.Views
         public const string Alerts = "_Alerts";
         public const string WithdrawnByQaVacanciesAlert = "_WithdrawnByQaVacanciesAlert";
         public const string TransferredVacanciesAlert = "_TransferredVacanciesAlert";
+
+        public const string DashboardNavigationPartial = "_DashboardNavigationPartial";
+        public const string DashboardSearchBoxPartial = "_DashboardSearchBoxPartial";
     }
 }

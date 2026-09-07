@@ -32,9 +32,13 @@ namespace Esfa.Recruit.Shared.Web.Helpers
             return null;
         }
 
-        public static string GetEducationLevelNameOrDefault(int? educationLevelNumber, ApprenticeshipLevel level)
-            => GetEducationLevelName(educationLevelNumber) ?? $"Level {(int)level} ({level})";
-        
+        public static string GetEducationLevelNameOrDefault(int? educationLevelNumber, ApprenticeshipLevel? level)
+        {
+            if (level != null) return GetEducationLevelName(educationLevelNumber) ?? $"Level {(int) level} ({level})";
+
+            return string.Empty;
+        }
+
         private static string GetTableFormatEducationLevelName(int? educationLevelNumber)
         {
             if (educationLevelNumber.HasValue)

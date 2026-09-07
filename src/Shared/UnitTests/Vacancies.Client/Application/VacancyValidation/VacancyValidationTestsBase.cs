@@ -5,10 +5,10 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Rules.VacancyRules;
@@ -23,36 +23,38 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         protected readonly Mock<IReferenceDataClient> MockReferenceDataClient;
         protected readonly IHtmlSanitizerService SanitizerService;
         protected readonly Mock<ITrainingProviderSummaryProvider> MockTrainingProviderSummaryProvider;
-        protected readonly Mock<IBlockedOrganisationQuery> MockBlockedOrganisationRepo;
         protected readonly TestProfanityListProvider MockProfanityListProvider;
         protected readonly Mock<IProviderRelationshipsService> MockProviderRelationshipsService;
         protected readonly Mock<ITrainingProviderService> MockTrainingProviderService;
+        protected readonly Mock<ILocationsService> MockLocationsService;
         protected ITimeProvider TimeProvider;
         protected readonly Mock<IFeature> Feature;
 
+
         protected VacancyValidationTestsBase()
         {
+            
             MockMinimumWageService = new Mock<IMinimumWageProvider>();
             MockApprenticeshipProgrammeProvider = new Mock<IApprenticeshipProgrammeProvider>();
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("123", null))
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("123", null, true))
                 .ReturnsAsync(new ApprenticeshipProgramme
                 {
                     IsActive = true,
                     Id = "123",
                 });
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("123", 10000000))
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("123", 10000000, true))
                 .ReturnsAsync(new ApprenticeshipProgramme
                 {
                     IsActive = true,
                     Id = "123",
                 });
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("000", null))
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("000", null, true))
                 .ReturnsAsync(new ApprenticeshipProgramme
                 {
                     Id = "abc",
                     IsActive = false
                 });
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null))
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null, true))
                 .ReturnsAsync(new List<ApprenticeshipProgramme>
                 {
                     new()
@@ -68,11 +70,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
             MockTrainingProviderSummaryProvider.Setup(x => x.GetAsync(10000000))
                 .ReturnsAsync(new TrainingProviderSummary());
-            MockBlockedOrganisationRepo = new Mock<IBlockedOrganisationQuery>();
             MockProfanityListProvider = new TestProfanityListProvider();
             MockProviderRelationshipsService = new Mock<IProviderRelationshipsService>();
             MockTrainingProviderService = new Mock<ITrainingProviderService>();
-            MockTrainingProviderService.Setup(x => x.GetCourseProviders(123)).ReturnsAsync(new List<TrainingProviderSummary>()
+            MockLocationsService = new Mock<ILocationsService>();
+            MockTrainingProviderService.Setup(x => x.GetCourseProviders(123)).ReturnsAsync(new List<TrainingProviderSummary>
             {
                 new()
                 {
@@ -89,8 +91,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             {
                 var fluentValidator = new FluentVacancyValidator(TimeProvider, MockMinimumWageService.Object, 
                     MockApprenticeshipProgrammeProvider.Object, MockReferenceDataClient.Object, SanitizerService, 
-                    MockTrainingProviderSummaryProvider.Object, MockTrainingProviderService.Object, MockBlockedOrganisationRepo.Object,
-                    MockProfanityListProvider, MockProviderRelationshipsService.Object);
+                    MockTrainingProviderSummaryProvider.Object,
+                    MockProfanityListProvider, MockProviderRelationshipsService.Object, MockLocationsService.Object);
                 return new EntityValidator<Vacancy, VacancyRuleSet>(fluentValidator);
             }
         }

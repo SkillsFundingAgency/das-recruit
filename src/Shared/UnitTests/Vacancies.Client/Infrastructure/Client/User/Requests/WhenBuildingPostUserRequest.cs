@@ -1,4 +1,4 @@
-using AutoFixture.NUnit3;
+using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.User.Requests;
 using NUnit.Framework;
@@ -7,16 +7,23 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
 
 public class WhenBuildingPostUserRequest
 {
-    [Test, AutoData]
-    public void Then_The_Request_Is_Correctly_Built_And_Data_Populated(Recruit.Vacancies.Client.Domain.Entities.User user)
+    [Test, MoqAutoData]
+    public void Then_The_Request_Is_Correctly_Built_And_Data_Populated(
+        List<long> employerAccountIds,
+        Recruit.Vacancies.Client.Domain.Entities.User user)
     {
-        var actual = new PostUserRequest(user.Id, (UserDto)user);
+        // act
+        var actual = new PostUserRequest(user.Id, UserDto.From(user));
 
+        // assert
         actual.PostUrl.Should().Be($"users/{user.Id}");
-        ((UserDto)actual.Data).Should().BeEquivalentTo(user, options => options
-                .Excluding(x => x.UserType)
-                .Excluding(x=>x.Id)
-            );
-        ((UserDto)actual.Data).UserType.Should().Be(user.UserType.ToString());
+        var userDto = (UserDto)actual.Data;
+        userDto.Should().NotBeNull();
+        userDto.Should().BeEquivalentTo(user, options => options
+            .Excluding(x => x.UserType)
+            .Excluding(x => x.Id)
+            .Excluding(x => x.EmployerAccountIds)
+        );
+        userDto.UserType.Should().Be(user.UserType);
     }
 }

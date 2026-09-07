@@ -66,7 +66,7 @@ public class TitleOrchestratorTests
             MockRecruitVacancyClient.Setup(x => x.GetVacancyAsync(Vacancy.Id)).ReturnsAsync(Vacancy);
             MockRecruitVacancyClient.Setup(x => x.Validate(Vacancy, ValidationRules)).Returns(new EntityValidationResult());
             MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
-            MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
+            MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>()));
             var utility = new Utility(MockRecruitVacancyClient.Object, Mock.Of<ITaskListValidator>());
                 
             Sut = new TitleOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<TitleOrchestrator>>(), 
@@ -88,11 +88,6 @@ public class TitleOrchestratorTests
             Vacancy.EmployerReviewFieldIndicators.Single(p => p.FieldIdentifier == fieldIdentifier)
                 .Should().NotBeNull().And
                 .Match<EmployerReviewFieldIndicator>((x) => x.IsChangeRequested == value);
-        }
-
-        public void VerifyVacancyTotalRetrieved(string employerAccountId)
-        {
-            MockClient.Verify(x=>x.GetVacancyCount(employerAccountId, null, null), Times.Once);   
         }
 
         public Mock<IEmployerVacancyClient> MockClient { get; set; }

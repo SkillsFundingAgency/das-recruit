@@ -1,4 +1,5 @@
-﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part2.AboutEmployer.AboutEmployerViewModel
+﻿@using Esfa.Recruit.Shared.Web.TagHelpers;
+@model Esfa.Recruit.Employer.Web.ViewModels.Part2.AboutEmployer.AboutEmployerViewModel
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part2-about-employer";
     ViewBag.ZenDeskLabel = "recruit-about-employer";
@@ -28,9 +29,10 @@
             </div>
             <div esfa-validation-marker-for="EmployerWebsiteUrl" class="govuk-form-group">
                 <label asp-for="EmployerWebsiteUrl" class="govuk-label">Website for organisation (optional)</label>
+                <div id="EmployerWebsiteUrl-hint" class="govuk-hint">Enter the full website address, including http:&#47;&#47; or https:&#47;&#47;</div>
                 <span esfa-validation-message-for="EmployerWebsiteUrl" class="govuk-error-message"></span>
                 <div asp-show="@Model.IsAnonymous" class="govuk-hint">The website will not be shown as the employer is anonymous</div>
-                <input asp-for="EmployerWebsiteUrl" class="govuk-input govuk-!-width-three-quarters" maxlength="100" />
+                <input asp-for="EmployerWebsiteUrl" class="govuk-input govuk-!-width-three-quarters" maxlength="100" handle-errors-css />
             </div>
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">

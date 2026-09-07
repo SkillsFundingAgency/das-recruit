@@ -5,32 +5,31 @@ using Esfa.Recruit.Provider.Web.Models.AddLocation;
 using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.Models.Validators;
 using Esfa.Recruit.Provider.Web.Orchestrators;
-using Esfa.Recruit.Shared.Web.Configuration;
-using Esfa.Recruit.Shared.Web.Mappers;
-using Esfa.Recruit.Shared.Web.RuleTemplates;
-using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
-using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
-using Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent;
 using Esfa.Recruit.Provider.Web.Orchestrators.Reports;
-using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
-using Esfa.Recruit.Vacancies.Client.Ioc;
-using FluentValidation;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.TagHelpers;
+using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
-using Esfa.Recruit.Shared.Web.Orchestrators;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent;
-using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage;
+using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
 using Esfa.Recruit.Provider.Web.ViewModels.Validations;
+using Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent;
+using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Domain;
+using Esfa.Recruit.Shared.Web.Mappers;
+using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Shared.Web.RuleTemplates;
+using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent;
+using Esfa.Recruit.Vacancies.Client.Ioc;
+using FluentValidation;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -85,7 +84,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
             services.AddSingleton<IValidator<WageEditModel>, WageEditModelValidator>();
 
-            services.AddSingleton<IValidator<ApplicationReviewFeedbackViewModel>, ApplicationReviewFeedbackModelValidator>();
+            services.AddSingleton<IValidator<ApplicationReviewFeedbackViewModel>, ViewModels.Validations.Fluent.ApplicationReviewFeedbackModelValidator>();
+            services.AddSingleton<IValidator<ApplicationReviewsFeedbackViewModel>, ApplicationReviewsFeedbackModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulFeedbackViewModel>, ApplicationReviewsFeedbackModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulRequest>, ApplicationReviewsToUnsuccessfulModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulConfirmationViewModel>, ApplicationReviewsToUnsuccessfulConfirmationModelValidator>();
@@ -119,7 +119,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<NumberOfPositionsOrchestrator>();
             services.AddTransient<TrainingOrchestrator>();
             services.AddTransient<VacancyDescriptionOrchestrator>();
-            services.AddTransient<IVacancyAnalyticsOrchestrator, VacancyAnalyticsOrchestrator>();
             services.AddTransient<VacancyManageOrchestrator>();
             services.AddTransient<VacancyPreviewOrchestrator>();
             services.AddTransient<VacancyViewOrchestrator>();
@@ -131,9 +130,9 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<IApplicationReviewsOrchestrator, ApplicationReviewsOrchestrator>();
             services.AddTransient<CloneVacancyOrchestrator>();
             services.AddTransient<DeleteVacancyOrchestrator>();
-            services.AddTransient<ReportDashboardOrchestrator>();
-            services.AddTransient<ProviderApplicationsReportOrchestrator>();
-            services.AddTransient<ReportConfirmationOrchestrator>();
+            services.AddTransient<IArchiveVacancyOrchestrator, ArchiveVacancyOrchestrator>();
+            services.AddTransient<IReportDashboardOrchestrator, ReportDashboardOrchestrator>();
+            services.AddTransient<IProviderApplicationsReportOrchestrator, ProviderApplicationsReportOrchestrator>();
             services.AddTransient<DashboardOrchestrator>();
             services.AddTransient<VacanciesSearchSuggestionsOrchestrator>();
             services.AddTransient<ManageNotificationsOrchestrator>();

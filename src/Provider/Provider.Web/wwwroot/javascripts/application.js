@@ -450,6 +450,7 @@ function inViewport($el) {
 
 function initializeHtmlEditors() {
   tinymce.init({
+    browser_spellcheck: true,
     element_format: "html",
     apply_source_formatting: true,
     menubar: false,
@@ -461,11 +462,16 @@ function initializeHtmlEditors() {
     content_style:
       '.mce-content-body {font-size:19px;font-family:"GDS Transport",arial,sans-serif}',
     setup: function (tinyMceEditor) {
-      var element = tinyMceEditor.getElement();
+      var textarea = tinyMceEditor.getElement();
+      
+      var syncCharacterCount = function () {
+        tinyMceEditor.save();
+        textarea.dispatchEvent(new Event("input", { bubbles: true }));
+        textarea.dispatchEvent(new Event("keyup", { bubbles: true }));
+      };
 
-      tinyMceEditor.on("keyup", function (e) {
-        setEditorMaxLength(element, tinyMceEditor);
-      });
+      tinyMceEditor.on("keyup", syncCharacterCount);
+      tinyMceEditor.on("change", syncCharacterCount); // bullet-list button, paste, undo
       tinyMceEditor.on("focus", function (e) {
         tinyMceEditor.editorContainer.classList.add("editor-focus");
       });
@@ -474,20 +480,12 @@ function initializeHtmlEditors() {
       });
     },
     init_instance_callback: function (tinyMceEditor) {
-      var element = tinyMceEditor.getElement();
-      setEditorMaxLength(element, tinyMceEditor);
+      var textarea = tinyMceEditor.getElement();
+      tinyMceEditor.save();
+      textarea.dispatchEvent(new Event("input", { bubbles: true }));
+      textarea.dispatchEvent(new Event("keyup", { bubbles: true }));
     },
   });
-}
-
-function setEditorMaxLength(element, tinyMceEditor) {
-  var innerText = tinyMceEditor.contentDocument.body.innerText;
-  innerText = innerText.replace(/\n\n/g, "|");
-  var innerTextLength =
-    innerText.charAt(innerText.length - 1) === String.fromCharCode(10)
-      ? innerText.length - 1
-      : innerText.length;
-  characterCount(element, innerTextLength);
 }
 
 $(function () {
@@ -710,3 +708,38 @@ document.addEventListener("DOMContentLoaded", (event) => {
     new RadioConditionalReveal(radio, false);
   });
 });
+
+const printLinks = document.querySelectorAll(
+    ".faa-vacancy-actions__link--print"
+);
+
+if (printLinks.length > 0) {
+    for (let i = 0; i < printLinks.length; i++) {
+        printLinks[i].addEventListener("click", (e) => {
+            e.preventDefault();
+            window.print();
+        });
+    }
+}
+
+function initSortableGrid() {
+    const grids = document.querySelectorAll("[data-sortable-grid]")
+    for (const grid of grids) {
+        const formName = grid.getAttribute("data-sortable-form")
+        grid.removeAttribute("data-sortable-form")
+        grid.removeAttribute("data-sortable-grid")
+        const form = document.getElementById(formName)
+        const buttons = grid.querySelectorAll("th button")
+        for (const button of buttons) {
+            button.setAttribute("form", formName)
+            const sortColumn = button.getAttribute("data-sort-column")
+            const nextSortOrder = button.getAttribute("data-sort-order")
+            button.removeAttribute("data-sort-column")
+            button.removeAttribute("data-sort-order")
+            button.onclick = () => {
+                form.querySelector("[name='SortColumn']").value = sortColumn
+                form.querySelector("[name='SortOrder']").value = nextSortOrder
+            };
+        }
+    }
+}

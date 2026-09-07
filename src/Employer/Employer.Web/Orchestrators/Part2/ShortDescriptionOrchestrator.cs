@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.ShortDescription;
@@ -13,23 +12,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
-    public class ShortDescriptionOrchestrator : VacancyValidatingOrchestrator<ShortDescriptionEditModel>
+    public class ShortDescriptionOrchestrator(
+        IRecruitVacancyClient vacancyClient,
+        ILogger<ShortDescriptionOrchestrator> logger,
+        IReviewSummaryService reviewSummaryService,
+        IUtility utility)
+        : VacancyValidatingOrchestrator<ShortDescriptionEditModel>(logger)
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ShortDescription;
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IUtility _utility;
-
-        public ShortDescriptionOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<ShortDescriptionOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
-        {
-            _vacancyClient = vacancyClient;
-            _reviewSummaryService = reviewSummaryService;
-            _utility = utility;
-        }
 
         public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
+            var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm);
 
             var vm = new ShortDescriptionViewModel
             {
@@ -41,11 +35,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, 
+                vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.GetValueOrDefault(), 
                     ReviewFieldMappingLookups.GetShortDescriptionReviewFieldIndicators());
             }
             
-            vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
+            vm.IsTaskListCompleted = utility.IsTaskListCompleted(vacancy);
 
             return vm;
         }
@@ -61,32 +55,25 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostShortDescriptionEditModelAsync(ShortDescriptionEditModel m, VacancyUser user)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m);
+            var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m);
 
             SetVacancyWithEmployerReviewFieldIndicators(
                 vacancy.ShortDescription,
                 FieldIdResolver.ToFieldId(v => v.ShortDescription),
                 vacancy,
-                (v) =>
-                {
-                    return v.ShortDescription = m.ShortDescription;
-                });
+                v => v.ShortDescription = m.ShortDescription);
 
             return await ValidateAndExecute(
                 vacancy, 
-                v => _vacancyClient.Validate(v, ValidationRules),
-                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+                v => vacancyClient.Validate(v, ValidationRules),
+                v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
             );
         }
 
-        protected override EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionEditModel> DefineMappings()
-        {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionEditModel>
+        protected override EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionEditModel> DefineMappings() =>
+            new()
             {
                 { e => e.ShortDescription, vm => vm.ShortDescription }
             };
-
-            return mappings;
-        }
     }
 }

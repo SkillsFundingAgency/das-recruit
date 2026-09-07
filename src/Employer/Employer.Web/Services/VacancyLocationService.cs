@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -15,7 +16,7 @@ public interface IVacancyLocationService
 {
     public Task<List<Address>> GetVacancyLocations(Vacancy vacancy);
     public Task<UpdateVacancyLocationsResult> UpdateDraftVacancyLocations(Vacancy vacancy, VacancyUser user, AvailableWhere availableWhere, List<Address> locations = null, string locationInformation = null);
-    public Task SaveEmployerAddress(VacancyUser user, Vacancy vacancy, Address address);
+    public Task SaveEmployerAddress(Vacancy vacancy, Address address);
 }
 
 public record UpdateVacancyLocationsResult(EntityValidationResult ValidationResult);
@@ -51,7 +52,7 @@ public class VacancyLocationService(
         reviewFieldIndicatorService.SetVacancyWithEmployerReviewFieldIndicators(vacancy.EmployerLocations, FieldIdResolver.ToFieldId(v => v.EmployerLocations), vacancy, locations);
         reviewFieldIndicatorService.SetVacancyWithEmployerReviewFieldIndicators(vacancy.EmployerLocationInformation, FieldIdResolver.ToFieldId(v => v.EmployerLocationInformation), vacancy, locationInformation);
 
-        await UpdateAddressCountriesAsync(locations, user, vacancy);
+        await UpdateAddressCountriesAsync(locations, vacancy);
         
         vacancy.EmployerLocation = null; // null it for records created before this feature that are edited
         vacancy.EmployerLocationOption = availableWhere;
@@ -68,14 +69,14 @@ public class VacancyLocationService(
         return new UpdateVacancyLocationsResult(null);
     }
     
-    private async Task UpdateAddressCountriesAsync(List<Address> locations, VacancyUser user, Vacancy vacancy)
+    private async Task UpdateAddressCountriesAsync(List<Address> locations, Vacancy vacancy)
     {
         if (locations is null || locations.Count == 0)
         {
             return;
         }
         
-        var nonEnglishAddresses = locations.Where(x => x.Country is not ("England" or null)).ToArray();
+        var nonEnglishAddresses = locations.Where(x => x.Country is not (Constants.EnglandCountryCode or null)).ToArray();
         if (nonEnglishAddresses.Length is not 0)
         {
             // fail fast since we know this will fail validation anyway
@@ -101,11 +102,11 @@ public class VacancyLocationService(
         
         if (isDirty)
         {
-            await PatchExistingEmployerAddresses(user, vacancy, locations);
+            await PatchExistingEmployerAddresses(vacancy, locations);
         }
     }
     
-    private async Task PatchExistingEmployerAddresses(VacancyUser user, Vacancy vacancy, List<Address> addresses)
+    private async Task PatchExistingEmployerAddresses(Vacancy vacancy, List<Address> addresses)
     {
         var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
         var existingLocations = employerProfile.OtherLocations;
@@ -125,10 +126,10 @@ public class VacancyLocationService(
             existingLocation.Country = address.Country;
         }
         
-        await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
+        await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile);
     }
 
-    public async Task SaveEmployerAddress(VacancyUser user, Vacancy vacancy, Address address)
+    public async Task SaveEmployerAddress(Vacancy vacancy, Address address)
     {
         var existingLocations = await GetVacancyLocations(vacancy);
         string newAddressString = address.ToSingleLineFullAddress();
@@ -140,6 +141,6 @@ public class VacancyLocationService(
         
         var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
         employerProfile.OtherLocations.Add(address);
-        await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
+        await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile);
     }
 }

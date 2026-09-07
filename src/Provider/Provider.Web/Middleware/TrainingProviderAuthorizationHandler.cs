@@ -21,36 +21,28 @@ namespace Esfa.Recruit.Provider.Web.Middleware
     }
 
     ///<inheritdoc cref="ITrainingProviderAuthorizationHandler"/>
-    public class TrainingProviderAuthorizationHandler : ITrainingProviderAuthorizationHandler
+    public class TrainingProviderAuthorizationHandler(IGetProviderStatusClient getProviderStatusClient)
+        : ITrainingProviderAuthorizationHandler
     {
-        private readonly IGetProviderStatusClient _getProviderStatusClient;
         private readonly Predicate<Claim> _ukprnClaimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier)
                                                                             || c.Type.Equals(ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier);
 
-        public TrainingProviderAuthorizationHandler(
-            IGetProviderStatusClient getProviderStatusClient)
-        {
-            _getProviderStatusClient = getProviderStatusClient;
-        }
-
         public async Task<bool> IsProviderAuthorized(AuthorizationHandlerContext context)
         {
-            long ukprn = GetProviderId(context);
+            var ukprn = GetProviderId(context);
 
             //if the ukprn is invalid return false.
             if (ukprn <= 0) return false;
 
-            var providerStatusDetails = await _getProviderStatusClient.GetProviderStatus(ukprn);
+            var providerStatusDetails = await getProviderStatusClient.GetProviderStatus(ukprn);
 
             // Condition to check if the Provider Details has permission to access Apprenticeship Services based on the property value "CanAccessApprenticeshipService" set to True.
             return providerStatusDetails is { CanAccessService: true };
         }
 
-        private long GetProviderId(AuthorizationHandlerContext context)
-        {
-            return long.TryParse(context.User.FindFirst(_ukprnClaimFinderPredicate)?.Value, out long providerId)
+        private long GetProviderId(AuthorizationHandlerContext context) =>
+            long.TryParse(context.User.FindFirst(_ukprnClaimFinderPredicate)?.Value, out var providerId)
                 ? providerId
                 : 0;
-        }
     }
 }

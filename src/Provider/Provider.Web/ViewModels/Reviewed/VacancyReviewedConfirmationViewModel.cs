@@ -10,6 +10,5 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Reviewed
         public bool HasVacancyReference => !string.IsNullOrEmpty(VacancyReference);
         public string EmployerName { get; set; }
         public bool IsResubmit { get; set; }
-        public bool IsVacancyRejectedByEmployerNotificationSelected { get; set; }
     }
 }

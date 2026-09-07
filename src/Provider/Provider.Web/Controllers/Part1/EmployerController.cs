@@ -1,13 +1,12 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Esfa.Recruit.Provider.Web.RouteModel;
-using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Employer;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 {

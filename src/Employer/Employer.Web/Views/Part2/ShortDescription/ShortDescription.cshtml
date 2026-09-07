@@ -4,13 +4,10 @@
     ViewBag.Title = "Short description of the apprenticeship";
     ViewBag.ZenDeskLabel = "recruit-short-description-of-the-apprenticeship";
 }
-
-
 @section BackLink {
     <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.TrainingProvider_Select_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@(!Model.IsTaskListCompleted)" esfa-automation="link-back" class="govuk-back-link">Back</a>
     <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.IsTaskListCompleted" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
@@ -54,7 +51,6 @@
         </form>
     </div>
 </div>
-
 @section FooterJS 
 {
     <script src="/lib/tinymce-4.9.2/tinymce.min.js" no-cdn></script>

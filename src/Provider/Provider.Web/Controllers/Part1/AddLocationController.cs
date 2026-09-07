@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Models.AddLocation;
@@ -8,11 +7,9 @@ using Esfa.Recruit.Provider.Web.ViewModels.Part1.AddLocation;
 using Esfa.Recruit.Provider.Web.ViewModels.Validations;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.FeatureManagement.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
 
@@ -37,8 +34,12 @@ public class AddLocationController(IUtility utility) : Controller
     {
         if (ModelState.IsValid)
         {
-            bool? isPostcodeEnglish = await locationsService.IsPostcodeInEnglandAsync(model.Postcode);
-            if (isPostcodeEnglish is true)
+            var isPostcodeEnglish = await locationsService.IsPostcodeInEnglandAsync(model.Postcode);
+            if (isPostcodeEnglish is false)
+            {
+                ModelState.AddModelError(nameof(AddLocationEditModel.Postcode), AddLocationEditModelValidator.MustBeEnglishPostcode);
+            }
+            else
             {
                 var response = await getAddressesClient.GetAddresses(model.Postcode);
                 if (response is not null)
@@ -48,10 +49,6 @@ public class AddLocationController(IUtility utility) : Controller
                 }
 
                 ModelState.AddModelError(nameof(AddLocationEditModel.Postcode), AddLocationEditModelValidator.InvalidPostcodeErrorMessage);
-            }
-            else
-            {
-                ModelState.AddModelError(nameof(AddLocationEditModel.Postcode), AddLocationEditModelValidator.MustBeEnglishPostcode);    
             }
         }
         

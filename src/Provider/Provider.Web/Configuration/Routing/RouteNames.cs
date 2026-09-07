@@ -18,9 +18,11 @@ public static class RouteNames
     public const string Considerations_Post = "Considerations_Post";
     public const string CreateVacancy_Get = "CreateVacancy_Get";
     public const string CreateVacancy_Post = "CreateVacancy_Post";
-    public const string Vacancies_Get = "Vacancies_Get";
+    public const string VacanciesGetAll = nameof(VacanciesGetAll);
     public const string Dashboard_Account_Home = "Dashboard_Account_Home";
     public const string DeleteVacancy_Get = "DeleteVacancy_Get";
+    public const string ArchiveVacancy_Get = nameof(ArchiveVacancy_Get);
+    public const string ArchiveVacancy_Post = nameof(ArchiveVacancy_Post);
     public const string DeleteVacancy_Post = "DeleteVacancy_Post";
     public const string DisplayFullVacancy_Get = "DisplayFullVacancy_Get";
     public const string DisplayVacancy_Get = "DisplayVacancy_Get";
@@ -55,9 +57,9 @@ public static class RouteNames
     public const string Qualification_Add_Post = "Qualification_Add_Post";
     public const string Qualification_Edit_Post = "Qualification_Edit_Post";
     public const string Qualification_Delete_Post = "Qualification_Delete_Post";
-    public const string ReportConfirmation_Get = "ReportConfirmation_Get";
     public const string ReportDashboard_DownloadCsv = "ReportDashboard_DownloadCsv";
     public const string ReportDashboard_Get = "ReportDashboard_Get";
+    public const string ReportDataSpecifications_Get = "ReportDataSpecifications_Get";
     public const string Part1Complete_Get = "Part1Complete_Get";
     public const string ShortDescription_Get = "ShortDescription_Get";
     public const string ShortDescription_Post = "ShortDescription_Post";

@@ -8,18 +8,11 @@ using EmployerUserAccounts = SFA.DAS.GovUK.Auth.Employer.EmployerUserAccounts;
 
 namespace Esfa.Recruit.Employer.Web.AppStart;
 
-public class UserAccountService : IGovAuthEmployerAccountService
+public class UserAccountService(IRecruitVacancyClient vacancyClient) : IGovAuthEmployerAccountService
 {
-    private readonly IRecruitVacancyClient _vacancyClient;
-
-    public UserAccountService(IRecruitVacancyClient vacancyClient)
-    {
-        _vacancyClient = vacancyClient;
-    }
-    
     public async Task<EmployerUserAccounts> GetUserAccounts(string userId, string email)
     {
-        var result = await _vacancyClient.GetEmployerIdentifiersAsync(userId, email);
+        var result = await vacancyClient.GetEmployerIdentifiersAsync(userId, email);
 
         return new EmployerUserAccounts
         {

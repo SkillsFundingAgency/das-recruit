@@ -5,14 +5,15 @@ using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Middleware;
-using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Logging;
-using Microsoft.Extensions.Hosting;
 using SFA.DAS.DfESignIn.Auth.Configuration;
 
 namespace Esfa.Recruit.Provider.Web
@@ -77,6 +78,13 @@ namespace Esfa.Recruit.Provider.Web
             app.UseXDownloadOptions();
 
             app.UseNoCacheHttpHeaders(); // Effectively forces the browser to always request dynamic pages
+            app.Use(async (context, next) =>
+            {
+                var formOptions = context.RequestServices
+                    .GetRequiredService<IOptions<FormOptions>>().Value;
+                context.Features.Set<IFormFeature>(new FormFeature(context.Request, formOptions));
+                await next();
+            });
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(builder =>

@@ -37,15 +37,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 isResubmit = review != null;
             }
 
-            var preferences = await _vacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
-            
             var vm = new VacancySubmittedConfirmationViewModel
             {
                 Title = vacancy.Title,
                 VacancyReference = vacancy.VacancyReference?.ToString(),
                 IsResubmit = isResubmit,
-                HasNotificationsSet = preferences != null && preferences.NotificationTypes > NotificationTypes.None,
-                IsVacancyRejectedByESFANotificationSelected = preferences.NotificationTypes.HasFlag(NotificationTypes.VacancyRejected),
                 Ukprn = vrm.Ukprn,
                 VacancyId = vrm.VacancyId
             };

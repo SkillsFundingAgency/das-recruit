@@ -14,7 +14,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         public async Task<IActionResult> Dashboard()
         {
             var vm = await orchestrator.GetDashboardViewModelAsync(User.ToVacancyUser());
-            return View(vm.HasEmployerReviewPermission ? ViewNames.DashboardWithReview : ViewNames.DashboardNoReview, vm);
+            return View(ViewNames.Dashboard, vm);
         }
     }
 }

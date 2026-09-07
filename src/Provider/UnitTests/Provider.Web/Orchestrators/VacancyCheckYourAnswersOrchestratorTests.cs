@@ -18,6 +18,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship
 using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
+using Constants = Esfa.Recruit.Vacancies.Client.Application.Constants;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators;
 
@@ -61,7 +62,7 @@ public class VacancyCheckYourAnswersOrchestratorTests
         recruitVacancyClient.Setup(x => x.GetEmployerNameAsync(vacancy)).ReturnsAsync(vacancy.EmployerName);
         providerVacancyClient.Setup(x => x.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn, vacancy.EmployerAccountId))
             .ReturnsAsync(employerInfo);
-        providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(routeModel.Ukprn)).ReturnsAsync(new ProviderEditVacancyInfo
+        providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(routeModel.Ukprn, vacancy.EmployerAccountId)).ReturnsAsync(new ProviderEditVacancyInfo
         {
             Employers = providerEditVacancyInfo
         });
@@ -103,26 +104,7 @@ public class VacancyCheckYourAnswersOrchestratorTests
         viewModel.Ukprn.Should().Be(routeModel.Ukprn);
         viewModel.VacancyId.Should().Be(routeModel.VacancyId);
         viewModel.AccountLegalEntityCount.Should().Be(employerInfo.LegalEntities.Count);
-        viewModel.AccountCount.Should().Be(providerEditVacancyInfo.Count);
-    }
-
-    [Test, MoqAutoData]
-    public async Task When_Creating_New_Then_The_Account_Legal_Entity_And_Employer_Count_Is_Populated(
-        VacancyRouteModel routeModel,
-        EmployerInfo employerInfo,
-        string employerAccountId,
-        ProviderEditVacancyInfo providerEditVacancyInfo,
-        [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
-        VacancyCheckYourAnswersOrchestrator orchestrator)
-    {
-        providerVacancyClient.Setup(x => x.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn, employerAccountId))
-            .ReturnsAsync(employerInfo);
-        providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(routeModel.Ukprn)).ReturnsAsync(providerEditVacancyInfo);
-            
-        var viewModel = await orchestrator.GetCreateVacancyTaskListModel(routeModel, employerAccountId);
-        
-        viewModel.AccountLegalEntityCount.Should().Be(employerInfo.LegalEntities.Count);
-        viewModel.AccountCount.Should().Be(providerEditVacancyInfo.Employers.Count());
+        viewModel.AccountCount.Should().Be(1);
     }
         
     [Test, MoqAutoData]
@@ -152,9 +134,9 @@ public class VacancyCheckYourAnswersOrchestratorTests
 
         var postcodeLookupResults = new Dictionary<string, PostcodeData>
         {
-            { address1.Postcode, new PostcodeData(address1.Postcode, "England", 1, 1) },
+            { address1.Postcode, new PostcodeData(address1.Postcode, Constants.EnglandCountryCode, 1, 1) },
             { address2.Postcode, null },
-            { address3.Postcode, new PostcodeData(address1.Postcode, "Northern Ireland", 2, 2) },
+            { address3.Postcode, new PostcodeData(address1.Postcode, Constants.NorthernIrelandCountryCode, 2, 2) },
         };
             
         utility.Setup(x => x.GetAuthorisedVacancyAsync(submitEditModel, It.IsAny<string>())).ReturnsAsync(vacancy);
@@ -166,8 +148,8 @@ public class VacancyCheckYourAnswersOrchestratorTests
         // assert
         recruitVacancyClient.Verify(x => x.UpdateDraftVacancyAsync(vacancy, user), Times.Once);
             
-        vacancy.EmployerLocations[0].Country.Should().Be("England");
+        vacancy.EmployerLocations[0].Country.Should().Be(Constants.EnglandCountryCode);
         vacancy.EmployerLocations[1].Country.Should().Be(null);
-        vacancy.EmployerLocations[2].Country.Should().Be("Northern Ireland");
+        vacancy.EmployerLocations[2].Country.Should().Be(Constants.NorthernIrelandCountryCode);
     }
 }

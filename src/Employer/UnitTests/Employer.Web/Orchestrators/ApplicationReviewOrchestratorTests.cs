@@ -1,7 +1,9 @@
 ﻿using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
@@ -26,11 +28,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
         }
 
         [Test]
-        public async Task PostApplicationReviewEditModelAsyn_ReturnsCandidateInfo()
+        public async Task PostApplicationReviewEditModelAsync_ReturnsCandidateInfo()
         {
             var model = _fixture.Create<ApplicationReviewEditModel>();
             var vacancyUser = _fixture.Create<VacancyUser>();
-            var vacancy = _fixture.Create<Vacancy>();
 
             var applicationReview = _fixture.Create<ApplicationReview>();
 
@@ -44,6 +45,54 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             Assert.That(applicationReview.Id, Is.EqualTo(result.ApplicationReviewId));
             Assert.That(applicationReview.GetFriendlyId(), Is.EqualTo(result.FriendlyId));
             Assert.That(applicationReview.Application.FullName, Is.EqualTo(result.Name));
+        }
+
+        [Test]
+        [MoqInlineAutoData("")]
+        [MoqInlineAutoData(null)]
+        public async Task GetApplicationStatusConfirmationViewModelAsync_Returns_Default_CandidateFeedBack(string candidateFeedback)
+        {
+            var model = _fixture.Create<ApplicationReviewStatusConfirmationEditModel>();
+            model.CandidateFeedback = candidateFeedback;
+            var vacancyUser = _fixture.Create<VacancyUser>();
+
+            var applicationReview = _fixture.Create<ApplicationReview>();
+
+            _utility.Setup(x => x.GetAuthorisedApplicationReviewAsync(model))
+                .ReturnsAsync(applicationReview);
+            _employerVacancyClient.Setup(x => x.SetApplicationReviewStatus(model.ApplicationReviewId, model.Outcome, model.CandidateFeedback, vacancyUser))
+                .ReturnsAsync(false);
+
+            var result = await _orchestrator.GetApplicationStatusConfirmationViewModelAsync(model);
+
+            Assert.That(result.CandidateFeedback, Is.EqualTo(Constants.DefaultCandidateFeedback));
+        }
+
+        [Test]
+        [MoqInlineAutoData(ApplicationReviewStatus.Successful, true)]
+        [MoqInlineAutoData(ApplicationReviewStatus.Unsuccessful, true)]
+        [MoqInlineAutoData(ApplicationReviewStatus.AllShared, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.InReview, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.Interviewing, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.EmployerInterviewing, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.EmployerUnsuccessful, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.PendingShared, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.PendingToMakeUnsuccessful, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.New, false)]
+        [MoqInlineAutoData(ApplicationReviewStatus.Shared, false)]
+        public async Task IsAllApplicationReviewsHasOutcomeAsync_Returns_Valid(ApplicationReviewStatus status, bool expectedResult)
+        {
+            var routeModel = _fixture.Create<VacancyRouteModel>();
+            var model = _fixture.Build<ApplicationReviewEditModel>()
+                .With(x => x.VacancyId, routeModel.VacancyId)
+                .Create();
+            _vacancyClient.Setup(x => x.IsAllApplicationReviewsHasOutcomeAsync(routeModel.VacancyId))
+                .ReturnsAsync(expectedResult);
+
+            var result = await _orchestrator.IsAllApplicationReviewsHasOutcomeAsync(model.VacancyId);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.EqualTo(expectedResult));
         }
     }
 }

@@ -1,38 +1,29 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.FeatureManagement.Mvc;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews;
-using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using InfoMsg = Esfa.Recruit.Shared.Web.ViewModels.InfoMessages;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.AspNetCore.Mvc;
+using InfoMsg = Esfa.Recruit.Shared.Web.ViewModels.InfoMessages;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePaths.AccountApplicationReviewsRoutePath)]
-    public class ApplicationReviewsController : Controller
+    public class ApplicationReviewsController(IApplicationReviewsOrchestrator orchestrator) : Controller
     {
-        private readonly IApplicationReviewsOrchestrator _orchestrator;
-
-        public ApplicationReviewsController(IApplicationReviewsOrchestrator orchestrator)
-        {
-            _orchestrator = orchestrator;
-        }
-
         [HttpGet("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Get)]
         public async Task<IActionResult> ApplicationReviewsToUnsuccessful(VacancyRouteModel rm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
             Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
             Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
 
-            var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm, outputSortColumn, outputSortOrder);
+            var viewModel = await orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm, outputSortColumn, outputSortOrder);
 
             if (TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage)) 
             {
@@ -48,10 +39,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm, rm.SortColumn, rm.SortOrder);
+                var viewModel = await orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm, rm.SortColumn, rm.SortOrder);
                 return View(viewModel);
             }
-            await _orchestrator.PostApplicationReviewsStatus
+            await orchestrator.PostApplicationReviewsStatus
             (
                 new ApplicationReviewsToUpdateStatusModel
                 {
@@ -69,7 +60,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("unsuccessful-feedback", Name = RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Get)]
         public async Task<IActionResult> ApplicationReviewsFeedback(ApplicationReviewsToUnsuccessfulRouteModel request)
         {
-            var viewModel = await _orchestrator.GetApplicationReviewsFeedbackViewModel(request);
+            var viewModel = await orchestrator.GetApplicationReviewsFeedbackViewModel(request);
 
             return View(viewModel);
         }
@@ -81,58 +72,40 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             {
                 return View(request);
             }
-            await _orchestrator.PostApplicationReviewPendingUnsuccessfulFeedback
-            (
-                new ApplicationReviewStatusModel
-                {
-                    VacancyId = request.VacancyId!,
-                    CandidateFeedback = request.CandidateFeedback
-                }, 
-                User.ToVacancyUser(), 
-                ApplicationReviewStatus.PendingToMakeUnsuccessful
-            );
 
-            return RedirectToRoute(RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Get, new
+            var confirmationModel = new ApplicationReviewsToUnsuccessfulConfirmationViewModel
             {
-                request.IsMultipleApplications,
-                request.EmployerAccountId,
-                request.VacancyId
-            });
-        }
+                CandidateFeedback = request.CandidateFeedback,
+                ApplicationsUnsuccessfulConfirmed = true,
+                VacancyApplicationsToUnsuccessful = request.ApplicationsToUnsuccessful,
+                Outcome = request.Outcome,
+                VacancyId = request.VacancyId,
+                EmployerAccountId = request.EmployerAccountId,
+            };
 
-        [HttpGet("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Get)]
-        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulConfirmation(ApplicationReviewsToUnsuccessfulRouteModel rm)
-        {
-            var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(rm);
+            await orchestrator.PostApplicationReviewsToUnsuccessfulAsync(confirmationModel, User.ToVacancyUser());
 
-            return View(viewModel);
-        }
+            var routeValues = new { request.EmployerAccountId, request.VacancyId };
 
-        [HttpPost("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Post)]
-        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulConfirmation(ApplicationReviewsToUnsuccessfulConfirmationViewModel rm)
-        {
-            if (!ModelState.IsValid)
+            if (await orchestrator.IsAllApplicationReviewsHasOutcomeAsync(request.VacancyId))
             {
-                return View(rm);
+                TempData.TryAdd(TempDataKeys.ArchiveAdvertInfoMessage, InfoMessages.AdvertApplicantsOutcomeNotified);
+                return RedirectToRoute(RouteNames.ArchiveVacancy_Get, routeValues);
             }
 
-            if (rm.ApplicationsUnsuccessfulConfirmed == true)
-            {
-                await _orchestrator.PostApplicationReviewsToUnsuccessfulAsync(rm, User.ToVacancyUser());
-                SetApplicationsReviewsToUnsuccessfulBannerMessage(rm);
-                return RedirectToRoute(RouteNames.VacancyManage_Get, new { rm.EmployerAccountId, rm.VacancyId });
-            }
+            SetApplicationsReviewsToUnsuccessfulBannerMessage(request.ApplicationsToUnsuccessful.Count > 1);
 
-            return RedirectToRoute(RouteNames.VacancyManage_Get, new { rm.EmployerAccountId, rm.VacancyId });
+            return RedirectToRoute(RouteNames.VacancyManage_Get, routeValues);
         }
-        private void SetApplicationsReviewsToUnsuccessfulBannerMessage(ApplicationReviewsToUnsuccessfulConfirmationViewModel model)
+
+        private void SetApplicationsReviewsToUnsuccessfulBannerMessage(bool isMultipleApplications)
         {
-            if (model.IsMultipleApplications) 
+            if (isMultipleApplications) 
             {
-                TempData.Add(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage, InfoMsg.ApplicationsToUnsuccessfulBannerHeader);
+                TempData.Add(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage, InfoMsg.ApplicationsEmployerUnsuccessfulHeader);
                 return;
             }
-            TempData.Add(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage, string.Format(InfoMsg.ApplicationReviewUnsuccessStatusHeader));
+            TempData.Add(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage, InfoMsg.ApplicationEmployerUnsuccessfulHeader);
         }
     }
 }

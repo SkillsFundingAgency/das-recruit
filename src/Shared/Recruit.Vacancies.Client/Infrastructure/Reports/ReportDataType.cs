@@ -1,10 +1,9 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports;
+
+public enum ReportDataType
 {
-    public enum ReportDataType
-    {
-        StringType,
-        DateType,
-        DateTimeType,
-        ArrayType
-    }
+    StringType,
+    DateType,
+    DateTimeType,
+    ArrayType
 }

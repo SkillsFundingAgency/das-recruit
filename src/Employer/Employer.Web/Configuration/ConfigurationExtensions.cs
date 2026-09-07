@@ -1,23 +1,24 @@
+using System.Linq;
+using Esfa.Recruit.Employer.Web.Filters;
+using Esfa.Recruit.Employer.Web.Interfaces;
+using Esfa.Recruit.Employer.Web.Middleware;
+using Esfa.Recruit.Shared.Web.Extensions;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Net.Http.Headers;
-using System.Linq;
-using Esfa.Recruit.Employer.Web.Middleware;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using FluentValidation.AspNetCore;
-using Microsoft.Extensions.Logging;
-using Esfa.Recruit.Employer.Web.Filters;
-using Esfa.Recruit.Employer.Web.Interfaces;
-using Esfa.Recruit.Shared.Web.Extensions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
+using Microsoft.Net.Http.Headers;
 using SFA.DAS.Employer.Shared.UI;
 using SFA.DAS.GovUK.Auth.Authentication;
-using Microsoft.FeatureManagement;
-using Microsoft.Extensions.Configuration;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -60,6 +61,12 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 options.Cookie.Name = CookieNames.AntiForgeryCookie;
                 options.FormFieldName = "_csrfToken";
                 options.HeaderName = "X-XSRF-TOKEN";
+            });
+            services.Configure<FormOptions>(options =>
+            {
+                options.ValueCountLimit = int.MaxValue;
+                options.KeyLengthLimit = int.MaxValue;
+                options.ValueLengthLimit = int.MaxValue;
             });
             services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();

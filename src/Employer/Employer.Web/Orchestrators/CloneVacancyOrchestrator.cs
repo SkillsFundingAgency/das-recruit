@@ -15,22 +15,16 @@ using ErrorMessages = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
-    public class CloneVacancyOrchestrator : EntityValidatingOrchestrator<Vacancy, CloneVacancyWithNewDatesEditModel>
+    public class CloneVacancyOrchestrator(
+        IRecruitVacancyClient vacancyClient,
+        ITimeProvider timeProvider,
+        ILogger<CloneVacancyOrchestrator> logger,
+        IUtility utility)
+        : EntityValidatingOrchestrator<Vacancy, CloneVacancyWithNewDatesEditModel>(logger)
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.StartDateEndDate;
         public const string ChangeBothDatesTitle = "Change the closing date and start date";
         public const string ChangeEitherDatesTitle = "Change the closing date or start date";
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly ITimeProvider _timeProvider;
-        private readonly IUtility _utility;
-
-        public CloneVacancyOrchestrator(IRecruitVacancyClient vacancyClient,
-            ITimeProvider timeProvider, ILogger<CloneVacancyOrchestrator> logger, IUtility utility) : base(logger)
-        {
-            _vacancyClient = vacancyClient;
-            _timeProvider = timeProvider;
-            _utility = utility;
-        }
 
         public async Task<CloneVacancyDatesQuestionViewModel> GetCloneVacancyDatesQuestionViewModelAsync(VacancyRouteModel vrm)
         {
@@ -82,7 +76,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                     StartDay = $"{vacancy.StartDate.Value.Day:00}",
                     StartMonth = $"{vacancy.StartDate.Value.Month:00}",
                     StartYear = $"{vacancy.StartDate.Value.Year}",
-                    CurrentYear = _timeProvider.Now.Year
+                    CurrentYear = timeProvider.Now.Year
                 };
             }
         }
@@ -101,19 +95,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             model.StartDay = dirtyModel.StartDay;
             model.StartMonth = dirtyModel.StartMonth;
             model.StartYear = dirtyModel.StartYear;
-            model.CurrentYear = _timeProvider.Now.Year;
+            model.CurrentYear = timeProvider.Now.Year;
 
             return model;
         }
 
         public bool IsNewDatesRequired(Vacancy vacancy)
-            => vacancy.ClosingDate < _timeProvider.Now.Date.AddDays(7);
+            => vacancy.ClosingDate < timeProvider.Now.Date.AddDays(7);
 
         public async Task<OrchestratorResponse<Guid>> PostCloneVacancyWithSameDates(CloneVacancyDatesQuestionEditModel model, VacancyUser user)
         {
             var vacancy = await GetCloneableAuthorisedVacancyAsync(model);
 
-            var newVacancyId = await _vacancyClient.CloneVacancyAsync(
+            var newVacancyId = await vacancyClient.CloneVacancyAsync(
                 model.VacancyId,
                 user,
                 SourceOrigin.EmployerWeb,
@@ -135,9 +129,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             return await ValidateAndExecute(
                 vacancy,
-                v => _vacancyClient.Validate(v, ValidationRules),
+                v => vacancyClient.Validate(v, ValidationRules),
                 v =>
-                    _vacancyClient.CloneVacancyAsync(
+                    vacancyClient.CloneVacancyAsync(
                         model.VacancyId,
                         user,
                         SourceOrigin.EmployerWeb,
@@ -148,9 +142,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<Vacancy> GetCloneableAuthorisedVacancyAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
+            var vacancy = await vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
-            _utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
+            utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             if (!vacancy.CanClone)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForCloning, vacancy.Title));

@@ -7,20 +7,13 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
-	public class EmployerOrchestrator 
+	public class EmployerOrchestrator(IProviderVacancyClient providerVacancyClient)
     {
-        private readonly IProviderVacancyClient _providerVacancyClient;
-
-        public EmployerOrchestrator(IProviderVacancyClient providerVacancyClient)
-        {
-            _providerVacancyClient = providerVacancyClient;
-        }
-
         public async Task<EmployersViewModel> GetEmployersViewModelAsync(VacancyRouteModel vrm)
         {
-            var editVacancyInfo = await _providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
+            var editVacancyInfo = await providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn, "");
 
-            if (editVacancyInfo?.Employers == null || editVacancyInfo.Employers.Any() == false)
+            if (editVacancyInfo?.Employers == null || !editVacancyInfo.Employers.Any())
             {
                 throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vrm.Ukprn));
             }

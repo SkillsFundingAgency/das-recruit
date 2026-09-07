@@ -26,7 +26,6 @@
             <li>why the applicant should apply</li>
         </ul>
         <form asp-route="@RouteNames.ShortDescription_Post" asp-all-route-data="@Model.RouteDictionary">
-
             <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="350">
                 <div esfa-validation-marker-for="ShortDescription" class="govuk-form-group">
                     <label class="govuk-visually-hidden" asp-for="ShortDescription">
@@ -43,12 +42,10 @@
                     You can enter up to 350 characters
                 </div>
             </div>
-
             <div class="govuk-button-group">
                 <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">Save and continue</button>
                 <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
             </div>
-
         </form>
     </div>
 </div>

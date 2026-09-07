@@ -3,16 +3,7 @@
     public static class Anchors
     {
         //Preview Sections
-        public const string ApprenticeshipSummarySection = "apprenticeshipSummary";
-        public const string RequirementsAndProspectsSection = "reqAndProspects";
         public const string AboutEmployerSection = "aboutEmployer";
-        public const string ApplicationProcessSection = "applicationProcess";
-        public const string TrainingProviderSection = "trainingProvider";
-        public const string AdditionalQuestionsSection = "additionalQuestions";
-        public const string TitleSection = "title";
-        public const string NumberOfPositionsSection = "numberofpositions";
-        public const string ShortDescriptionSection = "shortDescription";
-        public const string VacancyDescriptionSection = "vacancyDescription";
 
         //Preview Fields
         public const string Title = "Title";

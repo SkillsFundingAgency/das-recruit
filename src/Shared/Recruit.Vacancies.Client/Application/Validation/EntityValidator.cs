@@ -6,15 +6,9 @@ using FluentValidation.Results;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation
 {
-    public sealed class EntityValidator<T, TRules> : IEntityValidator<T, TRules> where TRules : struct, IComparable, IConvertible, IFormattable 
+    public sealed class EntityValidator<T, TRules>(AbstractValidator<T> fluentValidator) : IEntityValidator<T, TRules>
+        where TRules : struct, IComparable, IConvertible, IFormattable
     {
-        private readonly AbstractValidator<T> _validator;
-    
-        public EntityValidator(AbstractValidator<T> fluentValidator)
-        {
-            _validator = fluentValidator;
-        }
-
         public void ValidateAndThrow(T entity, TRules rules)
         {
             var validationResult = ValidateEntity(entity, rules).Result;
@@ -36,32 +30,28 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
 
             context.RootContextData.Add(ValidationConstants.ValidationsRulesKey, rules);
 
-            var fluentResult = await _validator.ValidateAsync(context);
+            var fluentResult = await fluentValidator.ValidateAsync(context);
 
-            if (!fluentResult.IsValid)
-            {
-                return CreateValidationErrors(fluentResult);
-            }
-
-            return new EntityValidationResult();
+            return !fluentResult.IsValid 
+                ? CreateValidationErrors(fluentResult) 
+                : new EntityValidationResult();
         }
 
-        private EntityValidationResult CreateValidationErrors(ValidationResult fluentResult)
+        private static EntityValidationResult CreateValidationErrors(ValidationResult fluentResult)
         {
             var newResult = new EntityValidationResult();
 
-            if (fluentResult.IsValid == false && fluentResult.Errors.Count > 0)
+            if (fluentResult.IsValid || fluentResult.Errors.Count <= 0) return newResult;
+            
+            foreach(var fluentError in fluentResult.Errors)
             {
-                foreach(var fluentError in fluentResult.Errors)
-                {
-                    newResult.Errors.Add(new EntityValidationError(ParseForRuleId(fluentError.CustomState), fluentError.PropertyName, fluentError.ErrorMessage, fluentError.ErrorCode));
-                }
+                newResult.Errors.Add(new EntityValidationError(ParseForRuleId(fluentError.CustomState), fluentError.PropertyName, fluentError.ErrorMessage, fluentError.ErrorCode));
             }
 
             return newResult;
         }
 
-        private long ParseForRuleId(object customState)
+        private static long ParseForRuleId(object customState)
         {
             if (customState == null)
                 throw new ArgumentNullException(nameof(customState), "Fluent Error should have CustomState property set to the RuleId");

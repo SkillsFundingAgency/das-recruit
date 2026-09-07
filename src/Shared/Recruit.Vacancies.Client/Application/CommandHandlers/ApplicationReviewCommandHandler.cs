@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
     public class ApplicationReviewCommandHandler(
         ILogger<ApplicationReviewCommandHandler> logger,
-        ISqlDbRepository sqlDbRepository,
+        IApplicationReadRepository applicationReadRepository,
         IVacancyRepository vacancyRepository,
         ITimeProvider timeProvider,
         IMessaging messaging,
@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         public async Task<bool> Handle(ApplicationReviewStatusEditCommand message, CancellationToken cancellationToke)
         {
-            var applicationReview = await sqlDbRepository.GetAsync(message.ApplicationReviewId);
+            var applicationReview = await applicationReadRepository.GetAsync(message.ApplicationReviewId);
 
             if (applicationReview.CanReview == false)
             {
@@ -123,7 +123,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if (status != ApplicationReviewStatus.Successful)
                 return false;
 
-            var counts = await sqlDbRepository.GetApplicationReviewsCountByVacancyReferenceAsync(vacancyReference);
+            var counts = await applicationReadRepository.GetApplicationReviewsCountByVacancyReferenceAsync(vacancyReference);
 
             // If all positions are filled
             if (!(counts.SuccessfulApplications >= vacancy.NumberOfPositions)) return false;

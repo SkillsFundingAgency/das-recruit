@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         public async Task<OrchestratorResponse<EditVacancyDatesViewModel>> GetEditVacancyDatesViewModelAsync(VacancyRouteModel vrm, DateTime? proposedClosingDate, DateTime? proposedStartDate)
         {
             var vacancyTask = GetVacancyAsync(vrm);
-            var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+            var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync(includePlaceholderProgramme: true);
 
             await Task.WhenAll(vacancyTask, programmesTask);
 

@@ -7,7 +7,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
 {
     public class VacancyReviewTests
     {
-        public class ManualQaCommentTestData : TheoryData<string, string>
+        private class ManualQaCommentTestData : TheoryData<string, string>
         {
             public ManualQaCommentTestData()
             {
@@ -38,9 +38,9 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
         }
 
         [Fact]
-        public void ShouldNotRequireCandiateFeedbackIfSuccessful()
+        public void ShouldNotRequireCandidateFeedbackIfSuccessful()
         {
-            var m = new Recruit.Vacancies.Client.Domain.Entities.ApplicationReview
+            var m = new ApplicationReview
             {
                 Status = ApplicationReviewStatus.Successful,
                 CandidateFeedback = "should not specify feedback if successful"
@@ -50,9 +50,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
 
             var result = validator.Validate(m);
 
-            result.IsValid.Should().BeFalse();
-            result.Errors.Count.Should().Be(1);
-            result.Errors[0].ErrorMessage.Should().Be(ApplicationReviewValidator.CandidateFeedbackNull);
+            result.IsValid.Should().BeTrue();
+            result.Errors.Count.Should().Be(0);
         }
 
         [Theory]

@@ -21,7 +21,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             [FromQuery] string sortColumn,
             [FromQuery] string sortOrder,
             [FromQuery] string locationFilter = "All",
-            [FromQuery] int page = 1)
+            [FromQuery] int page = 1,
+            [FromQuery] FilteringOptions filteringOptions = FilteringOptions.All)
         {
             Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
             Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
@@ -71,17 +72,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.ApplicationStatusChangedHeader].ToString();
             }
 
+            viewModel.FilteringOptions = filteringOptions;
             return View(viewModel);
         }
 
 
-        private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
-        {
-            if (utility.IsTaskListCompleted(vacancy))
-            {
-                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id });
-            }
-            return RedirectToRoute(RouteNames.ProviderTaskListGet, new { vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id });
-        }
+        private RedirectToRouteResult HandleRedirectOfEditableVacancy(Vacancy vacancy) =>
+            RedirectToRoute(utility.IsTaskListCompleted(vacancy) 
+                ? RouteNames.ProviderCheckYourAnswersGet 
+                : RouteNames.ProviderTaskListGet, new { vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id });
     }
 }

@@ -35,7 +35,7 @@ if (selectFields.length > 0) {
   for (var s = 0; s < selectFields.length; s++) {
     accessibleAutocomplete.enhanceSelectElement({
       selectElement: selectFields[s],
-      minLength: 2,
+      minLength: 5,
       autoselect: true,
       defaultValue: "",
       displayMenu: "overlay",
@@ -222,6 +222,7 @@ function inViewport($el) {
 
 function initializeHtmlEditors() {
   tinymce.init({
+    browser_spellcheck: true,
     element_format: "html",
     apply_source_formatting: true,
     menubar: false,
@@ -233,11 +234,16 @@ function initializeHtmlEditors() {
     content_style:
       ".mce-content-body {font-size:19px;font-family:nta,Arial,sans-serif;}",
     setup: function (tinyMceEditor) {
-      var element = tinyMceEditor.getElement();
+      var textarea = tinyMceEditor.getElement();
+      
+      var syncCharacterCount = function () {
+        tinyMceEditor.save();
+        textarea.dispatchEvent(new Event("input", { bubbles: true }));
+        textarea.dispatchEvent(new Event("keyup", { bubbles: true }));
+      };
 
-      tinyMceEditor.on("keyup", function (e) {
-        setEditorMaxLength(element, tinyMceEditor);
-      });
+      tinyMceEditor.on("keyup", syncCharacterCount);
+      tinyMceEditor.on("change", syncCharacterCount); // bullet-list button, paste, undo
       tinyMceEditor.on("focus", function (e) {
         tinyMceEditor.editorContainer.classList.add("editor-focus");
       });
@@ -246,20 +252,12 @@ function initializeHtmlEditors() {
       });
     },
     init_instance_callback: function (tinyMceEditor) {
-      var element = tinyMceEditor.getElement();
-      setEditorMaxLength(element, tinyMceEditor);
+      var textarea = tinyMceEditor.getElement();
+      tinyMceEditor.save();
+      textarea.dispatchEvent(new Event("input", { bubbles: true }));
+      textarea.dispatchEvent(new Event("keyup", { bubbles: true }));
     },
   });
-}
-
-function setEditorMaxLength(element, tinyMceEditor) {
-  var innerText = tinyMceEditor.contentDocument.body.innerText;
-  innerText = innerText.replace(/\n\n/g, "|");
-  var innerTextLength =
-    innerText.charAt(innerText.length - 1) === String.fromCharCode(10)
-      ? innerText.length - 1
-      : innerText.length;
-  characterCount(element, innerTextLength);
 }
 
 function tableClassToggleForDoubleArrows() {

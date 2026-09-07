@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -30,7 +31,7 @@ public class VacancyLocationService(
     {
         ArgumentNullException.ThrowIfNull(vacancy);
         var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
-        var providerData = await providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn);
+        var providerData = await providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn, vacancy.EmployerAccountId);
         var employerInfo = providerData.Employers.Single(e => e.EmployerAccountId == vacancy.EmployerAccountId);
         var legalEntity = employerInfo.LegalEntities.FirstOrDefault(l => l.AccountLegalEntityPublicHashedId == employerProfile.AccountLegalEntityPublicHashedId);
         
@@ -76,7 +77,7 @@ public class VacancyLocationService(
             return;
         }
 
-        var nonEnglishAddresses = locations.Where(x => x.Country is not ("England" or null)).ToArray();
+        var nonEnglishAddresses = locations.Where(x => x.Country is not (Constants.EnglandCountryCode or null)).ToArray();
         if (nonEnglishAddresses.Length is not 0)
         {
             // fail fast since we know this will fail validation anyway
@@ -113,7 +114,7 @@ public class VacancyLocationService(
 
         foreach (var address in addresses)
         {
-            string newAddressString = address.ToSingleLineFullAddress();
+            var newAddressString = address.ToSingleLineFullAddress();
             var existingLocation = existingLocations.FirstOrDefault(x => x.ToSingleLineFullAddress().Equals(newAddressString, StringComparison.InvariantCultureIgnoreCase));
             if (existingLocation is null)
             {
@@ -126,13 +127,13 @@ public class VacancyLocationService(
             existingLocation.Country = address.Country;
         }
 
-        await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
+        await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile);
     }
 
     public async Task SaveEmployerAddress(VacancyUser user, Vacancy vacancy, long ukprn, Address address)
     {
         var existingLocations = await GetVacancyLocations(vacancy, ukprn);
-        string newAddressString = address.ToSingleLineFullAddress();
+        var newAddressString = address.ToSingleLineFullAddress();
         if (existingLocations.Any(x => x.ToSingleLineFullAddress().Equals(newAddressString, StringComparison.InvariantCultureIgnoreCase)))
         {
             // Don't add existing addresses
@@ -141,6 +142,6 @@ public class VacancyLocationService(
         
         var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
         employerProfile.OtherLocations.Add(address);
-        await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
+        await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile);
     }
 }

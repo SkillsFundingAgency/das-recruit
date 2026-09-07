@@ -1,18 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using AutoFixture;
-using Esfa.Recruit.Provider.Web.Orchestrators;
+﻿using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
-using FluentAssertions;
-using Moq;
 using Xunit;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
@@ -24,7 +16,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
 
         private readonly DateTime _today = DateTime.Parse("2019-09-18");
         private readonly VacancyUser _user = new() {UserId = UserId,  Ukprn = Ukprn };
-        private Mock<IProviderRelationshipsService> _permissionServiceMock;
         private Mock<IRecruitVacancyClient> _clientMock;
 
         [Fact]
@@ -33,9 +24,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
             var fixture = new Fixture();
             var dashboardProjection = fixture.Create<ProviderDashboardSummary>();
 
-            var orch = GetSut(dashboardProjection);
+            var orchestrator = GetSut(dashboardProjection);
 
-            var actualDashboard = await orch.GetDashboardViewModelAsync(_user);
+            var actualDashboard = await orchestrator.GetDashboardViewModelAsync(_user);
 
             actualDashboard.HasAnyVacancies.Should().BeTrue();
             actualDashboard.Alerts.Should().NotBeNull();
@@ -45,9 +36,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
         [Fact]
         public async Task WhenHasNoVacancies_ShouldReturnViewModelAsync()
         {
-            var orch = GetSut(new ProviderDashboardSummary());
+            var orchestrator = GetSut(new ProviderDashboardSummary());
 
-            var actualDashboard = await orch.GetDashboardViewModelAsync(_user);
+            var actualDashboard = await orchestrator.GetDashboardViewModelAsync(_user);
 
             actualDashboard.HasAnyVacancies.Should().BeFalse();
             actualDashboard.NoOfVacanciesClosingSoonWithNoApplications.Should().Be(0);
@@ -57,22 +48,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
         }
 
         [Fact]
-        public async Task Then_Checks_For_CorrectPermission_BasedOn_Vacancy_Type()
-        {
-            var orch = GetSut(new ProviderDashboardSummary());
-
-            var actual = await orch.GetDashboardViewModelAsync(_user);
-
-            _permissionServiceMock.Verify(x => x.CheckProviderHasPermissions(Ukprn, OperationType.RecruitmentRequiresReview));
-            actual.HasEmployerReviewPermission.Should().BeTrue();
-        }
-
-        [Fact]
         public async Task Then_Upserts_Provider_User()
         {
-            var orch = GetSut(new ProviderDashboardSummary());
+            var orchestrator = GetSut(new ProviderDashboardSummary());
 
-            await orch.GetDashboardViewModelAsync(_user);
+            await orchestrator.GetDashboardViewModelAsync(_user);
             
             _clientMock.Verify(x=>x.UserSignedInAsync(_user, UserType.Provider), Times.Once);
         }
@@ -86,11 +66,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
             vacancyClientMock.Setup(c => c.GetDashboardSummary(Ukprn, UserId))
                 .ReturnsAsync(dashboardProjection);
 
-            _permissionServiceMock = new Mock<IProviderRelationshipsService>();
-            
-            _permissionServiceMock.Setup(p => p.CheckProviderHasPermissions(Ukprn, OperationType.RecruitmentRequiresReview))
-                .ReturnsAsync(true);
-
             var userDetails = new User();
 
             _clientMock = new Mock<IRecruitVacancyClient>();
@@ -103,9 +78,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
             alertsFactoryMock.Setup(a => a.Create(userDetails))
                 .ReturnsAsync(alertsViewModel);
 
-            var orch = new DashboardOrchestrator(vacancyClientMock.Object, _clientMock.Object, _permissionServiceMock.Object);
-
-            return orch;
+            return new DashboardOrchestrator(vacancyClientMock.Object, _clientMock.Object);
         }
     }
 }

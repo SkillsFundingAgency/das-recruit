@@ -5,26 +5,18 @@ using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class UpdateUserAlertCommandHandler : IRequestHandler<UpdateUserAlertCommand, Unit>
+    public class UpdateUserAlertCommandHandler(IRecruitVacancyClient client, IUserWriteRepository userRepository)
+        : IRequestHandler<UpdateUserAlertCommand, Unit>
     {
-        private readonly IRecruitVacancyClient _client;
-        private readonly IUserRepositoryRunner _userRepository;
-        public UpdateUserAlertCommandHandler(IRecruitVacancyClient client, IUserRepositoryRunner userRepository)
-        {
-            _userRepository = userRepository;
-            _client = client;
-        }
-
         public async Task<Unit> Handle(UpdateUserAlertCommand message, CancellationToken cancellationToken)
         {
             var user = string.IsNullOrEmpty(message.DfEUserId) 
-                ? await _client.GetUsersDetailsAsync(message.IdamsUserId) 
-                : await _client.GetUsersDetailsByDfEUserId(message.DfEUserId);
+                ? await client.GetUsersDetailsAsync(message.IdamsUserId) 
+                : await client.GetUsersDetailsByDfEUserId(message.DfEUserId);
 
             switch (message.AlertType)
             {
@@ -44,7 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     throw new InvalidEnumArgumentException($"Cannot handle this alert dismissal {message.AlertType}");
             }
 
-            await _userRepository.UpsertUserAsync(user);
+            await userRepository.UpsertUserAsync(user);
             
             return Unit.Value;
         }

@@ -34,8 +34,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (provider == null && programme == null)
             {
-                if (await _employerVacancyOrchestrator.HasNoVacancies(employerAccountId))
-                    return RedirectToRoute(RouteNames.Dashboard_Get, new {employerAccountId});
+                return RedirectToRoute(RouteNames.Dashboard_Get, new {employerAccountId});
             }
             return RedirectToRoute(RouteNames.CreateVacancyStart, new {employerAccountId});
         }
@@ -61,7 +60,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         public IActionResult ManageVacancy([FromRoute] string employerAccountId)
         {
             TempData[TempDataKeys.ReferredFromMa] = true;
-            return RedirectToRoute(RouteNames.Vacancies_Get, new {employerAccountId});
+            return RedirectToRoute(RouteNames.VacanciesGetAll, new {employerAccountId});
         }        
     }
 }
