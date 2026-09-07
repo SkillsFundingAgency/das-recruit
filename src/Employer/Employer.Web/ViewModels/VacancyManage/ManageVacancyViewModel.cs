@@ -1,3 +1,4 @@
+using System.Linq;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Application;
@@ -24,6 +25,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool HasNoApplications => TotalUnfilteredApplicationsCount == 0;
         public bool CanShowNoApplicationsInsetText => !IsVacancyArchived && !IsVacancyRejected;
         public int TotalUnfilteredApplicationsCount => Applications?.TotalUnfilteredApplicationsCount ?? 0;
+        public int TotalApplicationsNotWithdrawn => Applications?.Applications?.Count(x => x.IsNotWithdrawn) ?? 0;
         public bool ShowEmployerApplications => !Applications.VacancySharedByProvider;
         public bool ShowSharedApplications => HasApplications && Applications.VacancySharedByProvider;
         public bool CanShowMultipleApplicationsUnsuccessfulLink => (IsVacancyLive || IsVacancyClosed || IsVacancyArchived) && Applications.CanShowMultipleApplicationsUnsuccessfulLink && ShowEmployerApplications;
