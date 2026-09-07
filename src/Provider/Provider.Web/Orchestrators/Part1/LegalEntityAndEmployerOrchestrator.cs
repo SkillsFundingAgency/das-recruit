@@ -44,12 +44,10 @@ public class LegalEntityAndEmployerOrchestrator(
 
 
         // Only include employer accounts where the provider has recruitment permission
-        var allLegalEntities = await providerRelationshipsService.GetLegalEntitiesForProvider(
-            vrm.Ukprn, "", [OperationType.Recruitment, OperationType.RecruitmentRequiresReview]);
-
-        var legalEntities = allLegalEntities.ToList();
-
-        if (legalEntities.Count == 0)
+        var permissions = await providerRelationshipsService.GetProviderPermissionsByUkprn(vrm.Ukprn, [OperationType.Recruitment, OperationType.RecruitmentRequiresReview]);
+        var employerAccountIds = permissions?.AccountProviderLegalEntities?.Select(x => x.AccountHashedId).Distinct().ToList() ?? [];
+        
+        if (employerAccountIds.Count == 0)
         {
             throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vrm.Ukprn));
         }
@@ -61,11 +59,6 @@ public class LegalEntityAndEmployerOrchestrator(
         };
         var isAscending = sortOrder == SortOrder.Ascending;
 
-        var employerAccountIds = legalEntities
-            .Select(x => x.EmployerAccountId)
-            .Distinct()
-            .ToList();
-
         var accountLegal = await employerAccountProvider.GetAllLegalEntitiesConnectedToAccountAsync(
             employerAccountIds,
             searchTerm,
@@ -74,6 +67,12 @@ public class LegalEntityAndEmployerOrchestrator(
             sortColumn,
             isAscending);
 
+        var columnSortOrder = sortOrder switch
+        {
+            SortOrder.Ascending => ColumnSortOrder.Asc,
+            _ => ColumnSortOrder.Desc,
+        };
+        
         var vm = new LegalEntityAndEmployerViewModel
         {
             Employers = accountLegal.LegalEntities.GroupBy(x => x.DasAccountId).Select((grouping) => new EmployerViewModel
@@ -88,11 +87,11 @@ public class LegalEntityAndEmployerOrchestrator(
                 Id = x.AccountLegalEntityPublicHashedId,
                 EmployerAccountId = x.DasAccountId
             }),
-            TotalNumberOfLegalEntities = legalEntities.SelectMany(c => c.LegalEntities).Count(),
+            TotalNumberOfLegalEntities = accountLegal.PageInfo.TotalCount,
             SearchTerm = searchTerm,
             VacancyId = vrm.VacancyId,
-            SortByNameType = sortByType,
-            SortByAscDesc = sortOrder,
+            SortColumn = sortByType,
+            SortOrder = columnSortOrder,
             Ukprn = vrm.Ukprn,
             NoOfSearchResults = accountLegal.PageInfo.TotalCount
         };
@@ -102,8 +101,8 @@ public class LegalEntityAndEmployerOrchestrator(
         if (!string.IsNullOrEmpty(searchTerm))
             routeParams.Add(nameof(searchTerm), searchTerm);
 
-        routeParams.Add("sortOrder", sortOrder.ToString());
-        routeParams.Add("sortByType", sortByType.ToString());
+        routeParams.Add("SortOrder", columnSortOrder.ToString());
+        routeParams.Add("SortColumn", sortByType.ToString());
         routeParams.Add("ukprn", vrm.Ukprn.ToString());
         var routeName = RouteNames.LegalEntityEmployer_Get;
 

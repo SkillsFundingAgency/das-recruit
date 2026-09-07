@@ -10,5 +10,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
         Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProvider(long ukprn, string accountHashedId, List<OperationType> operationTypes);
         Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountPublicHashedId, string accountLegalEntityPublicHashedId, OperationType operationType);
         Task<bool> CheckEmployerHasPermissions(string accountHashedId, OperationType operationType);
+        Task<ProviderPermissions> GetProviderPermissionsByUkprn(long ukprn, List<OperationType> operationTypes);
     }
 }

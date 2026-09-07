@@ -77,7 +77,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             return MapToLegalEntities(permissions.AccountProviderLegalEntities);
         }
 
-        private async Task<ProviderPermissions> GetProviderPermissionsByUkprn(long ukprn, List<OperationType> operationTypes)
+        public async Task<ProviderPermissions> GetProviderPermissionsByUkprn(long ukprn, List<OperationType> operationTypes)
         {
             var permissions = await outerApiClient.Get<GetProviderPermissionsByUkprnApiResponse>(
                     new GetProviderPermissionsByUkprnApiRequest(ukprn, operationTypes));

@@ -273,7 +273,7 @@ a.app-card:focus .app-card__heading-text {
 /* Analytics styles for vacancies */
 
 .app-analytics-container {
-    display: flex;
+    display: inline-flex;
     gap: 10px;
 }
 
@@ -281,6 +281,7 @@ a.app-card:focus .app-card__heading-text {
     background: #f3f2f1;
     flex: 1;
     min-width: 190px;
+    min-height: 110px;
 }
 
 .app-analytics__heading {
