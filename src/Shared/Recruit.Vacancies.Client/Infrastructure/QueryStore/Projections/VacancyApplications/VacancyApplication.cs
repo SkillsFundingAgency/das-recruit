@@ -13,13 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public Guid CandidateId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string CandidateName
-        {
-            get
-            {
-                return string.IsNullOrEmpty(FirstName) ? " " : $"{FirstName} {LastName}";
-            }
-        }
+        public string CandidateName => string.IsNullOrEmpty(FirstName) ? " " : $"{FirstName} {LastName}";
 
         public DateTime? DateOfBirth { get; set; }
         public Guid ApplicationReviewId { get; set; }

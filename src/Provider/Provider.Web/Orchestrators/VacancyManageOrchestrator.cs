@@ -15,6 +15,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
@@ -36,34 +37,35 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(
             Vacancy vacancy,
             VacancyRouteModel vacancyRouteModel,
-            int pageNumber,
-            int pageSize,
-            SortColumn sortColumn,
-            SortOrder sortOrder,
-            string locationFilter = "All")
+            VacancyQueryOptions queryOptions)
         {
             var vacancyReference = vacancy.VacancyReference.GetValueOrDefault();
             var isClosed = vacancy.Status == VacancyStatus.Closed;
 
-            var applicationsTask = client.GetVacancyApplicationsSortedAsync(vacancyReference, sortColumn, sortOrder);
+            var applicationsTask = client.GetVacancyApplicationsSortedAsync(vacancyReference, queryOptions.SortColumn, queryOptions.SortOrder);
             var canArchiveTask = vacancy.CanArchive
                 ? utility.IsAllApplicationReviewsHasOutcomeAsync(vacancy)
                 : Task.FromResult(false);
 
-            var vacancyApplications = await applicationsTask ?? [];
-            var canShowArchive = await canArchiveTask;
+            (List<VacancyApplication> vacancyApplications, var canShowArchive) = (await applicationsTask ?? [], await canArchiveTask);
 
-            var applyLocationFilter =
-                !string.IsNullOrEmpty(locationFilter)
-                && !locationFilter.Equals("All", StringComparison.OrdinalIgnoreCase)
-                && vacancyApplications.All(x => x.CandidateAppliedLocations is not null);
-            
-            var applications = applyLocationFilter
-                ? vacancyApplications.Where(x => x.CandidateAppliedLocations!.Contains(locationFilter)).ToList()
-                : vacancyApplications;
+            IEnumerable<VacancyApplication> filtered = vacancyApplications;
 
-            var page = Math.Max(pageNumber, 1);
-            var filteredCount = applications.Count;
+            if (IsActiveFilter(queryOptions.LocationFilter))
+                filtered = filtered.Where(x =>
+                    x.CandidateAppliedLocations?.Contains(queryOptions.LocationFilter) == true);
+
+            if (IsActiveFilter(queryOptions.ApplicantFilter))
+                filtered = filtered.Where(x =>
+                    x.CandidateName?.Contains(queryOptions.ApplicantFilter, StringComparison.InvariantCultureIgnoreCase) == true);
+
+            var applications = filtered.ToList();
+
+            var page = Math.Max(queryOptions.PageNumber, 1);
+            var pagedApplications = applications
+                .Skip((page - 1) * queryOptions.PageSize)
+                .Take(queryOptions.PageSize)
+                .ToList();
 
             return new ManageVacancyViewModel
             {
@@ -87,33 +89,41 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 WithdrawnDate = isClosed && vacancy.ClosureReason == ClosureReason.WithdrawnByQa
                     ? vacancy.ClosedDate?.AsGdsDate()
                     : null,
+                SelectedApplicantName = queryOptions.ApplicantFilter,
                 Applications = new VacancyApplicationsViewModel
                 {
-                    Applications = applications.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
+                    Applications = pagedApplications,
                     TotalUnfilteredApplicationsCount = vacancyApplications.Count,
-                    TotalFilteredApplicationsCount = filteredCount,
+                    TotalFilteredApplicationsCount = applications.Count,
                     EmploymentLocations = vacancy.EmployerLocations.GetCityDisplayList(),
-                    SelectedLocation = locationFilter,
+                    SelectedLocation = queryOptions.LocationFilter,
+                    SelectedApplicantName = queryOptions.ApplicantFilter,
                     ShowDisability = vacancy.IsDisabilityConfident,
                     Ukprn = vacancyRouteModel.Ukprn,
                     VacancyId = vacancyRouteModel.VacancyId,
                     AvailableWhere = vacancy.EmployerLocationOption,
                     Pager = new PagerViewModel(
-                        filteredCount,
-                        pageSize,
-                        page,
+                        applications.Count,
+                        queryOptions.PageSize,
+                        queryOptions.PageNumber,
                         "Showing {0} to {1} of {2} applications",
                         RouteNames.VacancyManage_Get,
                         new Dictionary<string, string>
                         {
-                            { "locationFilter", locationFilter },
-                            { "SortColumn", sortColumn.ToString() },
-                            { "SortOrder", sortOrder.ToString() },
+                            { "locationFilter", queryOptions.LocationFilter },
+                            { "SortColumn", queryOptions.SortColumn.ToString() },
+                            { "SortOrder", queryOptions.SortOrder.ToString() },
                         })
                 },
-                TotalOutstandingApplicationsCount = applications.Count(x => x.Status == ApplicationReviewStatus.New && x.IsNotWithdrawn),
+                TotalOutstandingApplicationsCount = applications.Count(x =>
+                    x.Status == ApplicationReviewStatus.New && x.IsNotWithdrawn),
                 VacancyAnalyticsViewModel = await GetVacancyAnalytics(vacancy)
             };
+
+            static bool IsActiveFilter(string filter, int minLength = 0) =>
+                !string.IsNullOrEmpty(filter)
+                && !filter.Equals("All", StringComparison.OrdinalIgnoreCase)
+                && filter.Length > minLength;
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, ProposedChangesEditModel> DefineMappings()
