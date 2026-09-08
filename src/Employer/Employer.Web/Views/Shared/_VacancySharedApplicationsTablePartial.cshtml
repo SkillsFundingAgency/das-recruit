@@ -1,16 +1,5 @@
 @using Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
 @model VacancyApplicationsViewModel
-<div asp-show="Model.CanShowLocationFilter">
-    <div class="govuk-grid-row" asp-show="@Model.ShowFilteredApplicationsLabelText">
-        <div class="govuk-grid-column-two-thirds">
-            <div>
-                <h2 class="govuk-heading-s">
-                    @Model.FilteredApplicationsLabelText
-                </h2>
-            </div>
-        </div>
-    </div>
-</div>
 <div asp-show="@Model.HasApplications">
     <table class="govuk-table responsive">
         <thead class="govuk-table__head">
