@@ -21,9 +21,9 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public int NoOfApplicationsStartedOverLastSevenDays { get; internal set; }
         public bool HasNoOfApplicationsStartedIncreasedOverLastSevenDays => NoOfApplicationsStartedOverLastSevenDays > 0;
 
-        public int NoOfApplicationsSubmitted { get; internal set; }
-        public int NoOfApplicationsSubmittedOverLastSevenDays { get; internal set; }
-        public bool HasNoOfApplicationsSubmittedIncreasedOverLastSevenDays => NoOfApplicationsSubmittedOverLastSevenDays > 0;
+        public int NoOfApplicationsSaved { get; internal set; }
+        public int NoOfApplicationsSavedOverLastSevenDays { get; internal set; }
+        public bool HasNoOfApplicationsSavedIncreasedOverLastSevenDays => NoOfApplicationsSavedOverLastSevenDays > 0;
 
         public int NoOfTimesViewed { get; internal set; }
         public int NoOfTimesViewedOverLastSevenDays { get; internal set; }

@@ -1,28 +1,25 @@
 @model Esfa.Recruit.Shared.Web.ViewModels.VacancyAnalyticsSummaryViewModel
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-third">
-        <div class="app-analytics">
-            <h3 class="govuk-heading-s app-analytics__heading">Appeared in search</h3>
-            <div class="govuk-body govuk-!-font-size-48 app-analytics__data">@Model.NoOfTimesAppearedInSearch <span class="govuk-visually-hidden">times</span></div>
-            <div class="govuk-body app-analytics__summary" asp-show="@Model.HasNoOfTimesAppearedInSearchIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">+@Model.NoOfTimesAppearedInSearchOverLastSevenDays</span> increase <span class="govuk-visually-hidden"> in the last 7 days</span></div>
-            <div class="govuk-body app-analytics__summary" asp-hide="@Model.HasNoOfTimesAppearedInSearchIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">No</span> increase</div>
-        </div>
-    </div>
-    <div class="govuk-grid-column-one-third">
-        <div class="app-analytics">
-            <h3 class="govuk-heading-s app-analytics__heading">Total times viewed</h3>
-            <div class="govuk-body govuk-!-font-size-48 app-analytics__data">@Model.NoOfTimesViewed</div>
-            <div class="govuk-body app-analytics__summary" asp-show="@Model.HasNoOfTimesViewedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">+@Model.NoOfTimesViewedOverLastSevenDays</span> increase <span class="govuk-visually-hidden"> in the last 7 days</span></div>
-            <div class="govuk-body app-analytics__summary" asp-hide="@Model.HasNoOfTimesViewedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">No</span> increase</div>
-        </div>
-    </div>
-    <div class="govuk-grid-column-one-third">
-        <div class="app-analytics">
-            <h3 class="govuk-heading-s app-analytics__heading">Clicked on 'Apply now'</h3>
-            <div class="govuk-body govuk-!-font-size-48 app-analytics__data">@Model.NoOfApplicationsStarted</div>
-            <div class="govuk-body app-analytics__summary" asp-show="@Model.HasNoOfApplicationsStartedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">+@Model.NoOfApplicationsStartedOverLastSevenDays</span> increase <span class="govuk-visually-hidden"> in the last 7 days</span></div>
-            <div class="govuk-body app-analytics__summary" asp-hide="@Model.HasNoOfApplicationsStartedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">No</span> increase</div>
+<div class="govuk-grid-row govuk-!-margin-bottom-3">
+    <div class="govuk-grid-column-full">
+        <div class="app-analytics-container">
+            <div class="app-analytics">
+                <h3 class="govuk-heading-s app-analytics__heading">Appeared in search</h3>
+                <div class="govuk-body govuk-!-font-size-48 app-analytics__data">@Model.NoOfTimesAppearedInSearch</div>
+                <div class="govuk-body app-analytics__summary" asp-show="@Model.HasNoOfTimesAppearedInSearchIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">+@Model.NoOfTimesAppearedInSearchOverLastSevenDays</span> in the last 7 days</div>
+                <div class="govuk-body app-analytics__summary" asp-hide="@Model.HasNoOfTimesAppearedInSearchIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">0</span> in the last 7 days</div>
+            </div>
+            <div class="app-analytics">
+                <h3 class="govuk-heading-s app-analytics__heading">Viewed</h3>
+                <div class="govuk-body govuk-!-font-size-48 app-analytics__data">@Model.NoOfTimesViewed</div>
+                <div class="govuk-body app-analytics__summary" asp-show="@Model.HasNoOfTimesViewedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">+@Model.NoOfTimesViewedOverLastSevenDays</span> in the last 7 days</div>
+                <div class="govuk-body app-analytics__summary" asp-hide="@Model.HasNoOfTimesViewedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">0</span> in the last 7 days</div>
+            </div>
+            <div class="app-analytics">
+                <h3 class="govuk-heading-s app-analytics__heading">Application clicks</h3>
+                <div class="govuk-body govuk-!-font-size-48 app-analytics__data">@Model.NoOfApplicationsStarted</div>
+                <div class="govuk-body app-analytics__summary" asp-show="@Model.HasNoOfApplicationsStartedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">+@Model.NoOfApplicationsStartedOverLastSevenDays</span> in the last 7 days</div>
+                <div class="govuk-body app-analytics__summary" asp-hide="@Model.HasNoOfApplicationsStartedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">0</span> in the last 7 days</div>
+            </div>
         </div>
     </div>
 </div>

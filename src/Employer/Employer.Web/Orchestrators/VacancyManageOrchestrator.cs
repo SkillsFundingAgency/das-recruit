@@ -10,13 +10,16 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.ViewModels.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Helpers;
+using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -133,7 +136,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                             { "SortOrder", sortOrder.ToString() },
                         })
                 },
-                TotalOutstandingApplicationsCount = applications.Count(x => x.Status == ApplicationReviewStatus.New && x.IsNotWithdrawn)
+                TotalOutstandingApplicationsCount = applications.Count(x => x.Status == ApplicationReviewStatus.New && x.IsNotWithdrawn),
+                VacancyAnalyticsViewModel = await GetVacancyAnalytics(vacancy)
             };
         }
 
@@ -181,6 +185,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             };
 
             return mappings;
+        }
+
+        private async Task<VacancyAnalyticsViewModel> GetVacancyAnalytics(Vacancy vacancy)
+        {
+            var viewModel = new VacancyAnalyticsViewModel();
+            var vacancyAnalyticsTask = await vacancyClient.GetVacancyAnalyticsSummaryAsync(vacancy.VacancyReference.GetValueOrDefault());
+            var analyticsSummary = vacancyAnalyticsTask ?? new VacancyAnalyticsSummary();
+
+            viewModel.AnalyticsSummary = VacancyAnalyticsSummaryMapper.MapToVacancyAnalyticsSummaryViewModel(analyticsSummary, vacancy.LiveDate.GetValueOrDefault());
+            return viewModel;
         }
     }
 }

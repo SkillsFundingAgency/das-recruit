@@ -9,4 +9,5 @@ public record VacancyAnalytics
     public int SearchResultsCount { get; set; } = 0;
     public int ApplicationStartedCount { get; set; } = 0;
     public int ApplicationSubmittedCount { get; set; } = 0;
+    public int SavedCount { get; set; } = 0;
 }
