@@ -9,7 +9,6 @@ using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Employer;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.LiveVacancy;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy;
-using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview;
 using Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,9 +35,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<IDomainEventHandler<IEvent>, VacancySubmittedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyRejectedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, LiveVacancyChangedDateHandler>();
-
-            // VacancyReview
-            services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewReferredHandler>();
 
             // Application
             services.AddScoped<IDomainEventHandler<IEvent>, ApplicationSubmittedDomainEventHandler>();

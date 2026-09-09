@@ -444,14 +444,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             await messaging.SendCommandAsync(command);
         }
 
-        public Task ReferVacancyAsync(long vacancyReference)
-        {
-            return messaging.SendCommandAsync(new ReferVacancyCommand
-            {
-                VacancyReference = vacancyReference
-            });
-        }
-
         public Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId)
         {
             return employerAccountProvider.GetEmployerLegalEntitiesAsync(employerAccountId);
@@ -459,7 +451,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task CreateApplicationReviewAsync(Domain.Entities.Application application)
         {
-            //return messaging.SendCommandAsync(new CreateApplicationReviewCommand { Application = application });
             return Task.CompletedTask;
         }
 
