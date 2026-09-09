@@ -4,12 +4,11 @@
 @{
     ViewBag.Vpv = "/recruitment/employer/page-manage-vacancy";
     ViewBag.Title = @Model.ViewBagTitle;
+    var sharedApplicationsNoMarginCssClass = Model.ShowSharedApplications ? "govuk-!-margin-bottom-0" : string.Empty;
 }
-
 @section BackLink {
     <a asp-route="@RouteNames.VacanciesGetAll" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@Model.FilteringOptions" class="govuk-back-link">Back</a>
 }
-
 <div class="govuk-grid-row" asp-show="@Model.ShowEmployerApplications">
     <div class="govuk-grid-column-two-thirds">
         <div asp-show="Model.HasVacancyClosedInfoMessage"
@@ -158,7 +157,7 @@
 </div>
 @if (Model.CanShowApplicationsSection)
 {
-    <div class="govuk-grid-row govuk-!-margin-top-9">
+    <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div>
                 <h2 asp-show="@Model.ShowEmployerApplications" class="govuk-heading-m">
@@ -200,8 +199,8 @@
                     Shared applications (@Model.TotalUnfilteredApplicationsCount)
                 </h2>
             </div>
-            <div class="govuk-body govuk-hint" asp-show="@Model.IsDisabilityConfident">
-                <p class="govuk-label govuk-inset-text">
+            <div class="govuk-body govuk-hint @sharedApplicationsNoMarginCssClass" asp-show="@Model.IsDisabilityConfident">
+                <p class="govuk-label govuk-inset-text @sharedApplicationsNoMarginCssClass">
                     You are signed up to the
                     <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link"
                        rel="noopener" target="_blank"
@@ -212,7 +211,7 @@
             </div>
         </div>
     </div>
-    <div class="govuk-grid-row govuk-!-margin-top-3">
+    <div class="govuk-grid-row">
         <form method="get" autocomplete="off">
             <div class="govuk-grid-column-two-thirds">
                 <div class="govuk-form-group">
