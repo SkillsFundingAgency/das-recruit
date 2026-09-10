@@ -4,7 +4,6 @@ using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
-using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Employer;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy;
@@ -33,9 +32,6 @@ internal static class ServiceCollectionExtensions
         services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewedHandler>();
         services.AddScoped<IDomainEventHandler<IEvent>, VacancySubmittedHandler>();
         services.AddScoped<IDomainEventHandler<IEvent>, VacancyRejectedHandler>();
-
-        // Application
-        services.AddScoped<IDomainEventHandler<IEvent>, ApplicationSubmittedDomainEventHandler>();
 
         // Employer
         services.AddScoped<IDomainEventHandler<IEvent>, SetupEmployerHandler>();
