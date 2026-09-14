@@ -1,4 +1,5 @@
 #nullable enable
+using System.Linq;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyAnalytics;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyView;

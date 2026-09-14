@@ -93,6 +93,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 {
                     Applications = pagedApplications,
                     TotalUnfilteredApplicationsCount = vacancyApplications.Count,
+                    TotalUnfilteredApplicationsNotWithdrawn = vacancyApplications.Count(x => x.IsNotWithdrawn),
                     TotalFilteredApplicationsCount = applications.Count,
                     EmploymentLocations = vacancy.EmployerLocations.GetCityDisplayList(),
                     SelectedLocation = queryOptions.LocationFilter,
