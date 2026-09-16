@@ -1,5 +1,7 @@
+#nullable enable
 using System.Linq;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.VacancyAnalytics;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyView;
 using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -17,6 +19,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public string PossibleStartDate { get; internal set; }
         public bool IsDisabilityConfident { get; internal set; }
         public bool IsApplyThroughFaaVacancy { get; internal set; }
+        public bool IsApplyThroughExternalApplicationSiteVacancy => !IsApplyThroughFaaVacancy;
 
         public VacancyApplicationsViewModel Applications { get; internal set; }
         public bool HasApplications => TotalUnfilteredApplicationsCount > 0;
@@ -64,5 +67,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
                        "Notify them with our standard message or edit with feedback.";
             }
         }
+        public VacancyAnalyticsViewModel VacancyAnalyticsViewModel { get; set; } = new();
+        public string? SelectedApplicantName { get; set; }
     }
 }

@@ -27,13 +27,13 @@ namespace Esfa.Recruit.Shared.Web.Mappers
                                                            + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedThreeDaysAgo
                                                            + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedTwoDaysAgo
                                                            + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedOneDayAgo,
-                NoOfApplicationsSubmitted = vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsSubmitted,
-                NoOfApplicationsSubmittedOverLastSevenDays = vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsSubmittedSevenDaysAgo
-                                                             + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsSubmittedSixDaysAgo
-                                                             + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsSubmittedFiveDaysAgo
-                                                             + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsSubmittedFourDaysAgo
-                                                             + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsSubmittedThreeDaysAgo
-                                                             + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsSubmittedTwoDaysAgo
+                NoOfApplicationsSaved = vacancyAnalyticsSummary.NoOfApprenticeshipSaved,
+                NoOfApplicationsSavedOverLastSevenDays = vacancyAnalyticsSummary.NoOfApprenticeshipSavedSevenDaysAgo
+                                                        + vacancyAnalyticsSummary.NoOfApprenticeshipSavedSixDaysAgo
+                                                        + vacancyAnalyticsSummary.NoOfApprenticeshipSavedFiveDaysAgo
+                                                        + vacancyAnalyticsSummary.NoOfApprenticeshipSavedFourDaysAgo
+                                                        + vacancyAnalyticsSummary.NoOfApprenticeshipSavedThreeDaysAgo
+                                                        + vacancyAnalyticsSummary.NoOfApprenticeshipSavedTwoDaysAgo
                                                              + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsSubmittedOneDayAgo,
                 NoOfTimesViewed = vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViews,
                 NoOfTimesViewedOverLastSevenDays = vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsSevenDaysAgo

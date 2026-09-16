@@ -506,7 +506,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 Searches = g.Sum(x => x.SearchResultsCount),
                 Views = g.Sum(x => x.ViewsCount),
                 ApplicationsStarted = g.Sum(x => x.ApplicationStartedCount),
-                ApplicationsSubmitted = g.Sum(x => x.ApplicationSubmittedCount)
+                ApplicationsSubmitted = g.Sum(x => x.ApplicationSubmittedCount),
+                Saved = g.Sum(x => x.SavedCount),
             });
 
             return new VacancyAnalyticsSummary
@@ -535,14 +536,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 NoOfApprenticeshipSavedSearchAlertsOneDayAgo = 0,
 
                 // TODO post MVS
-                NoOfApprenticeshipSaved = 0,
-                NoOfApprenticeshipSavedSevenDaysAgo = 0,
-                NoOfApprenticeshipSavedSixDaysAgo = 0,
-                NoOfApprenticeshipSavedFiveDaysAgo = 0,
-                NoOfApprenticeshipSavedFourDaysAgo = 0,
-                NoOfApprenticeshipSavedThreeDaysAgo = 0,
-                NoOfApprenticeshipSavedTwoDaysAgo = 0,
-                NoOfApprenticeshipSavedOneDayAgo = 0,
+                NoOfApprenticeshipSaved = Total(x => x.Saved),
+                NoOfApprenticeshipSavedSevenDaysAgo = GetValue(endDate.AddDays(-7), x => x.Saved),
+                NoOfApprenticeshipSavedSixDaysAgo = GetValue(endDate.AddDays(-6), x => x.Saved),
+                NoOfApprenticeshipSavedFiveDaysAgo = GetValue(endDate.AddDays(-5), x => x.Saved),
+                NoOfApprenticeshipSavedFourDaysAgo = GetValue(endDate.AddDays(-4), x => x.Saved),
+                NoOfApprenticeshipSavedThreeDaysAgo = GetValue(endDate.AddDays(-3), x => x.Saved),
+                NoOfApprenticeshipSavedTwoDaysAgo = GetValue(endDate.AddDays(-2), x => x.Saved),
+                NoOfApprenticeshipSavedOneDayAgo = GetValue(endDate.AddDays(-1), x => x.Saved),
 
                 // VIEWS
                 NoOfApprenticeshipDetailsViews = Total(x => x.Views),
@@ -565,14 +566,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 NoOfApprenticeshipApplicationsCreatedOneDayAgo = GetValue(endDate.AddDays(-1), x => x.ApplicationsStarted),
 
                 // APPLICATIONS SUBMITTED
-                NoOfApprenticeshipApplicationsSubmitted = Total(x => x.ApplicationsSubmitted),
-                NoOfApprenticeshipApplicationsSubmittedSevenDaysAgo = GetValue(endDate.AddDays(-7), x => x.ApplicationsSubmitted),
-                NoOfApprenticeshipApplicationsSubmittedSixDaysAgo = GetValue(endDate.AddDays(-6), x => x.ApplicationsSubmitted),
-                NoOfApprenticeshipApplicationsSubmittedFiveDaysAgo = GetValue(endDate.AddDays(-5), x => x.ApplicationsSubmitted),
-                NoOfApprenticeshipApplicationsSubmittedFourDaysAgo = GetValue(endDate.AddDays(-4), x => x.ApplicationsSubmitted),
-                NoOfApprenticeshipApplicationsSubmittedThreeDaysAgo = GetValue(endDate.AddDays(-3), x => x.ApplicationsSubmitted),
-                NoOfApprenticeshipApplicationsSubmittedTwoDaysAgo = GetValue(endDate.AddDays(-2), x => x.ApplicationsSubmitted),
-                NoOfApprenticeshipApplicationsSubmittedOneDayAgo = GetValue(endDate.AddDays(-1), x => x.ApplicationsSubmitted)
+                NoOfApprenticeshipApplicationsSubmitted = 0,
+                NoOfApprenticeshipApplicationsSubmittedSevenDaysAgo = 0,
+                NoOfApprenticeshipApplicationsSubmittedSixDaysAgo = 0,
+                NoOfApprenticeshipApplicationsSubmittedFiveDaysAgo = 0,
+                NoOfApprenticeshipApplicationsSubmittedFourDaysAgo = 0,
+                NoOfApprenticeshipApplicationsSubmittedThreeDaysAgo = 0,
+                NoOfApprenticeshipApplicationsSubmittedTwoDaysAgo = 0,
+                NoOfApprenticeshipApplicationsSubmittedOneDayAgo = 0
             };
 
             int Total(Func<dynamic, int> selector) =>
@@ -582,13 +583,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 analyticsByDate.TryGetValue(date, out var v) ? selector(v) : 0;
         }
 
-        public Task UpdateUserAccountAsync(string idamsUserId)
-        {
-            return messaging.SendCommandAsync(new UpdateUserAccountCommand
+        public Task UpdateUserAccountAsync(string idamsUserId) =>
+            messaging.SendCommandAsync(new UpdateUserAccountCommand
             {
                 IdamsUserId = idamsUserId
             });
-        }
 
         public Task<int> GetVacancyCountForUserAsync(string userId)
         {
