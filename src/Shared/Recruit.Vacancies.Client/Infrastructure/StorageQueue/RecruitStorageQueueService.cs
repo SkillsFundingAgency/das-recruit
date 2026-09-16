@@ -18,11 +18,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
             { typeof(ReportQueueMessage), QueueNames.ReportQueueName },
             { typeof(VacancyStatusQueueMessage), QueueNames.VacancyStatusQueueName },
             { typeof(UpdateEmployerUserAccountQueueMessage), QueueNames.UpdateEmployerUserAccountQueueName },
-            { typeof(DeleteStaleQueryStoreDocumentsQueueMessage), QueueNames.DeleteStaleQueryStoreDocumentsQueueName },
-            { typeof(CommunicationsHouseKeepingQueueMessage), QueueNames.CommunicationsHouseKeepingQueueName},
             { typeof(UpdateProvidersQueueMessage), QueueNames.UpdateProvidersQueueName},
             { typeof(UpdateProviderInfoQueueMessage), QueueNames.UpdateProviderInfoQueueName},
-            { typeof(TransferVacanciesFromEmployerReviewToQAReviewQueueMessage), QueueNames.TransferVacanciesFromEmployerReviewToQAReviewQueueName },
         };
 
         protected override string ConnectionString { get; }
