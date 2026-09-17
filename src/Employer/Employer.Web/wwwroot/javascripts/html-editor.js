@@ -10,16 +10,14 @@ import Document from '@tiptap/extension-document'
 import Text from '@tiptap/extension-text'
 import Paragraph from '@tiptap/extension-paragraph'
 import ListKeymap from '@tiptap/extension-list-keymap'
-import { CharacterCount, UndoRedo } from '@tiptap/extensions'
+import { UndoRedo } from '@tiptap/extensions'
 
 /*
     Extend BulletList to:
         - remove the Control+Shift+8 shortcut, it could interfere with screen reader shortcuts - achieved by not declaring the shortcut which the base control declares
 */
 const CustomBulletList = BulletList.extend({
-    addKeyboardShortcuts() {
-        return {}
-    },
+    addKeyboardShortcuts() { return {} },
 })
 
 /*
@@ -38,22 +36,11 @@ const CustomListItem = ListItem.extend({
 
 /*
     Create an extension to:
-        - handle pasting of html text to strip
-            - ul - we want to avoid nested lists where possible
-            - p - we don't want paragraphs in an li element
+        - remove pasting of html into the control, there's too many edge cases to handle
 */
 const CleanStylesExtension = Extension.create({
     name: 'cleanStyles',
-    transformPastedHTML(html) {
-        if (!this.editor.isActive('bulletList'))
-        {
-            return html
-        }
-
-        // if we're within a list already, strip out additional <ul> or <p> tags
-        // we do this to try and avoid formatting we don't want e.g. nested lists
-        return html.replace(/<\/?(?:ul|p)+>/g, '')
-    }
+    transformPastedHTML(html)  { return html.replace(/<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g, '') }
 })
 
 function hideTargetControl(target) {
@@ -82,7 +69,6 @@ const attrMap = { 'required': 'aria-required' }
     Also maps attributes into aria ones as per the attrMap above, this is because the editor is not a standard semantic control
  */
 function copyAriaAttributes(attrs, el) {
-    
     copyAttr.reduce((acc, val) => {
         if (el.hasAttribute(val)) {
             let attrVal = el.getAttribute(val)
@@ -121,8 +107,6 @@ const CreateCustomKeyboardShortcuts = (focusButton) => Extension.create({
         }
     }
 })
-
-
 
 function createToolbarBtn(name, ariaLabelName) {
     if (!buttons.hasOwnProperty(name)) {
@@ -181,7 +165,6 @@ function createToolbar(target, id, targetId) {
     //  - add tab index from 0 to buttons
 
     bulletListBtn.setAttribute('aria-controls', id)
-    bulletListBtn.setAttribute('tabindex', '-1')
     bulletListBtn.setAttribute('aria-keyshortcuts', 'Control+[ Control+] Meta+[ Meta+]')
     toolbar.classList.add('html-editor-toolbar')
     toolbar.setAttribute('aria-keyshortcuts', 'Alt+F10')
@@ -210,12 +193,12 @@ function initHtmlEditor(el) {
     };
 
     copyAriaAttributes(attrs, el)
+    const selectionUpdate = selectionUpdateFactory(bulletListBtn)
 
     // Create the editor
     const editor = new Editor({
         element: container,
         extensions: [
-            CharacterCount,
             UndoRedo,
             Document,
             Text,
@@ -240,18 +223,25 @@ function initHtmlEditor(el) {
             el.dispatchEvent(new Event('input'))
         },
         onSelectionUpdate({ editor }) {
-            if (editor.isActive('bulletList')) {
-                bulletListBtn.classList.add('active')
-                bulletListBtn.setAttribute('aria-pressed', 'true')
-            } else {
-                bulletListBtn.classList.remove('active')
-                bulletListBtn.setAttribute('aria-pressed', 'false')
-            }
+            selectionUpdate(editor)
+        },
+        onCreate({ editor }) {
+            selectionUpdate(editor)
         }
     })
 
     bulletListBtn.addEventListener('click', buttons['bullet-list']['click'](editor))
     return editor;
+}
+
+const selectionUpdateFactory = (bulletListBtn) => (editor) => {
+    if (editor.isActive('bulletList')) {
+        bulletListBtn.classList.add('active')
+        bulletListBtn.setAttribute('aria-pressed', 'true')
+    } else {
+        bulletListBtn.classList.remove('active')
+        bulletListBtn.setAttribute('aria-pressed', 'false')
+    }
 }
 
 export { initHtmlEditor }

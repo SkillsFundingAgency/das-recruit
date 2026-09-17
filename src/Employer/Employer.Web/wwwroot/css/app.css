@@ -363,7 +363,8 @@ a.app-card:focus .app-card__heading-text {
 .html-editor-toolbar button {
     display: block;
     align-items: center;
-    margin-bottom: 0.2em !important;
+    margin-bottom: 2px !important;
+    padding: 0;
 }
 
 .html-editor-toolbar button span svg {
@@ -372,7 +373,16 @@ a.app-card:focus .app-card__heading-text {
 }
 
 .html-editor-toolbar button.active {
-    background-color: #cccccc;
+    background-color: #8C8C8C;
+    box-shadow: 0 2px 0 #0b0c0c;
+}
+
+.html-editor-toolbar button.active span svg {
+    fill: #ffffff;
+}
+
+.html-editor-toolbar button:focus span svg {
+    fill: #242424;
 }
 
 .html-editor-textarea {
