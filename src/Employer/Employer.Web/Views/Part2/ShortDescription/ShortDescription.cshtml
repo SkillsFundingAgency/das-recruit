@@ -39,7 +39,8 @@
                     <span esfa-validation-message-for="ShortDescription" class="govuk-error-message"></span>
                     <textarea id="ShortDescription" asp-for="ShortDescription" aria-labelledby="ShortDescription-Label"
                         class="govuk-textarea govuk-js-character-count html-editor"
-                         rows="5" aria-describedby="ShortDescription-info ShortDescription-hint"></textarea>
+                         rows="5" aria-describedby="ShortDescription-info ShortDescription-hint" data-action-announce-id="editor-action-live-area"></textarea>
+                    <div id="editor-action-live-area" class="govuk-visually-hidden" aria-atomic="true" aria-live="polite"></div>
                 </div>
                 <div id="ShortDescription-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
                     You can enter up to 350 characters

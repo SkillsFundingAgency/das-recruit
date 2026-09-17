@@ -54,8 +54,8 @@ const buttons = {
     'bullet-list' : {
         'aria-label': 'Bullet list',
         'icon-path': 'M11 5h8c.6 0 1 .4 1 1s-.4 1-1 1h-8a1 1 0 0 1 0-2Zm0 6h8c.6 0 1 .4 1 1s-.4 1-1 1h-8a1 1 0 0 1 0-2Zm0 6h8c.6 0 1 .4 1 1s-.4 1-1 1h-8a1 1 0 0 1 0-2ZM4.5 6c0-.4.1-.8.4-1 .3-.4.7-.5 1.1-.5.4 0 .8.1 1 .4.4.3.5.7.5 1.1 0 .4-.1.8-.4 1-.3.4-.7.5-1.1.5-.4 0-.8-.1-1-.4-.4-.3-.5-.7-.5-1.1Zm0 6c0-.4.1-.8.4-1 .3-.4.7-.5 1.1-.5.4 0 .8.1 1 .4.4.3.5.7.5 1.1 0 .4-.1.8-.4 1-.3.4-.7.5-1.1.5-.4 0-.8-.1-1-.4-.4-.3-.5-.7-.5-1.1Zm0 6c0-.4.1-.8.4-1 .3-.4.7-.5 1.1-.5.4 0 .8.1 1 .4.4.3.5.7.5 1.1 0 .4-.1.8-.4 1-.3.4-.7.5-1.1.5-.4 0-.8-.1-1-.4-.4-.3-.5-.7-.5-1.1Z',
-        'click': (editor) => (e) => {
-            editor.commands.toggleBulletList()
+        'click': (editor, editorActions) => (e) => {
+            editorActions.toggleBulletList(editor)
             e.preventDefault()
         }
     }
@@ -82,7 +82,7 @@ function copyAriaAttributes(attrs, el) {
 /*
     Factory method to create custom keyboard shortcuts to control the toolbar behaviour
 */
-const CreateCustomKeyboardShortcuts = (focusButton) => Extension.create({
+const CreateCustomKeyboardShortcuts = (focusButton, editorActions) => Extension.create({
     name: 'customShortcuts',
     addKeyboardShortcuts() {
         return {
@@ -91,7 +91,7 @@ const CreateCustomKeyboardShortcuts = (focusButton) => Extension.create({
                 return true
             },
             'Mod-Shift-8': () => {
-                this.editor.commands.toggleBulletList()
+                editorActions.toggleBulletList(this.editor)
                 return true
             },
         }
@@ -159,8 +159,8 @@ function createToolbar(target, id, targetId) {
     toolbar.classList.add('html-editor-toolbar')
     toolbar.setAttribute('aria-keyshortcuts', 'Alt+F10')
 
-    target.insertAdjacentElement("afterend", toolbar)
-    toolbar.insertAdjacentElement("afterend", container)
+    target.insertAdjacentElement("afterend", container)
+    container.appendChild(toolbar)
     toolbar.appendChild(bulletListBtn)
 
     return { toolbar, container, bulletListBtn }
@@ -171,7 +171,12 @@ function initHtmlEditor(el) {
     const targetId = el.getAttribute('id')
     const id = crypto.randomUUID()
     const { toolbar, container, bulletListBtn } = createToolbar(el, id, targetId)
-    const CustomKeyboardShortcuts = CreateCustomKeyboardShortcuts(bulletListBtn)
+    const announceArea = el.hasAttribute('data-action-announce-id')
+        ? document.getElementById(el.getAttribute('data-action-announce-id'))
+        : undefined
+    
+    const editorActions = actionsFactory(announceArea)
+    const CustomKeyboardShortcuts = CreateCustomKeyboardShortcuts(bulletListBtn, editorActions)
 
     // Default attributes for the editor
     let attrs = {
@@ -220,7 +225,7 @@ function initHtmlEditor(el) {
         }
     })
 
-    bulletListBtn.addEventListener('click', buttons['bullet-list']['click'](editor))
+    bulletListBtn.addEventListener('click', buttons['bullet-list']['click'](editor, editorActions))
     return editor;
 }
 
@@ -231,6 +236,27 @@ const selectionUpdateFactory = (bulletListBtn) => (editor) => {
     } else {
         bulletListBtn.classList.remove('active')
         bulletListBtn.setAttribute('aria-pressed', 'false')
+    }
+}
+
+const announceTexts = {
+    'bulletList': {
+        true: 'Bullet list on',
+        false: 'Bullet list off'
+    }
+}
+const announceActionFactory = (announceElement) => (editor, action) => {
+    if (!announceElement) return;
+    announceElement.innerText = announceTexts[action][editor.isActive(action)]
+}
+
+const actionsFactory = (announceElement) => {
+    const actionAnnouncer = announceActionFactory(announceElement)
+    return {
+        toggleBulletList: (editor) => {
+            editor.commands.toggleBulletList()
+            actionAnnouncer(editor, 'bulletList')
+        }
     }
 }
 
