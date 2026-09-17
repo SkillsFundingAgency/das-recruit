@@ -90,18 +90,8 @@ const CreateCustomKeyboardShortcuts = (focusButton) => Extension.create({
                 focusButton.focus()
                 return true
             },
-            'Mod-]': () => {
-                if (!this.editor.isActive('bulletList'))
-                {
-                    this.editor.commands.toggleBulletList()
-                }
-                return true
-            },
-            'Mod-[': () => {
-                if (this.editor.isActive('bulletList'))
-                {
-                    this.editor.commands.toggleBulletList()
-                }
+            'Mod-Shift-8': () => {
+                this.editor.commands.toggleBulletList()
                 return true
             },
         }
@@ -165,7 +155,7 @@ function createToolbar(target, id, targetId) {
     //  - add tab index from 0 to buttons
 
     bulletListBtn.setAttribute('aria-controls', id)
-    bulletListBtn.setAttribute('aria-keyshortcuts', 'Control+[ Control+] Meta+[ Meta+]')
+    bulletListBtn.setAttribute('aria-keyshortcuts', 'Control+Shift+8 Meta+Shift+8')
     toolbar.classList.add('html-editor-toolbar')
     toolbar.setAttribute('aria-keyshortcuts', 'Alt+F10')
 
