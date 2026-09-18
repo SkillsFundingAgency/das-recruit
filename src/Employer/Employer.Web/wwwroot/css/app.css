@@ -343,10 +343,6 @@ a.app-card:focus .app-card__heading-text {
   list-style-type: disc;
 }
 
-.app-ugc-wrap li p {
-    margin-bottom: 0;
-}
-
 .app-preserve-line-breaks {
   white-space: pre-line;
 }
@@ -761,4 +757,9 @@ dd.govuk-summary-list__value .faa-user-content:first-child {
 
 .html-editor-textarea li p {
     margin-bottom: 0;
+}
+
+/* tiptap includes block level in li tags - make sure they render correctly site wide */
+li p {
+    margin-bottom: 0 !important;
 }
