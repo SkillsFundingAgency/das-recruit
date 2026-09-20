@@ -57,7 +57,7 @@
     <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
     <partial name="_Header" model="@accountId"></partial>
     <div class="govuk-width-container">
-        @RenderSection(RazorSections.BackLink, required: false)
+        @await RenderSectionAsync(RazorSections.BackLink, required: false)
         <main class="govuk-main-wrapper" id="main-content" role="main">
             @RenderBody()
         </main>
