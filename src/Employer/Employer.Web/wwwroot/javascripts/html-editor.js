@@ -160,7 +160,6 @@ function createToolbar(target, id, targetId) {
 
     bulletListBtn.setAttribute('aria-controls', id)
     toolbar.classList.add('html-editor-toolbar')
-    toolbar.setAttribute('aria-keyshortcuts', 'Alt+F10')
 
     target.insertAdjacentElement("afterend", container)
     container.appendChild(toolbar)
