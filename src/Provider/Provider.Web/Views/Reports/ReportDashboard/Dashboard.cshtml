@@ -36,7 +36,7 @@
                 </div>
                 <div class="govuk-notification-banner__content">
                     <h3 class="govuk-notification-banner__heading">
-                        Report from @Model.SuccessReportName is ready.
+                        Report from @Model.SuccessReportName is processing.
                     </h3>
                 </div>
             </div>
@@ -171,24 +171,31 @@
                         }
                     </td>
                     <td class="govuk-table__cell govuk-table__cell--numeric">
-                        <a asp-route="@RouteNames.ReportDashboard_DownloadCsv"
-                           asp-route-ukprn="@Model.Ukprn"
-                           asp-route-reportId="@report.ReportId"
-                           asp-route-version="v2"
-                           class="govuk-link">
-                            @if (Model.IsPreV2Migration)
-                            {
-                                <span class="govuk-!-display-block">Download</span>
-                                <span class="govuk-!-display-block">version 2</span>
-                            }
-                            else
-                            {
-                                <span class="govuk-!-display-block">Download CSV</span>
-                            }
-                            <span class="govuk-visually-hidden">
-                                the @report.ReportName in format
-                            </span>
-                        </a>
+                        @if (report.Status == ReportStatus.Generated)
+                        {
+                            <a asp-route="@RouteNames.ReportDashboard_DownloadCsv"
+                               asp-route-ukprn="@Model.Ukprn"
+                               asp-route-reportId="@report.ReportId"
+                               asp-route-version="v2"
+                               class="govuk-link">
+                                @if (Model.IsPreV2Migration)
+                                {
+                                    <span class="govuk-!-display-block">Download</span>
+                                    <span class="govuk-!-display-block">version 2</span>
+                                }
+                                else
+                                {
+                                    <span class="govuk-!-display-block">Download CSV</span>
+                                }
+                                <span class="govuk-visually-hidden">
+                                    the @report.ReportName in format
+                                </span>
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="govuk-!-display-block">Processing</span>
+                        }
                     </td>
                 </tr>
             }
