@@ -712,3 +712,54 @@ dd.govuk-summary-list__value .faa-user-content:first-child {
     align-self: flex-end; /* or justify-self: end for grid */
     font-size: 20px;
 }
+
+/* Html editor */
+
+.html-editor-toolbar {
+    padding: 0.2em;
+    border-left: 2px solid #0b0c0c;
+    border-top: 2px solid #0b0c0c;
+    border-right: 2px solid #0b0c0c;
+}
+
+.html-editor-toolbar button {
+    display: block;
+    align-items: center;
+    margin-bottom: 2px !important;
+    padding: 0;
+}
+
+.html-editor-toolbar button span svg {
+    fill: #242424;
+    display: block;
+}
+
+.html-editor-toolbar button.active {
+    background-color: #8C8C8C;
+    box-shadow: 0 2px 0 #0b0c0c;
+}
+
+.html-editor-toolbar button.active span svg {
+    fill: #ffffff;
+}
+
+.html-editor-toolbar button:focus span svg {
+    fill: #242424;
+}
+
+.html-editor-textarea {
+    min-height: 200px;
+    max-height: 350px;
+    overflow: auto;
+    resize: none;
+    border-top: 2px solid #aaa !important;
+}
+
+.html-editor-textarea li p {
+    margin-bottom: 0;
+}
+
+/* tiptap includes block level in li tags - make sure they render correctly site wide */
+li p {
+    margin-bottom: 0 !important;
+}
