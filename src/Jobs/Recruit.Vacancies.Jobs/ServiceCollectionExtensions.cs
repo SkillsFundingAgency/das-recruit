@@ -28,7 +28,6 @@ internal static class ServiceCollectionExtensions
 
         // Vacancy
         services.AddScoped<IDomainEventHandler<IEvent>, DraftVacancyUpdatedHandler>();
-        services.AddScoped<IDomainEventHandler<IEvent>, VacancySubmittedHandler>();
 
         // Employer
         services.AddScoped<IDomainEventHandler<IEvent>, SetupEmployerHandler>();
