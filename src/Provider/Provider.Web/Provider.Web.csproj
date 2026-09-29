@@ -19,19 +19,19 @@
     
     <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="3.0.0" />
     <PackageReference Include="NWebsec.AspNetCore.Mvc.TagHelpers" Version="3.0.0" />
-    <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="17.1.113" />
-    <PackageReference Include="SFA.DAS.DfESignIn.Auth" Version="17.1.89" />
+    <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="17.1.138" />
+    <PackageReference Include="SFA.DAS.DfESignIn.Auth" Version="17.1.160" />
     <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.59" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.11" />
     <PackageReference Include="System.Formats.Asn1" Version="10.0.10" />
     <PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
     <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.10" />
-    <PackageReference Include="System.Text.Json" Version="8.0.5" />
+    <PackageReference Include="System.Text.Json" Version="8.0.6" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21" />
-	<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.2.1" />
-	<PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.0.1" />
+	<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
+	<PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.15.0" />
 	  
 	  
   </ItemGroup>
