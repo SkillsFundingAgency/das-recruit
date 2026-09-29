@@ -43,11 +43,6 @@ public class DeleteVacancyCommandHandler(
 
         await repository.UpdateAsync(vacancy);
 
-        await messaging.PublishEvent(new VacancyDeletedEvent
-        {
-            VacancyId = vacancy.Id
-        });
-
         return Unit.Value;
     }
 }
