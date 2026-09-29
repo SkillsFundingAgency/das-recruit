@@ -2,9 +2,10 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -15,15 +16,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly ILogger<RejectVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _repository;
         private readonly IMessaging _messaging;
+        private readonly IOuterApiClient _outerApiClient;
 
         public RejectVacancyCommandHandler(
             ILogger<RejectVacancyCommandHandler> logger,
             IVacancyRepository repository,
-            IMessaging messaging)
+            IMessaging messaging,
+            IOuterApiClient outerApiClient)
         {
             _logger = logger;
             _repository = repository;
             _messaging = messaging;
+            _outerApiClient = outerApiClient;
         }
 
         public async Task<Unit> Handle(RejectVacancyCommand message, CancellationToken cancellationToken)
@@ -42,12 +46,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _repository.UpdateAsync(vacancy);
 
-            await _messaging.PublishEvent(new VacancyRejectedEvent
-            {
-                ProviderUkprn = vacancy.TrainingProvider.Ukprn,
-                VacancyReference = vacancy.VacancyReference.Value,
-                VacancyId = vacancy.Id
-            });
+            await _outerApiClient.Post(new PostEmployerRejectedVacancyEventRequest(new PostEmployerRejectedVacancyEventData(vacancy.Id)));
+            
             return Unit.Value;
         }
     }
