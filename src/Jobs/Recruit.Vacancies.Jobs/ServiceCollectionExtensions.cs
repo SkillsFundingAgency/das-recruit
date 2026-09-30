@@ -21,6 +21,7 @@ internal static class ServiceCollectionExtensions
         services.AddRecruitStorageClient(configuration);
 
         // Add Jobs
+        services.AddScoped<DomainEventsQueueTrigger>();
         services.AddScoped<VacancyStatusQueueTrigger>();
         services.AddScoped<UpdateProvidersQueueTrigger>();
             
@@ -37,6 +38,7 @@ internal static class ServiceCollectionExtensions
 
         RegisterDasEncodingService(services, configuration);
 
+        services.AddSingleton<IFeature, Feature>();
         services.AddSingleton<IFeature, Feature>();
     }
 
