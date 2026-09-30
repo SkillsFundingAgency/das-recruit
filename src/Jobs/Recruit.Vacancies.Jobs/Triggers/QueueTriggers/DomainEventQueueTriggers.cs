@@ -23,22 +23,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
             _logger = logger;
             _handlerLookup = BuildHandlerLookup(handlers);
         }
-
-        public async Task HandleApplicationSubmittedEvent([QueueTrigger(QueueNames.ApplicationSubmittedQueueName, Connection = "QueueStorage")] string message, TextWriter log)
-        {
-            await ExecuteHandler(nameof(ApplicationSubmittedEvent), message);
-        }
-
-        public async Task HandleApplicationWithdrawnEvent([QueueTrigger(QueueNames.ApplicationWithdrawnQueueName, Connection = "QueueStorage")] string message, TextWriter log)
-        {
-            await ExecuteHandler(nameof(ApplicationWithdrawnEvent), message);
-        }
-
-        public async Task HandleCandidateDeleteEvent([QueueTrigger(QueueNames.CandidateDeleteQueueName, Connection = "QueueStorage")] string message, TextWriter log)
-        {
-            await ExecuteHandler(nameof(CandidateDeleteEvent), message);
-        }
-
         public async Task HandleVacancyEvent([QueueTrigger(QueueNames.DomainEventsQueueName, Connection = "QueueStorage")] string message, TextWriter log)
         {
             try

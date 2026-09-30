@@ -33,11 +33,6 @@ public class UpdateLiveVacancyCommandHandler(
             await PublishLiveVacancyClosingDateChangedEventAsync(message);
         }
 
-        await messaging.PublishEvent(new VacancyPublishedEvent
-        {
-            VacancyId = message.Vacancy.Id
-        });
-
         var liveVacancyUpdatedEvent = new LiveVacancyUpdatedEvent
         {
             VacancyId = message.Vacancy.Id,
