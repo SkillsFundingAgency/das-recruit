@@ -24,12 +24,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         [AllowAnonymous]
         [Route("signout", Name = RouteNames.ProviderSignOut)]
+        [Route("service/signout", Name = RouteNames.ProviderTimeoutSignOut)]
         public async Task Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme, new AuthenticationProperties()
             {
-                RedirectUri = _externalLinks.ProviderApprenticeshipSiteUrl // TODO: LWA - Need to test if this works!!??
+                RedirectUri = _externalLinks.ProviderApprenticeshipSiteUrl
             });
         }
 
