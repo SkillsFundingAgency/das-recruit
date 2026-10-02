@@ -46,6 +46,7 @@ public static class RouteNames
     public const string Location_Post = "Location_Post";
     public const string Location_Cancel = "Location_Cancel";
     public const string ProviderSignOut = "provider-signout";
+    public const string ProviderTimeoutSignOut = "provider-timeout-signout";
     public const string Preview_Submit_Post = "Preview_Submit_Post";
     public const string ProviderApplicationsReportCreate_Get = "ProviderApplicationsReportCreate_Get";
     public const string ProviderApplicationsReportCreate_Post = "ProviderApplicationsReportCreate_Post";
