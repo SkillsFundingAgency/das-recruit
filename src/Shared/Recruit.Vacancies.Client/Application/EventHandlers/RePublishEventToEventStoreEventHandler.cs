@@ -13,35 +13,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
         IEventStore eventStore)
         :
             INotificationHandler<DraftVacancyUpdatedEvent>,
-            INotificationHandler<VacancySubmittedEvent>,
-            INotificationHandler<VacancyReviewedEvent>,
-            INotificationHandler<VacancyRejectedEvent>,
             INotificationHandler<VacancyReviewApprovedEvent>,
-            INotificationHandler<VacancyReviewReferredEvent>,
             INotificationHandler<SetupEmployerEvent>,
             INotificationHandler<SetupProviderEvent>,
             INotificationHandler<VacancyClosedEvent>,
-            INotificationHandler<LiveVacancyUpdatedEvent>,
-            INotificationHandler<ApplicationSubmittedEvent>,
-            INotificationHandler<ApplicationWithdrawnEvent>
+            INotificationHandler<LiveVacancyUpdatedEvent>
     {
-        public Task Handle(VacancySubmittedEvent notification, CancellationToken cancellationToken)
-            => HandleUsingEventStore(notification);
-
-        public Task Handle(VacancyReviewedEvent notification, CancellationToken cancellationToken)
-            => HandleUsingEventStore(notification);
-
-        public Task Handle(VacancyRejectedEvent notification, CancellationToken cancellationToken)
-            => HandleUsingEventStore(notification); 
-
         public Task Handle(DraftVacancyUpdatedEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
 
         public Task Handle(VacancyReviewApprovedEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
 
-        public Task Handle(VacancyReviewReferredEvent notification, CancellationToken cancellationToken)
-            => HandleUsingEventStore(notification);
 
         public Task Handle(SetupEmployerEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
@@ -53,10 +36,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
             => HandleUsingEventStore(notification);
 
         public Task Handle(LiveVacancyUpdatedEvent notification, CancellationToken cancellationToken)
-            => HandleUsingEventStore(notification);
-        public Task Handle(ApplicationSubmittedEvent notification, CancellationToken cancellationToken)
-            => HandleUsingEventStore(notification);
-        public Task Handle(ApplicationWithdrawnEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
         private async Task HandleUsingEventStore(IEvent @event)
         {
