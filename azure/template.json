@@ -120,18 +120,6 @@
         "sharedServiceBusName": {
             "type": "string"
         },
-        "apiCustomHostname": {
-            "type": "string"
-        },
-        "wafOutboundIPAddresses": {
-            "type": "array"
-        },
-        "sharedBackEndAppServicePlanName": {
-            "type": "string"
-        },
-        "sharedBackEndSubnetResourceId": {
-            "type": "string"
-        },
         "sharedSQLServerName": {
             "type": "string"
         },
@@ -182,7 +170,6 @@
         "providerRecruitAppServiceName": "[concat(variables('resourceNamePrefix'), '-pr-as')]",
         "webjobAppServiceName": "[concat(variables('resourceNamePrefix'), '-webjob-as')]",
         "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]",
-        "apiConfigNames": "SFA.DAS.Recruit.Api,SFA.DAS.Encoding",
         "providerWebConfigNames": "SFA.DAS.Recruit.Provider,SFA.DAS.Provider.DfeSignIn,SFA.DAS.Encoding",
         "employerWebConfigNames": "SFA.DAS.Recruit.Employer,SFA.DAS.Employer.GovSignIn,SFA.DAS.Encoding",
         "qaConfigNames": "SFA.DAS.Recruit.QA,SFA.DAS.Provider.DfeSignIn,SFA.DAS.Encoding",
