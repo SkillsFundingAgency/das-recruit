@@ -7,13 +7,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public interface IJobsVacancyClient
     {
-        Task AssignVacancyNumber(Guid vacancyId);
         Task PatchTrainingProviderAsync(Guid vacancyId);
         Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId);
-        Task CreateVacancyReview(long vacancyReference);
         Task CloseExpiredVacancies();
-        Task EnsureVacancyIsGeocodedAsync(Guid vacancyId);
-        Task CreateApplicationReviewAsync(Domain.Entities.Application application);
         Task RefreshEmployerProfiles(string employerAccountId, IEnumerable<string> accountLegalEntityPublicHashedIds);
         Task UpdateUserAccountAsync(string idamsUserId);
         Task UpdateProviders();

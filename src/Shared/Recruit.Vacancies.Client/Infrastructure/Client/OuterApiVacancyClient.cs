@@ -16,7 +16,6 @@ public interface IOuterApiVacancyClient
 {
     Task CreateAsync(Vacancy vacancy);
     Task UpdateAsync(Vacancy vacancy);
-    Task<long> GetNextVacancyIdAsync();
     Task<Vacancy> GetVacancyAsync(long vacancyReference);
     Task<Vacancy> GetVacancyAsync(Guid vacancyId);
     
@@ -45,7 +44,7 @@ public sealed class PostRequest(string url, object data) : IPostApiRequest
 
 public class OuterApiVacancyClient(
     IEncodingService encodingService,
-    IOuterApiClient apimRecruitClient): IOuterApiVacancyClient
+    IOuterApiClient recruitOuterApiClient): IOuterApiVacancyClient
 {
     private const string DeprecatedControllerName = "deprecated/vacancies";
 
@@ -54,39 +53,29 @@ public class OuterApiVacancyClient(
         return $"{dateTime:yyyy-MM-ddTHH:mm:ssZ}";
     }
     
-    public async Task CreateAsync(Vacancy vacancy)
-    {
+    public async Task CreateAsync(Vacancy vacancy) =>
         // TODO: we'll want the returned data here at some point
-        await apimRecruitClient.Post(new PostRequest($"vacancies/{vacancy.Id}", PostVacancyDto.From(vacancy, encodingService)));
-    }
+        await recruitOuterApiClient.Post(new PostRequest($"vacancies/{vacancy.Id}", PostVacancyDto.From(vacancy, encodingService)));
 
-    public async Task UpdateAsync(Vacancy vacancy)
-    {
+    public async Task UpdateAsync(Vacancy vacancy) =>
         // TODO: we'll want the returned data here at some point
-        await apimRecruitClient.Post(new PostRequest($"vacancies/{vacancy.Id}", PostVacancyDto.From(vacancy, encodingService)));
-    }
-
-    public async Task<long> GetNextVacancyIdAsync()
-    {
-        var response = await apimRecruitClient.Get<GetNextVacancyReferenceResponse>(new GetRequest("vacancies/vacancyreference"));
-        return response.NextVacancyReference;
-    }
+        await recruitOuterApiClient.Post(new PostRequest($"vacancies/{vacancy.Id}", PostVacancyDto.From(vacancy, encodingService)));
 
     public async Task<Vacancy> GetVacancyAsync(long vacancyReference)
     {
-        var response = await apimRecruitClient.Get<DataResponse<GetVacancyDto>>(new GetRequest($"vacancies/by/ref/{vacancyReference}"));
+        var response = await recruitOuterApiClient.Get<DataResponse<GetVacancyDto>>(new GetRequest($"vacancies/by/ref/{vacancyReference}"));
         return GetVacancyDto.ToDomain(response.Data, encodingService);
     }
 
     public async Task<Vacancy> GetVacancyAsync(Guid vacancyId)
     {
-        var response = await apimRecruitClient.Get<DataResponse<GetVacancyDto>>(new GetRequest($"vacancies/{vacancyId}"));
+        var response = await recruitOuterApiClient.Get<DataResponse<GetVacancyDto>>(new GetRequest($"vacancies/{vacancyId}"));
         return GetVacancyDto.ToDomain(response.Data, encodingService);
     }
     
     public async Task<IList<Vacancy>> FindClosedVacanciesAsync(IList<long> vacancyReferences)
     {
-        var response = await apimRecruitClient.Post<DataResponse<List<GetVacancyDto>>>(new PostRequest($"{DeprecatedControllerName}/findClosedVacancies", vacancyReferences));
+        var response = await recruitOuterApiClient.Post<DataResponse<List<GetVacancyDto>>>(new PostRequest($"{DeprecatedControllerName}/findClosedVacancies", vacancyReferences));
         return response.Data?.Select(x => GetVacancyDto.ToDomain(x, encodingService)).ToList() ?? [];
     }
     
@@ -97,7 +86,7 @@ public class OuterApiVacancyClient(
             { "ukprn", $"{ukprn}" },
         };
         var url = QueryHelpers.AddQueryString($"{DeprecatedControllerName}/getProviderVacancies", queryParams);
-        var response = await apimRecruitClient.Get<DataResponse<List<ProviderVacancySummaryDto>>>(new GetRequest(url));
+        var response = await recruitOuterApiClient.Get<DataResponse<List<ProviderVacancySummaryDto>>>(new GetRequest(url));
         return response.Data?.Select(ProviderVacancySummaryDto.ToDomain) ?? [];
     }
 
@@ -111,7 +100,7 @@ public class OuterApiVacancyClient(
         };
             
         var url = QueryHelpers.AddQueryString($"{DeprecatedControllerName}/getProviderOwnedVacanciesForLegalEntity", queryParams);
-        var response = await apimRecruitClient.Get<DataResponse<List<GetVacancyDto>>>(new GetRequest(url));
+        var response = await recruitOuterApiClient.Get<DataResponse<List<GetVacancyDto>>>(new GetRequest(url));
         return response.Data?.Select(x => GetVacancyDto.ToDomain(x, encodingService)).ToList() ?? [];
     }
     
@@ -125,7 +114,7 @@ public class OuterApiVacancyClient(
         };
             
         var url = QueryHelpers.AddQueryString($"{DeprecatedControllerName}/getProviderOwnedVacanciesInReviewForLegalEntity", queryParams);
-        var response = await apimRecruitClient.Get<DataResponse<List<GetVacancyDto>>>(new GetRequest(url));
+        var response = await recruitOuterApiClient.Get<DataResponse<List<GetVacancyDto>>>(new GetRequest(url));
         return response.Data?.Select(x => GetVacancyDto.ToDomain(x, encodingService)).ToList() ?? [];
     }
     
@@ -139,7 +128,7 @@ public class OuterApiVacancyClient(
         };
             
         var url = QueryHelpers.AddQueryString($"{DeprecatedControllerName}/getProviderOwnedVacanciesForEmployerWithoutAccountLegalEntityId", queryParams);
-        var response = await apimRecruitClient.Get<DataResponse<List<GetVacancyDto>>>(new GetRequest(url));
+        var response = await recruitOuterApiClient.Get<DataResponse<List<GetVacancyDto>>>(new GetRequest(url));
         return response.Data?.Select(x => GetVacancyDto.ToDomain(x, encodingService)).ToList() ?? [];
     }
     
@@ -151,7 +140,7 @@ public class OuterApiVacancyClient(
         };
             
         var url = QueryHelpers.AddQueryString($"{DeprecatedControllerName}/getDraftVacanciesCreatedBefore", queryParams);
-        var response = await apimRecruitClient.Get<DataResponse<IEnumerable<T>>>(new GetRequest(url));
+        var response = await recruitOuterApiClient.Get<DataResponse<IEnumerable<T>>>(new GetRequest(url));
         return response.Data;
     }
     
@@ -163,7 +152,7 @@ public class OuterApiVacancyClient(
         };
             
         var url = QueryHelpers.AddQueryString($"{DeprecatedControllerName}/getReferredVacanciesSubmittedBefore", queryParams);
-        var response = await apimRecruitClient.Get<DataResponse<IEnumerable<T>>>(new GetRequest(url));
+        var response = await recruitOuterApiClient.Get<DataResponse<IEnumerable<T>>>(new GetRequest(url));
         return response.Data;
     }
 
@@ -175,7 +164,7 @@ public class OuterApiVacancyClient(
         };
             
         var url = QueryHelpers.AddQueryString($"{DeprecatedControllerName}/getVacancyCountForUser", queryParams);
-        var response = await apimRecruitClient.Get<DataResponse<int>>(new GetRequest(url));
+        var response = await recruitOuterApiClient.Get<DataResponse<int>>(new GetRequest(url));
         return response.Data;
     }
 
@@ -187,7 +176,7 @@ public class OuterApiVacancyClient(
         };
             
         var url = QueryHelpers.AddQueryString($"{DeprecatedControllerName}/getVacanciesToClose", queryParams);
-        var response = await apimRecruitClient.Get<DataResponse<IEnumerable<VacancyIdentifier>>>(new GetRequest(url));
+        var response = await recruitOuterApiClient.Get<DataResponse<IEnumerable<VacancyIdentifier>>>(new GetRequest(url));
         return response.Data;
     }
 }

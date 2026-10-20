@@ -21,11 +21,6 @@ public class SqlVacancyRepository(IOuterApiVacancyClient outerApiVacancyClient):
         await outerApiVacancyClient.UpdateAsync(vacancy);
     }
 
-    public Task<int> GetVacancyCountForUserAsync(string userId)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<Vacancy> GetVacancyAsync(Guid id)
     {
         var vacancy = await outerApiVacancyClient.GetVacancyAsync(id);
