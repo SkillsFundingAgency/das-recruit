@@ -387,17 +387,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendCommandAsync(command);
         }
 
-        // Jobs
-        public Task AssignVacancyNumber(Guid vacancyId)
-        {
-            var command = new AssignVacancyNumberCommand
-            {
-                VacancyId = vacancyId
-            };
-
-            return messaging.SendCommandAsync(command);
-        }
-
         public Task PatchTrainingProviderAsync(Guid vacancyId)
         {
             var command = new PatchVacancyTrainingProviderCommand(vacancyId);
