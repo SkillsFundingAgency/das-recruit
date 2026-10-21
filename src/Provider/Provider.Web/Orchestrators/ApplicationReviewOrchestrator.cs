@@ -89,7 +89,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return new ApplicationStatusConfirmationViewModel
             {
                 CandidateFeedback = string.IsNullOrWhiteSpace(applicationReviewStatusConfirmationEditModel.CandidateFeedback) 
-                    ? Constants.DefaultCandidateFeedback 
+                    ? applicationReviewStatusConfirmationEditModel.Outcome?.GetDefaultCandidateFeedback() 
                     : applicationReviewStatusConfirmationEditModel.CandidateFeedback,
                 Outcome = applicationReviewStatusConfirmationEditModel.Outcome,
                 ApplicationReviewId = applicationReviewStatusConfirmationEditModel.ApplicationReviewId,
@@ -117,7 +117,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return new ApplicationReviewFeedbackViewModel
             {
                 CandidateFeedback = string.IsNullOrWhiteSpace(rm.CandidateFeedback) 
-                    ? Constants.DefaultCandidateFeedback 
+                    ? rm.Outcome?.GetDefaultCandidateFeedback()
                     : rm.CandidateFeedback,
                 Outcome = rm.Outcome,
                 ApplicationReviewId = rm.ApplicationReviewId,
@@ -135,7 +135,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return new ApplicationStatusConfirmationViewModel
             {
                 CandidateFeedback = string.IsNullOrWhiteSpace(rm.CandidateFeedback) 
-                    ? Constants.DefaultCandidateFeedback 
+                    ? rm.Outcome?.GetDefaultCandidateFeedback()
                     : rm.CandidateFeedback,
                 FriendlyId = applicationReviewVm.FriendlyId,
                 Status = applicationReviewVm.Status,

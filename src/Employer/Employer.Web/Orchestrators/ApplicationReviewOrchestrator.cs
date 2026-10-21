@@ -102,7 +102,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 VacancyId = m.VacancyId,
                 ApplicationReviewId = m.ApplicationReviewId,
                 CandidateFeedback = string.IsNullOrWhiteSpace(m.CandidateFeedback)
-                    ? Constants.DefaultCandidateFeedback
+                    ? m.Outcome?.GetDefaultCandidateFeedback()
                     : m.CandidateFeedback,
                 Outcome = m.Outcome,
                 Name = applicationReview.Application.FullName,
@@ -130,7 +130,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return new ApplicationReviewFeedbackViewModel
             {
                 CandidateFeedback = string.IsNullOrWhiteSpace(rm.CandidateFeedback)
-                    ? Constants.DefaultCandidateFeedback
+                    ? rm.Outcome?.GetDefaultCandidateFeedback()
                     : rm.CandidateFeedback,
                 Outcome = rm.Outcome,
                 ApplicationReviewId = rm.ApplicationReviewId,
