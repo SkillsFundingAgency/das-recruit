@@ -6,7 +6,6 @@ using Esfa.Recruit.Vacancies.Client.Ioc;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Employer;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider;
-using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy;
 using Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,9 +26,6 @@ internal static class ServiceCollectionExtensions
             
         // Domain Event Queue Handlers
 
-        // Vacancy
-        services.AddScoped<IDomainEventHandler<IEvent>, DraftVacancyUpdatedHandler>();
-
         // Employer
         services.AddScoped<IDomainEventHandler<IEvent>, SetupEmployerHandler>();
 
@@ -38,7 +34,6 @@ internal static class ServiceCollectionExtensions
 
         RegisterDasEncodingService(services, configuration);
 
-        services.AddSingleton<IFeature, Feature>();
         services.AddSingleton<IFeature, Feature>();
     }
 

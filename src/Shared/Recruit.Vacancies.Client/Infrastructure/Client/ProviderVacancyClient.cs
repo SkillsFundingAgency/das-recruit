@@ -57,8 +57,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             );
 
             await messaging.SendCommandAsync(command);
-
-            await AssignVacancyNumber(id);
         }
         
         public async Task<ProviderDashboardSummary> GetDashboardSummary(long ukprn, string userId)
