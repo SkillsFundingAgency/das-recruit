@@ -50,10 +50,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
         [Test]
         [MoqInlineAutoData("")]
         [MoqInlineAutoData(null)]
-        public async Task GetApplicationStatusConfirmationViewModelAsync_Returns_Default_CandidateFeedBack(string candidateFeedback)
+        public async Task Get_Application_Status_Confirmation_View_Model_Async_Returns_Default_Candidate_Feed_Back_If_The_Outcome_Is_Unsuccessful(string candidateFeedback)
         {
+            // arrange
             var model = _fixture.Create<ApplicationReviewStatusConfirmationEditModel>();
             model.CandidateFeedback = candidateFeedback;
+            model.Outcome = ApplicationReviewStatus.Unsuccessful;
             var vacancyUser = _fixture.Create<VacancyUser>();
 
             var applicationReview = _fixture.Create<ApplicationReview>();
@@ -63,8 +65,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             _employerVacancyClient.Setup(x => x.SetApplicationReviewStatus(model.ApplicationReviewId, model.Outcome, model.CandidateFeedback, vacancyUser))
                 .ReturnsAsync(false);
 
+            // act
             var result = await _orchestrator.GetApplicationStatusConfirmationViewModelAsync(model);
 
+            // assert
             Assert.That(result.CandidateFeedback, Is.EqualTo(Constants.DefaultCandidateFeedback));
         }
 

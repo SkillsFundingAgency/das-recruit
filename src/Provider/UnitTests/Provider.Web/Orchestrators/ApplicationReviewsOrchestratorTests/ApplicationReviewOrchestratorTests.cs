@@ -112,13 +112,15 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
         [Test]
         [MoqInlineAutoData("")]
         [MoqInlineAutoData(null)]
-        public async Task GetApplicationReviewFeedbackViewModelAsync_Returns_DefaultCandidateFeedback(string candidateFeedback)
+        public async Task Get_Application_Review_Feedback_View_Model_Async_Returns_Default_Candidate_Feedback_When_Candidate_Is_Unsuccessful(string candidateFeedback)
         {
+            // arrange
             var routeModel = _fixture.Create<VacancyRouteModel>();
             var model = _fixture.Build<ApplicationReviewEditModel>()
                 .With(x => x.VacancyId, routeModel.VacancyId)
                 .Create();
             model.CandidateFeedback = candidateFeedback;
+            model.Outcome = ApplicationReviewStatus.Unsuccessful;
             var vacancy = _fixture.Build<Vacancy>()
                 .With(x => x.Id, routeModel.VacancyId)
                 .Create();
@@ -131,8 +133,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             _recruitVacancyClient.Setup(x => x.GetVacancyAsync(routeModel.VacancyId.Value))
                 .ReturnsAsync(vacancy);
 
+            // act
             var result = await _orchestrator.GetApplicationReviewFeedbackViewModelAsync(model);
 
+            // assert
             Assert.That(result, Is.Not.Null);
             Assert.That(applicationReview.Application.FullName, Is.EqualTo(result.Name));
             Assert.That(model.ApplicationReviewId, Is.EqualTo(result.ApplicationReviewId));
@@ -144,13 +148,15 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
         [Test]
         [MoqInlineAutoData("")]
         [MoqInlineAutoData(null)]
-        public async Task GetApplicationStatusConfirmationViewModelAsync_Returns_DefaultCandidateFeedback(string candidateFeedback)
+        public async Task Get_Application_Status_Confirmation_View_Model_Async_Returns_Default_Candidate_Feedback_When_Candidate_Is_Unsuccessful(string candidateFeedback)
         {
+            // arrange
             var routeModel = _fixture.Create<ApplicationReviewRouteModel>();
             var model = _fixture.Build<ApplicationReviewEditModel>()
                 .With(x => x.VacancyId, routeModel.VacancyId)
                 .Create();
             model.CandidateFeedback = candidateFeedback;
+            model.Outcome = ApplicationReviewStatus.Unsuccessful;
             var vacancy = _fixture.Build<Vacancy>()
                 .With(x => x.Id, routeModel.VacancyId)
                 .Create();
@@ -163,8 +169,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             _recruitVacancyClient.Setup(x => x.GetVacancyAsync(routeModel.VacancyId.Value))
                 .ReturnsAsync(vacancy);
 
+            // act
             var result = await _orchestrator.GetApplicationStatusConfirmationViewModelAsync(model);
 
+            // assert
             Assert.That(result, Is.Not.Null);
             Assert.That(applicationReview.Application.FullName, Is.EqualTo(result.Name));
             Assert.That(model.ApplicationReviewId, Is.EqualTo(result.ApplicationReviewId));
