@@ -45,7 +45,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IProviderRelationshipsService providerRelationshipsService,
         IVacancyAnalyticsService vacancyAnalyticsService,
         IApplicationReadRepository applicationReadRepository,
-        IReportService reportService)
+        IReportService reportService,
+        IGetProviderStatusClient providerStatusClient)
         : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -224,15 +225,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendCommandAsync(command);
         }
 
-        public Task SetupEmployerAsync(string employerAccountId)
+        public async Task SetupEmployerAsync(string employerAccountId)
         {
-            var command = new SetupEmployerCommand
-            {
-                EmployerAccountId = employerAccountId
-            };
-
-            return messaging.SendCommandAsync(command);
+            var legalEntities = (await GetEmployerLegalEntitiesAsync(employerAccountId)).ToList();
+            await RefreshEmployerProfiles(employerAccountId, legalEntities.Select(x => x.AccountLegalEntityPublicHashedId));
         }
+
+        public Task SetupEmployerAsync(string employerAccountId, string accountLegalEntityPublicHashedId) 
+            => RefreshEmployerProfiles(employerAccountId, [accountLegalEntityPublicHashedId]);
 
         public async Task<EmployerEditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId)
         {
