@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerProfile;
@@ -16,7 +15,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     public class RefreshEmployerProfilesCommandHandler(
         ILogger<RefreshEmployerProfilesCommandHandler> logger,
         IEmployerProfileService employerProfileService,
-        ITimeProvider time,
         IEmployerVacancyClient employerVacancyClient)
         : IRequestHandler<RefreshEmployerProfilesCommand, Unit>
     {
@@ -55,8 +53,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     logger.LogError("Error while processing employer account: {employerAccountId} and Account LegalEntityPublicHashed id: {accountLegalEntityPublicHashedId}", message.EmployerAccountId, accountLegalEntityPublicHashedId);
                     throw;
                 }
-
-
             }
             await Task.WhenAll(tasks);
             logger.LogInformation("Added {Count} new profile/s for {employerAccountId}", tasks.Count, message.EmployerAccountId);

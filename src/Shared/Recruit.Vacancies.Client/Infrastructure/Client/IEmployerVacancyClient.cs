@@ -21,7 +21,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<bool> SetApplicationReviewStatus(Guid applicationReviewId, ApplicationReviewStatus? outcome, string candidateFeedback, VacancyUser user);
         Task<int> GetVacancyCountForUserAsync(string userId);
         EntityValidationResult ValidateQualification(Qualification qualification);
-
         Task CreateEmployerApiVacancy(Guid id, string title, string employerAccountId, VacancyUser user, TrainingProvider provider, string programmeId);
         Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId, string userId);
     }
