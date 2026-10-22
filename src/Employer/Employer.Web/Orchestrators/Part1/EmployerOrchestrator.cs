@@ -31,8 +31,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<EmployerViewModel> GetEmployerViewModelAsync(VacancyRouteModel vrm, string searchTerm, int? requestedPageNo, string selectedAccountLegalEntityPublicHashedId)
         {
-            const int NotFoundIndex = -1;
-            var setPage = requestedPageNo.HasValue ? requestedPageNo.Value : 1;
+            const int notFoundIndex = -1;
+            var setPage = requestedPageNo ?? 1;
 
             var getEmployerDataTask = employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
             var getVacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm);
@@ -45,9 +45,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 await employerVacancyClient.SetupEmployerAsync(vrm.EmployerAccountId);
                 employerData = await employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
             }
-            
+
             var legalEntities = BuildLegalEntityViewModels(employerData, vrm.EmployerAccountId);
-            
+
             var vm = new EmployerViewModel
             {
                 VacancyId = vrm.VacancyId,
@@ -77,7 +77,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var totalNumberOfPages = PagingHelper.GetTotalNoOfPages(MaxLegalEntitiesPerPage, filteredLegalEntitiesTotal);
             var indexOfSelectedLegalEntity = !string.IsNullOrEmpty(selectedAccountLegalEntityPublicHashedId)
                                                 ? filteredLegalEntities.FindIndex(le => le.Id == selectedAccountLegalEntityPublicHashedId) + 1
-                                                : NotFoundIndex;
+                                                : notFoundIndex;
 
             setPage = GetPageNo(requestedPageNo, setPage, totalNumberOfPages, indexOfSelectedLegalEntity);
 
@@ -89,7 +89,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             {
                 VacancyId = vacancy.Id,
                 EmployerAccountId = vrm.EmployerAccountId,
-                AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId 
+                AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId
             };
 
             if (vm.VacancyEmployerInfoModel.AccountLegalEntityPublicHashedId == null && vm.HasOnlyOneOrganisation)
@@ -116,18 +116,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vacancy = vacancyTask.Result;
             vacancy.AccountLegalEntityPublicHashedId = info.AccountLegalEntityPublicHashedId;
             vacancy.LegalEntityName = legalEntitiesTask.Result?.FirstOrDefault(x => x.AccountLegalEntityPublicHashedId == vacancy.AccountLegalEntityPublicHashedId)?.Name;
-            
-            
+
+
             await ValidateAndExecute(
                 vacancy,
                 v => vacancyClient.Validate(v, ValidationRules),
                 async v =>
                 {
                     await vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+                    await vacancyClient.SetupEmployerAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
                 });
         }
 
-        private int GetPageNo(int? requestedPageNo, int page, int totalNumberOfPages, int indexOfSelectedLegalEntity)
+        private static int GetPageNo(int? requestedPageNo, int page, int totalNumberOfPages, int indexOfSelectedLegalEntity)
         {
             if (indexOfSelectedLegalEntity > MaxLegalEntitiesPerPage && requestedPageNo.HasValue == false)
                 page = PagingHelper.GetPageNoOfSelectedItem(totalNumberOfPages, MaxLegalEntitiesPerPage, indexOfSelectedLegalEntity);
@@ -136,7 +137,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return page;
         }
 
-        private void SetPager(string searchTerm, int page, EmployerViewModel vm, int filteredLegalEntitiesTotal)
+        private static void SetPager(string searchTerm, int page, EmployerViewModel vm, int filteredLegalEntitiesTotal)
         {
             var pager = new PagerViewModel(
                             filteredLegalEntitiesTotal,
@@ -152,14 +153,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             vm.Pager = pager;
         }
 
-        private void SetFilteredOrganisationsForPage(int page, EmployerViewModel vm, List<OrganisationViewModel> filteredLegalEntities)
+        private static void SetFilteredOrganisationsForPage(int page, EmployerViewModel vm, List<OrganisationViewModel> filteredLegalEntities)
         {
             var skip = (page - 1) * MaxLegalEntitiesPerPage;
 
-            vm.Organisations = filteredLegalEntities
-                .Skip(skip)
-                .Take(MaxLegalEntitiesPerPage)
-                .ToList();
+            vm.Organisations =
+            [
+                .. filteredLegalEntities
+                    .Skip(skip)
+                    .Take(MaxLegalEntitiesPerPage)
+            ];
         }
 
         private IEnumerable<OrganisationViewModel> BuildLegalEntityViewModels(EmployerEditVacancyInfo info, string employerAccountId)
@@ -174,17 +177,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         }
 
 
-        private OrganisationViewModel ConvertToOrganisationViewModel(LegalEntity data)
-        {
-            return new OrganisationViewModel { Id = data.AccountLegalEntityPublicHashedId, Name = data.Name};
-        }
+        private static OrganisationViewModel ConvertToOrganisationViewModel(LegalEntity data) => new() { Id = data.AccountLegalEntityPublicHashedId, Name = data.Name };
 
         protected override EntityToViewModelPropertyMappings<Vacancy, VacancyEmployerInfoModel> DefineMappings()
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, VacancyEmployerInfoModel>
             {
                 {
-                    e=>e.AccountLegalEntityPublicHashedId, vm => vm.AccountLegalEntityPublicHashedId
+                    e=> e.AccountLegalEntityPublicHashedId, vm => vm.AccountLegalEntityPublicHashedId
                 }
             };
 

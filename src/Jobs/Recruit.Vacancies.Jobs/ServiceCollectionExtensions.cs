@@ -1,11 +1,6 @@
-using System.Collections.Generic;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Ioc;
-using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
-using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Employer;
-using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider;
 using Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,12 +21,6 @@ internal static class ServiceCollectionExtensions
             
         // Domain Event Queue Handlers
 
-        // Employer
-        services.AddScoped<IDomainEventHandler<IEvent>, SetupEmployerHandler>();
-
-        // Provider
-        services.AddScoped<IDomainEventHandler<IEvent>, SetupProviderHandler>();
-
         RegisterDasEncodingService(services, configuration);
 
         services.AddSingleton<IFeature, Feature>();
@@ -51,7 +40,7 @@ internal static class ServiceCollectionExtensions
         
     private static void RegisterDasEncodingService(IServiceCollection services, IConfiguration configuration)
     {
-        var dasEncodingConfig = new EncodingConfig { Encodings = new List<Encoding>() };
+        var dasEncodingConfig = new EncodingConfig { Encodings = []};
         configuration.GetSection(nameof(dasEncodingConfig.Encodings)).Bind(dasEncodingConfig.Encodings);
         services.AddSingleton(dasEncodingConfig);
         services.AddSingleton<IEncodingService, EncodingService>();
