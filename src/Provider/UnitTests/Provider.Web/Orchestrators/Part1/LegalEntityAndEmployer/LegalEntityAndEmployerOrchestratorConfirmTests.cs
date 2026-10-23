@@ -1,429 +1,220 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
-using FluentAssertions;
-using Moq;
 using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.LegalEntityAndEmployer
 {
     public class LegalEntityAndEmployerOrchestratorConfirmTests
     {
-        
         [Test, MoqAutoData]
-        public async Task Then_The_ConfirmLegalEntityViewModel_Is_Returned_From_The_AccountId_And_AccountLegalEntityId(
+        public async Task Then_The_ConfirmLegalEntityViewModel_Is_Returned_For_New_Vacancy(
             string employerAccountId,
             string employerAccountLegalEntityId,
             EmployerInfo employerInfo,
             VacancyRouteModel vacancyRouteModel,
-            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
             [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
             vacancyRouteModel.VacancyId = null;
             employerInfo.EmployerAccountId = employerAccountId;
             employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = employerAccountLegalEntityId;
-            
-            providerVacancyClient
-                .Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, employerAccountId))
-                .ReturnsAsync(employerInfo);
-            providerRelationshipsService.Setup(x => x.HasProviderGotEmployersPermissionAsync(vacancyRouteModel.Ukprn,
-                    employerAccountId, employerAccountLegalEntityId, OperationType.RecruitmentRequiresReview))
-                .ReturnsAsync(true);
-            
-            var actual = await orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, employerAccountId,
-                employerAccountLegalEntityId);
 
-            actual.EmployerName.Should().Be(employerInfo.Name);
-            actual.EmployerAccountId.Should().Be(employerInfo.EmployerAccountId);
-            actual.AccountLegalEntityPublicHashedId.Should().Be(employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId);
-            actual.AccountLegalEntityName.Should().Be(employerInfo.LegalEntities.Last().Name);
-        }
-        
-        [Test, MoqAutoData]
-        public async Task Then_The_ConfirmLegalEntityViewModel_Is_Returned_From_The_VacancyId_If_Present(
-            Vacancy vacancy,
-            EmployerInfo employerInfo,
-            VacancyRouteModel vacancyRouteModel,
-            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
-            [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
-            [Frozen] Mock<IUtility> utility,
-            [Frozen] Mock<IFeature> feature,
-            LegalEntityAndEmployerOrchestrator orchestrator)
-        {
-            feature.Setup(x=>x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(false);
-            utility.Setup(x =>
-                    x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.ConfirmLegalEntityEmployer_Get))
-                .ReturnsAsync(vacancy);
-            
-            employerInfo.EmployerAccountId = vacancy.EmployerAccountId;
-            employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
-            
-            providerVacancyClient
-                .Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, vacancy.EmployerAccountId))
-                .ReturnsAsync(employerInfo);
-            providerRelationshipsService.Setup(x => x.HasProviderGotEmployersPermissionAsync(vacancyRouteModel.Ukprn,
-                    vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview))
-                .ReturnsAsync(true);
-            
-            var actual = await orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, null, null);
-
-            actual.EmployerName.Should().Be(employerInfo.Name);
-            actual.EmployerAccountId.Should().Be(employerInfo.EmployerAccountId);
-            actual.AccountLegalEntityPublicHashedId.Should().Be(employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId);
-            actual.AccountLegalEntityName.Should().Be(employerInfo.LegalEntities.Last().Name);
-        }
-        
-        [Test, MoqAutoData]
-        public async Task Then_The_ConfirmLegalEntityViewModel_Is_Returned_From_The_VacancyId_If_Present_With_MongoMigrationEmployerProfiles_Enabled(
-            Vacancy vacancy,
-            EmployerInfo employerInfo,
-            VacancyRouteModel vacancyRouteModel,
-            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
-            [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
-            [Frozen] Mock<IUtility> utility,
-            [Frozen] Mock<IFeature> feature,
-            LegalEntityAndEmployerOrchestrator orchestrator)
-        {
-            feature.Setup(x=>x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(true);
-            utility.Setup(x =>
-                    x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.ConfirmLegalEntityEmployer_Get))
-                .ReturnsAsync(vacancy);
-            
-            employerInfo.EmployerAccountId = vacancy.EmployerAccountId;
-            employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
-            
-            providerRelationshipsService.Setup(x => x.GetLegalEntitiesForProvider(vacancyRouteModel.Ukprn, "",
+            providerRelationshipsService
+                .Setup(x => x.GetLegalEntitiesForProvider(vacancyRouteModel.Ukprn, "",
                     new List<OperationType> { OperationType.Recruitment, OperationType.RecruitmentRequiresReview }))
-                .ReturnsAsync(new List<EmployerInfo>{employerInfo} );
-            
-            var actual = await orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, null, null);
+                .ReturnsAsync(new List<EmployerInfo> { employerInfo });
+
+            var actual = await orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, employerAccountId, employerAccountLegalEntityId);
 
             actual.EmployerName.Should().Be(employerInfo.Name);
             actual.EmployerAccountId.Should().Be(employerInfo.EmployerAccountId);
             actual.AccountLegalEntityPublicHashedId.Should().Be(employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId);
             actual.AccountLegalEntityName.Should().Be(employerInfo.LegalEntities.Last().Name);
         }
-        
+
         [Test, MoqAutoData]
-        public async Task Then_The_ConfirmLegalEntityViewModel_Is_Returned_With_Back_And_Cancel_Links_Populated_For_New(
+        public async Task Then_The_ConfirmLegalEntityViewModel_Is_Returned_For_Existing_Vacancy_Using_Vacancy_Employer_Details(
+            Vacancy vacancy,
+            EmployerInfo employerInfo,
+            VacancyRouteModel vacancyRouteModel,
+            [Frozen] Mock<IUtility> utility,
+            [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
+            LegalEntityAndEmployerOrchestrator orchestrator)
+        {
+            utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.ConfirmLegalEntityEmployer_Get))
+                .ReturnsAsync(vacancy);
+
+            employerInfo.EmployerAccountId = vacancy.EmployerAccountId;
+            employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
+
+            providerRelationshipsService
+                .Setup(x => x.GetLegalEntitiesForProvider(vacancyRouteModel.Ukprn, "",
+                    new List<OperationType> { OperationType.Recruitment, OperationType.RecruitmentRequiresReview }))
+                .ReturnsAsync(new List<EmployerInfo> { employerInfo });
+
+            var actual = await orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, null, null);
+
+            actual.EmployerName.Should().Be(employerInfo.Name);
+            actual.EmployerAccountId.Should().Be(employerInfo.EmployerAccountId);
+            actual.AccountLegalEntityPublicHashedId.Should().Be(employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId);
+            actual.AccountLegalEntityName.Should().Be(employerInfo.LegalEntities.Last().Name);
+            actual.VacancyId.Should().Be(vacancy.Id);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_ConfirmLegalEntityViewModel_Is_Returned_For_Existing_Vacancy_Using_Supplied_Employer_Details_When_Provided(
+            string employerAccountId,
+            string accountLegalEntityPublicHashedId,
+            Vacancy vacancy,
+            EmployerInfo employerInfo,
+            VacancyRouteModel vacancyRouteModel,
+            [Frozen] Mock<IUtility> utility,
+            [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
+            LegalEntityAndEmployerOrchestrator orchestrator)
+        {
+            utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.ConfirmLegalEntityEmployer_Get))
+                .ReturnsAsync(vacancy);
+
+            employerInfo.EmployerAccountId = employerAccountId;
+            employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId;
+
+            providerRelationshipsService
+                .Setup(x => x.GetLegalEntitiesForProvider(vacancyRouteModel.Ukprn, "",
+                    new List<OperationType> { OperationType.Recruitment, OperationType.RecruitmentRequiresReview }))
+                .ReturnsAsync(new List<EmployerInfo> { employerInfo });
+
+            var actual = await orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, employerAccountId, accountLegalEntityPublicHashedId);
+
+            actual.EmployerAccountId.Should().Be(employerAccountId);
+            actual.AccountLegalEntityPublicHashedId.Should().Be(accountLegalEntityPublicHashedId);
+            actual.VacancyId.Should().Be(vacancy.Id);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_Back_And_Cancel_Links_Are_Set_Correctly_For_New_Vacancy(
             string employerAccountId,
             string accountLegalEntityPublicHashedId,
             EmployerInfo employerInfo,
             VacancyRouteModel vacancyRouteModel,
-            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
             [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
-            [Frozen] Mock<IUtility> utility,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
             vacancyRouteModel.VacancyId = null;
-            
             employerInfo.EmployerAccountId = employerAccountId;
             employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId;
-            
-            providerVacancyClient
-                .Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, employerAccountId))
-                .ReturnsAsync(employerInfo);
-            providerRelationshipsService.Setup(x => x.HasProviderGotEmployersPermissionAsync(vacancyRouteModel.Ukprn,
-                    employerAccountId, accountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview))
-                .ReturnsAsync(true);
-            
+
+            providerRelationshipsService
+                .Setup(x => x.GetLegalEntitiesForProvider(vacancyRouteModel.Ukprn, "",
+                    new List<OperationType> { OperationType.Recruitment, OperationType.RecruitmentRequiresReview }))
+                .ReturnsAsync(new List<EmployerInfo> { employerInfo });
+
             var actual = await orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, employerAccountId, accountLegalEntityPublicHashedId);
 
-            actual.EmployerName.Should().Be(employerInfo.Name);
-            actual.EmployerAccountId.Should().Be(employerInfo.EmployerAccountId);
-            actual.AccountLegalEntityPublicHashedId.Should().Be(employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId);
-            actual.AccountLegalEntityName.Should().Be(employerInfo.LegalEntities.Last().Name);
             actual.CancelLinkRoute.Should().Be(RouteNames.Dashboard_Get);
             actual.BackLinkRoute.Should().Be(RouteNames.LegalEntityEmployer_Get);
         }
-        
+
         [Test, MoqAutoData]
-        public async Task Then_The_ConfirmLegalEntityViewModel_Is_Returned_With_Back_And_Cancel_Links_Populated_For_Existing_Draft(
+        public async Task Then_Back_And_Cancel_Links_Point_To_TaskList_For_Existing_Incomplete_Vacancy(
             Vacancy vacancy,
             EmployerInfo employerInfo,
             VacancyRouteModel vacancyRouteModel,
-            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
-            [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
             [Frozen] Mock<IUtility> utility,
+            [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
-            utility.Setup(x =>
-                    x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.ConfirmLegalEntityEmployer_Get))
+            utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.ConfirmLegalEntityEmployer_Get))
                 .ReturnsAsync(vacancy);
-            utility
-                .Setup(x => x.IsTaskListCompleted(vacancy))
-                .Returns(false);
-            
+            utility.Setup(x => x.IsTaskListCompleted(vacancy)).Returns(false);
+
             employerInfo.EmployerAccountId = vacancy.EmployerAccountId;
             employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
-            
-            providerVacancyClient
-                .Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, vacancy.EmployerAccountId))
-                .ReturnsAsync(employerInfo);
-            providerRelationshipsService.Setup(x => x.HasProviderGotEmployersPermissionAsync(vacancyRouteModel.Ukprn,
-                    vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview))
-                .ReturnsAsync(true);
-            
+
+            providerRelationshipsService
+                .Setup(x => x.GetLegalEntitiesForProvider(vacancyRouteModel.Ukprn, "",
+                    new List<OperationType> { OperationType.Recruitment, OperationType.RecruitmentRequiresReview }))
+                .ReturnsAsync(new List<EmployerInfo> { employerInfo });
+
             var actual = await orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, null, null);
 
-            actual.EmployerName.Should().Be(employerInfo.Name);
-            actual.EmployerAccountId.Should().Be(employerInfo.EmployerAccountId);
-            actual.AccountLegalEntityPublicHashedId.Should().Be(employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId);
-            actual.AccountLegalEntityName.Should().Be(employerInfo.LegalEntities.Last().Name);
             actual.CancelLinkRoute.Should().Be(RouteNames.ProviderTaskListGet);
             actual.BackLinkRoute.Should().Be(RouteNames.ProviderTaskListGet);
         }
-        
+
         [Test, MoqAutoData]
-        public async Task Then_The_ConfirmLegalEntityViewModel_Is_Returned_With_Back_And_Cancel_Links_Populated_For_Existing_Completed(
+        public async Task Then_Back_And_Cancel_Links_Point_To_CheckYourAnswers_For_Existing_Completed_Vacancy(
             Vacancy vacancy,
             EmployerInfo employerInfo,
             VacancyRouteModel vacancyRouteModel,
-            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
-            [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
             [Frozen] Mock<IUtility> utility,
+            [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
-            utility.Setup(x =>
-                    x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.ConfirmLegalEntityEmployer_Get))
+            utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.ConfirmLegalEntityEmployer_Get))
                 .ReturnsAsync(vacancy);
             utility.Setup(x => x.IsTaskListCompleted(vacancy)).Returns(true);
-            
+
             employerInfo.EmployerAccountId = vacancy.EmployerAccountId;
             employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
-            
-            providerVacancyClient
-                .Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, vacancy.EmployerAccountId))
-                .ReturnsAsync(employerInfo);
-            providerRelationshipsService.Setup(x => x.HasProviderGotEmployersPermissionAsync(vacancyRouteModel.Ukprn,
-                    vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview))
-                .ReturnsAsync(true);
-            
+
+            providerRelationshipsService
+                .Setup(x => x.GetLegalEntitiesForProvider(vacancyRouteModel.Ukprn, "",
+                    new List<OperationType> { OperationType.Recruitment, OperationType.RecruitmentRequiresReview }))
+                .ReturnsAsync(new List<EmployerInfo> { employerInfo });
+
             var actual = await orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, null, null);
 
-            actual.EmployerName.Should().Be(employerInfo.Name);
-            actual.EmployerAccountId.Should().Be(employerInfo.EmployerAccountId);
-            actual.AccountLegalEntityPublicHashedId.Should().Be(employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId);
-            actual.AccountLegalEntityName.Should().Be(employerInfo.LegalEntities.Last().Name);
             actual.CancelLinkRoute.Should().Be(RouteNames.ProviderCheckYourAnswersGet);
             actual.BackLinkRoute.Should().Be(RouteNames.ProviderCheckYourAnswersGet);
         }
 
         [Test, MoqAutoData]
-        public async Task Then_The_ConfirmLegalEntityViewModel_Is_Returned_From_The_VacancyId_If_Present_But_New_Selected_Values_Used(
+        public void Then_MissingPermissionsException_Is_Thrown_When_No_Legal_Entities_Found(
             string employerAccountId,
-            string accountLegalEntityPublicHashedId,
-            Vacancy vacancy,
-            EmployerInfo employerInfo,
+            string employerAccountLegalEntityId,
             VacancyRouteModel vacancyRouteModel,
-            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
             [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
-            [Frozen] Mock<IUtility> utility,
-            [Frozen] Mock<IFeature> feature,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
-            feature.Setup(x=>x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(false);
-            utility.Setup(x =>
-                    x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.ConfirmLegalEntityEmployer_Get))
-                .ReturnsAsync(vacancy);
-            
-            employerInfo.EmployerAccountId = employerAccountId;
-            employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId;
-            
-            providerVacancyClient
-                .Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, employerAccountId))
-                .ReturnsAsync(employerInfo);
-            providerRelationshipsService.Setup(x => x.HasProviderGotEmployersPermissionAsync(vacancyRouteModel.Ukprn,
-                    employerAccountId, accountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview))
-                .ReturnsAsync(true);
-            
-            var actual = await orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, employerAccountId, accountLegalEntityPublicHashedId);
+            vacancyRouteModel.VacancyId = null;
 
-            actual.EmployerName.Should().Be(employerInfo.Name);
-            actual.EmployerAccountId.Should().Be(employerInfo.EmployerAccountId);
-            actual.AccountLegalEntityPublicHashedId.Should().Be(employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId);
-            actual.AccountLegalEntityName.Should().Be(employerInfo.LegalEntities.Last().Name);
-            actual.VacancyId.Should().Be(vacancy.Id);
-        }
-     
-        [Test, MoqAutoData]
-        public async Task Then_The_ConfirmLegalEntityViewModel_Is_Returned_From_The_VacancyId_If_Present_But_New_Selected_Values_Used_For_MongoMigrationEmployerProfiles_Enabled(
-            string employerAccountId,
-            string accountLegalEntityPublicHashedId,
-            Vacancy vacancy,
-            EmployerInfo employerInfo,
-            VacancyRouteModel vacancyRouteModel,
-            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
-            [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
-            [Frozen] Mock<IUtility> utility,
-            [Frozen] Mock<IFeature> feature,
-            LegalEntityAndEmployerOrchestrator orchestrator)
-        {
-            feature.Setup(x=>x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(true);
-            utility.Setup(x =>
-                    x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.ConfirmLegalEntityEmployer_Get))
-                .ReturnsAsync(vacancy);
-            
-            employerInfo.EmployerAccountId = employerAccountId;
-            employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId;
-           
-            providerRelationshipsService.Setup(x => x.GetLegalEntitiesForProvider(vacancyRouteModel.Ukprn,"",
+            providerRelationshipsService
+                .Setup(x => x.GetLegalEntitiesForProvider(vacancyRouteModel.Ukprn, "",
                     new List<OperationType> { OperationType.Recruitment, OperationType.RecruitmentRequiresReview }))
-                .ReturnsAsync(new List<EmployerInfo>
-                {
-                    employerInfo
-                });
-            
-            var actual = await orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, employerAccountId, accountLegalEntityPublicHashedId);
+                .ReturnsAsync(new List<EmployerInfo>());
 
-            actual.EmployerName.Should().Be(employerInfo.Name);
-            actual.EmployerAccountId.Should().Be(employerInfo.EmployerAccountId);
-            actual.AccountLegalEntityPublicHashedId.Should().Be(employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId);
-            actual.AccountLegalEntityName.Should().Be(employerInfo.LegalEntities.Last().Name);
-            actual.VacancyId.Should().Be(vacancy.Id);
-        }   
-        [Test, MoqAutoData]
-        public void Then_If_No_Result_Found_Then_Missing_Permissions_Error_Returned(
-            string employerAccountId,
-            string employerAccountLegalEntityId,
-            EmployerInfo employerInfo,
-            VacancyRouteModel vacancyRouteModel,
-            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
-            LegalEntityAndEmployerOrchestrator orchestrator)
-        {
-            vacancyRouteModel.VacancyId = null;
-            providerVacancyClient
-                .Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, employerAccountId))
-                .ReturnsAsync(new EmployerInfo());
-            
-            Assert.ThrowsAsync<MissingPermissionsException>(() => orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, employerAccountId,
-                employerAccountLegalEntityId));
-        }
-        
-        [Test, MoqAutoData]
-        public void Then_If_No_Matching_Result_Found_Then_Missing_Permissions_Error_Returned(
-            string employerAccountId,
-            string employerAccountLegalEntityId,
-            EmployerInfo employerInfo,
-            VacancyRouteModel vacancyRouteModel,
-            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
-            LegalEntityAndEmployerOrchestrator orchestrator)
-        {
-            vacancyRouteModel.VacancyId = null;
-            providerVacancyClient
-                .Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, employerAccountId))
-                .ReturnsAsync(employerInfo);
-            
-            Assert.ThrowsAsync<MissingPermissionsException>(() => orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, employerAccountId,
-                employerAccountLegalEntityId));
+            Assert.ThrowsAsync<MissingPermissionsException>(() =>
+                orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, employerAccountId, employerAccountLegalEntityId));
         }
 
         [Test, MoqAutoData]
-        public void Then_If_Not_In_ProviderPermissions_Then_Missing_Permissions_Error_Returned(
+        public void Then_MissingPermissionsException_Is_Thrown_When_No_Matching_Legal_Entity_Found(
             string employerAccountId,
             string employerAccountLegalEntityId,
             EmployerInfo employerInfo,
             VacancyRouteModel vacancyRouteModel,
-            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
             [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
             vacancyRouteModel.VacancyId = null;
-            employerInfo.EmployerAccountId = employerAccountId;
-            employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = employerAccountLegalEntityId;
-            
-            providerVacancyClient
-                .Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, employerAccountId))
-                .ReturnsAsync(employerInfo);
-            providerRelationshipsService.Setup(x => x.HasProviderGotEmployersPermissionAsync(vacancyRouteModel.Ukprn,
-                    employerAccountId, employerAccountLegalEntityId, OperationType.RecruitmentRequiresReview))
-                .ReturnsAsync(false);
-            providerRelationshipsService.Setup(x => x.HasProviderGotEmployersPermissionAsync(vacancyRouteModel.Ukprn,
-                    employerAccountId, employerAccountLegalEntityId, OperationType.Recruitment))
-                .ReturnsAsync(false);
-            
-            Assert.ThrowsAsync<MissingPermissionsException>(() => orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, employerAccountId,
-                employerAccountLegalEntityId));
-        }
-        
-        [Test, MoqAutoData]
-        public async Task Then_If_In_ProviderPermissions_Recruitment_Then_Returns_Model(
-            string employerAccountId,
-            string employerAccountLegalEntityId,
-            EmployerInfo employerInfo,
-            VacancyRouteModel vacancyRouteModel,
-            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
-            [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
-            LegalEntityAndEmployerOrchestrator orchestrator)
-        {
-            vacancyRouteModel.VacancyId = null;
-            employerInfo.EmployerAccountId = employerAccountId;
-            employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = employerAccountLegalEntityId;
-            
-            providerVacancyClient
-                .Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, employerAccountId))
-                .ReturnsAsync(employerInfo);
-            providerRelationshipsService.Setup(x => x.HasProviderGotEmployersPermissionAsync(vacancyRouteModel.Ukprn,
-                    employerAccountId, employerAccountLegalEntityId, OperationType.RecruitmentRequiresReview))
-                .ReturnsAsync(false);
-            providerRelationshipsService.Setup(x => x.HasProviderGotEmployersPermissionAsync(vacancyRouteModel.Ukprn,
-                    employerAccountId, employerAccountLegalEntityId, OperationType.Recruitment))
-                .ReturnsAsync(true);
-            
-            var actual = await orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, employerAccountId,
-                employerAccountLegalEntityId);
-            
-            actual.EmployerName.Should().Be(employerInfo.Name);
-            actual.EmployerAccountId.Should().Be(employerInfo.EmployerAccountId);
-            actual.AccountLegalEntityPublicHashedId.Should().Be(employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId);
-            actual.AccountLegalEntityName.Should().Be(employerInfo.LegalEntities.Last().Name);
-        }
-        
-        [Test, MoqAutoData]
-        public async Task Then_If_In_ProviderPermissionsRecruitmentRequiresReview_Then_Returns_Model(
-            string employerAccountId,
-            string employerAccountLegalEntityId,
-            EmployerInfo employerInfo,
-            VacancyRouteModel vacancyRouteModel,
-            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
-            [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
-            LegalEntityAndEmployerOrchestrator orchestrator)
-        {
-            vacancyRouteModel.VacancyId = null;
-            employerInfo.EmployerAccountId = employerAccountId;
-            employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = employerAccountLegalEntityId;
-            
-            providerVacancyClient
-                .Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, employerAccountId))
-                .ReturnsAsync(employerInfo);
-            providerRelationshipsService.Setup(x => x.HasProviderGotEmployersPermissionAsync(vacancyRouteModel.Ukprn,
-                    employerAccountId, employerAccountLegalEntityId, OperationType.RecruitmentRequiresReview))
-                .ReturnsAsync(true);
-            providerRelationshipsService.Setup(x => x.HasProviderGotEmployersPermissionAsync(vacancyRouteModel.Ukprn,
-                    employerAccountId, employerAccountLegalEntityId, OperationType.Recruitment))
-                .ReturnsAsync(false);
-            
-            var actual = await orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, employerAccountId,
-                employerAccountLegalEntityId);
-            
-            actual.EmployerName.Should().Be(employerInfo.Name);
-            actual.EmployerAccountId.Should().Be(employerInfo.EmployerAccountId);
-            actual.AccountLegalEntityPublicHashedId.Should().Be(employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId);
-            actual.AccountLegalEntityName.Should().Be(employerInfo.LegalEntities.Last().Name);
+
+            // employerInfo has a different EmployerAccountId / legalEntityId than the ones passed in
+            providerRelationshipsService
+                .Setup(x => x.GetLegalEntitiesForProvider(vacancyRouteModel.Ukprn, "",
+                    new List<OperationType> { OperationType.Recruitment, OperationType.RecruitmentRequiresReview }))
+                .ReturnsAsync(new List<EmployerInfo> { employerInfo });
+
+            Assert.ThrowsAsync<MissingPermissionsException>(() =>
+                orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, employerAccountId, employerAccountLegalEntityId));
         }
     }
 }
