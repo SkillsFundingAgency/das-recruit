@@ -3,15 +3,8 @@ using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers
 {
-    public abstract class DomainEventHandler
+    public abstract class DomainEventHandler(ILogger logger)
     {
-        private readonly ILogger _logger;
-
-        protected DomainEventHandler(ILogger logger)
-        {
-            _logger = logger;
-        }
-
         protected T DeserializeEvent<T>(string eventPayload)
         {
             try
@@ -21,7 +14,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers
             }
             catch (JsonException ex)
             {
-                _logger.LogError(ex, "Unable to deserialize event: {eventBody}", eventPayload);
+                logger.LogError(ex, "Unable to deserialize event: {eventBody}", eventPayload);
                 throw;
             }
         }
