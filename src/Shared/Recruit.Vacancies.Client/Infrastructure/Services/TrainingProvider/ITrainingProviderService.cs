@@ -65,5 +65,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<GetAlertsByUkprnApiResponse> GetProviderAlerts(int ukprn, string userId);
+
+        Domain.Entities.TrainingProvider GetEsfaTestTrainingProvider();
     }
 }

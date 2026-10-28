@@ -177,9 +177,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
             return result.Providers.Select(MapProvider).ToList();
         }
 
-        private static Domain.Entities.TrainingProvider GetEsfaTestTrainingProvider()
-        {
-            return new Domain.Entities.TrainingProvider
+        public Domain.Entities.TrainingProvider GetEsfaTestTrainingProvider() =>
+            new()
             {
                 Ukprn = EsfaTestTrainingProvider.Ukprn,
                 Name = EsfaTestTrainingProvider.Name,
@@ -192,7 +191,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
                     Postcode = EsfaTestTrainingProvider.Postcode
                 }
             };
-        }
 
         private static Domain.Entities.TrainingProvider MapProvider(GetProviderResponseItem source)
         {

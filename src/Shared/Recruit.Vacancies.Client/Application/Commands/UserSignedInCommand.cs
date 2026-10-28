@@ -4,15 +4,9 @@ using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
-    public class UserSignedInCommand : ICommand, IRequest<Unit>
+    public class UserSignedInCommand(VacancyUser vacancyUser, UserType userType) : ICommand, IRequest<Unit>
     {
-        public VacancyUser User { get; private set; }
-        public UserType UserType { get; private set; }
-
-        public UserSignedInCommand(VacancyUser vacancyUser, UserType userType)
-        {
-            User = vacancyUser;
-            UserType = userType;
-        }
+        public VacancyUser User { get; private set; } = vacancyUser;
+        public UserType UserType { get; private set; } = userType;
     }
 }
