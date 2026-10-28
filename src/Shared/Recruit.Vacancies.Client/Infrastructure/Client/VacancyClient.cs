@@ -45,7 +45,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IProviderRelationshipsService providerRelationshipsService,
         IVacancyAnalyticsService vacancyAnalyticsService,
         IApplicationReadRepository applicationReadRepository,
-        IReportService reportService)
+        IReportService reportService,
+        IGetProviderStatusClient providerStatusClient)
         : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -121,8 +122,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
             
             await messaging.SendCommandAsync(command);
-            
-            await AssignVacancyNumber(id);
         }
 
         public async Task<Guid> CloneVacancyAsync(
@@ -134,8 +133,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             var command = new CloneVacancyCommand(vacancyId, newVacancyId, user, sourceOrigin, startDate, closingDate);
 
             await messaging.SendCommandAsync(command);
-
-            await AssignVacancyNumber(newVacancyId);
 
             return newVacancyId;
         }
@@ -228,15 +225,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendCommandAsync(command);
         }
 
-        public Task SetupEmployerAsync(string employerAccountId)
+        public async Task SetupEmployerAsync(string employerAccountId)
         {
-            var command = new SetupEmployerCommand
-            {
-                EmployerAccountId = employerAccountId
-            };
-
-            return messaging.SendCommandAsync(command);
+            var legalEntities = (await GetEmployerLegalEntitiesAsync(employerAccountId)).ToList();
+            await RefreshEmployerProfiles(employerAccountId, legalEntities.Select(x => x.AccountLegalEntityPublicHashedId));
         }
+
+        public Task SetupEmployerAsync(string employerAccountId, string accountLegalEntityPublicHashedId) 
+            => RefreshEmployerProfiles(employerAccountId, [accountLegalEntityPublicHashedId]);
 
         public async Task<EmployerEditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId)
         {
@@ -391,17 +387,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendCommandAsync(command);
         }
 
-        // Jobs
-        public Task AssignVacancyNumber(Guid vacancyId)
-        {
-            var command = new AssignVacancyNumberCommand
-            {
-                VacancyId = vacancyId
-            };
-
-            return messaging.SendCommandAsync(command);
-        }
-
         public Task PatchTrainingProviderAsync(Guid vacancyId)
         {
             var command = new PatchVacancyTrainingProviderCommand(vacancyId);
@@ -416,16 +401,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendCommandAsync(command);
         }
 
-        public async Task CreateVacancyReview(long vacancyReference)
-        {
-            var command = new CreateVacancyReviewCommand
-            {
-                VacancyReference = vacancyReference
-            };
-
-            await messaging.SendCommandAsync(command);
-        }
-
         public Task CloseVacancyAsync(Guid vacancyId, VacancyUser user, ClosureReason reason)
         {
             return messaging.SendCommandAsync(new CloseVacancyCommand(vacancyId, user, reason));
@@ -438,20 +413,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             await messaging.SendCommandAsync(command);
         }
 
-        public async Task EnsureVacancyIsGeocodedAsync(Guid vacancyId)
-        {
-            var command = new GeocodeVacancyCommand { VacancyId = vacancyId };
-            await messaging.SendCommandAsync(command);
-        }
-
         public Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId)
         {
             return employerAccountProvider.GetEmployerLegalEntitiesAsync(employerAccountId);
-        }
-
-        public Task CreateApplicationReviewAsync(Domain.Entities.Application application)
-        {
-            return Task.CompletedTask;
         }
 
         public Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
