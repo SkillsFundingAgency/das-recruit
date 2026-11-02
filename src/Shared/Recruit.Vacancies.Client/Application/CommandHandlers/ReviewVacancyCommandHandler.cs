@@ -1,6 +1,5 @@
 ﻿using System;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using MediatR;
 using System.Threading;
@@ -10,15 +9,17 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Events;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 
 public class ReviewVacancyCommandHandler(
     ILogger<ReviewVacancyCommandHandler> logger,
     IVacancyRepository vacancyRepository,
-    IMessaging messaging,
     ITimeProvider timeProvider,
-    IEmployerService employerService)
+    IEmployerService employerService,
+    IOuterApiClient outerApiClient)
     : IRequestHandler<ReviewVacancyCommand, Unit>
 {
     public const string VacancyNotFoundExceptionMessageFormat = "Vacancy {0} not found";
@@ -60,13 +61,8 @@ public class ReviewVacancyCommandHandler(
 
         await vacancyRepository.UpdateAsync(vacancy);
 
-        await messaging.PublishEvent(new VacancyReviewedEvent
-        {
-            EmployerAccountId = vacancy.EmployerAccountId,
-            VacancyId = vacancy.Id,
-            VacancyReference = vacancy.VacancyReference.Value,
-            Ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault()
-        });
+        await outerApiClient.Post(new PostVacancySubmittedEventRequest(new PostVacancySubmittedEventData(vacancy.Id, vacancy.VacancyReference.Value)));
+        
         return Unit.Value;
     }
 }

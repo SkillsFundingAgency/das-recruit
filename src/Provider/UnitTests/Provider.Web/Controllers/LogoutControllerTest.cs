@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             _fixture = new Fixture();
             _configuration = new Mock<IConfiguration>();
             _externalLinksConfig = new Mock<IOptions<ExternalLinksConfiguration>>();
-            _sut = new LogoutController(_externalLinksConfig.Object, _configuration.Object);
+            _sut = new LogoutController(new ProviderApprenticeshipsLinkHelper(_externalLinksConfig.Object), _configuration.Object);
         }
 
         [Test]

@@ -6,6 +6,8 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Events;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
@@ -14,7 +16,8 @@ public class UpdateLiveVacancyCommandHandler(
     ILogger<UpdateLiveVacancyCommandHandler> logger,
     IVacancyRepository repository,
     IMessaging messaging,
-    ITimeProvider timeProvider)
+    ITimeProvider timeProvider,
+    IOuterApiClient outerApiClient)
     : IRequestHandler<UpdateLiveVacancyCommand, Unit>
 {
     public async Task<Unit> Handle(UpdateLiveVacancyCommand message, CancellationToken cancellationToken)
@@ -30,11 +33,6 @@ public class UpdateLiveVacancyCommandHandler(
             await PublishLiveVacancyClosingDateChangedEventAsync(message);
         }
 
-        await messaging.PublishEvent(new VacancyPublishedEvent
-        {
-            VacancyId = message.Vacancy.Id
-        });
-
         var liveVacancyUpdatedEvent = new LiveVacancyUpdatedEvent
         {
             VacancyId = message.Vacancy.Id,
@@ -42,7 +40,8 @@ public class UpdateLiveVacancyCommandHandler(
             UpdateKind = message.UpdateKind
         };
         await messaging.PublishEvent(liveVacancyUpdatedEvent);
-            
+        await outerApiClient.Post(new PostLiveVacancyUpdatedEventRequest(new PostLiveVacancyUpdatedEventData(message.Vacancy.Id, message.Vacancy.VacancyReference.Value, message.UpdateKind)));
+
         return Unit.Value;
     }
 

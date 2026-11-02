@@ -83,11 +83,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _vacancyReviewRepository.UpdateAsync(review);
 
-            await _messaging.PublishEvent(new VacancyReviewReferredEvent
-            {
-                VacancyReference = review.VacancyReference,
-                ReviewId = review.Id
-            });
             return Unit.Value;
         }
 

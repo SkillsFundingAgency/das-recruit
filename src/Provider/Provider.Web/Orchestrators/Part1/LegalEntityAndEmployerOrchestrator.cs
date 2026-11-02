@@ -253,8 +253,15 @@ public class LegalEntityAndEmployerOrchestrator(
         var validationResult = await ValidateAndExecute(
             newVacancy,
             v => recruitVacancyClient.Validate(v, ValidationRules),
-            async _ => await providerVacancyClient.CreateVacancyAsync(
-                model.EmployerAccountId, user.Ukprn.GetValueOrDefault(), null, user, model.AccountLegalEntityPublicHashedId, model.AccountLegalEntityName));
+            async _ =>
+            {
+                var vacancyId = await providerVacancyClient.CreateVacancyAsync(
+                    model.EmployerAccountId, user.Ukprn.GetValueOrDefault(), null, user,
+                    model.AccountLegalEntityPublicHashedId, model.AccountLegalEntityName);
+                await recruitVacancyClient.SetupEmployerAsync(
+                    model.EmployerAccountId, model.AccountLegalEntityPublicHashedId);
+                return vacancyId;
+            });
 
         return new OrchestratorResponse<PostConfirmAccountLegalEntityResult>(new PostConfirmAccountLegalEntityResult()
         {

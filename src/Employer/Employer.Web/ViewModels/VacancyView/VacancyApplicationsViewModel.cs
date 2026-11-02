@@ -19,6 +19,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public string? SelectedLocation { get; set; }
         public string? SelectedApplicantName { get; set; }
         public int TotalUnfilteredApplicationsCount { get; set; } = 0;
+        public int TotalUnfilteredApplicationsNotWithdrawn { get; set; } = 0;
         public int TotalFilteredApplicationsCount { get; set; } = 0;
         public bool ShowLocationNoResultsLabel =>
             TotalFilteredApplicationsCount == 0

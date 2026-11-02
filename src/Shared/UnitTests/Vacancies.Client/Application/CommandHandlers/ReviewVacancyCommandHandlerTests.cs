@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Microsoft.Extensions.Logging;
 using Xunit;
 
@@ -170,14 +171,14 @@ public class ReviewVacancyCommandHandlerTests
         var mockRepository = new Mock<IVacancyRepository>();
         mockRepository.Setup(r => r.GetVacancyAsync(id)).ReturnsAsync(vacancy);
 
-        var mockMessaging = new Mock<IMessaging>();
+        var mockOuterApiClient = new Mock<IOuterApiClient>();
 
         var mockTimeProvider = new Mock<ITimeProvider>();
         mockTimeProvider.Setup(t => t.Now).Returns(now);
 
         var mockEmployerNameService = new Mock<IEmployerService>();
 
-        var handler = new ReviewVacancyCommandHandler(mockLogger.Object, mockRepository.Object, mockMessaging.Object, mockTimeProvider.Object, mockEmployerNameService.Object);
+        var handler = new ReviewVacancyCommandHandler(mockLogger.Object, mockRepository.Object, mockTimeProvider.Object, mockEmployerNameService.Object,mockOuterApiClient.Object);
 
         return handler;
     }

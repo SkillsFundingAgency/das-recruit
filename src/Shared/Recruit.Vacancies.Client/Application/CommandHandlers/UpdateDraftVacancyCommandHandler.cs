@@ -1,11 +1,10 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Domain.Events;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
-using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using MediatR;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
@@ -13,8 +12,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 public class UpdateDraftVacancyCommandHandler(
     ILogger<UpdateDraftVacancyCommandHandler> logger,
     IVacancyRepository repository,
-    IMessaging messaging,
-    ITimeProvider timeProvider)
+    ITimeProvider timeProvider, 
+    IJobsVacancyClient jobsVacancyClient)
     : IRequestHandler<UpdateDraftVacancyCommand, Unit>
 {
     public async Task<Unit> Handle(UpdateDraftVacancyCommand message, CancellationToken cancellationToken)
@@ -25,11 +24,7 @@ public class UpdateDraftVacancyCommandHandler(
 
         await repository.UpdateAsync(message.Vacancy);
 
-        await messaging.PublishEvent(new DraftVacancyUpdatedEvent
-        {
-            EmployerAccountId = message.Vacancy.EmployerAccountId,
-            VacancyId = message.Vacancy.Id
-        });
+        await jobsVacancyClient.PatchTrainingProviderAsync(message.Vacancy.Id);
             
         return Unit.Value;
     }

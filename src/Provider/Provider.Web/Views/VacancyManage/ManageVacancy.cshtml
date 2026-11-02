@@ -131,7 +131,7 @@
         <div class="govuk-grid-column-two-thirds">
             <div>
                 <h2 class="govuk-heading-m">
-                    Applications (@Model.TotalUnfilteredApplicationsCount)
+                    Applications (@Model.Applications.TotalUnfilteredApplicationsNotWithdrawn)
                 </h2>
             </div>
             <div asp-show="@(Model.IsApplyThroughFaaVacancy || Model.IsApplyThroughFatVacancy)">
@@ -149,7 +149,7 @@
             </div>
         </div>
     </div>
-    <div class="govuk-grid-row govuk-!-margin-top-3">
+    <div class="govuk-grid-row">
         <form method="get" autocomplete="off">
             <div class="govuk-grid-column-two-thirds">
                 <div class="govuk-form-group">

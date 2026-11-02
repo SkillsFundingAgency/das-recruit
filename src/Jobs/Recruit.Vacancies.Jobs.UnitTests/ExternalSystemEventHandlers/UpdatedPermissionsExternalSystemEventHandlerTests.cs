@@ -35,7 +35,6 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
         private readonly Mock<IRecruitQueueService> _mockRecruitQueueService;
         private readonly Mock<IEmployerAccountProvider> _mockEmployerAccountProvider;
         private readonly Mock<IEncodingService> _mockEncoder;
-        private readonly Mock<IMessaging> _mockMessaging;
         private readonly UpdatedPermissionsExternalSystemEventsHandler _sut;
 
         public UpdatedPermissionsExternalSystemEventHandlerTests()
@@ -44,11 +43,10 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
             _mockRecruitQueueService = new Mock<IRecruitQueueService>();
             _mockEmployerAccountProvider = new Mock<IEmployerAccountProvider>();
             _mockEncoder = new Mock<IEncodingService>();
-            _mockMessaging = new Mock<IMessaging>();
 
             _sut = new UpdatedPermissionsExternalSystemEventsHandler(Mock.Of<ILogger<UpdatedPermissionsExternalSystemEventsHandler>>(),
                                                         _mockRecruitQueueService.Object, _mockEmployerAccountProvider.Object,
-                                                        _mockEncoder.Object, _mockMessaging.Object);
+                                                        _mockEncoder.Object);
         }
 
         [Fact]
@@ -62,7 +60,6 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
             _mockRecruitQueueService.VerifyNoOtherCalls();
             _mockEmployerAccountProvider.VerifyNoOtherCalls();
             _mockEncoder.VerifyNoOtherCalls();
-            _mockMessaging.Verify(x => x.SendCommandAsync(It.Is<SetupProviderCommand>(c => c.Ukprn == Ukprn)), Times.Once);
         }
 
         [Fact]
@@ -76,7 +73,6 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
             _mockRecruitQueueService.VerifyNoOtherCalls();
             _mockEmployerAccountProvider.VerifyNoOtherCalls();
             _mockEncoder.VerifyNoOtherCalls();
-            _mockMessaging.Verify(x => x.SendCommandAsync(It.Is<SetupProviderCommand>(c => c.Ukprn == Ukprn)), Times.Once);
         }
 
         [Fact]
@@ -90,7 +86,6 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
             _mockRecruitQueueService.VerifyNoOtherCalls();
             _mockEmployerAccountProvider.VerifyNoOtherCalls();
             _mockEncoder.VerifyNoOtherCalls();
-            _mockMessaging.Verify(x => x.SendCommandAsync(It.Is<SetupProviderCommand>(c => c.Ukprn == Ukprn)), Times.Once);
         }
 
         [Fact]
@@ -131,7 +126,6 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
             _mockEncoder.Verify(x => x.Encode(EmployerAccountId, EncodingType.AccountId), Times.Once);
             _mockEmployerAccountProvider.Verify(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded), Times.Once);
             _mockRecruitQueueService.Verify(x => x.AddMessageAsync(It.IsAny<TransferVacanciesFromEmployerReviewToQAReviewQueueMessage>()), Times.Once);
-            _mockMessaging.Verify(x => x.SendCommandAsync(It.Is<SetupProviderCommand>(c => c.Ukprn == Ukprn)), Times.Once);
         }
 
         [Fact]

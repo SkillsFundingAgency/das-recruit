@@ -15,6 +15,7 @@ public class Report
     public DateTime CreatedDate { get; set; }
     public string? CreatedBy { get; set; }
     public int DownloadCount { get; set; } = 0;
+    public ReportStatus Status { get; set; }
     public string DynamicCriteria { get; set; } = null!;
     private bool TryGetCriteria(out ReportCriteria? criteria)
     {
@@ -49,7 +50,7 @@ public class Report
                 OwnerType = report.OwnerType,
                 Ukprn = report.Criteria?.Ukprn
             },
-            Status = ReportStatus.Generated,
+            Status = report.Status,
             ReportType = report.Type,
             ReportName = report.Name,
             RequestedBy = new VacancyUser
@@ -85,7 +86,7 @@ public class Report
                 OwnerType = report.OwnerType,
                 Ukprn = criteria.Ukprn
             },
-            ReportStatus.Generated,
+            report.Status,
             Name,
             Type,
             reportParams,
