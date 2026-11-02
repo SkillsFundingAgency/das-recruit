@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.Reports;
@@ -47,17 +48,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IApplicationReadRepository applicationReadRepository,
         IReportService reportService,
         IGetProviderStatusClient providerStatusClient)
-        : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
+        : IRecruitVacancyClient, IEmployerVacancyClient
     {
-        public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
+        public async Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
         {
-            var command = new UpdateDraftVacancyCommand
-            {
-                Vacancy = vacancy,
-                User = user
-            };
+            vacancy.LastUpdatedDate = timeProvider.Now;
 
-            return messaging.SendCommandAsync(command);
+            await PatchTrainingProviderAsync(vacancy);
+
+            await repository.UpdateAsync(vacancy);
         }
 
         public Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user, LiveUpdateKind updateKind)
@@ -387,30 +386,28 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return messaging.SendCommandAsync(command);
         }
 
-        public Task PatchTrainingProviderAsync(Guid vacancyId)
+        private async Task PatchTrainingProviderAsync(Vacancy vacancy)
         {
-            var command = new PatchVacancyTrainingProviderCommand(vacancyId);
+            if (vacancy.OwnerType == OwnerType.Employer)
+                return;
 
-            return messaging.SendCommandAsync(command);
-        }
+            if (!string.IsNullOrEmpty(vacancy.TrainingProvider.Name))
+                return;
 
-        public Task UpdateProviders()
-        {
-            var command = new UpdateProvidersCommand();
+            TrainingProvider tp = vacancy.TrainingProvider.Ukprn is EsfaTestTrainingProvider.Ukprn
+                ? trainingProviderService.GetEsfaTestTrainingProvider()
+                : await trainingProviderService.GetProviderAsync(vacancy.TrainingProvider.Ukprn.GetValueOrDefault());
 
-            return messaging.SendCommandAsync(command);
+            if (tp == null)
+                return;
+
+            vacancy.TrainingProvider.Name = tp.Name;
+            vacancy.TrainingProvider.Address = tp.Address;
         }
 
         public Task CloseVacancyAsync(Guid vacancyId, VacancyUser user, ClosureReason reason)
         {
             return messaging.SendCommandAsync(new CloseVacancyCommand(vacancyId, user, reason));
-        }
-
-        public async Task CloseExpiredVacancies()
-        {
-            var command = new CloseExpiredVacanciesCommand();
-
-            await messaging.SendCommandAsync(command);
         }
 
         public Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId)
@@ -537,12 +534,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             int GetValue(DateTime date, Func<dynamic, int> selector) =>
                 analyticsByDate.TryGetValue(date, out var v) ? selector(v) : 0;
         }
-
-        public Task UpdateUserAccountAsync(string idamsUserId) =>
-            messaging.SendCommandAsync(new UpdateUserAccountCommand
-            {
-                IdamsUserId = idamsUserId
-            });
 
         public Task<int> GetVacancyCountForUserAsync(string userId)
         {
