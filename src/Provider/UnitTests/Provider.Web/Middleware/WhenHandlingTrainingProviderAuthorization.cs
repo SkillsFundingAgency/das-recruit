@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using Esfa.Recruit.Provider.Web.Middleware;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;

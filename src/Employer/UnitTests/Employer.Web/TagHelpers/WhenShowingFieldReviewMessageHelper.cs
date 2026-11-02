@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
 using AutoFixture.DataAnnotations;
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using Esfa.Recruit.Employer.Web.TagHelpers;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.ViewModels;

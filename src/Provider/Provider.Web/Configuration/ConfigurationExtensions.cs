@@ -1,22 +1,21 @@
 using System.Linq;
-using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Filters;
-using FluentValidation.AspNetCore;
+using Esfa.Recruit.Provider.Web.Middleware;
+using Esfa.Recruit.Shared.Web.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using Microsoft.Net.Http.Headers;
-using Microsoft.AspNetCore.Authorization;
-using Esfa.Recruit.Provider.Web.Middleware;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.Configuration;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Startup;
-using Microsoft.FeatureManagement;
 
 namespace Esfa.Recruit.Provider.Web.Configuration;
 
@@ -111,7 +110,6 @@ public static class ConfigurationExtensions
             .EnableCookieBanner()
             .EnableGoogleAnalytics()
             .SetDefaultNavigationSection(NavigationSection.Recruit);
-        services.AddFluentValidationAutoValidation();
         services.AddFeatureManagement(configuration.GetSection("Features"));
     }
 }

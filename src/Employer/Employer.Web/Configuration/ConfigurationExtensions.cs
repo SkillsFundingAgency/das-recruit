@@ -3,7 +3,6 @@ using Esfa.Recruit.Employer.Web.Filters;
 using Esfa.Recruit.Employer.Web.Interfaces;
 using Esfa.Recruit.Employer.Web.Middleware;
 using Esfa.Recruit.Shared.Web.Extensions;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
@@ -101,7 +100,6 @@ public static class ConfigurationExtensions
                 opts.AddTrimModelBinderProvider(loggerFactory);
             }).SetDefaultNavigationSection(NavigationSection.RecruitHome)
             .AddNewtonsoftJson();
-        services.AddFluentValidationAutoValidation();
         services.AddFeatureManagement(configuration.GetSection("Features"));
     }
 }

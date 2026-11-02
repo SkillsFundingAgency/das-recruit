@@ -1,5 +1,5 @@
 using System;
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using FluentAssertions;
 using NUnit.Framework;

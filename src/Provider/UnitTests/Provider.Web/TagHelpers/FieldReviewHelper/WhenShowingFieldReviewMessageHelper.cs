@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using Esfa.Recruit.Provider.Web.TagHelpers;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.ViewModels;
