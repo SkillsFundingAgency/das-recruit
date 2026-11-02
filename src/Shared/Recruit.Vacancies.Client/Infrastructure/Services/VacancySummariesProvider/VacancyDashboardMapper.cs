@@ -1,17 +1,16 @@
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
+
+internal static class VacancyDashboardMapper
 {
-    internal static class VacancyDashboardMapper
+    internal static VacancyStatusDashboard MapFromVacancyDashboardSummaryResponseDto(VacancyDashboardAggQueryResponseDto src)
     {
-        internal static VacancyStatusDashboard MapFromVacancyDashboardSummaryResponseDto(VacancyDashboardAggQueryResponseDto src)
+        return new VacancyStatusDashboard
         {
-            return new VacancyStatusDashboard
-            {
-                Status = src.Id.Status,
-                StatusCount = src.StatusCount,
-                ClosingSoon = src.Id.ClosingSoon,
-            };
-        }
+            Status = src.Id.Status,
+            StatusCount = src.StatusCount,
+            ClosingSoon = src.Id.ClosingSoon,
+        };
     }
 }

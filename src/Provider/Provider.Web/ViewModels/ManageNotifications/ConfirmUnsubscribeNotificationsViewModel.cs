@@ -1,14 +1,13 @@
-namespace Esfa.Recruit.Provider.Web.ViewModels.ManageNotifications
+namespace Esfa.Recruit.Provider.Web.ViewModels.ManageNotifications;
+
+public class ConfirmUnsubscribeNotificationsViewModel
 {
-    public class ConfirmUnsubscribeNotificationsViewModel
+    public ConfirmUnsubscribeNotificationsViewModel(long ukprn)
     {
-        public ConfirmUnsubscribeNotificationsViewModel(long ukprn)
-        {
-            Ukprn = ukprn;
-        }
-
-        public long Ukprn { get; set; }
-
-        public bool? ConfirmUnsubscribe { get; set; }
+        Ukprn = ukprn;
     }
+
+    public long Ukprn { get; set; }
+
+    public bool? ConfirmUnsubscribe { get; set; }
 }

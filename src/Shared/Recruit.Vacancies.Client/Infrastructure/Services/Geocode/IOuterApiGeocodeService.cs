@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
+
+public interface IOuterApiGeocodeService
 {
-    public interface IOuterApiGeocodeService
-    {
-        Task<Geocode> Geocode(string postcode);
-    }
+    Task<Geocode> Geocode(string postcode);
 }

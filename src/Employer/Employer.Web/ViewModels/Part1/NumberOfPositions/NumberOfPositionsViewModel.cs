@@ -2,18 +2,17 @@
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.NumberOfPositions
+namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.NumberOfPositions;
+
+public class NumberOfPositionsViewModel : VacancyRouteModel
 {
-    public class NumberOfPositionsViewModel : VacancyRouteModel
+    public PartOnePageInfoViewModel PageInfo { get; set; }
+    public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+    public string NumberOfPositions { get; set; }
+    public IList<string> OrderedFieldNames => new List<string>
     {
-        public PartOnePageInfoViewModel PageInfo { get; set; }
-        public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
-        public string NumberOfPositions { get; set; }
-        public IList<string> OrderedFieldNames => new List<string>
-        {
-            nameof(NumberOfPositions)
-        };
-        public string BackLinkRoute { get; set; }
-        public string VacancyTitle { get; init; }
-    }
+        nameof(NumberOfPositions)
+    };
+    public string BackLinkRoute { get; set; }
+    public string VacancyTitle { get; init; }
 }

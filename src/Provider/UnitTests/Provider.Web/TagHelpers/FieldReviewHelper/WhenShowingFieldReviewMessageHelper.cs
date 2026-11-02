@@ -11,98 +11,97 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.TagHelpers.FieldReviewHelper
+namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.TagHelpers.FieldReviewHelper;
+
+public class WhenShowingFieldReviewMessageHelper
 {
-    public class WhenShowingFieldReviewMessageHelper
+    [Test, MoqAutoData]
+    public void Then_If_There_Are_No_Errors_Then_No_Message_Created(
+        [Frozen] Mock<TagHelperContext> context, 
+        FieldReviewMessageHelper fieldReviewMessageHelper)
     {
-        [Test, MoqAutoData]
-        public void Then_If_There_Are_No_Errors_Then_No_Message_Created(
-            [Frozen] Mock<TagHelperContext> context, 
-            FieldReviewMessageHelper fieldReviewMessageHelper)
+        fieldReviewMessageHelper.Model = new VacancyPreviewViewModel
         {
-            fieldReviewMessageHelper.Model = new VacancyPreviewViewModel
-            {
-                Review = new ReviewSummaryViewModel()
-            };
-            var tagHelperOutput = new TagHelperOutput("", new TagHelperAttributeList(new List<TagHelperAttribute>()),
-                (b, encoder) => null);
+            Review = new ReviewSummaryViewModel()
+        };
+        var tagHelperOutput = new TagHelperOutput("", new TagHelperAttributeList(new List<TagHelperAttribute>()),
+            (b, encoder) => null);
             
-            fieldReviewMessageHelper.Process(context.Object, tagHelperOutput);
+        fieldReviewMessageHelper.Process(context.Object, tagHelperOutput);
 
-            tagHelperOutput.Content.IsModified.Should().BeFalse();
-            tagHelperOutput.Content.IsEmptyOrWhiteSpace.Should().BeTrue();
-        }
+        tagHelperOutput.Content.IsModified.Should().BeFalse();
+        tagHelperOutput.Content.IsEmptyOrWhiteSpace.Should().BeTrue();
+    }
 
-        [Test, MoqAutoData]
-        public void Then_If_There_Are_Review_Fields_Then_Returned_In_Content(
-            ReviewSummaryViewModel model,
-            [Frozen] Mock<TagHelperContext> context, 
-            FieldReviewMessageHelper fieldReviewMessageHelper)
+    [Test, MoqAutoData]
+    public void Then_If_There_Are_Review_Fields_Then_Returned_In_Content(
+        ReviewSummaryViewModel model,
+        [Frozen] Mock<TagHelperContext> context, 
+        FieldReviewMessageHelper fieldReviewMessageHelper)
+    {
+        fieldReviewMessageHelper.Model = new VacancyPreviewViewModel
         {
-            fieldReviewMessageHelper.Model = new VacancyPreviewViewModel
-            {
-                Review = model
-            };
-            fieldReviewMessageHelper.FieldName = model.FieldIndicators.FirstOrDefault().ReviewFieldIdentifier;
-            var tagHelperOutput = new TagHelperOutput("", new TagHelperAttributeList(new List<TagHelperAttribute>()),
-                (b, encoder) => null);
+            Review = model
+        };
+        fieldReviewMessageHelper.FieldName = model.FieldIndicators.FirstOrDefault().ReviewFieldIdentifier;
+        var tagHelperOutput = new TagHelperOutput("", new TagHelperAttributeList(new List<TagHelperAttribute>()),
+            (b, encoder) => null);
             
-            fieldReviewMessageHelper.Process(context.Object, tagHelperOutput);
+        fieldReviewMessageHelper.Process(context.Object, tagHelperOutput);
 
-            tagHelperOutput.Content.IsModified.Should().BeTrue();
-            tagHelperOutput.Content.IsEmptyOrWhiteSpace.Should().BeFalse();
-            tagHelperOutput.Content.GetContent().Should().Be(model.FieldIndicators.FirstOrDefault().ManualQaText);
-        }
+        tagHelperOutput.Content.IsModified.Should().BeTrue();
+        tagHelperOutput.Content.IsEmptyOrWhiteSpace.Should().BeFalse();
+        tagHelperOutput.Content.GetContent().Should().Be(model.FieldIndicators.FirstOrDefault().ManualQaText);
+    }
 
-        [Test, MoqAutoData]
-        public void Then_If_There_Are_Validation_Errors_Then_Returned_In_Content(
-            string errorMessage,
-            ReviewSummaryViewModel model,
-            [Frozen] Mock<TagHelperContext> context, 
-            FieldReviewMessageHelper fieldReviewMessageHelper)
+    [Test, MoqAutoData]
+    public void Then_If_There_Are_Validation_Errors_Then_Returned_In_Content(
+        string errorMessage,
+        ReviewSummaryViewModel model,
+        [Frozen] Mock<TagHelperContext> context, 
+        FieldReviewMessageHelper fieldReviewMessageHelper)
+    {
+        var modelState = new ModelStateDictionary();
+        modelState.AddModelError(model.FieldIndicators.FirstOrDefault().ReviewFieldIdentifier,errorMessage);
+        fieldReviewMessageHelper.Model = new VacancyPreviewViewModel
         {
-            var modelState = new ModelStateDictionary();
-            modelState.AddModelError(model.FieldIndicators.FirstOrDefault().ReviewFieldIdentifier,errorMessage);
-            fieldReviewMessageHelper.Model = new VacancyPreviewViewModel
-            {
-                ValidationErrors = new ValidationSummaryViewModel
-                    {ModelState = modelState, OrderedFieldNames = new List<string>()}
-            };
-            fieldReviewMessageHelper.FieldName = model.FieldIndicators.FirstOrDefault().ReviewFieldIdentifier;
-            var tagHelperOutput = new TagHelperOutput("", new TagHelperAttributeList(new List<TagHelperAttribute>()),
-                (b, encoder) => null);
+            ValidationErrors = new ValidationSummaryViewModel
+                {ModelState = modelState, OrderedFieldNames = new List<string>()}
+        };
+        fieldReviewMessageHelper.FieldName = model.FieldIndicators.FirstOrDefault().ReviewFieldIdentifier;
+        var tagHelperOutput = new TagHelperOutput("", new TagHelperAttributeList(new List<TagHelperAttribute>()),
+            (b, encoder) => null);
             
-            fieldReviewMessageHelper.Process(context.Object, tagHelperOutput);
+        fieldReviewMessageHelper.Process(context.Object, tagHelperOutput);
 
-            tagHelperOutput.Content.IsModified.Should().BeTrue();
-            tagHelperOutput.Content.IsEmptyOrWhiteSpace.Should().BeFalse();
-            tagHelperOutput.Content.GetContent().Should().Be(errorMessage);
-        }
+        tagHelperOutput.Content.IsModified.Should().BeTrue();
+        tagHelperOutput.Content.IsEmptyOrWhiteSpace.Should().BeFalse();
+        tagHelperOutput.Content.GetContent().Should().Be(errorMessage);
+    }
 
-        [Test, MoqAutoData]
-        public void Then_If_There_Are_Validation_Errors_And_Review_Field_Errors_Then_Returned_In_Content(
-            string errorMessage,
-            ReviewSummaryViewModel model,
-            [Frozen] Mock<TagHelperContext> context, 
-            FieldReviewMessageHelper fieldReviewMessageHelper)
+    [Test, MoqAutoData]
+    public void Then_If_There_Are_Validation_Errors_And_Review_Field_Errors_Then_Returned_In_Content(
+        string errorMessage,
+        ReviewSummaryViewModel model,
+        [Frozen] Mock<TagHelperContext> context, 
+        FieldReviewMessageHelper fieldReviewMessageHelper)
+    {
+        var modelState = new ModelStateDictionary();
+        modelState.AddModelError(model.FieldIndicators.FirstOrDefault().ReviewFieldIdentifier,errorMessage);
+        fieldReviewMessageHelper.Model = new VacancyPreviewViewModel
         {
-            var modelState = new ModelStateDictionary();
-            modelState.AddModelError(model.FieldIndicators.FirstOrDefault().ReviewFieldIdentifier,errorMessage);
-            fieldReviewMessageHelper.Model = new VacancyPreviewViewModel
-            {
-                Review = model,
-                ValidationErrors = new ValidationSummaryViewModel
-                    {ModelState = modelState, OrderedFieldNames = new List<string>()}
-            };
-            fieldReviewMessageHelper.FieldName = model.FieldIndicators.FirstOrDefault().ReviewFieldIdentifier;
-            var tagHelperOutput = new TagHelperOutput("", new TagHelperAttributeList(new List<TagHelperAttribute>()),
-                (b, encoder) => null);
+            Review = model,
+            ValidationErrors = new ValidationSummaryViewModel
+                {ModelState = modelState, OrderedFieldNames = new List<string>()}
+        };
+        fieldReviewMessageHelper.FieldName = model.FieldIndicators.FirstOrDefault().ReviewFieldIdentifier;
+        var tagHelperOutput = new TagHelperOutput("", new TagHelperAttributeList(new List<TagHelperAttribute>()),
+            (b, encoder) => null);
             
-            fieldReviewMessageHelper.Process(context.Object, tagHelperOutput);
+        fieldReviewMessageHelper.Process(context.Object, tagHelperOutput);
 
-            tagHelperOutput.Content.IsModified.Should().BeTrue();
-            tagHelperOutput.Content.IsEmptyOrWhiteSpace.Should().BeFalse();
-            tagHelperOutput.Content.GetContent().Should().Be(errorMessage + "<br/>" + model.FieldIndicators.FirstOrDefault().ManualQaText);
-        }
+        tagHelperOutput.Content.IsModified.Should().BeTrue();
+        tagHelperOutput.Content.IsEmptyOrWhiteSpace.Should().BeFalse();
+        tagHelperOutput.Content.GetContent().Should().Be(errorMessage + "<br/>" + model.FieldIndicators.FirstOrDefault().ManualQaText);
     }
 }

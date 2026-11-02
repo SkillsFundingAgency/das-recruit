@@ -11,56 +11,55 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 
-namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
+namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1;
+
+public class EmployerOrchestratorTests
 {
-    public class EmployerOrchestratorTests
+    [Test, MoqAutoData]
+    public async Task Then_The_Vacancy_Is_Updated_With_The_AccountLegalEntityPublicHashedId(
+        VacancyRouteModel vacancyRouteModel,
+        VacancyEmployerInfoModel vacancyEmployerInfoModel,
+        VacancyUser vacancyUser,
+        Vacancy vacancy,
+        [Frozen] Mock<IUtility> utility,
+        [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
+        EmployerOrchestrator orchestrator)
     {
-        [Test, MoqAutoData]
-        public async Task Then_The_Vacancy_Is_Updated_With_The_AccountLegalEntityPublicHashedId(
-            VacancyRouteModel vacancyRouteModel,
-            VacancyEmployerInfoModel vacancyEmployerInfoModel,
-            VacancyUser vacancyUser,
-            Vacancy vacancy,
-            [Frozen] Mock<IUtility> utility,
-            [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
-            EmployerOrchestrator orchestrator)
-        {
-            utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel))
-                .ReturnsAsync(vacancy);
-            vacancyClient.Setup(x => x.Validate(vacancy, VacancyRuleSet.None))
-                .Returns(new EntityValidationResult { Errors = null });
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel))
+            .ReturnsAsync(vacancy);
+        vacancyClient.Setup(x => x.Validate(vacancy, VacancyRuleSet.None))
+            .Returns(new EntityValidationResult { Errors = null });
             
-            await orchestrator.SetAccountLegalEntityPublicId(vacancyRouteModel, vacancyEmployerInfoModel, vacancyUser);
+        await orchestrator.SetAccountLegalEntityPublicId(vacancyRouteModel, vacancyEmployerInfoModel, vacancyUser);
             
-            vacancyClient.Verify(x=>x.UpdateDraftVacancyAsync(It.Is<Vacancy>(c=>c.AccountLegalEntityPublicHashedId.Equals(vacancyEmployerInfoModel.AccountLegalEntityPublicHashedId)), vacancyUser ), Times.Once);
-        }
+        vacancyClient.Verify(x=>x.UpdateDraftVacancyAsync(It.Is<Vacancy>(c=>c.AccountLegalEntityPublicHashedId.Equals(vacancyEmployerInfoModel.AccountLegalEntityPublicHashedId)), vacancyUser ), Times.Once);
+    }
         
-        [Test, MoqAutoData]
-        public async Task Then_The_Vacancy_Is_Updated_With_The_Account_Legal_Entity_Information(
-            VacancyRouteModel vacancyRouteModel,
-            VacancyEmployerInfoModel vacancyEmployerInfoModel,
-            VacancyUser vacancyUser,
-            Vacancy vacancy,
-            List<LegalEntity> legalEntities,
-            [Frozen] Mock<IEmployerVacancyClient> employerVacancyClient,
-            [Frozen] Mock<IUtility> utility,
-            [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
-            EmployerOrchestrator sut)
-        {
-            // arrange
-            legalEntities.First().AccountLegalEntityPublicHashedId = vacancyEmployerInfoModel.AccountLegalEntityPublicHashedId;
-            utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel)).ReturnsAsync(vacancy);
-            vacancyClient.Setup(x => x.Validate(vacancy, VacancyRuleSet.None)).Returns(new EntityValidationResult { Errors = null });
-            employerVacancyClient.Setup(x => x.GetEmployerLegalEntitiesAsync(vacancyRouteModel.EmployerAccountId)).ReturnsAsync(legalEntities);
+    [Test, MoqAutoData]
+    public async Task Then_The_Vacancy_Is_Updated_With_The_Account_Legal_Entity_Information(
+        VacancyRouteModel vacancyRouteModel,
+        VacancyEmployerInfoModel vacancyEmployerInfoModel,
+        VacancyUser vacancyUser,
+        Vacancy vacancy,
+        List<LegalEntity> legalEntities,
+        [Frozen] Mock<IEmployerVacancyClient> employerVacancyClient,
+        [Frozen] Mock<IUtility> utility,
+        [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
+        EmployerOrchestrator sut)
+    {
+        // arrange
+        legalEntities.First().AccountLegalEntityPublicHashedId = vacancyEmployerInfoModel.AccountLegalEntityPublicHashedId;
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel)).ReturnsAsync(vacancy);
+        vacancyClient.Setup(x => x.Validate(vacancy, VacancyRuleSet.None)).Returns(new EntityValidationResult { Errors = null });
+        employerVacancyClient.Setup(x => x.GetEmployerLegalEntitiesAsync(vacancyRouteModel.EmployerAccountId)).ReturnsAsync(legalEntities);
             
-            // act
-            await sut.SetAccountLegalEntityPublicId(vacancyRouteModel, vacancyEmployerInfoModel, vacancyUser);
+        // act
+        await sut.SetAccountLegalEntityPublicId(vacancyRouteModel, vacancyEmployerInfoModel, vacancyUser);
             
-            // assert
-            vacancyClient.Verify(x => x.UpdateDraftVacancyAsync(It.Is<Vacancy>(c => 
-                    c.AccountLegalEntityPublicHashedId.Equals(vacancyEmployerInfoModel.AccountLegalEntityPublicHashedId)
-                    && c.LegalEntityName.Equals(legalEntities.First().Name)
-                ), vacancyUser), Times.Once);
-        }
+        // assert
+        vacancyClient.Verify(x => x.UpdateDraftVacancyAsync(It.Is<Vacancy>(c => 
+            c.AccountLegalEntityPublicHashedId.Equals(vacancyEmployerInfoModel.AccountLegalEntityPublicHashedId)
+            && c.LegalEntityName.Equals(legalEntities.First().Name)
+        ), vacancyUser), Times.Once);
     }
 }

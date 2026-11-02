@@ -26,411 +26,411 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancyAnalytics;
 using FluentValidation;
 using FluentValidation.Results;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+
+public partial class VacancyClient(
+    IVacancyRepository repository,
+    IVacancyQuery vacancyQuery,
+    IMessaging messaging,
+    IEntityValidator<Vacancy, VacancyRuleSet> validator,
+    IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
+    IEmployerAccountProvider employerAccountProvider,
+    IVacancyReviewQuery vacancyReviewQuery,
+    IEmployerProfileService employerProfileService,
+    IUserRepository userRepository,
+    IEmployerService employerService,
+    IProviderReportService providerReportService,
+    AbstractValidator<Qualification> qualificationValidator,
+    ITimeProvider timeProvider,
+    ITrainingProviderService trainingProviderService,
+    IProviderRelationshipsService providerRelationshipsService,
+    IVacancyAnalyticsService vacancyAnalyticsService,
+    IApplicationReadRepository applicationReadRepository,
+    IReportService reportService,
+    IGetProviderStatusClient providerStatusClient)
+    : IRecruitVacancyClient, IEmployerVacancyClient
 {
-    public partial class VacancyClient(
-        IVacancyRepository repository,
-        IVacancyQuery vacancyQuery,
-        IMessaging messaging,
-        IEntityValidator<Vacancy, VacancyRuleSet> validator,
-        IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
-        IEmployerAccountProvider employerAccountProvider,
-        IVacancyReviewQuery vacancyReviewQuery,
-        IEmployerProfileService employerProfileService,
-        IUserRepository userRepository,
-        IEmployerService employerService,
-        IProviderReportService providerReportService,
-        AbstractValidator<Qualification> qualificationValidator,
-        ITimeProvider timeProvider,
-        ITrainingProviderService trainingProviderService,
-        IProviderRelationshipsService providerRelationshipsService,
-        IVacancyAnalyticsService vacancyAnalyticsService,
-        IApplicationReadRepository applicationReadRepository,
-        IReportService reportService,
-        IGetProviderStatusClient providerStatusClient)
-        : IRecruitVacancyClient, IEmployerVacancyClient
+    public async Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
     {
-        public async Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
+        vacancy.LastUpdatedDate = timeProvider.Now;
+
+        await PatchTrainingProviderAsync(vacancy);
+
+        await repository.UpdateAsync(vacancy);
+    }
+
+    public Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user, LiveUpdateKind updateKind)
+    {
+        var command = new UpdateLiveVacancyCommand(vacancy, user, updateKind);
+
+        return messaging.SendCommandAsync(command);
+    }
+
+    public Task<Vacancy> GetVacancyAsync(Guid vacancyId)
+    {
+        return repository.GetVacancyAsync(vacancyId);
+    }
+
+    public Task<string> GetEmployerNameAsync(Vacancy vacancy)
+    {
+        return employerService.GetEmployerNameAsync(vacancy);
+    }
+
+    public Task<string> GetEmployerDescriptionAsync(Vacancy vacancy)
+    {
+        return employerService.GetEmployerDescriptionAsync(vacancy);
+    }
+
+    public async Task<Guid> CreateVacancyAsync(string title, string employerAccountId, VacancyUser user, TrainingProvider provider = null, string programmeId = null)
+    {
+        var vacancyId = GenerateVacancyId();
+
+        var command = new CreateEmployerOwnedVacancyCommand
         {
-            vacancy.LastUpdatedDate = timeProvider.Now;
+            VacancyId = vacancyId,
+            User = user,
+            UserType = UserType.Employer,
+            Title = title,
+            EmployerAccountId = employerAccountId,
+            Origin = SourceOrigin.EmployerWeb
+        };
+        if (provider != null)
+            command.TrainingProvider = provider;
 
-            await PatchTrainingProviderAsync(vacancy);
+        if (programmeId != null)
+            command.ProgrammeId = programmeId;
 
-            await repository.UpdateAsync(vacancy);
-        }
+        await messaging.SendCommandAsync(command);
 
-        public Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user, LiveUpdateKind updateKind)
+        return vacancyId;
+    }
+
+    public async Task<Guid> CloneVacancyAsync(
+        Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin,
+        DateTime startDate, DateTime closingDate)
+    {
+        var newVacancyId = GenerateVacancyId();
+
+        var command = new CloneVacancyCommand(vacancyId, newVacancyId, user, sourceOrigin, startDate, closingDate);
+
+        await messaging.SendCommandAsync(command);
+
+        return newVacancyId;
+    }
+
+    private static Guid GenerateVacancyId() => Guid.NewGuid();
+
+    public Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user)
+    {
+        var command = new DeleteVacancyCommand
         {
-            var command = new UpdateLiveVacancyCommand(vacancy, user, updateKind);
+            VacancyId = vacancyId,
+            User = user
+        };
 
-            return messaging.SendCommandAsync(command);
-        }
+        return messaging.SendCommandAsync(command);
+    }
 
-        public Task<Vacancy> GetVacancyAsync(Guid vacancyId)
+    public Task ArchiveVacancyAsync(Guid vacancyId, VacancyUser user)
+    {
+        var command = new ArchiveVacancyCommand
         {
-            return repository.GetVacancyAsync(vacancyId);
-        }
+            VacancyId = vacancyId,
+            User = user
+        };
 
-        public Task<string> GetEmployerNameAsync(Vacancy vacancy)
+        return messaging.SendCommandAsync(command);
+    }
+
+
+    public async Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId, string userId)
+    {
+        var dashboardStatsTask = employerAccountProvider.GetEmployerDashboardStats(employerAccountId);
+        var alertsTask = employerAccountProvider.GetEmployerAlerts(employerAccountId, userId);
+
+        await Task.WhenAll(dashboardStatsTask, alertsTask);
+        var dashboardStats = dashboardStatsTask.Result;
+        var alerts = alertsTask.Result;
+
+        return new EmployerDashboardSummary
         {
-            return employerService.GetEmployerNameAsync(vacancy);
-        }
+            Closed = dashboardStats.ClosedVacanciesCount,
+            Draft = dashboardStats.DraftVacanciesCount,
+            Referred = dashboardStats.ReferredVacanciesCount,
+            Live = dashboardStats.LiveVacanciesCount,
+            Submitted = dashboardStats.SubmittedVacanciesCount,
+            Review = dashboardStats.ReviewVacanciesCount,
+            NumberOfNewApplications = dashboardStats.NewApplicationsCount,
+            NumberOfSuccessfulApplications = dashboardStats.SuccessfulApplicationsCount,
+            NumberOfUnsuccessfulApplications = dashboardStats.UnsuccessfulApplicationsCount,
+            NumberOfSharedApplications = dashboardStats.SharedApplicationsCount,
+            NumberOfAllSharedApplications = dashboardStats.AllSharedApplicationsCount,
+            NumberClosingSoon = dashboardStats.ClosingSoonVacanciesCount,
+            NumberClosingSoonWithNoApplications = dashboardStats.ClosingSoonWithNoApplications,
+            BlockedProviderAlert = alerts.BlockedProviderAlert,
+            BlockedProviderTransferredVacanciesAlert = alerts.BlockedProviderTransferredVacanciesAlert,
+            EmployerRevokedTransferredVacanciesAlert = alerts.EmployerRevokedTransferredVacanciesAlert,
+            WithDrawnByQaVacanciesAlert = alerts.WithDrawnByQaVacanciesAlert,
+        };
+    }
 
-        public Task<string> GetEmployerDescriptionAsync(Vacancy vacancy)
+    public async Task<EmployerDashboard> GetDashboardAsync(string employerAccountId, string userId, int page, int pageSize, string sortColumn, string sortOrder, FilteringOptions? status = null, string searchTerm = null)
+    {
+        var vacancySummariesTask =
+            employerAccountProvider.GetEmployerVacancies(employerAccountId, page, pageSize, sortColumn, sortOrder, status ?? FilteringOptions.Dashboard, searchTerm);
+        var alertsTask = employerAccountProvider.GetEmployerAlerts(employerAccountId, userId);
+
+        await Task.WhenAll(vacancySummariesTask, alertsTask);
+        var vacancySummaries = vacancySummariesTask.Result;
+        var alerts = alertsTask.Result;
+
+
+        return new EmployerDashboard
         {
-            return employerService.GetEmployerDescriptionAsync(vacancy);
-        }
+            Vacancies = vacancySummaries.VacancySummaries,
+            TotalVacancies = vacancySummaries.PageInfo.TotalCount,
+            BlockedProviderAlert = alerts.BlockedProviderAlert,
+            BlockedProviderTransferredVacanciesAlert = alerts.BlockedProviderTransferredVacanciesAlert,
+            EmployerRevokedTransferredVacanciesAlert = alerts.EmployerRevokedTransferredVacanciesAlert,
+            WithDrawnByQaVacanciesAlert = alerts.WithDrawnByQaVacanciesAlert,
+        };
+    }
 
-        public async Task<Guid> CreateVacancyAsync(string title, string employerAccountId, VacancyUser user, TrainingProvider provider = null, string programmeId = null)
+    public Task UserSignedInAsync(VacancyUser user, UserType userType)
+    {
+        var command = new UserSignedInCommand(user, userType);
+
+        return messaging.SendCommandAsync(command);
+    }
+
+    public async Task SetupEmployerAsync(string employerAccountId)
+    {
+        var legalEntities = (await GetEmployerLegalEntitiesAsync(employerAccountId)).ToList();
+        await RefreshEmployerProfiles(employerAccountId, legalEntities.Select(x => x.AccountLegalEntityPublicHashedId));
+    }
+
+    public Task SetupEmployerAsync(string employerAccountId, string accountLegalEntityPublicHashedId) 
+        => RefreshEmployerProfiles(employerAccountId, [accountLegalEntityPublicHashedId]);
+
+    public async Task<EmployerEditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId)
+    {
+        var legalEntities = await employerAccountProvider.GetEmployerLegalEntitiesAsync(employerAccountId);
+        return new EmployerEditVacancyInfo
         {
-            var vacancyId = GenerateVacancyId();
+            LegalEntities = legalEntities,
+        };
+    }
 
-            var command = new CreateEmployerOwnedVacancyCommand
-            {
-                VacancyId = vacancyId,
-                User = user,
-                UserType = UserType.Employer,
-                Title = title,
-                EmployerAccountId = employerAccountId,
-                Origin = SourceOrigin.EmployerWeb
-            };
-            if (provider != null)
-                command.TrainingProvider = provider;
-
-            if (programmeId != null)
-                command.ProgrammeId = programmeId;
-
-            await messaging.SendCommandAsync(command);
-
-            return vacancyId;
-        }
-
-        public async Task<Guid> CloneVacancyAsync(
-            Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin,
-            DateTime startDate, DateTime closingDate)
-        {
-            var newVacancyId = GenerateVacancyId();
-
-            var command = new CloneVacancyCommand(vacancyId, newVacancyId, user, sourceOrigin, startDate, closingDate);
-
-            await messaging.SendCommandAsync(command);
-
-            return newVacancyId;
-        }
-
-        private static Guid GenerateVacancyId() => Guid.NewGuid();
-
-        public Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user)
-        {
-            var command = new DeleteVacancyCommand
-            {
-                VacancyId = vacancyId,
-                User = user
-            };
-
-            return messaging.SendCommandAsync(command);
-        }
-
-        public Task ArchiveVacancyAsync(Guid vacancyId, VacancyUser user)
-        {
-            var command = new ArchiveVacancyCommand
-            {
-                VacancyId = vacancyId,
-                User = user
-            };
-
-            return messaging.SendCommandAsync(command);
-        }
-
-
-        public async Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId, string userId)
-        {
-            var dashboardStatsTask = employerAccountProvider.GetEmployerDashboardStats(employerAccountId);
-            var alertsTask = employerAccountProvider.GetEmployerAlerts(employerAccountId, userId);
-
-            await Task.WhenAll(dashboardStatsTask, alertsTask);
-            var dashboardStats = dashboardStatsTask.Result;
-            var alerts = alertsTask.Result;
-
-            return new EmployerDashboardSummary
-            {
-                Closed = dashboardStats.ClosedVacanciesCount,
-                Draft = dashboardStats.DraftVacanciesCount,
-                Referred = dashboardStats.ReferredVacanciesCount,
-                Live = dashboardStats.LiveVacanciesCount,
-                Submitted = dashboardStats.SubmittedVacanciesCount,
-                Review = dashboardStats.ReviewVacanciesCount,
-                NumberOfNewApplications = dashboardStats.NewApplicationsCount,
-                NumberOfSuccessfulApplications = dashboardStats.SuccessfulApplicationsCount,
-                NumberOfUnsuccessfulApplications = dashboardStats.UnsuccessfulApplicationsCount,
-                NumberOfSharedApplications = dashboardStats.SharedApplicationsCount,
-                NumberOfAllSharedApplications = dashboardStats.AllSharedApplicationsCount,
-                NumberClosingSoon = dashboardStats.ClosingSoonVacanciesCount,
-                NumberClosingSoonWithNoApplications = dashboardStats.ClosingSoonWithNoApplications,
-                BlockedProviderAlert = alerts.BlockedProviderAlert,
-                BlockedProviderTransferredVacanciesAlert = alerts.BlockedProviderTransferredVacanciesAlert,
-                EmployerRevokedTransferredVacanciesAlert = alerts.EmployerRevokedTransferredVacanciesAlert,
-                WithDrawnByQaVacanciesAlert = alerts.WithDrawnByQaVacanciesAlert,
-            };
-        }
-
-        public async Task<EmployerDashboard> GetDashboardAsync(string employerAccountId, string userId, int page, int pageSize, string sortColumn, string sortOrder, FilteringOptions? status = null, string searchTerm = null)
-        {
-            var vacancySummariesTask =
-                employerAccountProvider.GetEmployerVacancies(employerAccountId, page, pageSize, sortColumn, sortOrder, status ?? FilteringOptions.Dashboard, searchTerm);
-            var alertsTask = employerAccountProvider.GetEmployerAlerts(employerAccountId, userId);
-
-            await Task.WhenAll(vacancySummariesTask, alertsTask);
-            var vacancySummaries = vacancySummariesTask.Result;
-            var alerts = alertsTask.Result;
-
-
-            return new EmployerDashboard
-            {
-                Vacancies = vacancySummaries.VacancySummaries,
-                TotalVacancies = vacancySummaries.PageInfo.TotalCount,
-                BlockedProviderAlert = alerts.BlockedProviderAlert,
-                BlockedProviderTransferredVacanciesAlert = alerts.BlockedProviderTransferredVacanciesAlert,
-                EmployerRevokedTransferredVacanciesAlert = alerts.EmployerRevokedTransferredVacanciesAlert,
-                WithDrawnByQaVacanciesAlert = alerts.WithDrawnByQaVacanciesAlert,
-            };
-        }
-
-        public Task UserSignedInAsync(VacancyUser user, UserType userType)
-        {
-            var command = new UserSignedInCommand(user, userType);
-
-            return messaging.SendCommandAsync(command);
-        }
-
-        public async Task SetupEmployerAsync(string employerAccountId)
-        {
-            var legalEntities = (await GetEmployerLegalEntitiesAsync(employerAccountId)).ToList();
-            await RefreshEmployerProfiles(employerAccountId, legalEntities.Select(x => x.AccountLegalEntityPublicHashedId));
-        }
-
-        public Task SetupEmployerAsync(string employerAccountId, string accountLegalEntityPublicHashedId) 
-            => RefreshEmployerProfiles(employerAccountId, [accountLegalEntityPublicHashedId]);
-
-        public async Task<EmployerEditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId)
-        {
-            var legalEntities = await employerAccountProvider.GetEmployerLegalEntitiesAsync(employerAccountId);
-            return new EmployerEditVacancyInfo
-            {
-                LegalEntities = legalEntities,
-            };
-        }
-
-        public async Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid vacancyId)
-        {
-            var vacancy = await repository.GetVacancyAsync(vacancyId);
-            if (vacancy.Status != VacancyStatus.Closed) return false; // Only check for closed vacancies as live vacancies can have in review applications
+    public async Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid vacancyId)
+    {
+        var vacancy = await repository.GetVacancyAsync(vacancyId);
+        if (vacancy.Status != VacancyStatus.Closed) return false; // Only check for closed vacancies as live vacancies can have in review applications
             
-            var applicationReviews = await applicationReadRepository.GetForVacancyAsync<Domain.Entities.ApplicationReview>(vacancyId);
-            return applicationReviews
-                .Where(ar => !ar.IsWithdrawn)
-                .All(ar => ar.Status is ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful);
+        var applicationReviews = await applicationReadRepository.GetForVacancyAsync<Domain.Entities.ApplicationReview>(vacancyId);
+        return applicationReviews
+            .Where(ar => !ar.IsWithdrawn)
+            .All(ar => ar.Status is ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful);
 
-        }
+    }
 
-        public EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules)
-        {
-            return validator.Validate(vacancy, rules);
-        }
+    public EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules)
+    {
+        return validator.Validate(vacancy, rules);
+    }
 
-        public Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync(bool includePlaceholderProgramme = false)
-        {
-            return apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync(includePlaceholderProgramme: includePlaceholderProgramme);
-        }
+    public Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync(bool includePlaceholderProgramme = false)
+    {
+        return apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync(includePlaceholderProgramme: includePlaceholderProgramme);
+    }
 
-        public Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId, bool includePlaceholderProgramme = false)
-        {
-            return apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(programmeId, includePlaceholderProgramme: includePlaceholderProgramme);
-        }
+    public Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId, bool includePlaceholderProgramme = false)
+    {
+        return apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(programmeId, includePlaceholderProgramme: includePlaceholderProgramme);
+    }
 
-        public Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email)
-        {
-            return employerAccountProvider.GetEmployerIdentifiersAsync(userId, email);
-        }
+    public Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email)
+    {
+        return employerAccountProvider.GetEmployerIdentifiersAsync(userId, email);
+    }
 
-        public async Task<Domain.Entities.ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId)
-        {
-            return await applicationReadRepository.GetAsync(applicationReviewId);
-        }
+    public async Task<Domain.Entities.ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId)
+    {
+        return await applicationReadRepository.GetAsync(applicationReviewId);
+    }
 
-        public async Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider = false)
-        {
-            var applicationReviews = vacancySharedByProvider
-                    ? await applicationReadRepository.GetForSharedVacancySortedAsync(vacancyReference, sortColumn, sortOrder)
-                    : await applicationReadRepository.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder);
+    public async Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider = false)
+    {
+        var applicationReviews = vacancySharedByProvider
+            ? await applicationReadRepository.GetForSharedVacancySortedAsync(vacancyReference, sortColumn, sortOrder)
+            : await applicationReadRepository.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder);
             
-            return applicationReviews == null
-                ? []
-                : applicationReviews.Select(c => (VacancyApplication)c).ToList();
+        return applicationReviews == null
+            ? []
+            : applicationReviews.Select(c => (VacancyApplication)c).ToList();
+    }
+
+    public async Task<List<VacancyApplication>> GetVacancyApplicationsForSelectedIdsAsync(List<Guid> applicationReviewIds)
+    {
+        var applicationReviews =
+            await applicationReadRepository.GetAllForSelectedIdsAsync<Domain.Entities.ApplicationReview>(applicationReviewIds);
+
+        return applicationReviews == null
+            ? []
+            : applicationReviews.Select(c => (VacancyApplication)c).ToList();
+    }
+
+    public async Task<List<VacancyApplication>> GetVacancyApplicationsForReferenceAndStatus(Guid vacancyId, ApplicationReviewStatus status)
+    {
+        var vacancy = await repository.GetVacancyAsync(vacancyId);
+        var applicationReviews =
+            await applicationReadRepository.GetAllForVacancyWithTemporaryStatus(vacancy.VacancyReference!.Value!, status);
+
+        return applicationReviews == null
+            ? []
+            : applicationReviews.Select(c => (VacancyApplication)c).ToList();
+    }
+
+    public Task<bool> SetApplicationReviewStatus(Guid applicationReviewId, ApplicationReviewStatus? outcome, string candidateFeedback, VacancyUser user)
+    {
+        var command = new ApplicationReviewStatusEditCommand
+        {
+            ApplicationReviewId = applicationReviewId,
+            Outcome = outcome,
+            CandidateFeedback = candidateFeedback,
+            User = user
+        };
+
+        return messaging.SendStatusCommandAsync(command);
+    }
+
+    public Task SetApplicationReviewsStatus(long vacancyReference,
+        IEnumerable<Guid> applicationReviews,
+        VacancyUser user,
+        ApplicationReviewStatus? status,
+        Guid vacancyId,
+        ApplicationReviewStatus? applicationReviewTemporaryStatus)
+    {
+        var command = new ApplicationReviewsSharedCommand
+        {
+            ApplicationReviews = applicationReviews,
+            User = user,
+            Status = status,
+            VacancyId = vacancyId,
+            TemporaryStatus = applicationReviewTemporaryStatus,
+            VacancyReference = vacancyReference
+        };
+
+        return messaging.SendCommandAsync(command);
+    }
+
+    public Task SetApplicationReviewsPendingUnsuccessfulFeedback(VacancyUser user, ApplicationReviewStatus status, Guid vacancyId, string feedback)
+    {
+        var command = new ApplicationReviewPendingUnsuccessfulFeedbackCommand
+        {
+            Feedback = feedback,
+            User = user,
+            Status = status,
+            VacancyId = vacancyId
+        };
+
+        return messaging.SendCommandAsync(command);
+    }
+
+    public Task SetApplicationReviewsToUnsuccessful(IEnumerable<Guid> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user, Guid vacancyId)
+    {
+        var command = new ApplicationReviewsUnsuccessfulCommand
+        {
+            ApplicationReviews = applicationReviewsToUnsuccessful,
+            CandidateFeedback = candidateFeedback,
+            User = user,
+            VacancyId = vacancyId,
+            Status = ApplicationReviewStatus.Unsuccessful
+        };
+
+        return messaging.SendCommandAsync(command);
+    }
+
+    public async Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
+    {
+        return await employerProfileService.GetAsync(employerAccountId, accountLegalEntityPublicHashedId);
+    }
+
+    public Task UpdateEmployerProfileAsync(EmployerProfile employerProfile)
+    {
+        var command = new UpdateEmployerProfileCommand
+        {
+            Profile = employerProfile,
+        };
+
+        return messaging.SendCommandAsync(command);
+    }
+
+    private async Task PatchTrainingProviderAsync(Vacancy vacancy)
+    {
+        if (vacancy.OwnerType == OwnerType.Employer)
+            return;
+
+        if (!string.IsNullOrEmpty(vacancy.TrainingProvider.Name))
+            return;
+
+        TrainingProvider tp = vacancy.TrainingProvider.Ukprn is EsfaTestTrainingProvider.Ukprn
+            ? trainingProviderService.GetEsfaTestTrainingProvider()
+            : await trainingProviderService.GetProviderAsync(vacancy.TrainingProvider.Ukprn.GetValueOrDefault());
+
+        if (tp == null)
+            return;
+
+        vacancy.TrainingProvider.Name = tp.Name;
+        vacancy.TrainingProvider.Address = tp.Address;
+    }
+
+    public Task CloseVacancyAsync(Guid vacancyId, VacancyUser user, ClosureReason reason)
+    {
+        return messaging.SendCommandAsync(new CloseVacancyCommand(vacancyId, user, reason));
+    }
+
+    public Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId)
+    {
+        return employerAccountProvider.GetEmployerLegalEntitiesAsync(employerAccountId);
+    }
+
+    public Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
+    {
+        return vacancyReviewQuery.GetCurrentReferredVacancyReviewAsync(vacancyReference);
+    }
+
+    public Task RefreshEmployerProfiles(string employerAccountId, IEnumerable<string> accountLegalEntityPublicHashedIds)
+    {
+        return messaging.SendCommandAsync(new RefreshEmployerProfilesCommand
+        {
+            EmployerAccountId = employerAccountId,
+            AccountLegalEntityPublicHashedIds = accountLegalEntityPublicHashedIds
+        });
+    }
+    public Task<Domain.Entities.User> GetUsersDetailsAsync(string userId)
+    {
+        return userRepository.GetAsync(userId);
+    }
+
+    public Task<Domain.Entities.User> GetUsersDetailsByDfEUserId(string dfeUserId)
+    {
+        return userRepository.GetByDfEUserId(dfeUserId);
+    }
+
+    public async Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference)
+    {
+        var endDate = timeProvider.Now.Date;
+
+        var metrics = await vacancyAnalyticsService
+            .GetVacancyAnalyticsSummaryAsync(vacancyReference);
+
+        if (metrics is not null && (metrics.Analytics == null || metrics.Analytics.Count == 0 || metrics.VacancyReference != vacancyReference))
+        {
+            return new VacancyAnalyticsSummary();
         }
 
-        public async Task<List<VacancyApplication>> GetVacancyApplicationsForSelectedIdsAsync(List<Guid> applicationReviewIds)
-        {
-            var applicationReviews =
-                await applicationReadRepository.GetAllForSelectedIdsAsync<Domain.Entities.ApplicationReview>(applicationReviewIds);
-
-            return applicationReviews == null
-                ? []
-                : applicationReviews.Select(c => (VacancyApplication)c).ToList();
-        }
-
-        public async Task<List<VacancyApplication>> GetVacancyApplicationsForReferenceAndStatus(Guid vacancyId, ApplicationReviewStatus status)
-        {
-            var vacancy = await repository.GetVacancyAsync(vacancyId);
-            var applicationReviews =
-                await applicationReadRepository.GetAllForVacancyWithTemporaryStatus(vacancy.VacancyReference!.Value!, status);
-
-            return applicationReviews == null
-                ? []
-                : applicationReviews.Select(c => (VacancyApplication)c).ToList();
-        }
-
-        public Task<bool> SetApplicationReviewStatus(Guid applicationReviewId, ApplicationReviewStatus? outcome, string candidateFeedback, VacancyUser user)
-        {
-            var command = new ApplicationReviewStatusEditCommand
-            {
-                ApplicationReviewId = applicationReviewId,
-                Outcome = outcome,
-                CandidateFeedback = candidateFeedback,
-                User = user
-            };
-
-            return messaging.SendStatusCommandAsync(command);
-        }
-
-        public Task SetApplicationReviewsStatus(long vacancyReference,
-            IEnumerable<Guid> applicationReviews,
-            VacancyUser user,
-            ApplicationReviewStatus? status,
-            Guid vacancyId,
-            ApplicationReviewStatus? applicationReviewTemporaryStatus)
-        {
-            var command = new ApplicationReviewsSharedCommand
-            {
-                ApplicationReviews = applicationReviews,
-                User = user,
-                Status = status,
-                VacancyId = vacancyId,
-                TemporaryStatus = applicationReviewTemporaryStatus,
-                VacancyReference = vacancyReference
-            };
-
-            return messaging.SendCommandAsync(command);
-        }
-
-        public Task SetApplicationReviewsPendingUnsuccessfulFeedback(VacancyUser user, ApplicationReviewStatus status, Guid vacancyId, string feedback)
-        {
-            var command = new ApplicationReviewPendingUnsuccessfulFeedbackCommand
-            {
-                Feedback = feedback,
-                User = user,
-                Status = status,
-                VacancyId = vacancyId
-            };
-
-            return messaging.SendCommandAsync(command);
-        }
-
-        public Task SetApplicationReviewsToUnsuccessful(IEnumerable<Guid> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user, Guid vacancyId)
-        {
-            var command = new ApplicationReviewsUnsuccessfulCommand
-            {
-                ApplicationReviews = applicationReviewsToUnsuccessful,
-                CandidateFeedback = candidateFeedback,
-                User = user,
-                VacancyId = vacancyId,
-                Status = ApplicationReviewStatus.Unsuccessful
-            };
-
-            return messaging.SendCommandAsync(command);
-        }
-
-        public async Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
-        {
-            return await employerProfileService.GetAsync(employerAccountId, accountLegalEntityPublicHashedId);
-        }
-
-        public Task UpdateEmployerProfileAsync(EmployerProfile employerProfile)
-        {
-            var command = new UpdateEmployerProfileCommand
-            {
-                Profile = employerProfile,
-            };
-
-            return messaging.SendCommandAsync(command);
-        }
-
-        private async Task PatchTrainingProviderAsync(Vacancy vacancy)
-        {
-            if (vacancy.OwnerType == OwnerType.Employer)
-                return;
-
-            if (!string.IsNullOrEmpty(vacancy.TrainingProvider.Name))
-                return;
-
-            TrainingProvider tp = vacancy.TrainingProvider.Ukprn is EsfaTestTrainingProvider.Ukprn
-                ? trainingProviderService.GetEsfaTestTrainingProvider()
-                : await trainingProviderService.GetProviderAsync(vacancy.TrainingProvider.Ukprn.GetValueOrDefault());
-
-            if (tp == null)
-                return;
-
-            vacancy.TrainingProvider.Name = tp.Name;
-            vacancy.TrainingProvider.Address = tp.Address;
-        }
-
-        public Task CloseVacancyAsync(Guid vacancyId, VacancyUser user, ClosureReason reason)
-        {
-            return messaging.SendCommandAsync(new CloseVacancyCommand(vacancyId, user, reason));
-        }
-
-        public Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId)
-        {
-            return employerAccountProvider.GetEmployerLegalEntitiesAsync(employerAccountId);
-        }
-
-        public Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
-        {
-            return vacancyReviewQuery.GetCurrentReferredVacancyReviewAsync(vacancyReference);
-        }
-
-        public Task RefreshEmployerProfiles(string employerAccountId, IEnumerable<string> accountLegalEntityPublicHashedIds)
-        {
-            return messaging.SendCommandAsync(new RefreshEmployerProfilesCommand
-            {
-                EmployerAccountId = employerAccountId,
-                AccountLegalEntityPublicHashedIds = accountLegalEntityPublicHashedIds
-            });
-        }
-        public Task<Domain.Entities.User> GetUsersDetailsAsync(string userId)
-        {
-            return userRepository.GetAsync(userId);
-        }
-
-        public Task<Domain.Entities.User> GetUsersDetailsByDfEUserId(string dfeUserId)
-        {
-            return userRepository.GetByDfEUserId(dfeUserId);
-        }
-
-        public async Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference)
-        {
-            var endDate = timeProvider.Now.Date;
-
-            var metrics = await vacancyAnalyticsService
-                .GetVacancyAnalyticsSummaryAsync(vacancyReference);
-
-            if (metrics is not null && (metrics.Analytics == null || metrics.Analytics.Count == 0 || metrics.VacancyReference != vacancyReference))
-            {
-                return new VacancyAnalyticsSummary();
-            }
-
-            // Group analytics by date (single enumeration)
-            var analyticsByDate = metrics.Analytics
+        // Group analytics by date (single enumeration)
+        var analyticsByDate = metrics.Analytics
             .GroupBy(a => a.AnalyticsDate.Date)
             .ToDictionary(g => g.Key, g => new
             {
@@ -441,88 +441,87 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 Saved = g.Sum(x => x.SavedCount),
             });
 
-            return new VacancyAnalyticsSummary
-            {
-                LastUpdated = metrics.UpdatedDate,
-                VacancyReference = vacancyReference,
-
-                // SEARCHES
-                NoOfApprenticeshipSearches = Total(x => x.Searches),
-                NoOfApprenticeshipSearchesSevenDaysAgo = GetValue(endDate.AddDays(-7), x => x.Searches),
-                NoOfApprenticeshipSearchesSixDaysAgo = GetValue(endDate.AddDays(-6), x => x.Searches),
-                NoOfApprenticeshipSearchesFiveDaysAgo = GetValue(endDate.AddDays(-5), x => x.Searches),
-                NoOfApprenticeshipSearchesFourDaysAgo = GetValue(endDate.AddDays(-4), x => x.Searches),
-                NoOfApprenticeshipSearchesThreeDaysAgo = GetValue(endDate.AddDays(-3), x => x.Searches),
-                NoOfApprenticeshipSearchesTwoDaysAgo = GetValue(endDate.AddDays(-2), x => x.Searches),
-                NoOfApprenticeshipSearchesOneDayAgo = GetValue(endDate.AddDays(-1), x => x.Searches),
-
-                // TODO post MVS
-                NoOfApprenticeshipSavedSearchAlerts = 0,
-                NoOfApprenticeshipSavedSearchAlertsSevenDaysAgo = 0,
-                NoOfApprenticeshipSavedSearchAlertsSixDaysAgo = 0,
-                NoOfApprenticeshipSavedSearchAlertsFiveDaysAgo = 0,
-                NoOfApprenticeshipSavedSearchAlertsFourDaysAgo = 0,
-                NoOfApprenticeshipSavedSearchAlertsThreeDaysAgo = 0,
-                NoOfApprenticeshipSavedSearchAlertsTwoDaysAgo = 0,
-                NoOfApprenticeshipSavedSearchAlertsOneDayAgo = 0,
-
-                // TODO post MVS
-                NoOfApprenticeshipSaved = Total(x => x.Saved),
-                NoOfApprenticeshipSavedSevenDaysAgo = GetValue(endDate.AddDays(-7), x => x.Saved),
-                NoOfApprenticeshipSavedSixDaysAgo = GetValue(endDate.AddDays(-6), x => x.Saved),
-                NoOfApprenticeshipSavedFiveDaysAgo = GetValue(endDate.AddDays(-5), x => x.Saved),
-                NoOfApprenticeshipSavedFourDaysAgo = GetValue(endDate.AddDays(-4), x => x.Saved),
-                NoOfApprenticeshipSavedThreeDaysAgo = GetValue(endDate.AddDays(-3), x => x.Saved),
-                NoOfApprenticeshipSavedTwoDaysAgo = GetValue(endDate.AddDays(-2), x => x.Saved),
-                NoOfApprenticeshipSavedOneDayAgo = GetValue(endDate.AddDays(-1), x => x.Saved),
-
-                // VIEWS
-                NoOfApprenticeshipDetailsViews = Total(x => x.Views),
-                NoOfApprenticeshipDetailsViewsSevenDaysAgo = GetValue(endDate.AddDays(-7), x => x.Views),
-                NoOfApprenticeshipDetailsViewsSixDaysAgo = GetValue(endDate.AddDays(-6), x => x.Views),
-                NoOfApprenticeshipDetailsViewsFiveDaysAgo = GetValue(endDate.AddDays(-5), x => x.Views),
-                NoOfApprenticeshipDetailsViewsFourDaysAgo = GetValue(endDate.AddDays(-4), x => x.Views),
-                NoOfApprenticeshipDetailsViewsThreeDaysAgo = GetValue(endDate.AddDays(-3), x => x.Views),
-                NoOfApprenticeshipDetailsViewsTwoDaysAgo = GetValue(endDate.AddDays(-2), x => x.Views),
-                NoOfApprenticeshipDetailsViewsOneDayAgo = GetValue(endDate.AddDays(-1), x => x.Views),
-
-                // APPLICATIONS STARTED
-                NoOfApprenticeshipApplicationsCreated = Total(x => x.ApplicationsStarted),
-                NoOfApprenticeshipApplicationsCreatedSevenDaysAgo = GetValue(endDate.AddDays(-7), x => x.ApplicationsStarted),
-                NoOfApprenticeshipApplicationsCreatedSixDaysAgo = GetValue(endDate.AddDays(-6), x => x.ApplicationsStarted),
-                NoOfApprenticeshipApplicationsCreatedFiveDaysAgo = GetValue(endDate.AddDays(-5), x => x.ApplicationsStarted),
-                NoOfApprenticeshipApplicationsCreatedFourDaysAgo = GetValue(endDate.AddDays(-4), x => x.ApplicationsStarted),
-                NoOfApprenticeshipApplicationsCreatedThreeDaysAgo = GetValue(endDate.AddDays(-3), x => x.ApplicationsStarted),
-                NoOfApprenticeshipApplicationsCreatedTwoDaysAgo = GetValue(endDate.AddDays(-2), x => x.ApplicationsStarted),
-                NoOfApprenticeshipApplicationsCreatedOneDayAgo = GetValue(endDate.AddDays(-1), x => x.ApplicationsStarted),
-
-                // APPLICATIONS SUBMITTED
-                NoOfApprenticeshipApplicationsSubmitted = 0,
-                NoOfApprenticeshipApplicationsSubmittedSevenDaysAgo = 0,
-                NoOfApprenticeshipApplicationsSubmittedSixDaysAgo = 0,
-                NoOfApprenticeshipApplicationsSubmittedFiveDaysAgo = 0,
-                NoOfApprenticeshipApplicationsSubmittedFourDaysAgo = 0,
-                NoOfApprenticeshipApplicationsSubmittedThreeDaysAgo = 0,
-                NoOfApprenticeshipApplicationsSubmittedTwoDaysAgo = 0,
-                NoOfApprenticeshipApplicationsSubmittedOneDayAgo = 0
-            };
-
-            int Total(Func<dynamic, int> selector) =>
-                analyticsByDate.Values.Sum(selector);
-
-            int GetValue(DateTime date, Func<dynamic, int> selector) =>
-                analyticsByDate.TryGetValue(date, out var v) ? selector(v) : 0;
-        }
-
-        public Task<int> GetVacancyCountForUserAsync(string userId)
+        return new VacancyAnalyticsSummary
         {
-            return vacancyQuery.GetVacancyCountForUserAsync(userId);
-        }
+            LastUpdated = metrics.UpdatedDate,
+            VacancyReference = vacancyReference,
 
-        public EntityValidationResult ValidateQualification(Qualification qualification)
-        {
-            ValidationResult fluentResult = qualificationValidator.Validate(qualification);
-            return EntityValidationResult.FromFluentValidationResult(fluentResult);
-        }
+            // SEARCHES
+            NoOfApprenticeshipSearches = Total(x => x.Searches),
+            NoOfApprenticeshipSearchesSevenDaysAgo = GetValue(endDate.AddDays(-7), x => x.Searches),
+            NoOfApprenticeshipSearchesSixDaysAgo = GetValue(endDate.AddDays(-6), x => x.Searches),
+            NoOfApprenticeshipSearchesFiveDaysAgo = GetValue(endDate.AddDays(-5), x => x.Searches),
+            NoOfApprenticeshipSearchesFourDaysAgo = GetValue(endDate.AddDays(-4), x => x.Searches),
+            NoOfApprenticeshipSearchesThreeDaysAgo = GetValue(endDate.AddDays(-3), x => x.Searches),
+            NoOfApprenticeshipSearchesTwoDaysAgo = GetValue(endDate.AddDays(-2), x => x.Searches),
+            NoOfApprenticeshipSearchesOneDayAgo = GetValue(endDate.AddDays(-1), x => x.Searches),
+
+            // TODO post MVS
+            NoOfApprenticeshipSavedSearchAlerts = 0,
+            NoOfApprenticeshipSavedSearchAlertsSevenDaysAgo = 0,
+            NoOfApprenticeshipSavedSearchAlertsSixDaysAgo = 0,
+            NoOfApprenticeshipSavedSearchAlertsFiveDaysAgo = 0,
+            NoOfApprenticeshipSavedSearchAlertsFourDaysAgo = 0,
+            NoOfApprenticeshipSavedSearchAlertsThreeDaysAgo = 0,
+            NoOfApprenticeshipSavedSearchAlertsTwoDaysAgo = 0,
+            NoOfApprenticeshipSavedSearchAlertsOneDayAgo = 0,
+
+            // TODO post MVS
+            NoOfApprenticeshipSaved = Total(x => x.Saved),
+            NoOfApprenticeshipSavedSevenDaysAgo = GetValue(endDate.AddDays(-7), x => x.Saved),
+            NoOfApprenticeshipSavedSixDaysAgo = GetValue(endDate.AddDays(-6), x => x.Saved),
+            NoOfApprenticeshipSavedFiveDaysAgo = GetValue(endDate.AddDays(-5), x => x.Saved),
+            NoOfApprenticeshipSavedFourDaysAgo = GetValue(endDate.AddDays(-4), x => x.Saved),
+            NoOfApprenticeshipSavedThreeDaysAgo = GetValue(endDate.AddDays(-3), x => x.Saved),
+            NoOfApprenticeshipSavedTwoDaysAgo = GetValue(endDate.AddDays(-2), x => x.Saved),
+            NoOfApprenticeshipSavedOneDayAgo = GetValue(endDate.AddDays(-1), x => x.Saved),
+
+            // VIEWS
+            NoOfApprenticeshipDetailsViews = Total(x => x.Views),
+            NoOfApprenticeshipDetailsViewsSevenDaysAgo = GetValue(endDate.AddDays(-7), x => x.Views),
+            NoOfApprenticeshipDetailsViewsSixDaysAgo = GetValue(endDate.AddDays(-6), x => x.Views),
+            NoOfApprenticeshipDetailsViewsFiveDaysAgo = GetValue(endDate.AddDays(-5), x => x.Views),
+            NoOfApprenticeshipDetailsViewsFourDaysAgo = GetValue(endDate.AddDays(-4), x => x.Views),
+            NoOfApprenticeshipDetailsViewsThreeDaysAgo = GetValue(endDate.AddDays(-3), x => x.Views),
+            NoOfApprenticeshipDetailsViewsTwoDaysAgo = GetValue(endDate.AddDays(-2), x => x.Views),
+            NoOfApprenticeshipDetailsViewsOneDayAgo = GetValue(endDate.AddDays(-1), x => x.Views),
+
+            // APPLICATIONS STARTED
+            NoOfApprenticeshipApplicationsCreated = Total(x => x.ApplicationsStarted),
+            NoOfApprenticeshipApplicationsCreatedSevenDaysAgo = GetValue(endDate.AddDays(-7), x => x.ApplicationsStarted),
+            NoOfApprenticeshipApplicationsCreatedSixDaysAgo = GetValue(endDate.AddDays(-6), x => x.ApplicationsStarted),
+            NoOfApprenticeshipApplicationsCreatedFiveDaysAgo = GetValue(endDate.AddDays(-5), x => x.ApplicationsStarted),
+            NoOfApprenticeshipApplicationsCreatedFourDaysAgo = GetValue(endDate.AddDays(-4), x => x.ApplicationsStarted),
+            NoOfApprenticeshipApplicationsCreatedThreeDaysAgo = GetValue(endDate.AddDays(-3), x => x.ApplicationsStarted),
+            NoOfApprenticeshipApplicationsCreatedTwoDaysAgo = GetValue(endDate.AddDays(-2), x => x.ApplicationsStarted),
+            NoOfApprenticeshipApplicationsCreatedOneDayAgo = GetValue(endDate.AddDays(-1), x => x.ApplicationsStarted),
+
+            // APPLICATIONS SUBMITTED
+            NoOfApprenticeshipApplicationsSubmitted = 0,
+            NoOfApprenticeshipApplicationsSubmittedSevenDaysAgo = 0,
+            NoOfApprenticeshipApplicationsSubmittedSixDaysAgo = 0,
+            NoOfApprenticeshipApplicationsSubmittedFiveDaysAgo = 0,
+            NoOfApprenticeshipApplicationsSubmittedFourDaysAgo = 0,
+            NoOfApprenticeshipApplicationsSubmittedThreeDaysAgo = 0,
+            NoOfApprenticeshipApplicationsSubmittedTwoDaysAgo = 0,
+            NoOfApprenticeshipApplicationsSubmittedOneDayAgo = 0
+        };
+
+        int Total(Func<dynamic, int> selector) =>
+            analyticsByDate.Values.Sum(selector);
+
+        int GetValue(DateTime date, Func<dynamic, int> selector) =>
+            analyticsByDate.TryGetValue(date, out var v) ? selector(v) : 0;
+    }
+
+    public Task<int> GetVacancyCountForUserAsync(string userId)
+    {
+        return vacancyQuery.GetVacancyCountForUserAsync(userId);
+    }
+
+    public EntityValidationResult ValidateQualification(Qualification qualification)
+    {
+        ValidationResult fluentResult = qualificationValidator.Validate(qualification);
+        return EntityValidationResult.FromFluentValidationResult(fluentResult);
     }
 }

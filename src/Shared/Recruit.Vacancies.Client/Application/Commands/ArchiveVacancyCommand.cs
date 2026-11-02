@@ -3,11 +3,10 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using MediatR;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Commands
+namespace Esfa.Recruit.Vacancies.Client.Application.Commands;
+
+public class ArchiveVacancyCommand : ICommand, IRequest<Unit>
 {
-    public class ArchiveVacancyCommand : ICommand, IRequest<Unit>
-    {
-        public Guid VacancyId { get; set; }
-        public VacancyUser User { get; set; }
-    }
+    public Guid VacancyId { get; set; }
+    public VacancyUser User { get; set; }
 }

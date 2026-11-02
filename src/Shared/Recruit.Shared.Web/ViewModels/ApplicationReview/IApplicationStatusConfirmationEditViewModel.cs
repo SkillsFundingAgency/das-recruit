@@ -1,7 +1,6 @@
-namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
+namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
+
+public interface IApplicationStatusConfirmationEditViewModel
 {
-    public interface IApplicationStatusConfirmationEditViewModel
-    {
-        bool? NotifyCandidate { get; set; }
-    }
+    bool? NotifyCandidate { get; set; }
 }

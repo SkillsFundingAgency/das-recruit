@@ -18,112 +18,111 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part2
+namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part2;
+
+public class AdditionalQuestionsControllerTests
 {
-    public class AdditionalQuestionsControllerTests
+    [Test, MoqAutoData]
+    public async Task When_Calling_Get_Then_Returns_View_With_Model_From_Orchestrator(
+        VacancyRouteModel vacancyRouteModel,
+        AdditionalQuestionsViewModel viewModel,
+        [Frozen] Mock<IAdditionalQuestionsOrchestrator> mockOrchestrator,
+        [Greedy] AdditionalQuestionsController controller)
     {
-        [Test, MoqAutoData]
-        public async Task When_Calling_Get_Then_Returns_View_With_Model_From_Orchestrator(
-            VacancyRouteModel vacancyRouteModel,
-            AdditionalQuestionsViewModel viewModel,
-            [Frozen] Mock<IAdditionalQuestionsOrchestrator> mockOrchestrator,
-            [Greedy] AdditionalQuestionsController controller)
-        {
-            mockOrchestrator
-                .Setup(orchestrator => orchestrator.GetViewModel(vacancyRouteModel))
-                .ReturnsAsync(viewModel);
+        mockOrchestrator
+            .Setup(orchestrator => orchestrator.GetViewModel(vacancyRouteModel))
+            .ReturnsAsync(viewModel);
             
-            var response = await controller.AdditionalQuestions(vacancyRouteModel) as ViewResult;
+        var response = await controller.AdditionalQuestions(vacancyRouteModel) as ViewResult;
 
-            response.Should().NotBeNull();
-            response!.Model.Should().Be(viewModel);
-        }
+        response.Should().NotBeNull();
+        response!.Model.Should().Be(viewModel);
+    }
         
-        [Test, MoqAutoData]
-        public async Task When_Calling_Post_And_Not_Success_Then_Returns_AdditionalQuestions_View_With_ModelState_And_Values_Set_From_Form(
-            AdditionalQuestionsEditModel editModel,
-            OrchestratorResponse orchestratorResponse,
-            AdditionalQuestionsViewModel viewModel,
-            [Frozen] Mock<IAdditionalQuestionsOrchestrator> mockOrchestrator,
-            [Greedy] AdditionalQuestionsController controller)
-        {
-            ArrangeControllerContext(controller, editModel);
-            mockOrchestrator
-                .Setup(orchestrator => orchestrator.PostEditModel(editModel, It.IsAny<VacancyUser>()))
-                .ReturnsAsync(orchestratorResponse);
-            mockOrchestrator
-                .Setup(orchestrator => orchestrator.GetViewModel(editModel))
-                .ReturnsAsync(viewModel);
+    [Test, MoqAutoData]
+    public async Task When_Calling_Post_And_Not_Success_Then_Returns_AdditionalQuestions_View_With_ModelState_And_Values_Set_From_Form(
+        AdditionalQuestionsEditModel editModel,
+        OrchestratorResponse orchestratorResponse,
+        AdditionalQuestionsViewModel viewModel,
+        [Frozen] Mock<IAdditionalQuestionsOrchestrator> mockOrchestrator,
+        [Greedy] AdditionalQuestionsController controller)
+    {
+        ArrangeControllerContext(controller, editModel);
+        mockOrchestrator
+            .Setup(orchestrator => orchestrator.PostEditModel(editModel, It.IsAny<VacancyUser>()))
+            .ReturnsAsync(orchestratorResponse);
+        mockOrchestrator
+            .Setup(orchestrator => orchestrator.GetViewModel(editModel))
+            .ReturnsAsync(viewModel);
             
-            var response = await controller.AdditionalQuestions(editModel) as ViewResult;
+        var response = await controller.AdditionalQuestions(editModel) as ViewResult;
 
-            response.Should().NotBeNull();
-            response!.Model.Should().Be(viewModel);
-            var actualModel = response.Model as AdditionalQuestionsViewModel;
-            actualModel!.AdditionalQuestion1.Should().Be(editModel.AdditionalQuestion1);
-            actualModel!.AdditionalQuestion2.Should().Be(editModel.AdditionalQuestion2);
-        }
+        response.Should().NotBeNull();
+        response!.Model.Should().Be(viewModel);
+        var actualModel = response.Model as AdditionalQuestionsViewModel;
+        actualModel!.AdditionalQuestion1.Should().Be(editModel.AdditionalQuestion1);
+        actualModel!.AdditionalQuestion2.Should().Be(editModel.AdditionalQuestion2);
+    }
         
-        [Test, MoqAutoData]
-        public async Task When_Calling_Post_And_Is_Success_And_TaskList_Is_Completed_Then_Redirects_To_CheckYourAnswers(
-            AdditionalQuestionsEditModel editModel,
-            OrchestratorResponse orchestratorResponse,
-            AdditionalQuestionsViewModel viewModel,
-            [Frozen] Mock<IAdditionalQuestionsOrchestrator> mockOrchestrator,
-            [Greedy] AdditionalQuestionsController controller)
-        {
-            orchestratorResponse.Errors.Errors = new List<EntityValidationError>();
-            viewModel.IsTaskListCompleted = true;
-            ArrangeControllerContext(controller, editModel);
-            mockOrchestrator
-                .Setup(orchestrator => orchestrator.PostEditModel(editModel, It.IsAny<VacancyUser>()))
-                .ReturnsAsync(orchestratorResponse);
-            mockOrchestrator
-                .Setup(orchestrator => orchestrator.GetViewModel(editModel))
-                .ReturnsAsync(viewModel);
+    [Test, MoqAutoData]
+    public async Task When_Calling_Post_And_Is_Success_And_TaskList_Is_Completed_Then_Redirects_To_CheckYourAnswers(
+        AdditionalQuestionsEditModel editModel,
+        OrchestratorResponse orchestratorResponse,
+        AdditionalQuestionsViewModel viewModel,
+        [Frozen] Mock<IAdditionalQuestionsOrchestrator> mockOrchestrator,
+        [Greedy] AdditionalQuestionsController controller)
+    {
+        orchestratorResponse.Errors.Errors = new List<EntityValidationError>();
+        viewModel.IsTaskListCompleted = true;
+        ArrangeControllerContext(controller, editModel);
+        mockOrchestrator
+            .Setup(orchestrator => orchestrator.PostEditModel(editModel, It.IsAny<VacancyUser>()))
+            .ReturnsAsync(orchestratorResponse);
+        mockOrchestrator
+            .Setup(orchestrator => orchestrator.GetViewModel(editModel))
+            .ReturnsAsync(viewModel);
 
-            var response = await controller.AdditionalQuestions(editModel) as RedirectToRouteResult;
+        var response = await controller.AdditionalQuestions(editModel) as RedirectToRouteResult;
 
-            response.Should().NotBeNull();
-            response!.RouteName.Should().Be(RouteNames.ProviderCheckYourAnswersGet);
-        }
+        response.Should().NotBeNull();
+        response!.RouteName.Should().Be(RouteNames.ProviderCheckYourAnswersGet);
+    }
         
-        [Test, MoqAutoData]
-        public async Task When_Calling_Post_And_Is_Success_And_TaskList_Not_Completed_Then_Redirects_To_TaskList(
-            AdditionalQuestionsEditModel editModel,
-            OrchestratorResponse orchestratorResponse,
-            AdditionalQuestionsViewModel viewModel,
-            [Frozen] Mock<IAdditionalQuestionsOrchestrator> mockOrchestrator,
-            [Greedy] AdditionalQuestionsController controller)
-        {
-            orchestratorResponse.Errors.Errors = new List<EntityValidationError>();
-            viewModel.IsTaskListCompleted = false;
-            ArrangeControllerContext(controller, editModel);
-            mockOrchestrator
-                .Setup(orchestrator => orchestrator.PostEditModel(editModel, It.IsAny<VacancyUser>()))
-                .ReturnsAsync(orchestratorResponse);
-            mockOrchestrator
-                .Setup(orchestrator => orchestrator.GetViewModel(editModel))
-                .ReturnsAsync(viewModel);
+    [Test, MoqAutoData]
+    public async Task When_Calling_Post_And_Is_Success_And_TaskList_Not_Completed_Then_Redirects_To_TaskList(
+        AdditionalQuestionsEditModel editModel,
+        OrchestratorResponse orchestratorResponse,
+        AdditionalQuestionsViewModel viewModel,
+        [Frozen] Mock<IAdditionalQuestionsOrchestrator> mockOrchestrator,
+        [Greedy] AdditionalQuestionsController controller)
+    {
+        orchestratorResponse.Errors.Errors = new List<EntityValidationError>();
+        viewModel.IsTaskListCompleted = false;
+        ArrangeControllerContext(controller, editModel);
+        mockOrchestrator
+            .Setup(orchestrator => orchestrator.PostEditModel(editModel, It.IsAny<VacancyUser>()))
+            .ReturnsAsync(orchestratorResponse);
+        mockOrchestrator
+            .Setup(orchestrator => orchestrator.GetViewModel(editModel))
+            .ReturnsAsync(viewModel);
 
-            var response = await controller.AdditionalQuestions(editModel) as RedirectToRouteResult;
+        var response = await controller.AdditionalQuestions(editModel) as RedirectToRouteResult;
 
-            response.Should().NotBeNull();
-            response!.RouteName.Should().Be(RouteNames.ProviderTaskListGet);
-        }
+        response.Should().NotBeNull();
+        response!.RouteName.Should().Be(RouteNames.ProviderTaskListGet);
+    }
 
-        private void ArrangeControllerContext(Controller controller, VacancyRouteModel vacancyRouteModel)
-        {
-            var user = new ClaimsPrincipal(new ClaimsIdentity(
-                new []
-                {
-                    new Claim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier,vacancyRouteModel.Ukprn.ToString())
-                }
-            ));
-            controller.ControllerContext = new ControllerContext
+    private void ArrangeControllerContext(Controller controller, VacancyRouteModel vacancyRouteModel)
+    {
+        var user = new ClaimsPrincipal(new ClaimsIdentity(
+            new []
             {
-                HttpContext = new DefaultHttpContext {User = user}
-            };
-        }
+                new Claim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier,vacancyRouteModel.Ukprn.ToString())
+            }
+        ));
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext {User = user}
+        };
     }
 }

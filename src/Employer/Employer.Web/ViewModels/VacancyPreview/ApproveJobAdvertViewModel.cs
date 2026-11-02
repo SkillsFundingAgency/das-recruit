@@ -1,11 +1,10 @@
 ﻿using Esfa.Recruit.Employer.Web.RouteModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
+namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
+
+public class ApproveJobAdvertViewModel : VacancyRouteModel
 {
-    public class ApproveJobAdvertViewModel : VacancyRouteModel
-    {
-        [Required(ErrorMessage = "Select if you want to submit this job advert")]
-        public bool? ApproveJobAdvert { get; set; }
-    }
+    [Required(ErrorMessage = "Select if you want to submit this job advert")]
+    public bool? ApproveJobAdvert { get; set; }
 }

@@ -3,72 +3,71 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation;
+
+public class VacancyReviewTests
 {
-    public class VacancyReviewTests
+    private class ManualQaCommentTestData : TheoryData<string, string>
     {
-        private class ManualQaCommentTestData : TheoryData<string, string>
+        public ManualQaCommentTestData()
         {
-            public ManualQaCommentTestData()
-            {
-                var manualQaCommentTooLong =
-                    new string('a',VacancyReviewValidator.ManualQaCommentMaxLength + 1);
+            var manualQaCommentTooLong =
+                new string('a',VacancyReviewValidator.ManualQaCommentMaxLength + 1);
 
-                Add(">", VacancyReviewValidator.ManualQaCommentFreeTextCharactersMessage);
-                Add(manualQaCommentTooLong, string.Format(VacancyReviewValidator.ManualQaCommentLengthMessage, VacancyReviewValidator.ManualQaCommentMaxLength));
-            }
+            Add(">", VacancyReviewValidator.ManualQaCommentFreeTextCharactersMessage);
+            Add(manualQaCommentTooLong, string.Format(VacancyReviewValidator.ManualQaCommentLengthMessage, VacancyReviewValidator.ManualQaCommentMaxLength));
         }
+    }
 
-        [Theory]
-        [ClassData(typeof(ManualQaCommentTestData))]
-        public void ShouldValidateManaulQaComment(string manualQaComment, string expectedErrorMessage)
+    [Theory]
+    [ClassData(typeof(ManualQaCommentTestData))]
+    public void ShouldValidateManaulQaComment(string manualQaComment, string expectedErrorMessage)
+    {
+        var m = new VacancyReview
         {
-            var m = new VacancyReview
-            {
-                ManualQaComment = manualQaComment
-            };
+            ManualQaComment = manualQaComment
+        };
 
-            var validator = new VacancyReviewValidator();
+        var validator = new VacancyReviewValidator();
 
-            var result = validator.Validate(m);
+        var result = validator.Validate(m);
 
-            result.IsValid.Should().BeFalse();
-            result.Errors.Count.Should().Be(1);
-            result.Errors[0].ErrorMessage.Should().Be(expectedErrorMessage);
-        }
+        result.IsValid.Should().BeFalse();
+        result.Errors.Count.Should().Be(1);
+        result.Errors[0].ErrorMessage.Should().Be(expectedErrorMessage);
+    }
 
-        [Fact]
-        public void ShouldNotRequireCandidateFeedbackIfSuccessful()
+    [Fact]
+    public void ShouldNotRequireCandidateFeedbackIfSuccessful()
+    {
+        var m = new ApplicationReview
         {
-            var m = new ApplicationReview
-            {
-                Status = ApplicationReviewStatus.Successful,
-                CandidateFeedback = "should not specify feedback if successful"
-            };
+            Status = ApplicationReviewStatus.Successful,
+            CandidateFeedback = "should not specify feedback if successful"
+        };
 
-            var validator = new ApplicationReviewValidator();
+        var validator = new ApplicationReviewValidator();
 
-            var result = validator.Validate(m);
+        var result = validator.Validate(m);
 
-            result.IsValid.Should().BeTrue();
-            result.Errors.Count.Should().Be(0);
-        }
+        result.IsValid.Should().BeTrue();
+        result.Errors.Count.Should().Be(0);
+    }
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public void ApplicationReviewShouldBeValid(string manualQaComment)
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    public void ApplicationReviewShouldBeValid(string manualQaComment)
+    {
+        var m = new VacancyReview
         {
-            var m = new VacancyReview
-            {
-                ManualQaComment = manualQaComment
-            };
+            ManualQaComment = manualQaComment
+        };
 
-            var validator = new VacancyReviewValidator();
+        var validator = new VacancyReviewValidator();
 
-            var result = validator.Validate(m);
+        var result = validator.Validate(m);
 
-            result.IsValid.Should().BeTrue();
-        }
+        result.IsValid.Should().BeTrue();
     }
 }

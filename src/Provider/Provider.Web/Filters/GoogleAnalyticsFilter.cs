@@ -5,39 +5,38 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using SFA.DAS.Provider.Shared.UI.Models;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Provider.Web.Filters
+namespace Esfa.Recruit.Provider.Web.Filters;
+
+public class GoogleAnalyticsFilter : ActionFilterAttribute
 {
-    public class GoogleAnalyticsFilter : ActionFilterAttribute
+    private readonly ILogger<GoogleAnalyticsFilter> _logger;
+
+    public GoogleAnalyticsFilter(ILogger<GoogleAnalyticsFilter> logger)
     {
-        private readonly ILogger<GoogleAnalyticsFilter> _logger;
+        _logger = logger;
+    }
 
-        public GoogleAnalyticsFilter(ILogger<GoogleAnalyticsFilter> logger)
+    public override void OnActionExecuting(ActionExecutingContext filterContext)
+    {
+        try
         {
-            _logger = logger;
-        }
-
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-            try
+            var controller = filterContext.Controller as Controller;
+            if (controller?.User != null)
             {
-                var controller = filterContext.Controller as Controller;
-                if (controller?.User != null)
+
+                var user = controller.User.ToVacancyUser();
+                controller.ViewBag.GaData = new GaData
                 {
-
-                    var user = controller.User.ToVacancyUser();
-                    controller.ViewBag.GaData = new GaData
-                    {
-                        UserId = user.DfEUserId,
-                        UkPrn = user.Ukprn.HasValue ? user.Ukprn.Value.ToString() : string.Empty
-                    };
-                }
+                    UserId = user.DfEUserId,
+                    UkPrn = user.Ukprn.HasValue ? user.Ukprn.Value.ToString() : string.Empty
+                };
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"GoogleAnalyticsFilter Cannot set GaData for Provider");
-            }
-
-            base.OnActionExecuting(filterContext);
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"GoogleAnalyticsFilter Cannot set GaData for Provider");
+        }
+
+        base.OnActionExecuting(filterContext);
     }
 }

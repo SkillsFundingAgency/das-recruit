@@ -4,19 +4,18 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipP
 using FluentAssertions;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes
-{
-    public class WhenMappingFromApiResponseToApprenticeshipProgramme
-    {
-        [Fact]
-        public void Then_The_Fields_Are_Correctly_Mapped()
-        {
-            var fixture = new Fixture();
-            var source = fixture.Create<GetTrainingProgrammesResponseItem>();
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 
-            var actual = (ApprenticeshipProgramme) source;
+public class WhenMappingFromApiResponseToApprenticeshipProgramme
+{
+    [Fact]
+    public void Then_The_Fields_Are_Correctly_Mapped()
+    {
+        var fixture = new Fixture();
+        var source = fixture.Create<GetTrainingProgrammesResponseItem>();
+
+        var actual = (ApprenticeshipProgramme) source;
             
-            actual.Should().BeEquivalentTo(source);
-        }
+        actual.Should().BeEquivalentTo(source);
     }
 }

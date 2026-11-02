@@ -1,8 +1,7 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore
+﻿namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore;
+
+public class EventItem
 {
-    public class EventItem
-    {
-        public string EventType { get; set; }
-        public string Data { get; set; }
-    }
+    public string EventType { get; set; }
+    public string Data { get; set; }
 }

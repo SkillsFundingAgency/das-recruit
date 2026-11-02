@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
+
+public class Qualifications
 {
-    public class Qualifications
-    {
-        public List<string> QualificationTypes { get; set; }
-    }
+    public List<string> QualificationTypes { get; set; }
 }

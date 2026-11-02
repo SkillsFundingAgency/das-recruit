@@ -3,243 +3,242 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
+
+public class TrainingProviderUkprnValidationTests : VacancyValidationTestsBase
 {
-    public class TrainingProviderUkprnValidationTests : VacancyValidationTestsBase
+    [Fact]
+    public void NoErrorsWhenTrainingProviderUkprnIsValid()
     {
-        [Fact]
-        public void NoErrorsWhenTrainingProviderUkprnIsValid()
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
-            {
-                TrainingProvider = new TrainingProvider { Ukprn = 12345678 }
-            };
+            TrainingProvider = new TrainingProvider { Ukprn = 12345678 }
+        };
 
-            MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(12345678)).ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
+        MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(12345678)).ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
             
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
 
-            result.HasErrors.Should().BeFalse();
-            result.Errors.Should().HaveCount(0);
-        }
+        result.HasErrors.Should().BeFalse();
+        result.Errors.Should().HaveCount(0);
+    }
 
-        [Fact]
-        public void ErrorIfTrainingProviderIsNotInRoatp()
+    [Fact]
+    public void ErrorIfTrainingProviderIsNotInRoatp()
+    {
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
-            {
-                TrainingProvider = new TrainingProvider { Ukprn = 12345678 }
-            };
+            TrainingProvider = new TrainingProvider { Ukprn = 12345678 }
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(2);
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
-            result.Errors[0].ErrorCode.Should().Be(ErrorCodes.TrainingProviderMustExist);
-            result.Errors[1].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
-            result.Errors[1].ErrorCode.Should().Be(ErrorCodes.TrainingProviderMustBeMainOrEmployerProfile);
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
-        }
+        result.HasErrors.Should().BeTrue();
+        result.Errors.Should().HaveCount(2);
+        result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
+        result.Errors[0].ErrorCode.Should().Be(ErrorCodes.TrainingProviderMustExist);
+        result.Errors[1].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
+        result.Errors[1].ErrorCode.Should().Be(ErrorCodes.TrainingProviderMustBeMainOrEmployerProfile);
+        result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
+    }
 
-        [Fact]
-        public void ErrorIfTrainingProviderIsNotMainOrEmployerProfile()
+    [Fact]
+    public void ErrorIfTrainingProviderIsNotMainOrEmployerProfile()
+    {
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
-            {
-                TrainingProvider = new TrainingProvider { Ukprn = 12345678 }
-            };
+            TrainingProvider = new TrainingProvider { Ukprn = 12345678 }
+        };
 
-            MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(12345678)).ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = false});
+        MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(12345678)).ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = false});
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
-            result.Errors[0].ErrorCode.Should().Be(ErrorCodes.TrainingProviderMustBeMainOrEmployerProfile);
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
-        }
+        result.HasErrors.Should().BeTrue();
+        result.Errors.Should().HaveCount(1);
+        result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
+        result.Errors[0].ErrorCode.Should().Be(ErrorCodes.TrainingProviderMustBeMainOrEmployerProfile);
+        result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
+    }
 
-        [Fact]
-        public void ErrorIfTrainingProviderIsNull()
+    [Fact]
+    public void ErrorIfTrainingProviderIsNull()
+    {
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
-            {
-                TrainingProvider = null
-            };
+            TrainingProvider = null
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
-            result.Errors[0].ErrorCode.Should().Be("101");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
-        }
+        result.HasErrors.Should().BeTrue();
+        result.Errors.Should().HaveCount(1);
+        result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
+        result.Errors[0].ErrorCode.Should().Be("101");
+        result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
+    }
 
-        [Fact]
-        public void EmptyUkprnNotAllowed()
+    [Fact]
+    public void EmptyUkprnNotAllowed()
+    {
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
-            {
-                TrainingProvider = new TrainingProvider { Ukprn = null }
-            };
+            TrainingProvider = new TrainingProvider { Ukprn = null }
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
-            result.Errors[0].ErrorCode.Should().Be("101");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
-        }
+        result.HasErrors.Should().BeTrue();
+        result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
+        result.Errors[0].ErrorCode.Should().Be("101");
+        result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
+    }
 
-        [Theory]
-        [InlineData(0L)]
-        [InlineData(1234L)]
-        [InlineData(123456789L)]
-        public void TrainingProviderUkprnMustBe8Digits(long? ukprn)
+    [Theory]
+    [InlineData(0L)]
+    [InlineData(1234L)]
+    [InlineData(123456789L)]
+    public void TrainingProviderUkprnMustBe8Digits(long? ukprn)
+    {
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
-            {
-                TrainingProvider = new TrainingProvider { Ukprn = ukprn }
-            };
+            TrainingProvider = new TrainingProvider { Ukprn = ukprn }
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
-            result.Errors[0].ErrorCode.Should().Be("99");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
-        }
+        result.HasErrors.Should().BeTrue();
+        result.Errors.Should().HaveCount(1);
+        result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
+        result.Errors[0].ErrorCode.Should().Be("99");
+        result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
+    }
 
-        [Fact]
-        public void ShouldNotErrorIfProviderVacancyHasEmployerPermission()
+    [Fact]
+    public void ShouldNotErrorIfProviderVacancyHasEmployerPermission()
+    {
+        const long ukprn = 12345678;
+        const string employerAccountId = "employer-account-id";
+        const string accountLegalEntityPublicHashedId = "1234";
+
+        var vacancy = new Vacancy
         {
-            const long ukprn = 12345678;
-            const string employerAccountId = "employer-account-id";
-            const string accountLegalEntityPublicHashedId = "1234";
+            OwnerType = OwnerType.Provider,
+            TrainingProvider = new TrainingProvider { Ukprn = ukprn },
+            EmployerAccountId = employerAccountId,
+            AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
+        };
 
-            var vacancy = new Vacancy
-            {
-                OwnerType = OwnerType.Provider,
-                TrainingProvider = new TrainingProvider { Ukprn = ukprn },
-                EmployerAccountId = employerAccountId,
-                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
-            };
-
-            MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(ukprn)).ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
+        MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(ukprn)).ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
             
-            MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, OperationType.Recruitment))
-                .ReturnsAsync(true);
+        MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, OperationType.Recruitment))
+            .ReturnsAsync(true);
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
 
-            result.HasErrors.Should().BeFalse();
-            result.Errors.Should().HaveCount(0);
-        }
+        result.HasErrors.Should().BeFalse();
+        result.Errors.Should().HaveCount(0);
+    }
 
-        [Fact]
-        public void ErrorIfProviderVacancyDoesNotHaveEmployerPermission()
+    [Fact]
+    public void ErrorIfProviderVacancyDoesNotHaveEmployerPermission()
+    {
+        const long ukprn = 12345678;
+        const string employerAccountId = "employer-account-id";
+        const string accountLegalEntityPublicHashedId = "1234";
+
+        var vacancy = new Vacancy
         {
-            const long ukprn = 12345678;
-            const string employerAccountId = "employer-account-id";
-            const string accountLegalEntityPublicHashedId = "1234";
+            OwnerType = OwnerType.Provider,
+            TrainingProvider = new TrainingProvider { Ukprn = ukprn },
+            EmployerAccountId = employerAccountId,
+            AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
+        };
 
-            var vacancy = new Vacancy
-            {
-                OwnerType = OwnerType.Provider,
-                TrainingProvider = new TrainingProvider { Ukprn = ukprn },
-                EmployerAccountId = employerAccountId,
-                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
-            };
+        MockTrainingProviderSummaryProvider
+            .Setup(p => p.GetAsync(ukprn))
+            .ReturnsAsync(new TrainingProviderSummary { IsTrainingProviderMainOrEmployerProfile = true });
 
-            MockTrainingProviderSummaryProvider
-                .Setup(p => p.GetAsync(ukprn))
-                .ReturnsAsync(new TrainingProviderSummary { IsTrainingProviderMainOrEmployerProfile = true });
+        MockProviderRelationshipsService
+            .Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, OperationType.Recruitment))
+            .ReturnsAsync(false);
 
-            MockProviderRelationshipsService
-                .Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, OperationType.Recruitment))
-                .ReturnsAsync(false);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
+        result.HasErrors.Should().BeTrue();
 
-            result.HasErrors.Should().BeTrue();
+        // Error [0]: Provider does not have permission to create vacancies for this employer
+        result.Errors.Should().Contain(e =>
+            e.ErrorCode == ErrorCodes.TrainingProviderMustHaveEmployerPermission && // "104"
+            e.PropertyName == "Provider" &&
+            e.RuleId == (long)VacancyRuleSet.TrainingProvider);
+    }
 
-            // Error [0]: Provider does not have permission to create vacancies for this employer
-            result.Errors.Should().Contain(e =>
-                e.ErrorCode == ErrorCodes.TrainingProviderMustHaveEmployerPermission && // "104"
-                e.PropertyName == "Provider" &&
-                e.RuleId == (long)VacancyRuleSet.TrainingProvider);
-        }
+    [Fact]
+    public void NoErrorIfProviderVacancyHasEmployerPermissionAndIsValid()
+    {
+        const long ukprn = 12345678;
+        const string employerAccountId = "employer-account-id";
+        const string accountLegalEntityPublicHashedId = "1234";
 
-        [Fact]
-        public void NoErrorIfProviderVacancyHasEmployerPermissionAndIsValid()
+        var vacancy = new Vacancy
         {
-            const long ukprn = 12345678;
-            const string employerAccountId = "employer-account-id";
-            const string accountLegalEntityPublicHashedId = "1234";
+            OwnerType = OwnerType.Provider,
+            TrainingProvider = new TrainingProvider { Ukprn = ukprn },
+            EmployerAccountId = employerAccountId,
+            AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
+        };
 
-            var vacancy = new Vacancy
-            {
-                OwnerType = OwnerType.Provider,
-                TrainingProvider = new TrainingProvider { Ukprn = ukprn },
-                EmployerAccountId = employerAccountId,
-                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
-            };
+        MockTrainingProviderSummaryProvider
+            .Setup(p => p.GetAsync(ukprn))
+            .ReturnsAsync(new TrainingProviderSummary { IsTrainingProviderMainOrEmployerProfile = true });
 
-            MockTrainingProviderSummaryProvider
-                .Setup(p => p.GetAsync(ukprn))
-                .ReturnsAsync(new TrainingProviderSummary { IsTrainingProviderMainOrEmployerProfile = true });
+        MockProviderRelationshipsService
+            .Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, OperationType.Recruitment))
+            .ReturnsAsync(true);
 
-            MockProviderRelationshipsService
-                .Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, OperationType.Recruitment))
-                .ReturnsAsync(true);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
+        result.HasErrors.Should().BeFalse();
+        result.Errors.Should().BeEmpty();
+    }
 
-            result.HasErrors.Should().BeFalse();
-            result.Errors.Should().BeEmpty();
-        }
+    [Fact]
+    public void OnlyPermissionErrorWhenProviderIsValidButLacksPermission()
+    {
+        const long ukprn = 12345678;
+        const string employerAccountId = "employer-account-id";
+        const string accountLegalEntityPublicHashedId = "1234";
 
-        [Fact]
-        public void OnlyPermissionErrorWhenProviderIsValidButLacksPermission()
+        var vacancy = new Vacancy
         {
-            const long ukprn = 12345678;
-            const string employerAccountId = "employer-account-id";
-            const string accountLegalEntityPublicHashedId = "1234";
+            OwnerType = OwnerType.Provider,
+            TrainingProvider = new TrainingProvider { Ukprn = ukprn },
+            EmployerAccountId = employerAccountId,
+            AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
+        };
 
-            var vacancy = new Vacancy
+        // Provider IS valid (active + registered for apprenticeships)
+        MockTrainingProviderSummaryProvider
+            .Setup(p => p.GetAsync(ukprn))
+            .ReturnsAsync(new TrainingProviderSummary
             {
-                OwnerType = OwnerType.Provider,
-                TrainingProvider = new TrainingProvider { Ukprn = ukprn },
-                EmployerAccountId = employerAccountId,
-                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
-            };
+                IsTrainingProviderMainOrEmployerProfile = true,
+                // set whatever properties suppress errors 102 and 105
+            });
 
-            // Provider IS valid (active + registered for apprenticeships)
-            MockTrainingProviderSummaryProvider
-                .Setup(p => p.GetAsync(ukprn))
-                .ReturnsAsync(new TrainingProviderSummary
-                {
-                    IsTrainingProviderMainOrEmployerProfile = true,
-                    // set whatever properties suppress errors 102 and 105
-                });
+        MockProviderRelationshipsService
+            .Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, OperationType.Recruitment))
+            .ReturnsAsync(false);
 
-            MockProviderRelationshipsService
-                .Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, OperationType.Recruitment))
-                .ReturnsAsync(false);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
+        result.HasErrors.Should().BeTrue();
+        result.Errors.Should().ContainSingle(e =>
+            e.ErrorCode == ErrorCodes.TrainingProviderMustHaveEmployerPermission &&
+            e.PropertyName == "Provider");
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().ContainSingle(e =>
-                e.ErrorCode == ErrorCodes.TrainingProviderMustHaveEmployerPermission &&
-                e.PropertyName == "Provider");
-
-            result.Errors.Should().NotContain(e => e.ErrorCode == "102");
-            result.Errors.Should().NotContain(e => e.ErrorCode == "105");
-        }
+        result.Errors.Should().NotContain(e => e.ErrorCode == "102");
+        result.Errors.Should().NotContain(e => e.ErrorCode == "105");
     }
 }

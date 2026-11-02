@@ -1,11 +1,10 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum ApprenticeshipLevel
 {
-    public enum ApprenticeshipLevel
-    {
-        Unknown = 0,
-        Intermediate = 2,
-        Advanced = 3,
-        Higher = 4,
-        Degree = 6
-    }
+    Unknown = 0,
+    Intermediate = 2,
+    Advanced = 3,
+    Higher = 4,
+    Degree = 6
 }

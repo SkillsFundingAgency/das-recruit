@@ -4,37 +4,36 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
+
+public interface IEmployerAccountProvider
 {
-    public interface IEmployerAccountProvider
-    {
-        Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email);
-        Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string hashedAccountId);
-        Task<IEnumerable<AccountLegalEntity>> GetLegalEntitiesConnectedToAccountAsync(string hashedAccountId);
-        Task<GetApplicationReviewStatsResponse> GetEmployerDashboardApplicationReviewStats(string hashedAccountId,
-            List<long> vacancyReferences, string applicationSharedFilteringStatus);
-        Task<GetEmployerDashboardApiResponse> GetEmployerDashboardStats(string hashedAccountId);
-        Task<GetAllAccountLegalEntitiesApiResponse> GetAllLegalEntitiesConnectedToAccountAsync(
-            List<string> hashedAccountIds,
-            string searchTerm,
-            int pageNumber,
-            int pageSize,
-            string sortColumn,
-            bool isAscending);
+    Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email);
+    Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string hashedAccountId);
+    Task<IEnumerable<AccountLegalEntity>> GetLegalEntitiesConnectedToAccountAsync(string hashedAccountId);
+    Task<GetApplicationReviewStatsResponse> GetEmployerDashboardApplicationReviewStats(string hashedAccountId,
+        List<long> vacancyReferences, string applicationSharedFilteringStatus);
+    Task<GetEmployerDashboardApiResponse> GetEmployerDashboardStats(string hashedAccountId);
+    Task<GetAllAccountLegalEntitiesApiResponse> GetAllLegalEntitiesConnectedToAccountAsync(
+        List<string> hashedAccountIds,
+        string searchTerm,
+        int pageNumber,
+        int pageSize,
+        string sortColumn,
+        bool isAscending);
 
-        Task<GetVacanciesDashboardResponse> GetEmployerVacancyDashboardStats(string hashedAccountId,
-            List<ApplicationReviewStatus> statuses,
-            int pageNumber,
-            int pageSize);
+    Task<GetVacanciesDashboardResponse> GetEmployerVacancyDashboardStats(string hashedAccountId,
+        List<ApplicationReviewStatus> statuses,
+        int pageNumber,
+        int pageSize);
 
-        Task<GetVacanciesByAccountIdApiResponse> GetEmployerVacancies(string hashedAccountId,
-            int page,
-            int pageSize,
-            string sortColumn,
-            string sortOrder,
-            FilteringOptions filterBy,
-            string searchTerm);
+    Task<GetVacanciesByAccountIdApiResponse> GetEmployerVacancies(string hashedAccountId,
+        int page,
+        int pageSize,
+        string sortColumn,
+        string sortOrder,
+        FilteringOptions filterBy,
+        string searchTerm);
 
-        Task<GetAlertsByAccountIdApiResponse> GetEmployerAlerts(string hashedAccountId, string userId);
-    }
+    Task<GetAlertsByAccountIdApiResponse> GetEmployerAlerts(string hashedAccountId, string userId);
 }

@@ -1,10 +1,9 @@
 using System;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
+
+[Serializable]
+public class InfrastructureException : Exception
 {
-    [Serializable]
-    public class InfrastructureException : Exception
-    {
-        public InfrastructureException(string message) : base(message) { }
-    }
+    public InfrastructureException(string message) : base(message) { }
 }

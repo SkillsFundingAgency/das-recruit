@@ -1,24 +1,23 @@
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications
+namespace Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications;
+
+public class ManageNotificationsViewModel : ManageNotificationsRouteModel
 {
-    public class ManageNotificationsViewModel : ManageNotificationsRouteModel
-    {
-        public bool IsVacancyRejectedSelected { get; set; }
-        public bool IsVacancySentForEmployerReviewSelected { get; set; }
-        public bool IsVacancyClosingSoonSelected { get; set; }
-        public bool IsApplicationSubmittedSelected { get; set; }
-        public NotificationFrequency? NotificationFrequency { get; set; }
-        public NotificationScope? NotificationScope { get; set; }
-        public bool HasAnySubscription => IsVacancyRejectedSelected || IsVacancyClosingSoonSelected || IsApplicationSubmittedSelected || IsVacancySentForEmployerReviewSelected;     
-        public bool EnvironmentIsProd { get; set; }
-    }
+    public bool IsVacancyRejectedSelected { get; set; }
+    public bool IsVacancySentForEmployerReviewSelected { get; set; }
+    public bool IsVacancyClosingSoonSelected { get; set; }
+    public bool IsApplicationSubmittedSelected { get; set; }
+    public NotificationFrequency? NotificationFrequency { get; set; }
+    public NotificationScope? NotificationScope { get; set; }
+    public bool HasAnySubscription => IsVacancyRejectedSelected || IsVacancyClosingSoonSelected || IsApplicationSubmittedSelected || IsVacancySentForEmployerReviewSelected;     
+    public bool EnvironmentIsProd { get; set; }
+}
     
-    public class ManageNotificationsViewModelEx : ManageNotificationsRouteModel
-    {
-        public bool Updated { get; set; }
-        public string VacancyApprovedOrRejectedValue { get; init; }
-        public string ApplicationSubmittedValue { get; init; }
-        public string ApplicationSubmittedFrequencyValue { get; init; }
-    }
+public class ManageNotificationsViewModelEx : ManageNotificationsRouteModel
+{
+    public bool Updated { get; set; }
+    public string VacancyApprovedOrRejectedValue { get; init; }
+    public string ApplicationSubmittedValue { get; init; }
+    public string ApplicationSubmittedFrequencyValue { get; init; }
 }

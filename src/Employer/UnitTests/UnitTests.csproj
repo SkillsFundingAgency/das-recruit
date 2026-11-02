@@ -15,6 +15,7 @@
     <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
     <PackageReference Include="NUnit" Version="4.3.2" />
     <PackageReference Include="Moq" Version="4.21.0" />
+    <PackageReference Include="OpenTelemetry.Api" Version="1.20.1" />
     <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="17.1.103" />
 	<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.8.0" />
   </ItemGroup>

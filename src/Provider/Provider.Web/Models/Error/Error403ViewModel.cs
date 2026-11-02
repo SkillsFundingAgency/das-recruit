@@ -1,20 +1,19 @@
 ﻿using System;
 
-namespace Esfa.Recruit.Provider.Web.Models.Error
+namespace Esfa.Recruit.Provider.Web.Models.Error;
+
+public class Error403ViewModel
 {
-    public class Error403ViewModel
+    private readonly string _integrationUrlPart = string.Empty;
+
+    public Error403ViewModel(string environment)
     {
-        private readonly string _integrationUrlPart = string.Empty;
-
-        public Error403ViewModel(string environment)
+        if (!environment.Equals("prd", StringComparison.CurrentCultureIgnoreCase))
         {
-            if (!environment.Equals("prd", StringComparison.CurrentCultureIgnoreCase))
-            {
-                _integrationUrlPart = "test-";
-            }
+            _integrationUrlPart = "test-";
         }
-
-        public bool UseDfESignIn { get; set; }
-        public string HelpPageLink => $"https://{_integrationUrlPart}services.signin.education.gov.uk/organisations";
     }
+
+    public bool UseDfESignIn { get; set; }
+    public string HelpPageLink => $"https://{_integrationUrlPart}services.signin.education.gov.uk/organisations";
 }

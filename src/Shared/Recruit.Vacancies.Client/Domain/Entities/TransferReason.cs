@@ -1,8 +1,7 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum TransferReason
 {
-    public enum TransferReason
-    {
-        EmployerRevokedPermission,
-        BlockedByQa
-    }
+    EmployerRevokedPermission,
+    BlockedByQa
 }

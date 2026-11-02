@@ -1,7 +1,6 @@
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
+
+internal class CountResponseDto
 {
-    internal class CountResponseDto
-    {
-        public long Total { get; set; }
-    }
+    public long Total { get; set; }
 }

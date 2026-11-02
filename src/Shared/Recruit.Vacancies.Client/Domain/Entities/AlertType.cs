@@ -1,10 +1,9 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum AlertType
 {
-    public enum AlertType
-    {
-        TransferredVacanciesBlockedProvider,
-        TransferredVacanciesEmployerRevokedPermission,
-        ClosedVacanciesBlockedProvider,
-        ClosedVacanciesWithdrawnByQa
-    }
+    TransferredVacanciesBlockedProvider,
+    TransferredVacanciesEmployerRevokedPermission,
+    ClosedVacanciesBlockedProvider,
+    ClosedVacanciesWithdrawnByQa
 }

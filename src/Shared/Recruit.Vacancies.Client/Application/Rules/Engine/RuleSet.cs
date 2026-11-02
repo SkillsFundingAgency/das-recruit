@@ -4,52 +4,51 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Rules.Engine
+namespace Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
+
+/// <summary>
+/// encapsulates a set of rules that will be applied to a particular entity.
+/// the ruleset can be evaluated to produce a single overall outcome
+/// </summary>
+/// <typeparam name="TSubject"></typeparam>
+public abstract class RuleSet<TSubject> : IRuleSet<TSubject>
 {
-    /// <summary>
-    /// encapsulates a set of rules that will be applied to a particular entity.
-    /// the ruleset can be evaluated to produce a single overall outcome
-    /// </summary>
-    /// <typeparam name="TSubject"></typeparam>
-    public abstract class RuleSet<TSubject> : IRuleSet<TSubject>
+    private readonly RuleSetOptions _defaultOptions;
+    private readonly IList<IRule<TSubject>> _rules;
+
+    public string RuleSetId { get; }
+    public int RuleCount => _rules.Count;
+
+    protected RuleSet(string ruleSetId)
     {
-        private readonly RuleSetOptions _defaultOptions;
-        private readonly IList<IRule<TSubject>> _rules;
+        RuleSetId = ruleSetId;
+        _defaultOptions = RuleSetOptions.ZeroTolerance;
+        _rules = new List<IRule<TSubject>>();
+    }
 
-        public string RuleSetId { get; }
-        public int RuleCount => _rules.Count;
+    public async Task<RuleSetOutcome> EvaluateAsync(TSubject subject, RuleSetOptions options = null)
+    {
+        if (_rules.Count == 0)
+            throw new InvalidOperationException($"RuleSet '{RuleSetId}' has no rules defined");
 
-        protected RuleSet(string ruleSetId)
+        options = options ?? _defaultOptions;
+
+        var outcome = new RuleSetOutcome();
+
+        foreach (var rule in _rules)
         {
-            RuleSetId = ruleSetId;
-            _defaultOptions = RuleSetOptions.ZeroTolerance;
-            _rules = new List<IRule<TSubject>>();
+            var ruleOutcome = await rule.EvaluateAsync(subject);
+
+            outcome.RuleOutcomes.Add(ruleOutcome);
         }
 
-        public async Task<RuleSetOutcome> EvaluateAsync(TSubject subject, RuleSetOptions options = null)
-        {
-            if (_rules.Count == 0)
-                throw new InvalidOperationException($"RuleSet '{RuleSetId}' has no rules defined");
+        outcome.Decision = outcome.RuleOutcomes.CalculateOutcome(options);
 
-            options = options ?? _defaultOptions;
+        return outcome;
+    }
 
-            var outcome = new RuleSetOutcome();
-
-            foreach (var rule in _rules)
-            {
-                var ruleOutcome = await rule.EvaluateAsync(subject);
-
-                outcome.RuleOutcomes.Add(ruleOutcome);
-            }
-
-            outcome.Decision = outcome.RuleOutcomes.CalculateOutcome(options);
-
-            return outcome;
-        }
-
-        protected void AddRule(IRule<TSubject> rule)
-        {
-            _rules.Add(rule);
-        }
+    protected void AddRule(IRule<TSubject> rule)
+    {
+        _rules.Add(rule);
     }
 }

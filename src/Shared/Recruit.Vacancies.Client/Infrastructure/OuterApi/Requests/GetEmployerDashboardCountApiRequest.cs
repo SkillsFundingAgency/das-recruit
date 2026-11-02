@@ -1,13 +1,12 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests
+﻿namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
+
+public record GetEmployerDashboardCountApiRequest(long AccountId) : IGetApiRequest
 {
-    public record GetEmployerDashboardCountApiRequest(long AccountId) : IGetApiRequest
+    public string GetUrl
     {
-        public string GetUrl
+        get
         {
-            get
-            {
-                return $"employerAccounts/{AccountId}/dashboard";
-            }
+            return $"employerAccounts/{AccountId}/dashboard";
         }
     }
 }

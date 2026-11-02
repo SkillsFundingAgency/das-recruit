@@ -14,127 +14,126 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 
-namespace Esfa.Recruit.Employer.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers;
+
+[AllowAnonymous]
+public class ErrorController : Controller
 {
-    [AllowAnonymous]
-    public class ErrorController : Controller
+    private readonly ILogger<ErrorController> _logger;
+
+    public ErrorController(ILogger<ErrorController> logger)
     {
-        private readonly ILogger<ErrorController> _logger;
+        _logger = logger;
+    }
 
-        public ErrorController(ILogger<ErrorController> logger)
+    [Route("error/{id?}")]
+    public IActionResult Error(int id)
+    {
+        ViewBag.IsErrorPage = true; // Used by layout to show/hide elements.
+
+        switch (id)
         {
-            _logger = logger;
+            case 403:
+                return AccessDenied();
+            case 404:
+                return PageNotFound();
+            default:
+                break;
         }
 
-        [Route("error/{id?}")]
-        public IActionResult Error(int id)
+        return View(new ErrorViewModel { StatusCode = id, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+
+    [Route(RoutePaths.ExceptionHandlingPath)]
+    public IActionResult ErrorHandler()
+    {
+        if (HttpContext.Items.TryGetValue(ContextItemKeys.EmployerIdentifier, out var employerAccountId))
         {
-            ViewBag.IsErrorPage = true; // Used by layout to show/hide elements.
-
-            switch (id)
-            {
-                case 403:
-                    return AccessDenied();
-                case 404:
-                    return PageNotFound();
-                default:
-                    break;
-            }
-
-            return View(new ErrorViewModel { StatusCode = id, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        [Route(RoutePaths.ExceptionHandlingPath)]
-        public IActionResult ErrorHandler()
-        {
-            if (HttpContext.Items.TryGetValue(ContextItemKeys.EmployerIdentifier, out var employerAccountId))
-            {
-                ViewBag.EmployerAccountId = employerAccountId;
+            ViewBag.EmployerAccountId = employerAccountId;
                 
-                if (!RouteData.Values.ContainsKey(ContextItemKeys.EmployerIdentifier))
-                    RouteData.Values.Add(ContextItemKeys.EmployerIdentifier, employerAccountId);
+            if (!RouteData.Values.ContainsKey(ContextItemKeys.EmployerIdentifier))
+                RouteData.Values.Add(ContextItemKeys.EmployerIdentifier, employerAccountId);
+        }
+
+        var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+
+        if (exceptionFeature != null)
+        {
+            string routeWhereExceptionOccurred = exceptionFeature.Path;
+            var exception = exceptionFeature.Error;
+
+            if (exception is AggregateException aggregateException)
+            {
+                var flattenedExceptions = aggregateException.Flatten();
+                _logger.LogError(flattenedExceptions, "Aggregate exception on path: {route}", routeWhereExceptionOccurred);
+
+                exception = flattenedExceptions.InnerExceptions.FirstOrDefault();
             }
 
-            var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
-
-            if (exceptionFeature != null)
+            if (exception is InvalidStateException)
             {
-                string routeWhereExceptionOccurred = exceptionFeature.Path;
-                var exception = exceptionFeature.Error;
-
-                if (exception is AggregateException aggregateException)
-                {
-                    var flattenedExceptions = aggregateException.Flatten();
-                    _logger.LogError(flattenedExceptions, "Aggregate exception on path: {route}", routeWhereExceptionOccurred);
-
-                    exception = flattenedExceptions.InnerExceptions.FirstOrDefault();
-                }
-
-                if (exception is InvalidStateException)
-                {
-                    _logger.LogWarning(exception, "Exception on path: {route}", routeWhereExceptionOccurred);
-                    AddDashboardMessage(exception.Message);
-                    return RedirectToRoute(RouteNames.VacanciesGetAll, new { EmployerAccountId = employerAccountId });
-                }
-
-                if (exception is InvalidRouteForVacancyException invalidRouteException)
-                {
-                    return RedirectToRoute(invalidRouteException.RouteNameToRedirectTo, invalidRouteException.RouteValues);
-                }
-
-                if (exception is VacancyNotFoundException)
-                {
-                    return PageNotFound();
-                }
-
-                if (exception is AuthorisationException)
-                {   
-                    return AccessDenied();
-                }
-
-                if(exception is ApplicationWithdrawnException withdrawnException)
-                {
-                    return ApplicationWithdrawn(employerAccountId.ToString(), withdrawnException);
-                }
-
-                _logger.LogError(exception, "Unhandled exception on path: {route}", routeWhereExceptionOccurred);
+                _logger.LogWarning(exception, "Exception on path: {route}", routeWhereExceptionOccurred);
+                AddDashboardMessage(exception.Message);
+                return RedirectToRoute(RouteNames.VacanciesGetAll, new { EmployerAccountId = employerAccountId });
             }
 
-            Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            return View(ViewNames.ErrorView, new ErrorViewModel { StatusCode = (int)HttpStatusCode.InternalServerError, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        private IActionResult AccessDenied()
-        {
-            Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            return View(ViewNames.AccessDenied);
-        }
-
-        private IActionResult PageNotFound()
-        {
-            Response.StatusCode = (int)HttpStatusCode.NotFound;
-            return View(ViewNames.PageNotFound);
-        }
-
-        private IActionResult ApplicationWithdrawn(string employerAccountId, ApplicationWithdrawnException exception)
-        {
-            _logger.LogInformation(exception.Message);
-            Response.StatusCode = (int)HttpStatusCode.NotFound;
-            var returnLink = Url.RouteUrl(RouteNames.VacancyManage_Get, new VacancyRouteModel
+            if (exception is InvalidRouteForVacancyException invalidRouteException)
             {
-                EmployerAccountId = employerAccountId,
-                VacancyId = exception.VacancyId
-            });
+                return RedirectToRoute(invalidRouteException.RouteNameToRedirectTo, invalidRouteException.RouteValues);
+            }
 
-            return View(ViewNames.ApplicationWithdrawn, returnLink);
+            if (exception is VacancyNotFoundException)
+            {
+                return PageNotFound();
+            }
+
+            if (exception is AuthorisationException)
+            {   
+                return AccessDenied();
+            }
+
+            if(exception is ApplicationWithdrawnException withdrawnException)
+            {
+                return ApplicationWithdrawn(employerAccountId.ToString(), withdrawnException);
+            }
+
+            _logger.LogError(exception, "Unhandled exception on path: {route}", routeWhereExceptionOccurred);
         }
 
-        private void AddDashboardMessage(string message)
+        Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+        return View(ViewNames.ErrorView, new ErrorViewModel { StatusCode = (int)HttpStatusCode.InternalServerError, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+
+    private IActionResult AccessDenied()
+    {
+        Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+        return View(ViewNames.AccessDenied);
+    }
+
+    private IActionResult PageNotFound()
+    {
+        Response.StatusCode = (int)HttpStatusCode.NotFound;
+        return View(ViewNames.PageNotFound);
+    }
+
+    private IActionResult ApplicationWithdrawn(string employerAccountId, ApplicationWithdrawnException exception)
+    {
+        _logger.LogInformation(exception.Message);
+        Response.StatusCode = (int)HttpStatusCode.NotFound;
+        var returnLink = Url.RouteUrl(RouteNames.VacancyManage_Get, new VacancyRouteModel
         {
-            if(TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
-                _logger.LogError($"Dashboard message already set in {nameof(ErrorController)}. Existing message:{TempData[TempDataKeys.DashboardErrorMessage]}. New message:{message}");
+            EmployerAccountId = employerAccountId,
+            VacancyId = exception.VacancyId
+        });
 
-            TempData[TempDataKeys.DashboardErrorMessage] = message;
-        }
+        return View(ViewNames.ApplicationWithdrawn, returnLink);
+    }
+
+    private void AddDashboardMessage(string message)
+    {
+        if(TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
+            _logger.LogError($"Dashboard message already set in {nameof(ErrorController)}. Existing message:{TempData[TempDataKeys.DashboardErrorMessage]}. New message:{message}");
+
+        TempData[TempDataKeys.DashboardErrorMessage] = message;
     }
 }

@@ -7,44 +7,43 @@ using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore;
 using Microsoft.WindowsAzure.Storage;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
+
+internal class RecruitStorageQueueService : StorageQueueServiceBase, IRecruitQueueService
 {
-    internal class RecruitStorageQueueService : StorageQueueServiceBase, IRecruitQueueService
+    private readonly Dictionary<Type, string> _messageToStorageQueueMapper = new Dictionary<Type, string>
     {
-        private readonly Dictionary<Type, string> _messageToStorageQueueMapper = new Dictionary<Type, string>
-        {
-            { typeof(DeleteReportsQueueMessage), QueueNames.DeleteReportsQueueName },
-            { typeof(EventItem), QueueNames.DomainEventsQueueName },
-            { typeof(ReportQueueMessage), QueueNames.ReportQueueName },
-            { typeof(VacancyStatusQueueMessage), QueueNames.VacancyStatusQueueName },
-            { typeof(UpdateEmployerUserAccountQueueMessage), QueueNames.UpdateEmployerUserAccountQueueName },
-            { typeof(DeleteStaleQueryStoreDocumentsQueueMessage), QueueNames.DeleteStaleQueryStoreDocumentsQueueName },
-            { typeof(CommunicationsHouseKeepingQueueMessage), QueueNames.CommunicationsHouseKeepingQueueName},
-            { typeof(UpdateProvidersQueueMessage), QueueNames.UpdateProvidersQueueName},
-            { typeof(UpdateProviderInfoQueueMessage), QueueNames.UpdateProviderInfoQueueName},
-            { typeof(TransferVacanciesFromEmployerReviewToQAReviewQueueMessage), QueueNames.TransferVacanciesFromEmployerReviewToQAReviewQueueName },
-        };
+        { typeof(DeleteReportsQueueMessage), QueueNames.DeleteReportsQueueName },
+        { typeof(EventItem), QueueNames.DomainEventsQueueName },
+        { typeof(ReportQueueMessage), QueueNames.ReportQueueName },
+        { typeof(VacancyStatusQueueMessage), QueueNames.VacancyStatusQueueName },
+        { typeof(UpdateEmployerUserAccountQueueMessage), QueueNames.UpdateEmployerUserAccountQueueName },
+        { typeof(DeleteStaleQueryStoreDocumentsQueueMessage), QueueNames.DeleteStaleQueryStoreDocumentsQueueName },
+        { typeof(CommunicationsHouseKeepingQueueMessage), QueueNames.CommunicationsHouseKeepingQueueName},
+        { typeof(UpdateProvidersQueueMessage), QueueNames.UpdateProvidersQueueName},
+        { typeof(UpdateProviderInfoQueueMessage), QueueNames.UpdateProviderInfoQueueName},
+        { typeof(TransferVacanciesFromEmployerReviewToQAReviewQueueMessage), QueueNames.TransferVacanciesFromEmployerReviewToQAReviewQueueName },
+    };
 
-        protected override string ConnectionString { get; }
+    protected override string ConnectionString { get; }
 
-        public RecruitStorageQueueService(string connString)
-        {
-            ConnectionString = connString;
-        }
+    public RecruitStorageQueueService(string connString)
+    {
+        ConnectionString = connString;
+    }
 
-        public override async Task AddMessageAsync<T>(T message)
-        {
-            var queueName = _messageToStorageQueueMapper[typeof(T)];
+    public override async Task AddMessageAsync<T>(T message)
+    {
+        var queueName = _messageToStorageQueueMapper[typeof(T)];
 
-            if(string.IsNullOrEmpty(queueName))
-                throw new InvalidEnumArgumentException($"Cannot map type {typeof(T).Name} to a queue name");
+        if(string.IsNullOrEmpty(queueName))
+            throw new InvalidEnumArgumentException($"Cannot map type {typeof(T).Name} to a queue name");
 
-            var storageAccount = CloudStorageAccount.Parse(ConnectionString);
-            var client = storageAccount.CreateCloudQueueClient();
+        var storageAccount = CloudStorageAccount.Parse(ConnectionString);
+        var client = storageAccount.CreateCloudQueueClient();
 
-            var queue = client.GetQueueReference(queueName);
+        var queue = client.GetQueueReference(queueName);
 
-            await AddMessageToQueueAsync(queue, message);
-        }
+        await AddMessageToQueueAsync(queue, message);
     }
 }

@@ -1,9 +1,8 @@
 using System;
 
-namespace Esfa.Recruit.Vacancies.Client.Domain.Events.Interfaces
+namespace Esfa.Recruit.Vacancies.Client.Domain.Events.Interfaces;
+
+public interface IVacancyEvent
 {
-    public interface IVacancyEvent
-    {
-        Guid VacancyId { get; }
-    }
+    Guid VacancyId { get; }
 }

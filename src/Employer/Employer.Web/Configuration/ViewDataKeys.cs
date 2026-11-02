@@ -1,8 +1,7 @@
-namespace Esfa.Recruit.Employer.Web.Configuration
+namespace Esfa.Recruit.Employer.Web.Configuration;
+
+public static class ViewDataKeys
 {
-    public static class ViewDataKeys
-    {
-        public const string PlannedOutageMessage = "PlannedOutageMessage";
-        public const string CanShowOutageMessage = "CanShowOutageMessage";
-    }
+    public const string PlannedOutageMessage = "PlannedOutageMessage";
+    public const string CanShowOutageMessage = "CanShowOutageMessage";
 }

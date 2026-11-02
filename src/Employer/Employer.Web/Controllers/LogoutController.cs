@@ -8,38 +8,37 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 
-namespace Esfa.Recruit.Employer.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers;
+
+[Route(RoutePaths.Services)]
+public class LogoutController : Controller
 {
-    [Route(RoutePaths.Services)]
-    public class LogoutController : Controller
+    private readonly IConfiguration _configuration;
+
+    public LogoutController(IConfiguration configuration)
     {
-        private readonly IConfiguration _configuration;
+        _configuration = configuration;
+    }
+        
+    [AllowAnonymous]
+    [HttpGet, Route("logout", Name = RouteNames.Logout_Get)]
+    public async Task<IActionResult> Logout()
+    {
+        var idToken = await HttpContext.GetTokenAsync("id_token");
 
-        public LogoutController(IConfiguration configuration)
+        var authenticationProperties = new AuthenticationProperties();
+        authenticationProperties.Parameters.Clear();
+        authenticationProperties.Parameters.Add("id_token",idToken);
+        var schemes = new List<string>
         {
-            _configuration = configuration;
+            CookieAuthenticationDefaults.AuthenticationScheme
+        };
+        _ = bool.TryParse(_configuration["StubAuth"], out var stubAuth);
+        if (!stubAuth)
+        {
+            schemes.Add(OpenIdConnectDefaults.AuthenticationScheme);
         }
         
-        [AllowAnonymous]
-        [HttpGet, Route("logout", Name = RouteNames.Logout_Get)]
-        public async Task<IActionResult> Logout()
-        {
-            var idToken = await HttpContext.GetTokenAsync("id_token");
-
-            var authenticationProperties = new AuthenticationProperties();
-            authenticationProperties.Parameters.Clear();
-            authenticationProperties.Parameters.Add("id_token",idToken);
-            var schemes = new List<string>
-            {
-                CookieAuthenticationDefaults.AuthenticationScheme
-            };
-            _ = bool.TryParse(_configuration["StubAuth"], out var stubAuth);
-            if (!stubAuth)
-            {
-                schemes.Add(OpenIdConnectDefaults.AuthenticationScheme);
-            }
-        
-            return SignOut(authenticationProperties, schemes.ToArray());
-        }
+        return SignOut(authenticationProperties, schemes.ToArray());
     }
 }

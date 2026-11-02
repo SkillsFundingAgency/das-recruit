@@ -1,10 +1,9 @@
 using System;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
+
+public interface IReferenceDataItem
 {
-    public interface IReferenceDataItem
-    {
-        string Id { get; set; }
-        DateTime LastUpdatedDate { get; set; }
-    }
+    string Id { get; set; }
+    DateTime LastUpdatedDate { get; set; }
 }

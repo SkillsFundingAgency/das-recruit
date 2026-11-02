@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
+
+public interface IReferenceDataWriter
 {
-    public interface IReferenceDataWriter
-    {
-        Task UpsertReferenceData<T>(T referenceData) where T : class, IReferenceDataItem;
-    }
+    Task UpsertReferenceData<T>(T referenceData) where T : class, IReferenceDataItem;
 }

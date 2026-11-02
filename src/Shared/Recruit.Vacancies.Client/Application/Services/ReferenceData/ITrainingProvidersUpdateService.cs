@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData
+namespace Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
+
+public interface ITrainingProvidersUpdateService
 {
-    public interface ITrainingProvidersUpdateService
-    {
-        Task UpdateProviders();
-    }
+    Task UpdateProviders();
 }

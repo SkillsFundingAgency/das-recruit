@@ -14,89 +14,88 @@ using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.DfESignIn.Auth.Enums;
 using SFA.DAS.Provider.Shared.UI.Startup;
 
-namespace Esfa.Recruit.Provider.Web
-{
-    public partial class Startup
-    {
-        private readonly IConfigurationRoot _configuration;
-        private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly AuthenticationConfiguration _authConfig;
-        private readonly ILoggerFactory _loggerFactory;
+namespace Esfa.Recruit.Provider.Web;
 
-        public Startup(IConfiguration config, IWebHostEnvironment env, ILoggerFactory loggerFactory, ILogger<Startup> logger)
-        {
-            _hostingEnvironment = env;
-            var configBuilder = new ConfigurationBuilder()
-                .AddConfiguration(config)
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddEnvironmentVariables();
+public partial class Startup
+{
+    private readonly IConfigurationRoot _configuration;
+    private readonly IWebHostEnvironment _hostingEnvironment;
+    private readonly AuthenticationConfiguration _authConfig;
+    private readonly ILoggerFactory _loggerFactory;
+
+    public Startup(IConfiguration config, IWebHostEnvironment env, ILoggerFactory loggerFactory, ILogger<Startup> logger)
+    {
+        _hostingEnvironment = env;
+        var configBuilder = new ConfigurationBuilder()
+            .AddConfiguration(config)
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddEnvironmentVariables();
                 
 #if DEBUG
-            configBuilder
-                .AddJsonFile("appsettings.json", optional:true)
-                .AddJsonFile("appsettings.Development.json", optional: true)
-                .AddUserSecrets(Assembly.GetExecutingAssembly());
+        configBuilder
+            .AddJsonFile("appsettings.json", optional:true)
+            .AddJsonFile("appsettings.Development.json", optional: true)
+            .AddUserSecrets(Assembly.GetExecutingAssembly());
 #endif
             
-            configBuilder.AddAzureTableStorage(
-                options => {
-                    options.ConfigurationKeys = config["ConfigNames"].Split(",");
-                    options.EnvironmentName = config["Environment"];
-                    options.StorageConnectionString = config["ConfigurationStorageConnectionString"];
-                    options.PreFixConfigurationKeys = false;
-                }
-            );
+        configBuilder.AddAzureTableStorage(
+            options => {
+                options.ConfigurationKeys = config["ConfigNames"].Split(",");
+                options.EnvironmentName = config["Environment"];
+                options.StorageConnectionString = config["ConfigurationStorageConnectionString"];
+                options.PreFixConfigurationKeys = false;
+            }
+        );
 
-            _configuration =  configBuilder.Build();
-            _authConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
+        _configuration =  configBuilder.Build();
+        _authConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
             
-            _dfEOidcConfig = _configuration.GetSection("DfEOidcConfiguration").Get<DfEOidcConfiguration>(); // read the configuration from SFA.DAS.Provider.DfeSignIn
-            _loggerFactory = loggerFactory;
-        }
+        _dfEOidcConfig = _configuration.GetSection("DfEOidcConfiguration").Get<DfEOidcConfiguration>(); // read the configuration from SFA.DAS.Provider.DfeSignIn
+        _loggerFactory = loggerFactory;
+    }
         
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+    // This method gets called by the runtime. Use this method to add services to the container.
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddIoC(_configuration);
+
+        // Routing has to come before adding Mvc
+        services.AddRouting(opt =>
         {
-            services.AddIoC(_configuration);
+            opt.LowercaseUrls = true;
+            opt.AppendTrailingSlash = true;
+        });
 
-            // Routing has to come before adding Mvc
-            services.AddRouting(opt =>
-            {
-                opt.LowercaseUrls = true;
-                opt.AppendTrailingSlash = true;
-            });
+        services.Configure<RazorViewEngineOptions>(o =>
+        {
+            o.ViewLocationFormats.Add("/Views/Part1/{1}/{0}" + RazorViewEngine.ViewExtension);
+            o.ViewLocationFormats.Add("/Views/Part2/{1}/{0}" + RazorViewEngine.ViewExtension);
+            o.ViewLocationFormats.Add("/Views/Reports/{1}/{0}" + RazorViewEngine.ViewExtension);
+        });
 
-            services.Configure<RazorViewEngineOptions>(o =>
-            {
-                o.ViewLocationFormats.Add("/Views/Part1/{1}/{0}" + RazorViewEngine.ViewExtension);
-                o.ViewLocationFormats.Add("/Views/Part2/{1}/{0}" + RazorViewEngine.ViewExtension);
-                o.ViewLocationFormats.Add("/Views/Reports/{1}/{0}" + RazorViewEngine.ViewExtension);
-            });
+        services.AddMvcService(_hostingEnvironment, _loggerFactory, _configuration);
+        services.AddDataProtection(_configuration, _hostingEnvironment, applicationName: "das-provider");
 
-            services.AddMvcService(_hostingEnvironment, _loggerFactory, _configuration);
-            services.AddDataProtection(_configuration, _hostingEnvironment, applicationName: "das-provider");
+        services.AddApplicationInsightsTelemetry(_configuration);
+        services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
 
-            services.AddApplicationInsightsTelemetry(_configuration);
-            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
+        services.AddProviderUiServiceRegistration(_configuration);
 
-            services.AddProviderUiServiceRegistration(_configuration);
-
-    #if DEBUG
-            services.AddControllersWithViews().AddRazorRuntimeCompilation();
-    #endif
+#if DEBUG
+        services.AddControllersWithViews().AddRazorRuntimeCompilation();
+#endif
 
             
-            services.AddAndConfigureDfESignInAuthentication(
-                _configuration,
-                "SFA.DAS.ProviderApprenticeshipService",
-                typeof(CustomServiceRole),
-                ClientName.ProviderRoatp,
-                "/signout",
-                "");    
+        services.AddAndConfigureDfESignInAuthentication(
+            _configuration,
+            "SFA.DAS.ProviderApprenticeshipService",
+            typeof(CustomServiceRole),
+            ClientName.ProviderRoatp,
+            "/signout",
+            "");    
         
             
-            services.AddAuthorizationService();
-            services.AddDasEncoding(_configuration);
-        }
+        services.AddAuthorizationService();
+        services.AddDasEncoding(_configuration);
     }
 }

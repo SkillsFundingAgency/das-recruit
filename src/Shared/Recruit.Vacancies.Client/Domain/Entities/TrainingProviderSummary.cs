@@ -1,9 +1,8 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public class TrainingProviderSummary
 {
-    public class TrainingProviderSummary
-    {
-        public string ProviderName { get; set; }
-        public long Ukprn { get; set; }
-        public bool IsTrainingProviderMainOrEmployerProfile { get; set; }
-    }
+    public string ProviderName { get; set; }
+    public long Ukprn { get; set; }
+    public bool IsTrainingProviderMainOrEmployerProfile { get; set; }
 }

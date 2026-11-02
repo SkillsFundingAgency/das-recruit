@@ -1,7 +1,6 @@
-﻿namespace Esfa.Recruit.Employer.Web.ViewModels
+﻿namespace Esfa.Recruit.Employer.Web.ViewModels;
+
+public class ClosedVacancyViewModel : DisplayVacancyApplicationViewModel
 {
-    public class ClosedVacancyViewModel : DisplayVacancyApplicationViewModel
-    {
-        public string ClosedDate { get; set; }
-    }
+    public string ClosedDate { get; set; }
 }

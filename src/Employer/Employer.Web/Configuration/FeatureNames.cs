@@ -1,7 +1,6 @@
-namespace Esfa.Recruit.Employer.Web.Configuration
+namespace Esfa.Recruit.Employer.Web.Configuration;
+
+public static class FeatureNames
 {
-    public static class FeatureNames
-    {
-        public const string FoundationApprenticeships = nameof(FoundationApprenticeships);
-    }
+    public const string FoundationApprenticeships = nameof(FoundationApprenticeships);
 }

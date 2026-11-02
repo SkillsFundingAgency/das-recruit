@@ -4,15 +4,14 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using FluentValidation;
 
 
-namespace Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent
+namespace Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent;
+
+public class ApplicationReviewsToShareModelValidator : AbstractValidator<ApplicationReviewsToShareRouteModel>
 {
-    public class ApplicationReviewsToShareModelValidator : AbstractValidator<ApplicationReviewsToShareRouteModel>
+    public ApplicationReviewsToShareModelValidator()
     {
-        public ApplicationReviewsToShareModelValidator()
-        {
-            RuleFor(x => x.ApplicationsToShare)
-                .Must(apps => apps != null && apps.Any())
-                .WithMessage(ApplicationReviewValidator.ApplicationReviewsToShare);
-        }
+        RuleFor(x => x.ApplicationsToShare)
+            .Must(apps => apps != null && apps.Any())
+            .WithMessage(ApplicationReviewValidator.ApplicationReviewsToShare);
     }
 }

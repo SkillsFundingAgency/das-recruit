@@ -9,40 +9,39 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Esfa.Recruit.Provider.Web.Controllers.Part1
+namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
+
+[Route(RoutePaths.AccountVacancyRoutePath)]
+[Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+public class NumberOfPositionsController(NumberOfPositionsOrchestrator orchestrator) : Controller
 {
-    [Route(RoutePaths.AccountVacancyRoutePath)]
-    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public class NumberOfPositionsController(NumberOfPositionsOrchestrator orchestrator) : Controller
+    [HttpGet("number-of-positions", Name = RouteNames.NumberOfPositions_Get)]
+    public async Task<IActionResult> NumberOfPositions(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
+    {            
+        var vm = await orchestrator.GetNumberOfPositionsViewModelForExistingVacancyAsync(vrm);
+        vm.PageInfo.SetWizard(wizard);
+        return View(vm);
+    }
+
+    [HttpPost("number-of-positions", Name = RouteNames.NumberOfPositions_Post)]
+    public async Task<IActionResult> NumberOfPositions(NumberOfPositionsEditModel model, [FromQuery] bool wizard)
     {
-        [HttpGet("number-of-positions", Name = RouteNames.NumberOfPositions_Get)]
-        public async Task<IActionResult> NumberOfPositions(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
-        {            
-            var vm = await orchestrator.GetNumberOfPositionsViewModelForExistingVacancyAsync(vrm);
+        var response = await orchestrator.PostNumberOfPositionsEditModelAsync(model, User.ToVacancyUser());
+            
+        if (!response.Success)
+        {
+            response.AddErrorsToModelState(ModelState);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            var vm = await orchestrator.GetNumberOfPositionsViewModelFromEditModelAsync(model);
             vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
-
-        [HttpPost("number-of-positions", Name = RouteNames.NumberOfPositions_Post)]
-        public async Task<IActionResult> NumberOfPositions(NumberOfPositionsEditModel model, [FromQuery] bool wizard)
-        {
-            var response = await orchestrator.PostNumberOfPositionsEditModelAsync(model, User.ToVacancyUser());
             
-            if (!response.Success)
-            {
-                response.AddErrorsToModelState(ModelState);
-            }
-
-            if (!ModelState.IsValid)
-            {
-                var vm = await orchestrator.GetNumberOfPositionsViewModelFromEditModelAsync(model);
-                vm.PageInfo.SetWizard(wizard);
-                return View(vm);
-            }
-            
-            return wizard
-                ? RedirectToRoute(RouteNames.MultipleLocations_Get, new { Wizard = wizard, model.Ukprn, model.VacancyId })
-                : RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {model.Ukprn, model.VacancyId});
-        }    
-    }
+        return wizard
+            ? RedirectToRoute(RouteNames.MultipleLocations_Get, new { Wizard = wizard, model.Ukprn, model.VacancyId })
+            : RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {model.Ukprn, model.VacancyId});
+    }    
 }

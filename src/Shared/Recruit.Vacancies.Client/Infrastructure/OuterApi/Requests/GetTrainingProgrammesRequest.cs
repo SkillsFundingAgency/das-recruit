@@ -1,26 +1,25 @@
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
+
+public class GetTrainingProgrammesRequest : IGetApiRequest
 {
-    public class GetTrainingProgrammesRequest : IGetApiRequest
+    private readonly int? _ukprn;
+
+    public GetTrainingProgrammesRequest(int? ukprn = null)
     {
-        private readonly int? _ukprn;
+        _ukprn = ukprn;
+    }
 
-        public GetTrainingProgrammesRequest(int? ukprn = null)
+    public string GetUrl
+    {
+        get
         {
-            _ukprn = ukprn;
-        }
+            var query = $"trainingprogrammes";
 
-        public string GetUrl
-        {
-            get
+            if (_ukprn.HasValue)
             {
-                var query = $"trainingprogrammes";
-
-                if (_ukprn.HasValue)
-                {
-                    query += $"?ukprn={_ukprn.Value}";
-                }
-                return query;
+                query += $"?ukprn={_ukprn.Value}";
             }
+            return query;
         }
     }
 }

@@ -5,38 +5,37 @@ using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
-namespace Esfa.Recruit.Shared.Web.Services
+namespace Esfa.Recruit.Shared.Web.Services;
+
+public class ReviewSummaryService(
+    IRecruitVacancyClient vacancyClient,
+    ReviewFieldIndicatorMapper fieldMappingsLookup)
+    : IReviewSummaryService
 {
-    public class ReviewSummaryService(
-        IRecruitVacancyClient vacancyClient,
-        ReviewFieldIndicatorMapper fieldMappingsLookup)
-        : IReviewSummaryService
+    public async Task<ReviewSummaryViewModel> GetReviewSummaryViewModelAsync(long vacancyReference, 
+        ReviewFieldMappingLookupsForPage reviewFieldIndicatorsForPage)
     {
-        public async Task<ReviewSummaryViewModel> GetReviewSummaryViewModelAsync(long vacancyReference, 
-            ReviewFieldMappingLookupsForPage reviewFieldIndicatorsForPage)
-        {
-            var review = await vacancyClient.GetCurrentReferredVacancyReviewAsync(vacancyReference);
+        var review = await vacancyClient.GetCurrentReferredVacancyReviewAsync(vacancyReference);
 
-            return ConvertToReviewSummaryViewModel(reviewFieldIndicatorsForPage, review);
-        }
+        return ConvertToReviewSummaryViewModel(reviewFieldIndicatorsForPage, review);
+    }
 
-        private ReviewSummaryViewModel ConvertToReviewSummaryViewModel(
-            ReviewFieldMappingLookupsForPage reviewFieldIndicatorsForPage, VacancyReview review)
+    private ReviewSummaryViewModel ConvertToReviewSummaryViewModel(
+        ReviewFieldMappingLookupsForPage reviewFieldIndicatorsForPage, VacancyReview review)
+    {
+        if (review != null)
         {
-            if (review != null)
+            var fieldIndicators =
+                fieldMappingsLookup.MapFromFieldIndicators(reviewFieldIndicatorsForPage, review).ToList();
+
+            return new ReviewSummaryViewModel
             {
-                var fieldIndicators =
-                    fieldMappingsLookup.MapFromFieldIndicators(reviewFieldIndicatorsForPage, review).ToList();
-
-                return new ReviewSummaryViewModel
-                {
-                    HasBeenReviewed = true,
-                    ReviewerComments = review.ManualQaComment,
-                    FieldIndicators = fieldIndicators
-                };
-            }
-
-            return new ReviewSummaryViewModel();
+                HasBeenReviewed = true,
+                ReviewerComments = review.ManualQaComment,
+                FieldIndicators = fieldIndicators
+            };
         }
+
+        return new ReviewSummaryViewModel();
     }
 }

@@ -9,36 +9,35 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace Esfa.Recruit.Provider.Web.Controllers
+namespace Esfa.Recruit.Provider.Web.Controllers;
+
+public class LogoutController : Controller
 {
-    public class LogoutController : Controller
+    private readonly ProviderApprenticeshipsLinkHelper _externalLinks;
+    private readonly IConfiguration _configuration;
+
+    public LogoutController(ProviderApprenticeshipsLinkHelper externalLinksOptions, IConfiguration configuration)
     {
-        private readonly ProviderApprenticeshipsLinkHelper _externalLinks;
-        private readonly IConfiguration _configuration;
+        _configuration = configuration;
+        _externalLinks = externalLinksOptions;
+    }
 
-        public LogoutController(ProviderApprenticeshipsLinkHelper externalLinksOptions, IConfiguration configuration)
+    [AllowAnonymous]
+    [Route("signout", Name = RouteNames.ProviderSignOut)]
+    [Route("service/signout", Name = RouteNames.ProviderTimeoutSignOut)]
+    public async Task Logout()
+    {
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        await HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme, new AuthenticationProperties
         {
-            _configuration = configuration;
-            _externalLinks = externalLinksOptions;
-        }
+            RedirectUri = _externalLinks.AccountHome,
+        });
+    }
 
-        [AllowAnonymous]
-        [Route("signout", Name = RouteNames.ProviderSignOut)]
-        [Route("service/signout", Name = RouteNames.ProviderTimeoutSignOut)]
-        public async Task Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            await HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme, new AuthenticationProperties
-            {
-                RedirectUri = _externalLinks.AccountHome,
-            });
-        }
-
-        [HttpGet]
-        [Route("dashboard", Name = RouteNames.PasDashboard_Get)]
-        public IActionResult Dashboard()
-        {
-            return RedirectPermanent(_configuration["ProviderSharedUIConfiguration:DashboardUrl"]);
-        }
+    [HttpGet]
+    [Route("dashboard", Name = RouteNames.PasDashboard_Get)]
+    public IActionResult Dashboard()
+    {
+        return RedirectPermanent(_configuration["ProviderSharedUIConfiguration:DashboardUrl"]);
     }
 }

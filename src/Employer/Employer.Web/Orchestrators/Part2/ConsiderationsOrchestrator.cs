@@ -10,77 +10,76 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
+namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2;
+
+public class ConsiderationsOrchestrator : VacancyValidatingOrchestrator<ConsiderationsEditModel>
 {
-    public class ConsiderationsOrchestrator : VacancyValidatingOrchestrator<ConsiderationsEditModel>
+    private const VacancyRuleSet ValidationRules = VacancyRuleSet.ThingsToConsider;
+    private readonly IRecruitVacancyClient _vacancyClient;
+    private readonly IReviewSummaryService _reviewSummaryService;
+    private readonly IUtility _utility;
+
+    public ConsiderationsOrchestrator(ILogger<ConsiderationsOrchestrator> logger, IRecruitVacancyClient vacancyClient, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ThingsToConsider;
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IUtility _utility;
+        _vacancyClient = vacancyClient;
+        _reviewSummaryService = reviewSummaryService;
+        _utility = utility;
+    }
 
-        public ConsiderationsOrchestrator(ILogger<ConsiderationsOrchestrator> logger, IRecruitVacancyClient vacancyClient, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
-        {
-            _vacancyClient = vacancyClient;
-            _reviewSummaryService = reviewSummaryService;
-            _utility = utility;
-        }
-
-        public async Task<ConsiderationsViewModel> GetConsiderationsViewModelAsync(VacancyRouteModel vrm)
-        {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
+    public async Task<ConsiderationsViewModel> GetConsiderationsViewModelAsync(VacancyRouteModel vrm)
+    {
+        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
             
-            var vm = new ConsiderationsViewModel
-            {
-                VacancyId = vacancy.Id,
-                EmployerAccountId = vacancy.EmployerAccountId,
-                Title = vacancy.Title,
-                ThingsToConsider = vacancy.ThingsToConsider,
-                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
-            };
+        var vm = new ConsiderationsViewModel
+        {
+            VacancyId = vacancy.Id,
+            EmployerAccountId = vacancy.EmployerAccountId,
+            Title = vacancy.Title,
+            ThingsToConsider = vacancy.ThingsToConsider,
+            IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
+        };
 
-            if (vacancy.Status == VacancyStatus.Referred)
-            {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
-                    ReviewFieldMappingLookups.GetConsiderationsFieldIndicators());
-            }
+        if (vacancy.Status == VacancyStatus.Referred)
+        {
+            vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+                ReviewFieldMappingLookups.GetConsiderationsFieldIndicators());
+        }
             
-            return vm;
-        }
+        return vm;
+    }
 
-        public async Task<ConsiderationsViewModel> GetConsiderationsViewModelAsync(ConsiderationsEditModel m)
-        {
-            var vm = await GetConsiderationsViewModelAsync((VacancyRouteModel)m);
+    public async Task<ConsiderationsViewModel> GetConsiderationsViewModelAsync(ConsiderationsEditModel m)
+    {
+        var vm = await GetConsiderationsViewModelAsync((VacancyRouteModel)m);
 
-            vm.ThingsToConsider = m.ThingsToConsider;
+        vm.ThingsToConsider = m.ThingsToConsider;
 
-            return vm;
-        }
+        return vm;
+    }
 
-        public async Task<OrchestratorResponse> PostConsiderationsEditModelAsync(ConsiderationsEditModel m, VacancyUser user)
-        {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m);
+    public async Task<OrchestratorResponse> PostConsiderationsEditModelAsync(ConsiderationsEditModel m, VacancyUser user)
+    {
+        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m);
 
-            SetVacancyWithEmployerReviewFieldIndicators(
-                vacancy.ThingsToConsider,
-                FieldIdResolver.ToFieldId(v => v.ThingsToConsider),
-                vacancy,
-                (v) => { return v.ThingsToConsider = m.ThingsToConsider; });
+        SetVacancyWithEmployerReviewFieldIndicators(
+            vacancy.ThingsToConsider,
+            FieldIdResolver.ToFieldId(v => v.ThingsToConsider),
+            vacancy,
+            (v) => { return v.ThingsToConsider = m.ThingsToConsider; });
 
-            return await ValidateAndExecute(
-                vacancy,
-                v => _vacancyClient.Validate(v, ValidationRules),
-                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
-            );
-        }
+        return await ValidateAndExecute(
+            vacancy,
+            v => _vacancyClient.Validate(v, ValidationRules),
+            v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+        );
+    }
 
-        protected override EntityToViewModelPropertyMappings<Vacancy, ConsiderationsEditModel> DefineMappings()
-        {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, ConsiderationsEditModel>();
+    protected override EntityToViewModelPropertyMappings<Vacancy, ConsiderationsEditModel> DefineMappings()
+    {
+        var mappings = new EntityToViewModelPropertyMappings<Vacancy, ConsiderationsEditModel>();
 
-            mappings.Add(e => e.ThingsToConsider, vm => vm.ThingsToConsider);
+        mappings.Add(e => e.ThingsToConsider, vm => vm.ThingsToConsider);
 
-            return mappings;
-        }
+        return mappings;
     }
 }

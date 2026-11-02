@@ -11,78 +11,77 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
+namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2;
+
+public class ConsiderationsOrchestrator : VacancyValidatingOrchestrator<ConsiderationsEditModel>
 {
-    public class ConsiderationsOrchestrator : VacancyValidatingOrchestrator<ConsiderationsEditModel>
+    private const VacancyRuleSet ValidationRules = VacancyRuleSet.ThingsToConsider;
+    private readonly IRecruitVacancyClient _vacancyClient;
+    private readonly IReviewSummaryService _reviewSummaryService;
+    private readonly IUtility _utility;
+
+    public ConsiderationsOrchestrator(ILogger<ConsiderationsOrchestrator> logger, IRecruitVacancyClient vacancyClient, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ThingsToConsider;
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IUtility _utility;
+        _vacancyClient = vacancyClient;
+        _reviewSummaryService = reviewSummaryService;
+        _utility = utility;
+    }
 
-        public ConsiderationsOrchestrator(ILogger<ConsiderationsOrchestrator> logger, IRecruitVacancyClient vacancyClient, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
-        {
-            _vacancyClient = vacancyClient;
-            _reviewSummaryService = reviewSummaryService;
-            _utility = utility;
-        }
-
-        public async Task<ConsiderationsViewModel> GetConsiderationsViewModelAsync(VacancyRouteModel vrm)
-        {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Considerations_Get);
+    public async Task<ConsiderationsViewModel> GetConsiderationsViewModelAsync(VacancyRouteModel vrm)
+    {
+        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Considerations_Get);
             
-            var vm = new ConsiderationsViewModel
-            {
-                Title = vacancy.Title,
-                ThingsToConsider = vacancy.ThingsToConsider,
-                Ukprn = vrm.Ukprn,
-                VacancyId = vrm.VacancyId
-            };
-
-            if (vacancy.Status == VacancyStatus.Referred)
-            {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
-                    ReviewFieldMappingLookups.GetConsiderationsFieldIndicators());
-            }
-
-            vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
-
-            return vm;
-        }
-
-        public async Task<ConsiderationsViewModel> GetConsiderationsViewModelAsync(ConsiderationsEditModel m)
+        var vm = new ConsiderationsViewModel
         {
-            var vm = await GetConsiderationsViewModelAsync((VacancyRouteModel)m);
+            Title = vacancy.Title,
+            ThingsToConsider = vacancy.ThingsToConsider,
+            Ukprn = vrm.Ukprn,
+            VacancyId = vrm.VacancyId
+        };
 
-            vm.ThingsToConsider = m.ThingsToConsider;
-
-            return vm;
-        }
-
-        public async Task<OrchestratorResponse> PostConsiderationsEditModelAsync(ConsiderationsEditModel m, VacancyUser user)
+        if (vacancy.Status == VacancyStatus.Referred)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Considerations_Post);
-
-            SetVacancyWithProviderReviewFieldIndicators(
-                vacancy.ThingsToConsider,
-                FieldIdResolver.ToFieldId(v => v.ThingsToConsider),
-                vacancy,
-                (v) => { return v.ThingsToConsider = m.ThingsToConsider; });
-
-            return await ValidateAndExecute(
-                vacancy,
-                v => _vacancyClient.Validate(v, ValidationRules),
-                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
-            );
+            vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+                ReviewFieldMappingLookups.GetConsiderationsFieldIndicators());
         }
 
-        protected override EntityToViewModelPropertyMappings<Vacancy, ConsiderationsEditModel> DefineMappings()
-        {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, ConsiderationsEditModel>();
+        vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
 
-            mappings.Add(e => e.ThingsToConsider, vm => vm.ThingsToConsider);
+        return vm;
+    }
 
-            return mappings;
-        }
+    public async Task<ConsiderationsViewModel> GetConsiderationsViewModelAsync(ConsiderationsEditModel m)
+    {
+        var vm = await GetConsiderationsViewModelAsync((VacancyRouteModel)m);
+
+        vm.ThingsToConsider = m.ThingsToConsider;
+
+        return vm;
+    }
+
+    public async Task<OrchestratorResponse> PostConsiderationsEditModelAsync(ConsiderationsEditModel m, VacancyUser user)
+    {
+        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Considerations_Post);
+
+        SetVacancyWithProviderReviewFieldIndicators(
+            vacancy.ThingsToConsider,
+            FieldIdResolver.ToFieldId(v => v.ThingsToConsider),
+            vacancy,
+            (v) => { return v.ThingsToConsider = m.ThingsToConsider; });
+
+        return await ValidateAndExecute(
+            vacancy,
+            v => _vacancyClient.Validate(v, ValidationRules),
+            v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+        );
+    }
+
+    protected override EntityToViewModelPropertyMappings<Vacancy, ConsiderationsEditModel> DefineMappings()
+    {
+        var mappings = new EntityToViewModelPropertyMappings<Vacancy, ConsiderationsEditModel>();
+
+        mappings.Add(e => e.ThingsToConsider, vm => vm.ThingsToConsider);
+
+        return mappings;
     }
 }

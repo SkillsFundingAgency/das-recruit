@@ -1,7 +1,6 @@
-namespace Esfa.Recruit.Vacancies.Client.Domain.Events.Interfaces
+namespace Esfa.Recruit.Vacancies.Client.Domain.Events.Interfaces;
+
+public interface IProviderEvent
 {
-    public interface IProviderEvent
-    {
-        long Ukprn { get; }
-    }
+    long Ukprn { get; }
 }

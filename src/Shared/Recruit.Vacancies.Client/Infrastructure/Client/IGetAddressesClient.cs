@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+
+public interface IGetAddressesClient
 {
-    public interface IGetAddressesClient
-    {
-        Task<GetAddressesListResponse> GetAddresses(string searchTerm);
-    }
+    Task<GetAddressesListResponse> GetAddresses(string searchTerm);
 }

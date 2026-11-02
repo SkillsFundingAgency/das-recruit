@@ -11,70 +11,69 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
+namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2;
+
+public class FutureProspectsOrchestrator : VacancyValidatingOrchestrator<FutureProspectsEditModel>, IFutureProspectsOrchestrator
 {
-    public class FutureProspectsOrchestrator : VacancyValidatingOrchestrator<FutureProspectsEditModel>, IFutureProspectsOrchestrator
+    private readonly IRecruitVacancyClient _vacancyClient;
+    private readonly IReviewSummaryService _reviewSummaryService;
+    private readonly IUtility _utility;
+
+    public FutureProspectsOrchestrator(IRecruitVacancyClient vacancyClient,
+        ILogger<FutureProspectsOrchestrator> logger,
+        IReviewSummaryService reviewSummaryService,
+        IUtility utility) : base(logger)
     {
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IUtility _utility;
-
-        public FutureProspectsOrchestrator(IRecruitVacancyClient vacancyClient,
-            ILogger<FutureProspectsOrchestrator> logger,
-            IReviewSummaryService reviewSummaryService,
-            IUtility utility) : base(logger)
-        {
-            _vacancyClient = vacancyClient;
-            _reviewSummaryService = reviewSummaryService;
-            _utility = utility;
-        }
+        _vacancyClient = vacancyClient;
+        _reviewSummaryService = reviewSummaryService;
+        _utility = utility;
+    }
         
-        public async Task<FutureProspectsViewModel> GetViewModel(VacancyRouteModel routeModel)
+    public async Task<FutureProspectsViewModel> GetViewModel(VacancyRouteModel routeModel)
+    {
+        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(routeModel);
+
+        var viewModel = new FutureProspectsViewModel
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(routeModel);
-
-            var viewModel = new FutureProspectsViewModel
-            {
-                VacancyId = vacancy.Id,
-                EmployerAccountId = vacancy.EmployerAccountId,
-                Title = vacancy.Title,
-                FutureProspects = vacancy.OutcomeDescription
-            };
+            VacancyId = vacancy.Id,
+            EmployerAccountId = vacancy.EmployerAccountId,
+            Title = vacancy.Title,
+            FutureProspects = vacancy.OutcomeDescription
+        };
             
-            if (vacancy.Status == VacancyStatus.Referred)
-            {
-                viewModel.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, 
-                    ReviewFieldMappingLookups.GetFutureProspectsFieldIndicators());
-            }
-            
-            viewModel.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
-
-            return viewModel;
-        }
-
-        public async Task<OrchestratorResponse> PostEditModel(FutureProspectsEditModel editModel, VacancyUser user)
+        if (vacancy.Status == VacancyStatus.Referred)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(editModel);
-            
-            SetVacancyWithEmployerReviewFieldIndicators(
-                vacancy.OutcomeDescription,
-                FieldIdResolver.ToFieldId(v => v.OutcomeDescription),
-                vacancy,
-                (v) => { return v.OutcomeDescription = editModel.FutureProspects; });
-
-            return await ValidateAndExecute(
-                vacancy,
-                v => _vacancyClient.Validate(v, VacancyRuleSet.OutcomeDescription),
-                v => _vacancyClient.UpdateDraftVacancyAsync(v, user));
+            viewModel.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, 
+                ReviewFieldMappingLookups.GetFutureProspectsFieldIndicators());
         }
+            
+        viewModel.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
+
+        return viewModel;
+    }
+
+    public async Task<OrchestratorResponse> PostEditModel(FutureProspectsEditModel editModel, VacancyUser user)
+    {
+        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(editModel);
+            
+        SetVacancyWithEmployerReviewFieldIndicators(
+            vacancy.OutcomeDescription,
+            FieldIdResolver.ToFieldId(v => v.OutcomeDescription),
+            vacancy,
+            (v) => { return v.OutcomeDescription = editModel.FutureProspects; });
+
+        return await ValidateAndExecute(
+            vacancy,
+            v => _vacancyClient.Validate(v, VacancyRuleSet.OutcomeDescription),
+            v => _vacancyClient.UpdateDraftVacancyAsync(v, user));
+    }
         
-        protected override EntityToViewModelPropertyMappings<Vacancy, FutureProspectsEditModel> DefineMappings()
-        {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, FutureProspectsEditModel>();
+    protected override EntityToViewModelPropertyMappings<Vacancy, FutureProspectsEditModel> DefineMappings()
+    {
+        var mappings = new EntityToViewModelPropertyMappings<Vacancy, FutureProspectsEditModel>();
 
-            mappings.Add(e => e.OutcomeDescription, vm => vm.FutureProspects);
+        mappings.Add(e => e.OutcomeDescription, vm => vm.FutureProspects);
 
-            return mappings;
-        }
+        return mappings;
     }
 }
