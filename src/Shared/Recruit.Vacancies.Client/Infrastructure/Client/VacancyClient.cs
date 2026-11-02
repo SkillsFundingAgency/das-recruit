@@ -105,24 +105,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return vacancyId;
         }
 
-        public async Task CreateEmployerApiVacancy(Guid id, string title, string employerAccountId, VacancyUser user,
-            TrainingProvider provider, string programmeId)
-        {
-            var command = new CreateEmployerOwnedVacancyCommand
-            {
-                VacancyId = id,
-                User = user,
-                UserType = UserType.Employer,
-                Title = title,
-                EmployerAccountId = employerAccountId,
-                Origin = SourceOrigin.Api,
-                ProgrammeId = programmeId,
-                TrainingProvider = provider
-            };
-            
-            await messaging.SendCommandAsync(command);
-        }
-
         public async Task<Guid> CloneVacancyAsync(
             Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin,
             DateTime startDate, DateTime closingDate)
@@ -136,10 +118,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return newVacancyId;
         }
 
-        private Guid GenerateVacancyId()
-        {
-            return Guid.NewGuid();
-        }
+        private static Guid GenerateVacancyId() => Guid.NewGuid();
 
         public Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user)
         {
