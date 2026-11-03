@@ -13,15 +13,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
 [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-public class CloseVacancyController : Controller
+public class CloseVacancyController(CloseVacancyOrchestrator orchestrator) : Controller
 {
-    private readonly CloseVacancyOrchestrator _orchestrator;
-
-    public CloseVacancyController(CloseVacancyOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
-
     [HttpGet("close", Name = RouteNames.CloseVacancy_Get)]
     public Task<IActionResult> Close(VacancyRouteModel vrm)
     {
@@ -42,7 +35,7 @@ public class CloseVacancyController : Controller
             return RedirectToRoute(RouteNames.VacancyManage_Get, new {m.Ukprn, m.VacancyId});
         }
 
-        var response = await _orchestrator.CloseVacancyAsync(m, User.ToVacancyUser());
+        var response = await orchestrator.CloseVacancyAsync(m, User.ToVacancyUser());
 
         TempData.Add(TempDataKeys.VacancyClosedMessage, string.Format(InfoMessages.VacancyClosed, response.Data.VacancyReference, response.Data.Title));
 
@@ -51,7 +44,7 @@ public class CloseVacancyController : Controller
 
     private async Task<IActionResult> GetCloseVacancyConfirmationView(VacancyRouteModel vrm)
     {
-        var vm = await _orchestrator.GetCloseViewModelAsync(vrm);
+        var vm = await orchestrator.GetCloseViewModelAsync(vrm);
         return View(ViewNames.CloseVacancyView, vm);
     }
 }

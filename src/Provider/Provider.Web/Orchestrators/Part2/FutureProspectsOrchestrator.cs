@@ -13,27 +13,19 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2;
 
-public class FutureProspectsOrchestrator : VacancyValidatingOrchestrator<FutureProspectsEditModel>
+public class FutureProspectsOrchestrator(
+    IRecruitVacancyClient vacancyClient,
+    ILogger<FutureProspectsOrchestrator> logger,
+    IReviewSummaryService reviewSummaryService,
+    IUtility utility)
+    : VacancyValidatingOrchestrator<FutureProspectsEditModel>(logger)
 {
     private const VacancyRuleSet ValidationRules = VacancyRuleSet.OutcomeDescription;
-    private readonly IRecruitVacancyClient _vacancyClient;
-    private readonly IReviewSummaryService _reviewSummaryService;
-    private readonly IUtility _utility;
-
-    public FutureProspectsOrchestrator(IRecruitVacancyClient vacancyClient,
-        ILogger<FutureProspectsOrchestrator> logger,
-        IReviewSummaryService reviewSummaryService,
-        IUtility utility) : base(logger)
-    {
-        _vacancyClient = vacancyClient;
-        _reviewSummaryService = reviewSummaryService;
-        _utility = utility;
-    }
 
     public async Task<FutureProspectsViewModel> GetFutureProspectsViewModelAsync(VacancyRouteModel vrm)
     {
         var vacancy =
-            await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.FutureProspects_Get);
+            await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.FutureProspects_Get);
 
         var vm = new FutureProspectsViewModel
         {
@@ -45,11 +37,11 @@ public class FutureProspectsOrchestrator : VacancyValidatingOrchestrator<FutureP
 
         if (vacancy.Status == VacancyStatus.Referred)
         {
-            vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                 ReviewFieldMappingLookups.GetFutureProspectsFieldIndicators());
         }
 
-        vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
+        vm.IsTaskListCompleted = utility.IsTaskListCompleted(vacancy);
 
         return vm;
     }
@@ -65,7 +57,7 @@ public class FutureProspectsOrchestrator : VacancyValidatingOrchestrator<FutureP
 
     public async Task<OrchestratorResponse> PostFutureProspectsEditModelAsync(FutureProspectsEditModel m, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.FutureProspects_Post);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.FutureProspects_Post);
 
         SetVacancyWithProviderReviewFieldIndicators(
             vacancy.OutcomeDescription,
@@ -75,8 +67,8 @@ public class FutureProspectsOrchestrator : VacancyValidatingOrchestrator<FutureP
 
         return await ValidateAndExecute(
             vacancy,
-            v => _vacancyClient.Validate(v, ValidationRules),
-            v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+            v => vacancyClient.Validate(v, ValidationRules),
+            v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
         );
     }
 

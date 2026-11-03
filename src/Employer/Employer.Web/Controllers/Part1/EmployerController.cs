@@ -11,22 +11,15 @@ using Esfa.Recruit.Employer.Web.ViewModels;
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
-public class EmployerController : EmployerControllerBase
+public class EmployerController(EmployerOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment)
+    : EmployerControllerBase(hostingEnvironment)
 {
-    private readonly EmployerOrchestrator _orchestrator;
-
-    public EmployerController(EmployerOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment)
-        : base(hostingEnvironment)
-    {
-        _orchestrator = orchestrator;
-    }
-
     [HttpGet("employer", Name = RouteNames.Employer_Get)]
     public async Task<IActionResult> Employer(VacancyRouteModel vrm, [FromQuery]string searchTerm, [FromQuery]int? page, [FromQuery] string wizard = "true")
     {
         var info = GetVacancyEmployerInfoCookie(vrm.VacancyId);
 
-        var vm = await _orchestrator.GetEmployerViewModelAsync(vrm, searchTerm, page, info?.AccountLegalEntityPublicHashedId);
+        var vm = await orchestrator.GetEmployerViewModelAsync(vrm, searchTerm, page, info?.AccountLegalEntityPublicHashedId);
 
         if (info == null || !string.IsNullOrEmpty(info.AccountLegalEntityPublicHashedId))
         {
@@ -40,7 +33,7 @@ public class EmployerController : EmployerControllerBase
         if (vm.HasOnlyOneOrganisation)
         {
             info = vm.VacancyEmployerInfoModel;
-            await _orchestrator.SetAccountLegalEntityPublicId(vrm,info, User.ToVacancyUser());
+            await orchestrator.SetAccountLegalEntityPublicId(vrm,info, User.ToVacancyUser());
                 
             return  RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard, vrm.VacancyId, vrm.EmployerAccountId  });
         }
@@ -64,7 +57,7 @@ public class EmployerController : EmployerControllerBase
 
         if (!ModelState.IsValid)
         {
-            var vm = await _orchestrator.GetEmployerViewModelAsync(m, m.SearchTerm, m.Page, info?.AccountLegalEntityPublicHashedId);
+            var vm = await orchestrator.GetEmployerViewModelAsync(m, m.SearchTerm, m.Page, info?.AccountLegalEntityPublicHashedId);
             SetVacancyEmployerInfoCookie(vm.VacancyEmployerInfoModel);
             vm.Pager.OtherRouteValues.Add(nameof(wizard), wizard.ToString());
             vm.PageInfo.SetWizard(wizard);
@@ -82,7 +75,7 @@ public class EmployerController : EmployerControllerBase
         }
 
         SetVacancyEmployerInfoCookie(info);
-        await _orchestrator.SetAccountLegalEntityPublicId(m,info, User.ToVacancyUser());
+        await orchestrator.SetAccountLegalEntityPublicId(m,info, User.ToVacancyUser());
             
         return wizard 
             ? RedirectToRoute(RouteNames.Training_Get, new { wizard, m.VacancyId, m.EmployerAccountId }) 

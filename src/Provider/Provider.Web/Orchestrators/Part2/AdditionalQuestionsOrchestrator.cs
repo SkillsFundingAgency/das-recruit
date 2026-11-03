@@ -17,29 +17,17 @@ using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2;
 
-public class AdditionalQuestionsOrchestrator : VacancyValidatingOrchestrator<AdditionalQuestionsEditModel>, IAdditionalQuestionsOrchestrator
+public class AdditionalQuestionsOrchestrator(
+    IRecruitVacancyClient vacancyClient,
+    ILogger<AdditionalQuestionsOrchestrator> logger,
+    IReviewSummaryService reviewSummaryService,
+    IOptions<ExternalLinksConfiguration> options,
+    IUtility utility)
+    : VacancyValidatingOrchestrator<AdditionalQuestionsEditModel>(logger), IAdditionalQuestionsOrchestrator
 {
-    private readonly IRecruitVacancyClient _vacancyClient;
-    private readonly IReviewSummaryService _reviewSummaryService;
-    private readonly IOptions<ExternalLinksConfiguration> _options;
-    private readonly IUtility _utility;
-    
-    public AdditionalQuestionsOrchestrator(
-        IRecruitVacancyClient vacancyClient,
-        ILogger<AdditionalQuestionsOrchestrator> logger,
-        IReviewSummaryService reviewSummaryService,
-        IOptions<ExternalLinksConfiguration> options,
-        IUtility utility) : base(logger)
-    {
-        _vacancyClient = vacancyClient;
-        _reviewSummaryService = reviewSummaryService;
-        _options = options;
-        _utility = utility;
-    }
-    
     public async Task<AdditionalQuestionsViewModel> GetViewModel(VacancyRouteModel routeModel)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(routeModel, RouteNames.AdditionalQuestions_Get);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(routeModel, RouteNames.AdditionalQuestions_Get);
 
         var viewModel = new AdditionalQuestionsViewModel
         {
@@ -47,7 +35,7 @@ public class AdditionalQuestionsOrchestrator : VacancyValidatingOrchestrator<Add
             Ukprn = routeModel.Ukprn,
             AdditionalQuestion1 = vacancy.AdditionalQuestion1,
             AdditionalQuestion2 = vacancy.AdditionalQuestion2,
-            FindAnApprenticeshipUrl = _options.Value.FindAnApprenticeshipUrl,
+            FindAnApprenticeshipUrl = options.Value.FindAnApprenticeshipUrl,
             VacancyTitle = vacancy.Title,
             ApprenticeshipType = vacancy.ApprenticeshipType.GetValueOrDefault(),
             QuestionCount = vacancy.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4,
@@ -55,18 +43,18 @@ public class AdditionalQuestionsOrchestrator : VacancyValidatingOrchestrator<Add
             
         if (vacancy.Status == VacancyStatus.Referred)
         {
-            viewModel.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference!.Value, 
+            viewModel.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference!.Value, 
                 ReviewFieldMappingLookups.GetAdditionalQuestionsFieldIndicators());
         }
             
-        viewModel.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
+        viewModel.IsTaskListCompleted = utility.IsTaskListCompleted(vacancy);
 
         return viewModel;
     }
     
     public async Task<OrchestratorResponse> PostEditModel(AdditionalQuestionsEditModel editModel, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.AdditionalQuestions_Post);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.AdditionalQuestions_Post);
         
         vacancy.HasSubmittedAdditionalQuestions = true;
 
@@ -85,8 +73,8 @@ public class AdditionalQuestionsOrchestrator : VacancyValidatingOrchestrator<Add
 
         return await ValidateAndExecute(
             vacancy,
-            v => _vacancyClient.Validate(v, VacancyRuleSet.AdditionalQuestion1 | VacancyRuleSet.AdditionalQuestion2),
-            v => _vacancyClient.UpdateDraftVacancyAsync(v, user));
+            v => vacancyClient.Validate(v, VacancyRuleSet.AdditionalQuestion1 | VacancyRuleSet.AdditionalQuestion2),
+            v => vacancyClient.UpdateDraftVacancyAsync(v, user));
     }
 
     protected override EntityToViewModelPropertyMappings<Vacancy, AdditionalQuestionsEditModel> DefineMappings()

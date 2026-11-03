@@ -10,18 +10,12 @@ using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1;
 
-public abstract class EmployerControllerBase : Controller
+public abstract class EmployerControllerBase(IWebHostEnvironment hostingEnvironment) : Controller
 {
-    private readonly IWebHostEnvironment _hostingEnvironment;
-    protected EmployerControllerBase(IWebHostEnvironment hostingEnvironment)
-    {
-        _hostingEnvironment = hostingEnvironment;
-    }
-
     protected void SetVacancyEmployerInfoCookie(VacancyEmployerInfoModel model)
     {
         var info = JsonConvert.SerializeObject(model);
-        Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.VacancyEmployerInfo, info);
+        Response.Cookies.SetSessionCookie(hostingEnvironment, CookieNames.VacancyEmployerInfo, info);
     }
 
     protected VacancyEmployerInfoModel GetVacancyEmployerInfoCookie(Guid vacancyId)
@@ -37,7 +31,7 @@ public abstract class EmployerControllerBase : Controller
 
     protected void DeleteVacancyEmployerInfoCookie()
     {
-        Response.Cookies.DeleteSessionCookie(_hostingEnvironment, CookieNames.VacancyEmployerInfo);
+        Response.Cookies.DeleteSessionCookie(hostingEnvironment, CookieNames.VacancyEmployerInfo);
     }
 
     protected IActionResult CancelAndRedirect(bool wizard, VacancyRouteModel vrm)

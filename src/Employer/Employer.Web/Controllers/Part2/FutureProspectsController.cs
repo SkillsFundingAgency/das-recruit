@@ -10,33 +10,26 @@ using Microsoft.AspNetCore.Mvc;
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
-public class FutureProspectsController : Controller
+public class FutureProspectsController(IFutureProspectsOrchestrator orchestrator) : Controller
 {
-    private readonly IFutureProspectsOrchestrator _orchestrator;
-
-    public FutureProspectsController(IFutureProspectsOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
-
     [HttpGet("future-prospects", Name = RouteNames.FutureProspects_Get)]
     public async Task<IActionResult> FutureProspects(VacancyRouteModel vrm)
     {
-        var vm = await _orchestrator.GetViewModel(vrm);
+        var vm = await orchestrator.GetViewModel(vrm);
         return View(vm);
     }
 
     [HttpPost("future-prospects", Name = RouteNames.FutureProspects_Post)]
     public async Task<IActionResult> FutureProspects(FutureProspectsEditModel m)
     {
-        var response = await _orchestrator.PostEditModel(m, User.ToVacancyUser());
+        var response = await orchestrator.PostEditModel(m, User.ToVacancyUser());
 
         if (!response.Success)
         {
             response.AddErrorsToModelState(ModelState);
         }
             
-        var vm = await _orchestrator.GetViewModel(m);
+        var vm = await orchestrator.GetViewModel(m);
         if (!ModelState.IsValid)
         {
             return View(vm);

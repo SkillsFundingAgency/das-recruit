@@ -12,23 +12,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 
-public class ConsiderationsOrchestrator : VacancyValidatingOrchestrator<ConsiderationsEditModel>
+public class ConsiderationsOrchestrator(
+    ILogger<ConsiderationsOrchestrator> logger,
+    IRecruitVacancyClient vacancyClient,
+    IReviewSummaryService reviewSummaryService,
+    IUtility utility)
+    : VacancyValidatingOrchestrator<ConsiderationsEditModel>(logger)
 {
     private const VacancyRuleSet ValidationRules = VacancyRuleSet.ThingsToConsider;
-    private readonly IRecruitVacancyClient _vacancyClient;
-    private readonly IReviewSummaryService _reviewSummaryService;
-    private readonly IUtility _utility;
-
-    public ConsiderationsOrchestrator(ILogger<ConsiderationsOrchestrator> logger, IRecruitVacancyClient vacancyClient, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
-    {
-        _vacancyClient = vacancyClient;
-        _reviewSummaryService = reviewSummaryService;
-        _utility = utility;
-    }
 
     public async Task<ConsiderationsViewModel> GetConsiderationsViewModelAsync(VacancyRouteModel vrm)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm);
             
         var vm = new ConsiderationsViewModel
         {
@@ -36,12 +31,12 @@ public class ConsiderationsOrchestrator : VacancyValidatingOrchestrator<Consider
             EmployerAccountId = vacancy.EmployerAccountId,
             Title = vacancy.Title,
             ThingsToConsider = vacancy.ThingsToConsider,
-            IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
+            IsTaskListCompleted = utility.IsTaskListCompleted(vacancy)
         };
 
         if (vacancy.Status == VacancyStatus.Referred)
         {
-            vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                 ReviewFieldMappingLookups.GetConsiderationsFieldIndicators());
         }
             
@@ -59,7 +54,7 @@ public class ConsiderationsOrchestrator : VacancyValidatingOrchestrator<Consider
 
     public async Task<OrchestratorResponse> PostConsiderationsEditModelAsync(ConsiderationsEditModel m, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m);
 
         SetVacancyWithEmployerReviewFieldIndicators(
             vacancy.ThingsToConsider,
@@ -69,8 +64,8 @@ public class ConsiderationsOrchestrator : VacancyValidatingOrchestrator<Consider
 
         return await ValidateAndExecute(
             vacancy,
-            v => _vacancyClient.Validate(v, ValidationRules),
-            v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+            v => vacancyClient.Validate(v, ValidationRules),
+            v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
         );
     }
 

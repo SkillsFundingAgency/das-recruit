@@ -9,16 +9,13 @@ using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules;
 
-public abstract class BaseProfanityChecksRule : Rule
+public abstract class BaseProfanityChecksRule(
+    RuleId ruleId,
+    ConsolidationOption consolidationOption,
+    decimal weighting = 1.0m)
+    : Rule(ruleId, weighting)
 {
     protected IEnumerable<string> ProfanityList { get; set; } = new List<string>();
-
-    private readonly ConsolidationOption _consolidationOption;
-
-    protected BaseProfanityChecksRule(RuleId ruleId, ConsolidationOption consolidationOption, decimal weighting = 1.0m) : base(ruleId, weighting)
-    {
-        _consolidationOption = consolidationOption;
-    }
 
     protected IEnumerable<RuleOutcome> ProfanityCheckAsync(Expression<Func<string>> property, string relatedFieldId = null)
     {
@@ -28,7 +25,7 @@ public abstract class BaseProfanityChecksRule : Rule
 
         if (foundProfanities.Values.Sum() > 0)
         {
-            switch (_consolidationOption)
+            switch (consolidationOption)
             {
                 case ConsolidationOption.NoConsolidation:
                     return CreateUnconsolidatedOutcomes(foundProfanities, fieldId);

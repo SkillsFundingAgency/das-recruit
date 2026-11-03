@@ -30,29 +30,21 @@ public interface IWageOrchestrator
     Task<OrchestratorResponse> PostCompetitiveWageEditModelAsync(CompetitiveWageEditModel m, VacancyUser user);
 }
 
-public class WageOrchestrator : VacancyValidatingOrchestrator<WageEditModel>, IWageOrchestrator
+public class WageOrchestrator(
+    IRecruitVacancyClient vacancyClient,
+    ILogger<WageOrchestrator> logger,
+    IReviewSummaryService reviewSummaryService,
+    IMinimumWageProvider minimumWageProvider,
+    IUtility utility)
+    : VacancyValidatingOrchestrator<WageEditModel>(logger), IWageOrchestrator
 {
     private const VacancyRuleSet CompetitiveValidationRules = VacancyRuleSet.CompetitiveWage;
     private const VacancyRuleSet ValidationRules = VacancyRuleSet.Wage;
-    private readonly IRecruitVacancyClient _vacancyClient;
-    private readonly IReviewSummaryService _reviewSummaryService;
-    private readonly IMinimumWageProvider _minimumWageProvider;
-    private readonly IUtility _utility;
-
-    public WageOrchestrator(IRecruitVacancyClient vacancyClient,
-        ILogger<WageOrchestrator> logger, IReviewSummaryService reviewSummaryService, IMinimumWageProvider minimumWageProvider, IUtility utility)
-        : base(logger)
-    {
-        _vacancyClient = vacancyClient;
-        _reviewSummaryService = reviewSummaryService;
-        _minimumWageProvider = minimumWageProvider;
-        _utility = utility;
-    }
 
 
     public async Task<OrchestratorResponse> PostExtraInformationEditModelAsync(WageExtraInformationViewModel m, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.AddExtraInformation_Post);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.AddExtraInformation_Post);
 
         if (vacancy.Wage == null)
             vacancy.Wage = new Wage();
@@ -75,8 +67,8 @@ public class WageOrchestrator : VacancyValidatingOrchestrator<WageEditModel>, IW
             });
         return await ValidateAndExecute(
             vacancy,
-            v => _vacancyClient.Validate(v, ValidationRules),
-            v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+            v => vacancyClient.Validate(v, ValidationRules),
+            v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
         );
     }
 
@@ -129,7 +121,7 @@ public class WageOrchestrator : VacancyValidatingOrchestrator<WageEditModel>, IW
 
     public async Task<OrchestratorResponse> PostCompetitiveWageEditModelAsync(CompetitiveWageEditModel m, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.SetCompetitivePayRate_Post);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.SetCompetitivePayRate_Post);
 
         if (vacancy.Wage == null)
             vacancy.Wage = new Wage();
@@ -162,16 +154,16 @@ public class WageOrchestrator : VacancyValidatingOrchestrator<WageEditModel>, IW
             });
         return await ValidateAndExecute(
             vacancy,
-            v => _vacancyClient.Validate(v, CompetitiveValidationRules),
-            v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+            v => vacancyClient.Validate(v, CompetitiveValidationRules),
+            v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
         );
     }
 
     public async Task<WageViewModel> GetWageViewModelAsync(VacancyRouteModel vrm)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Wage_Get);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Wage_Get);
 
-        var wagePeriod = _minimumWageProvider.GetWagePeriod(vacancy.StartDate.Value);
+        var wagePeriod = minimumWageProvider.GetWagePeriod(vacancy.StartDate.Value);
 
         var vm = new WageViewModel
         {
@@ -186,16 +178,16 @@ public class WageOrchestrator : VacancyValidatingOrchestrator<WageEditModel>, IW
             ApprenticeshipMinimumWageHourly = wagePeriod.ApprenticeshipMinimumWage.ToString("C"),
             ApprenticeshipMinimumWageYearly = GetMinimumWageYearlyText(SFA.DAS.VacancyServices.Wage.WageType.ApprenticeshipMinimum, vacancy.Wage?.WeeklyHours, vacancy.StartDate.Value),
             WeeklyHours = vacancy.Wage.WeeklyHours.Value,
-            PageInfo = _utility.GetPartOnePageInfo(vacancy),
+            PageInfo = utility.GetPartOnePageInfo(vacancy),
             Ukprn = vrm.Ukprn,
             VacancyId = vrm.VacancyId,
             CompanyBenefitsInformation = vacancy.Wage?.CompanyBenefitsInformation,
-            IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
+            IsTaskListCompleted = utility.IsTaskListCompleted(vacancy)
         };
 
         if (vacancy.Status == VacancyStatus.Referred)
         {
-            vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                 ReviewFieldMappingLookups.GetAdditionalWageInformationFieldIndicators());
         }
 
@@ -215,7 +207,7 @@ public class WageOrchestrator : VacancyValidatingOrchestrator<WageEditModel>, IW
 
     public async Task<OrchestratorResponse> PostWageEditModelAsync(WageEditModel m, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Wage_Post);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Wage_Post);
 
         if (vacancy.Wage == null)
             vacancy.Wage = new Wage();
@@ -257,8 +249,8 @@ public class WageOrchestrator : VacancyValidatingOrchestrator<WageEditModel>, IW
 
         return await ValidateAndExecute(
             vacancy,
-            v => _vacancyClient.Validate(v, ValidationRules),
-            v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+            v => vacancyClient.Validate(v, ValidationRules),
+            v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
         );
     }
 

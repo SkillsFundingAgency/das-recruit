@@ -7,19 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace Esfa.Recruit.Provider.Web.Controllers;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
-public class LegalEntityAgreementController : Controller
+public class LegalEntityAgreementController(LegalEntityAgreementOrchestrator orchestrator) : Controller
 {
-    private readonly LegalEntityAgreementOrchestrator _orchestrator;
-
-    public LegalEntityAgreementController(LegalEntityAgreementOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
-
     [HttpGet("legal-entity-agreement-stop", Name = RouteNames.LegalEntityAgreement_HardStop_Get)]
     public async Task<IActionResult> LegalEntityAgreementHardStop(VacancyRouteModel vrm)
     {
-        var vm = await _orchestrator.GetLegalEntityAgreementHardStopViewModelAsync(vrm);
+        var vm = await orchestrator.GetLegalEntityAgreementHardStopViewModelAsync(vrm);
 
         if (vm.HasLegalEntityAgreement == false)
             return View(vm);

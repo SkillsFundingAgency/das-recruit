@@ -75,20 +75,9 @@ public class TrainingOrchestratorTests
     public class TrainingOrchestratorTestsFixture
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProgramme;
-        public VacancyUser User { get; }
-        public Vacancy Vacancy { get; }
+        public VacancyUser User { get; } = VacancyOrchestratorTestData.GetVacancyUser();
+        public Vacancy Vacancy { get; } = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
         public TrainingOrchestrator Sut {get; private set;}
-
-        public TrainingOrchestratorTestsFixture()
-        {
-            MockClient = new Mock<IProviderVacancyClient>();
-            MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
-            MockProviderRecruitVacancyClient = new Mock<IProviderVacancyClient>();
-            MockExternalLinksConfiguration = new Mock<IOptions<ExternalLinksConfiguration>>();
-
-            User = VacancyOrchestratorTestData.GetVacancyUser();
-            Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
-        }
 
         public TrainingOrchestratorTestsFixture WithProgrammeId(string programmeId)
         {
@@ -125,9 +114,9 @@ public class TrainingOrchestratorTests
                 .Match<ProviderReviewFieldIndicator>((x) => x.IsChangeRequested == value);
         }
 
-        public Mock<IProviderVacancyClient> MockClient { get; set; }
-        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
-        public Mock<IProviderVacancyClient> MockProviderRecruitVacancyClient { get; set; }
-        public Mock<IOptions<ExternalLinksConfiguration>> MockExternalLinksConfiguration { get; set; }
+        public Mock<IProviderVacancyClient> MockClient { get; set; } = new();
+        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; } = new();
+        public Mock<IProviderVacancyClient> MockProviderRecruitVacancyClient { get; set; } = new();
+        public Mock<IOptions<ExternalLinksConfiguration>> MockExternalLinksConfiguration { get; set; } = new();
     }
 }

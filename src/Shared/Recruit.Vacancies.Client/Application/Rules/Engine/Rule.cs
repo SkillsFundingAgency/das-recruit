@@ -3,17 +3,11 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
 
-public abstract class Rule
+public abstract class Rule(RuleId ruleId, decimal weighting = 1.0m)
 {
-    private readonly decimal _weighting;
+    private readonly decimal _weighting = Math.Min(weighting, 100);
 
-    protected Rule(RuleId ruleId, decimal weighting = 1.0m)
-    {
-        RuleId = ruleId;
-        _weighting = Math.Min(weighting, 100);
-    }
-
-    public RuleId RuleId { get; }
+    public RuleId RuleId { get; } = ruleId;
 
     protected RuleOutcome CreateOutcome(int score, string narrative, string data, string target = RuleOutcome.NoSpecificTarget)
     {

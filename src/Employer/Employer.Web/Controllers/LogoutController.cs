@@ -11,15 +11,8 @@ using Microsoft.Extensions.Configuration;
 namespace Esfa.Recruit.Employer.Web.Controllers;
 
 [Route(RoutePaths.Services)]
-public class LogoutController : Controller
+public class LogoutController(IConfiguration configuration) : Controller
 {
-    private readonly IConfiguration _configuration;
-
-    public LogoutController(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
-        
     [AllowAnonymous]
     [HttpGet, Route("logout", Name = RouteNames.Logout_Get)]
     public async Task<IActionResult> Logout()
@@ -33,7 +26,7 @@ public class LogoutController : Controller
         {
             CookieAuthenticationDefaults.AuthenticationScheme
         };
-        _ = bool.TryParse(_configuration["StubAuth"], out var stubAuth);
+        _ = bool.TryParse(configuration["StubAuth"], out var stubAuth);
         if (!stubAuth)
         {
             schemes.Add(OpenIdConnectDefaults.AuthenticationScheme);

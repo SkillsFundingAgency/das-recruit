@@ -17,17 +17,9 @@ public interface IProviderApplicationsReportOrchestrator
     Task<Guid> PostCreateViewModelAsync(ProviderApplicationsReportCreateEditModel model, VacancyUser user);
 }
 
-public class ProviderApplicationsReportOrchestrator : IProviderApplicationsReportOrchestrator
+public class ProviderApplicationsReportOrchestrator(IProviderVacancyClient client, ITimeProvider timeProvider)
+    : IProviderApplicationsReportOrchestrator
 {
-    private readonly IProviderVacancyClient _client;
-    private readonly ITimeProvider _timeProvider;
-
-    public ProviderApplicationsReportOrchestrator(IProviderVacancyClient client, ITimeProvider timeProvider)
-    {
-        _client = client;
-        _timeProvider = timeProvider;
-    }
-
     public ProviderApplicationsReportCreateViewModel GetCreateViewModel()
     {
         return new ProviderApplicationsReportCreateViewModel();
@@ -51,18 +43,18 @@ public class ProviderApplicationsReportOrchestrator : IProviderApplicationsRepor
     public Task<Guid> PostCreateViewModelAsync(ProviderApplicationsReportCreateEditModel model, VacancyUser user)
     {
         DateTime fromDate;
-        DateTime toDate = _timeProvider.Today;
+        DateTime toDate = timeProvider.Today;
 
         switch (model.DateRange)
         {
             case DateRangeType.Last7Days:
-                fromDate = _timeProvider.Today.AddDays(-7);
+                fromDate = timeProvider.Today.AddDays(-7);
                 break;
             case DateRangeType.Last14Days:
-                fromDate = _timeProvider.Today.AddDays(-14);
+                fromDate = timeProvider.Today.AddDays(-14);
                 break;
             case DateRangeType.Last30Days:
-                fromDate = _timeProvider.Today.AddDays(-30);
+                fromDate = timeProvider.Today.AddDays(-30);
                 break;
             case DateRangeType.Custom:
                 fromDate = model.FromDate.AsDateTimeUk().Value.ToUniversalTime();
@@ -76,6 +68,6 @@ public class ProviderApplicationsReportOrchestrator : IProviderApplicationsRepor
 
         DateTime toDateInclusive = toDate.AddDays(1).AddTicks(-1);
 
-        return _client.CreateProviderApplicationsReportAsync(model.Ukprn, fromDate, toDateInclusive, user, reportName);
+        return client.CreateProviderApplicationsReportAsync(model.Ukprn, fromDate, toDateInclusive, user, reportName);
     }
 }

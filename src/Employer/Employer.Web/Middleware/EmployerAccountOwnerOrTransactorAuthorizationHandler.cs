@@ -4,18 +4,12 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Esfa.Recruit.Employer.Web.Middleware;
 
-public class EmployerAccountOwnerOrTransactorAuthorizationHandler : AuthorizationHandler<EmployerAccountOwnerOrTransactorRequirement>
+public class EmployerAccountOwnerOrTransactorAuthorizationHandler(IEmployerAccountAuthorizationHandler handler)
+    : AuthorizationHandler<EmployerAccountOwnerOrTransactorRequirement>
 {
-    private readonly IEmployerAccountAuthorizationHandler _handler;
-
-    public EmployerAccountOwnerOrTransactorAuthorizationHandler(IEmployerAccountAuthorizationHandler handler)
-    {
-        _handler = handler;
-    }
-
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, EmployerAccountOwnerOrTransactorRequirement ownerOrTransactorRequirement)
     {
-        if (!await _handler.IsEmployerAuthorized(context, EmployerUserRole.Transactor))
+        if (!await handler.IsEmployerAuthorized(context, EmployerUserRole.Transactor))
         {
             return;
         }

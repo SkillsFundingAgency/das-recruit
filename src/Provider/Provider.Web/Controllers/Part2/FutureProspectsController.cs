@@ -13,33 +13,26 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
 [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-public class FutureProspectsController : Controller
+public class FutureProspectsController(FutureProspectsOrchestrator orchestrator) : Controller
 {
-    private readonly FutureProspectsOrchestrator _orchestrator;
-
-    public FutureProspectsController(FutureProspectsOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
-
     [HttpGet("future-prospects", Name = RouteNames.FutureProspects_Get)]
     public async Task<IActionResult> FutureProspects(VacancyRouteModel vrm)
     {
-        var vm = await _orchestrator.GetFutureProspectsViewModelAsync(vrm);
+        var vm = await orchestrator.GetFutureProspectsViewModelAsync(vrm);
         return View(vm);
     }
 
     [HttpPost("future-prospects", Name = RouteNames.FutureProspects_Post)]
     public async Task<IActionResult> FutureProspects(FutureProspectsEditModel m)
     {
-        var response = await _orchestrator.PostFutureProspectsEditModelAsync(m, User.ToVacancyUser());
+        var response = await orchestrator.PostFutureProspectsEditModelAsync(m, User.ToVacancyUser());
 
         if (!response.Success)
         {
             response.AddErrorsToModelState(ModelState);
         }
             
-        var vm = await _orchestrator.GetFutureProspectsViewModelAsync(m);
+        var vm = await orchestrator.GetFutureProspectsViewModelAsync(m);
         if (!ModelState.IsValid)
         {
             return View(vm);

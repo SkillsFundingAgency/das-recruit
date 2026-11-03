@@ -9,13 +9,8 @@ internal class PostCodeValidator<T, TProperty> : PropertyValidator<T, TProperty>
 {
     public override string Name => "PostCodeValidator";
 
-    private readonly Regex _regex;
+    private readonly Regex _regex = CreateRegEx();
 
-    public PostCodeValidator()
-    {
-        _regex = CreateRegEx();
-    }
-        
     protected override string GetDefaultMessageTemplate(string errorcode)
     {
         return base.GetDefaultMessageTemplate("{PropertyName} must be a valid postcode format");

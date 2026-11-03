@@ -13,23 +13,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2;
 
-public class VacancyHowWillTheApprenticeTrainOrchestrator : VacancyValidatingOrchestrator<VacancyHowTheApprenticeWillTrainEditModel>
+public class VacancyHowWillTheApprenticeTrainOrchestrator(
+    IRecruitVacancyClient vacancyClient,
+    IReviewSummaryService reviewSummaryService,
+    IUtility utility,
+    ILogger<VacancyHowWillTheApprenticeTrainOrchestrator> logger)
+    : VacancyValidatingOrchestrator<VacancyHowTheApprenticeWillTrainEditModel>(logger)
 {
-    private readonly IRecruitVacancyClient _vacancyClient;
-    private readonly IReviewSummaryService _reviewSummaryService;
-    private readonly IUtility _utility;
     private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingDescription | VacancyRuleSet.AdditionalTrainingDescription;
-
-    public VacancyHowWillTheApprenticeTrainOrchestrator(IRecruitVacancyClient vacancyClient, IReviewSummaryService reviewSummaryService, IUtility utility,ILogger<VacancyHowWillTheApprenticeTrainOrchestrator> logger) : base(logger)
-    {
-        _vacancyClient = vacancyClient;
-        _reviewSummaryService = reviewSummaryService;
-        _utility = utility;
-    }
 
     public async Task<VacancyHowTheApprenticeWillTrainModel> GetVacancyDescriptionViewModelAsync(VacancyRouteModel vrm)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.VacancyHowTheApprenticeWillTrain_Index_Get);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.VacancyHowTheApprenticeWillTrain_Index_Get);
         var vm = new VacancyHowTheApprenticeWillTrainModel
         {
             VacancyId = vacancy.Id,
@@ -37,24 +32,24 @@ public class VacancyHowWillTheApprenticeTrainOrchestrator : VacancyValidatingOrc
             Title = vacancy.Title,
             TrainingDescription = vacancy.TrainingDescription,
             AdditionalTrainingDescription = vacancy.AdditionalTrainingDescription,
-            IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy),
+            IsTaskListCompleted = utility.IsTaskListCompleted(vacancy),
         };
 
         if (vacancy.Status == VacancyStatus.Referred)
         {
-            vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(
                 vacancy.VacancyReference.Value,
                 ReviewFieldMappingLookups.GetTrainingDescriptionFieldIndicators());
         }
             
-        vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
+        vm.IsTaskListCompleted = utility.IsTaskListCompleted(vacancy);
             
         return vm;
     }
     
     public async Task<OrchestratorResponse> PostVacancyDescriptionEditModelAsync(VacancyHowTheApprenticeWillTrainEditModel m, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.VacancyHowTheApprenticeWillTrain_Index_Post);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.VacancyHowTheApprenticeWillTrain_Index_Post);
 
         SetVacancyWithProviderReviewFieldIndicators(
             vacancy.TrainingDescription,
@@ -70,8 +65,8 @@ public class VacancyHowWillTheApprenticeTrainOrchestrator : VacancyValidatingOrc
 
         return await ValidateAndExecute(
             vacancy,
-            v => _vacancyClient.Validate(v, ValidationRules),
-            v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+            v => vacancyClient.Validate(v, ValidationRules),
+            v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
         );
     }
     

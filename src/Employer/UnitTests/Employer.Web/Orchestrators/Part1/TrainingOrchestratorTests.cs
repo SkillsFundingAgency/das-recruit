@@ -75,20 +75,11 @@ public class TrainingOrchestratorTests
     public class TrainingOrchestratorTestsFixture
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProgramme;
-        public VacancyUser User { get; }
-        public Vacancy Vacancy { get; }
+        public VacancyUser User { get; } = VacancyOrchestratorTestData.GetVacancyUser();
+        public Vacancy Vacancy { get; } = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
         public TrainingOrchestrator Sut {get; private set;}
 
-        public Mock<IEmployerVacancyClient> MockEmployerVacancyClient { get ; }
-
-        public TrainingOrchestratorTestsFixture()
-        {
-            MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
-            MockEmployerVacancyClient = new Mock<IEmployerVacancyClient>();
-
-            User = VacancyOrchestratorTestData.GetVacancyUser();
-            Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
-        }
+        public Mock<IEmployerVacancyClient> MockEmployerVacancyClient { get ; } = new();
 
         public TrainingOrchestratorTestsFixture WithProgrammeId(string programmeId)
         {
@@ -129,6 +120,6 @@ public class TrainingOrchestratorTests
                 .Match<EmployerReviewFieldIndicator>((x) => x.IsChangeRequested == value);
         }
 
-        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
+        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; } = new();
     }
 }

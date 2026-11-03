@@ -14,33 +14,26 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
 [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-public class ConsiderationsController : Controller
+public class ConsiderationsController(ConsiderationsOrchestrator orchestrator) : Controller
 {
-    private readonly ConsiderationsOrchestrator _orchestrator;
-
-    public ConsiderationsController(ConsiderationsOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
-
     [HttpGet("considerations", Name = RouteNames.Considerations_Get)]
     public async Task<IActionResult> Considerations(VacancyRouteModel vrm)
     {
-        var vm = await _orchestrator.GetConsiderationsViewModelAsync(vrm);
+        var vm = await orchestrator.GetConsiderationsViewModelAsync(vrm);
         return View(vm);
     }
 
     [HttpPost("considerations", Name =  RouteNames.Considerations_Post)]
     public async Task<IActionResult> Considerations(ConsiderationsEditModel m)
     {
-        var response = await _orchestrator.PostConsiderationsEditModelAsync(m, User.ToVacancyUser());
+        var response = await orchestrator.PostConsiderationsEditModelAsync(m, User.ToVacancyUser());
 
         if (!response.Success)
         {
             response.AddErrorsToModelState(ModelState);
         }
 
-        var vm = await _orchestrator.GetConsiderationsViewModelAsync(m);
+        var vm = await orchestrator.GetConsiderationsViewModelAsync(m);
         if (!ModelState.IsValid)
         {
             return View(vm);

@@ -16,19 +16,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
 [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-public class DurationController : Controller
+public class DurationController(DurationOrchestrator orchestrator) : Controller
 {
-    private readonly DurationOrchestrator _orchestrator;
-
-    public DurationController(DurationOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
-        
     [HttpGet("duration", Name = RouteNames.Duration_Get)]
     public async Task<IActionResult> Duration(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
     {
-        var vm = await _orchestrator.GetDurationViewModelAsync(vrm);
+        var vm = await orchestrator.GetDurationViewModelAsync(vrm);
         vm.PageInfo.SetWizard(wizard);
         return View(vm);
     }
@@ -36,7 +29,7 @@ public class DurationController : Controller
     [HttpPost("duration", Name = RouteNames.Duration_Post)]
     public async Task<IActionResult> Duration(DurationEditModel m, [FromQuery] bool wizard)
     {
-        var response = await _orchestrator.PostDurationEditModelAsync(m, User.ToVacancyUser());
+        var response = await orchestrator.PostDurationEditModelAsync(m, User.ToVacancyUser());
             
         if (!response.Success)
         {
@@ -45,7 +38,7 @@ public class DurationController : Controller
 
         if (!ModelState.IsValid)
         {
-            var vm = await _orchestrator.GetDurationViewModelAsync(m);
+            var vm = await orchestrator.GetDurationViewModelAsync(m);
             vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }

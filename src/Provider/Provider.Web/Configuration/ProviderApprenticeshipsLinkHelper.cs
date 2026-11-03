@@ -3,14 +3,10 @@ using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Provider.Web.Configuration;
 
-public class ProviderApprenticeshipsLinkHelper
+public class ProviderApprenticeshipsLinkHelper(IOptions<ExternalLinksConfiguration> externalLinks)
 {
-    private readonly ExternalLinksConfiguration _externalLinks;
+    private readonly ExternalLinksConfiguration _externalLinks = externalLinks.Value;
 
-    public ProviderApprenticeshipsLinkHelper(IOptions<ExternalLinksConfiguration> externalLinks)
-    {
-        _externalLinks = externalLinks.Value;
-    }
     public string AccountHome => $"{_externalLinks.ProviderApprenticeshipSiteUrl}{ProviderApprenticeshipsRoutes.ProviderApprenticeshipSiteAccountsHomeRoute}";
     public string ProviderRecruitmentApi => $"{_externalLinks.ProviderRecruitmentApiUrl}{ProviderApprenticeshipsRoutes.ProviderRecruitmentApi}";
 }

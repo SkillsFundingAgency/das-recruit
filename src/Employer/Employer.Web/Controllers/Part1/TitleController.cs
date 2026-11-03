@@ -12,15 +12,9 @@ using Esfa.Recruit.Shared.Web.Extensions;
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1;
 
 [Route(RoutePaths.AccountRoutePath)]
-public class TitleController : Controller
+public class TitleController(TitleOrchestrator orchestrator) : Controller
 {
     private const string VacancyTitleRoute = "vacancies/{vacancyId:guid}/title";
-    private readonly TitleOrchestrator _orchestrator;
-
-    public TitleController(TitleOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
 
     [HttpGet("create-vacancy", Name = RouteNames.CreateVacancy_Get)]
     public IActionResult Title([FromRoute] string employerAccountId)
@@ -33,7 +27,7 @@ public class TitleController : Controller
     [HttpGet(VacancyTitleRoute, Name = RouteNames.Title_Get)]
     public async Task<IActionResult> Title(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
     {
-        var vm = await _orchestrator.GetTitleViewModelAsync(vrm);
+        var vm = await orchestrator.GetTitleViewModelAsync(vrm);
         vm.PageInfo.SetWizard();
         return View(vm);
     }
@@ -42,7 +36,7 @@ public class TitleController : Controller
     [HttpPost(VacancyTitleRoute, Name = RouteNames.Title_Post)]
     public async Task<IActionResult> Title(TitleEditModel m, [FromQuery] bool wizard)
     {
-        var response = await _orchestrator.PostTitleEditModelAsync(m, User.ToVacancyUser());
+        var response = await orchestrator.PostTitleEditModelAsync(m, User.ToVacancyUser());
         if (!response.Success)
         {
             response.AddErrorsToModelState(ModelState);
@@ -50,7 +44,7 @@ public class TitleController : Controller
 
         if (!ModelState.IsValid)
         {
-            var vm = await _orchestrator.GetTitleViewModelAsync(m);
+            var vm = await orchestrator.GetTitleViewModelAsync(m);
             vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }

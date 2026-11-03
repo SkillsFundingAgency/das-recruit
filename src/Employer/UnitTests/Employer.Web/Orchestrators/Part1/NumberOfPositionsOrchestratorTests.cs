@@ -40,18 +40,9 @@ public class NumberofPositionsOrchestratorTests
     public class NumberofPositionsOrchestratorTestsFixture
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.NumberOfPositions;
-        public VacancyUser User { get; }
-        public Vacancy Vacancy { get; }
+        public VacancyUser User { get; } = VacancyOrchestratorTestData.GetVacancyUser();
+        public Vacancy Vacancy { get; } = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
         public NumberOfPositionsOrchestrator Sut {get; private set;}
-
-        public NumberofPositionsOrchestratorTestsFixture()
-        {
-            MockClient = new Mock<IEmployerVacancyClient>();
-            MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
-
-            User = VacancyOrchestratorTestData.GetVacancyUser();
-            Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
-        }
 
         public NumberofPositionsOrchestratorTestsFixture WithNumberOfPositions(int numberOfPositions)
         {
@@ -81,7 +72,7 @@ public class NumberofPositionsOrchestratorTests
                 .Match<EmployerReviewFieldIndicator>((x) => x.IsChangeRequested == value);
         }
 
-        public Mock<IEmployerVacancyClient> MockClient { get; set; }
-        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
+        public Mock<IEmployerVacancyClient> MockClient { get; set; } = new();
+        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; } = new();
     }
 }

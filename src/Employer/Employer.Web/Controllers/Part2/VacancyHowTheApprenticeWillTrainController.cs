@@ -10,33 +10,27 @@ using Esfa.Recruit.Shared.Web.Extensions;
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
-public class VacancyHowTheApprenticeWillTrainController : Controller
+public class VacancyHowTheApprenticeWillTrainController(VacancyHowWillTheApprenticeTrainOrchestrator orchestrator)
+    : Controller
 {
-    private readonly VacancyHowWillTheApprenticeTrainOrchestrator _orchestrator;
-
-    public VacancyHowTheApprenticeWillTrainController(VacancyHowWillTheApprenticeTrainOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
-
     [HttpGet("how-will-the-apprentice-train", Name = RouteNames.VacancyHowTheApprenticeWillTrain_Index_Get)]
     public async Task<IActionResult> VacancyHowTheApprenticeWillTrain(VacancyRouteModel vrm)
     {
-        var vm = await _orchestrator.GetVacancyDescriptionViewModelAsync(vrm);
+        var vm = await orchestrator.GetVacancyDescriptionViewModelAsync(vrm);
         return View(vm);
     }
 
     [HttpPost("how-will-the-apprentice-train", Name =  RouteNames.VacancyHowTheApprenticeWillTrain_Index_Post)]
     public async Task<IActionResult> VacancyHowTheApprenticeWillTrain(VacancyHowTheApprenticeWillTrainEditModel m)
     {
-        var response = await _orchestrator.PostVacancyDescriptionEditModelAsync(m, User.ToVacancyUser());
+        var response = await orchestrator.PostVacancyDescriptionEditModelAsync(m, User.ToVacancyUser());
 
         if (!response.Success)
         {
             response.AddErrorsToModelState(ModelState);
         }
 
-        var vm = await _orchestrator.GetVacancyDescriptionViewModelAsync(m);
+        var vm = await orchestrator.GetVacancyDescriptionViewModelAsync(m);
         if (!ModelState.IsValid)
         {
             vm.AdditionalTrainingDescription = m.AdditionalTrainingDescription;

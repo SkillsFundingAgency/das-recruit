@@ -24,22 +24,16 @@ using Microsoft.Extensions.Options;
 namespace Esfa.Recruit.Provider.Web.Controllers;
 
 [AllowAnonymous]
-public class ErrorController : Controller
+public class ErrorController(
+    ILogger<ErrorController> logger,
+    IOptions<ExternalLinksConfiguration> externalLinks,
+    IRecruitVacancyClient vacancyClient,
+    ITrainingProviderSummaryProvider trainingProviderSummaryProvider,
+    IConfiguration configuration)
+    : Controller
 {
-    private readonly ILogger<ErrorController> _logger;
-    private readonly ExternalLinksConfiguration _externalLinks;
-    private readonly IRecruitVacancyClient _vacancyClient;
-    private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
-    private readonly IConfiguration _configuration;
-
-    public ErrorController(ILogger<ErrorController> logger, IOptions<ExternalLinksConfiguration> externalLinks, IRecruitVacancyClient vacancyClient, ITrainingProviderSummaryProvider trainingProviderSummaryProvider, IConfiguration configuration)
-    {
-        _logger = logger;
-        _externalLinks = externalLinks.Value;
-        _vacancyClient = vacancyClient;
-        _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
-        _configuration = configuration;
-    }
+    private readonly ExternalLinksConfiguration _externalLinks = externalLinks.Value;
+    private readonly IRecruitVacancyClient _vacancyClient = vacancyClient;
 
     [Route("error/{id?}")]
     public IActionResult Error(int id)
@@ -79,14 +73,14 @@ public class ErrorController : Controller
             if (exception is AggregateException aggregateException)
             {
                 var flattenedExceptions = aggregateException.Flatten();
-                _logger.LogError(flattenedExceptions, "Aggregate exception on path: {route}", routeWhereExceptionOccurred);
+                logger.LogError(flattenedExceptions, "Aggregate exception on path: {route}", routeWhereExceptionOccurred);
 
                 exception = flattenedExceptions.InnerExceptions.FirstOrDefault();
             }
 
             if (exception is InvalidStateException)
             {
-                _logger.LogWarning(exception, "Exception on path: {route}", routeWhereExceptionOccurred);
+                logger.LogWarning(exception, "Exception on path: {route}", routeWhereExceptionOccurred);
                 AddDashboardMessage(exception.Message);
                 return RedirectToRoute(RouteNames.VacanciesGetAll, new { Ukprn = ukprn });
             }
@@ -113,7 +107,7 @@ public class ErrorController : Controller
 
             if (exception is MissingPermissionsException mpEx)
             {
-                _logger.LogInformation(mpEx.Message);
+                logger.LogInformation(mpEx.Message);
                 return MissingPermissions(long.Parse((string)ukprn));
             }
 
@@ -122,7 +116,7 @@ public class ErrorController : Controller
                 return ApplicationWithdrawn(long.Parse((string)ukprn), withdrawnException);
             }
 
-            _logger.LogError(exception, "Unhandled exception on path: {route}", routeWhereExceptionOccurred);
+            logger.LogError(exception, "Unhandled exception on path: {route}", routeWhereExceptionOccurred);
         }
 
         Response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -152,7 +146,7 @@ public class ErrorController : Controller
 
         if (!serviceClaims.Any(claim => claim.Value.IsServiceClaim()))
         {
-            _logger.LogInformation("User does not have service claim.");
+            logger.LogInformation("User does not have service claim.");
             return Redirect(_externalLinks.ProviderApprenticeshipSiteUrl);
         }
 
@@ -164,7 +158,7 @@ public class ErrorController : Controller
             bool ukprnIsNotListedInRoatp;
             try
             {
-                var provider = _trainingProviderSummaryProvider.GetAsync(ukprn).Result;
+                var provider = trainingProviderSummaryProvider.GetAsync(ukprn).Result;
 
                 ukprnIsNotListedInRoatp = provider == null;
             }
@@ -175,17 +169,17 @@ public class ErrorController : Controller
 
             if (ukprnIsNotListedInRoatp)
             {
-                _logger.LogInformation($"Provider {ukprn} is not listed in RoATP for user {User.Identity.Name}.");
+                logger.LogInformation($"Provider {ukprn} is not listed in RoATP for user {User.Identity.Name}.");
                 return Redirect(_externalLinks.ProviderApprenticeshipSiteUrl);
             }
         }
 
         Response.StatusCode = (int)HttpStatusCode.Unauthorized;
 
-        bool useDfESignIn = _configuration["UseDfESignIn"] != null && _configuration["UseDfESignIn"]
+        bool useDfESignIn = configuration["UseDfESignIn"] != null && configuration["UseDfESignIn"]
             .Equals("true", StringComparison.CurrentCultureIgnoreCase);
 
-        return View(ViewNames.AccessDenied, new Error403ViewModel(_configuration["ResourceEnvironmentName"])
+        return View(ViewNames.AccessDenied, new Error403ViewModel(configuration["ResourceEnvironmentName"])
         {
             UseDfESignIn = useDfESignIn
         });
@@ -211,7 +205,7 @@ public class ErrorController : Controller
 
     private IActionResult ApplicationWithdrawn(long ukprn, ApplicationWithdrawnException exception)
     {
-        _logger.LogInformation(exception.Message);
+        logger.LogInformation(exception.Message);
         Response.StatusCode = (int)HttpStatusCode.NotFound;
         var returnLink = Url.RouteUrl(RouteNames.VacancyManage_Get, new VacancyRouteModel
         {
@@ -225,7 +219,7 @@ public class ErrorController : Controller
     private void AddDashboardMessage(string message)
     {
         if (TempData.ContainsKey(TempDataKeys.VacanciesErrorMessage))
-            _logger.LogError($"Dashboard message already set in {nameof(ErrorController)}. Existing message:{TempData[TempDataKeys.VacanciesErrorMessage]}. New message:{message}");
+            logger.LogError($"Dashboard message already set in {nameof(ErrorController)}. Existing message:{TempData[TempDataKeys.VacanciesErrorMessage]}. New message:{message}");
 
         TempData[TempDataKeys.VacanciesErrorMessage] = message;
     }

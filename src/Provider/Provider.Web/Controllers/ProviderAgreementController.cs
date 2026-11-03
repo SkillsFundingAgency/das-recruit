@@ -9,19 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace Esfa.Recruit.Provider.Web.Controllers;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
-public class ProviderAgreementController : Controller
+public class ProviderAgreementController(ProviderAgreementOrchestrator orchestrator) : Controller
 {
-    private readonly ProviderAgreementOrchestrator _orchestrator;
-
-    public ProviderAgreementController(ProviderAgreementOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
-
     [HttpGet("provider-agreement", Name = RouteNames.ProviderAgreement_HardStop_Get)]
     public async Task<IActionResult> ProviderAgreementHardStop(VacancyRouteModel vrm)
     {
-        var hasAgreement = await _orchestrator.HasAgreementAsync(vrm.Ukprn);
+        var hasAgreement = await orchestrator.HasAgreementAsync(vrm.Ukprn);
         return hasAgreement
             ? RedirectToRoute(RouteNames.Vacancy_Advert_Preview_Get, new { vrm.Ukprn, vrm.VacancyId })
             : View(vrm); 

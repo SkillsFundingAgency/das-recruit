@@ -9,28 +9,19 @@ using Microsoft.AspNetCore.Mvc;
 namespace Esfa.Recruit.Provider.Web.Controllers;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
-public class VacancyViewController : Controller
+public class VacancyViewController(VacancyViewOrchestrator orchestrator, IUtility utility) : Controller
 {
-    private readonly VacancyViewOrchestrator _orchestrator;
-    private readonly IUtility _utility;
-
-    public VacancyViewController(VacancyViewOrchestrator orchestrator, IUtility utility)
-    {
-        _orchestrator = orchestrator;
-        _utility = utility;
-    }
-
     [HttpGet("view", Name = RouteNames.DisplayFullVacancy_Get)]
     public async Task<IActionResult> DisplayFullVacancy(VacancyRouteModel vrm)
     {
-        var vacancy = await _orchestrator.GetVacancy(vrm);
+        var vacancy = await orchestrator.GetVacancy(vrm);
 
         if (vacancy.CanEdit)
         {
             return HandleRedirectOfEditableVacancy(vacancy);
         }
 
-        var vm = await _orchestrator.GetFullVacancyDisplayViewModelAsync(vacancy);
+        var vm = await orchestrator.GetFullVacancyDisplayViewModelAsync(vacancy);
         vm.Ukprn = vrm.Ukprn;
         vm.VacancyId = vrm.VacancyId;
         return View(ViewNames.FullVacancyView, vm);
@@ -38,7 +29,7 @@ public class VacancyViewController : Controller
 
     private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
     {
-        if (_utility.IsTaskListCompleted(vacancy))
+        if (utility.IsTaskListCompleted(vacancy))
         {
             return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
         }

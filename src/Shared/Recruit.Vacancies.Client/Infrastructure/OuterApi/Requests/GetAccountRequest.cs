@@ -1,13 +1,6 @@
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 
-public class GetAccountRequest : IGetApiRequest
+public class GetAccountRequest(long accountId) : IGetApiRequest
 {
-    private readonly long _accountId;
-
-    public GetAccountRequest(long accountId)
-    {
-        _accountId = accountId;
-    }
-
-    public string GetUrl => $"employeraccounts/{_accountId}";
+    public string GetUrl => $"employeraccounts/{accountId}";
 }

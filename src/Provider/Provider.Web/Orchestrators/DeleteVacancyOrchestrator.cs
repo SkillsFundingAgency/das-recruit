@@ -8,24 +8,16 @@ using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators;
 
-public class DeleteVacancyOrchestrator
+public class DeleteVacancyOrchestrator(
+    IProviderVacancyClient client,
+    IRecruitVacancyClient vacancyClient,
+    IUtility utility)
 {
-    private readonly IProviderVacancyClient _client;
-    private readonly IRecruitVacancyClient _vacancyClient;
-    private readonly IUtility _utility;
-
-    public DeleteVacancyOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, IUtility utility)
-    {
-        _client = client;
-        _vacancyClient = vacancyClient;
-        _utility = utility;
-    }
-
     public async Task<DeleteViewModel> GetDeleteViewModelAsync(VacancyRouteModel vrm)
     {
-        var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId.Value);
+        var vacancy = await vacancyClient.GetVacancyAsync(vrm.VacancyId.Value);
 
-        _utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
+        utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
 
         if (!vacancy.CanDelete)
             throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
@@ -41,9 +33,9 @@ public class DeleteVacancyOrchestrator
 
     public async Task<DeleteViewModel> DeleteVacancyAsync(DeleteEditModel m, VacancyUser user)
     {
-        var vacancy = await _vacancyClient.GetVacancyAsync(m.VacancyId.Value);
+        var vacancy = await vacancyClient.GetVacancyAsync(m.VacancyId.Value);
 
-        _utility.CheckAuthorisedAccess(vacancy, m.Ukprn);
+        utility.CheckAuthorisedAccess(vacancy, m.Ukprn);
 
         if (!vacancy.CanDelete)
             throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
@@ -54,7 +46,7 @@ public class DeleteVacancyOrchestrator
             Status = vacancy.Status,
             VacancyReference = vacancy.VacancyReference
         };
-        await _client.DeleteVacancyAsync(vacancy.Id, user);
+        await client.DeleteVacancyAsync(vacancy.Id, user);
         return vm;
     }
 }

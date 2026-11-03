@@ -15,19 +15,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
 [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-public class WageController : Controller
+public class WageController(IWageOrchestrator orchestrator) : Controller
 {
-    private readonly IWageOrchestrator _orchestrator;
-
-    public WageController(IWageOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
-
     [HttpGet("wage", Name = RouteNames.Wage_Get)]
     public async Task<IActionResult> Wage(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
     {
-        var vm = await _orchestrator.GetWageViewModelAsync(vrm);
+        var vm = await orchestrator.GetWageViewModelAsync(vrm);
         vm.PageInfo.SetWizard(wizard);
         return View(vm);
     }
@@ -35,7 +28,7 @@ public class WageController : Controller
     [HttpPost("wage", Name = RouteNames.Wage_Post)]
     public async Task<IActionResult> Wage(WageEditModel m, [FromQuery] bool wizard)
     {
-        var vm = await _orchestrator.GetWageViewModelAsync((VacancyRouteModel)m);
+        var vm = await orchestrator.GetWageViewModelAsync((VacancyRouteModel)m);
 
         if (!ModelState.IsValid)
         {
@@ -50,7 +43,7 @@ public class WageController : Controller
 
                 if (vm.WageType != m.WageType)
                 {
-                    var response = await _orchestrator.PostWageEditModelAsync(m, User.ToVacancyUser());
+                    var response = await orchestrator.PostWageEditModelAsync(m, User.ToVacancyUser());
 
                     if (!response.Success)
                     {
@@ -75,7 +68,7 @@ public class WageController : Controller
     [HttpGet("competitive-wage", Name = RouteNames.SetCompetitivePayRate_Get)]
     public async Task<IActionResult> CompetitiveSalary(VacancyRouteModel vrm, [FromQuery] bool wizard)
     {
-        var vm = await _orchestrator.GetCompetitiveWageViewModelAsync(vrm);
+        var vm = await orchestrator.GetCompetitiveWageViewModelAsync(vrm);
         vm.PageInfo.SetWizard(wizard);
         return View(vm);
     }
@@ -83,7 +76,7 @@ public class WageController : Controller
     [HttpPost("competitive-wage", Name = RouteNames.SetCompetitivePayRate_Post)]
     public async Task<IActionResult> CompetitiveSalary(CompetitiveWageEditModel m, [FromQuery] bool wizard)
     {
-        var vm = await _orchestrator.GetCompetitiveWageViewModelAsync(m);
+        var vm = await orchestrator.GetCompetitiveWageViewModelAsync(m);
 
         if (!ModelState.IsValid)
         {
@@ -96,7 +89,7 @@ public class WageController : Controller
 
             if (vm.WageType != m.WageType)
             {
-                var response = await _orchestrator.PostCompetitiveWageEditModelAsync(m, User.ToVacancyUser());
+                var response = await orchestrator.PostCompetitiveWageEditModelAsync(m, User.ToVacancyUser());
 
                 if (!response.Success)
                 {
@@ -113,7 +106,7 @@ public class WageController : Controller
     [HttpGet("extra-information-wage", Name = RouteNames.AddExtraInformation_Get)]
     public async Task<IActionResult> AdditionalInformation(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
     {
-        var vm = await _orchestrator.GetExtraInformationViewModelAsync(vrm);
+        var vm = await orchestrator.GetExtraInformationViewModelAsync(vrm);
         vm.PageInfo.SetWizard(wizard);
         return View(vm);
     }
@@ -126,7 +119,7 @@ public class WageController : Controller
             return await HandleAdditionalInformationDefaultView(vrm, wizard);
         }
 
-        var response = await _orchestrator.PostExtraInformationEditModelAsync(vrm, User.ToVacancyUser());
+        var response = await orchestrator.PostExtraInformationEditModelAsync(vrm, User.ToVacancyUser());
 
         if (!response.Success)
         {
@@ -145,7 +138,7 @@ public class WageController : Controller
 
     async Task<IActionResult> HandleAdditionalInformationDefaultView(WageExtraInformationViewModel vrm, bool wizard)
     {
-        var vm = await _orchestrator.GetExtraInformationViewModelAsync(vrm);
+        var vm = await orchestrator.GetExtraInformationViewModelAsync(vrm);
         vm.WageAdditionalInformation = vrm.WageAdditionalInformation;
         vm.CompanyBenefitsInformation = vrm.CompanyBenefitsInformation;
         vm.PageInfo.SetWizard(wizard);

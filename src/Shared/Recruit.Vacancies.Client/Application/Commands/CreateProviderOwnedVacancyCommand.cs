@@ -5,30 +5,26 @@ using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Commands;
 
-public class CreateProviderOwnedVacancyCommand : ICommand, IRequest<Unit>
+public class CreateProviderOwnedVacancyCommand(
+    Guid vacancyId,
+    SourceOrigin origin,
+    long ukprn,
+    string employerAccountId,
+    VacancyUser user,
+    UserType userType,
+    string title,
+    string accountLegalEntityPublicHashedId,
+    string legalEntityName)
+    : ICommand, IRequest<Unit>
 {
-    public CreateProviderOwnedVacancyCommand(Guid vacancyId, SourceOrigin origin, long ukprn,
-        string employerAccountId, VacancyUser user, UserType userType, string title, string accountLegalEntityPublicHashedId, string legalEntityName)
-    {
-        VacancyId = vacancyId;
-        Origin = origin;
-        Ukprn = ukprn;
-        EmployerAccountId = employerAccountId;
-        User = user;
-        UserType = userType;
-        Title = title;
-        AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId;
-        LegalEntityName = legalEntityName;
-    }
+    public string LegalEntityName { get; set; } = legalEntityName;
 
-    public string LegalEntityName { get; set; }
-
-    public Guid VacancyId { get; }
-    public SourceOrigin Origin { get; }
-    public long Ukprn { get; }
-    public string EmployerAccountId { get; }
-    public VacancyUser User { get; }
-    public UserType UserType { get; }
-    public string Title { get; }
-    public string AccountLegalEntityPublicHashedId { get; set; }
+    public Guid VacancyId { get; } = vacancyId;
+    public SourceOrigin Origin { get; } = origin;
+    public long Ukprn { get; } = ukprn;
+    public string EmployerAccountId { get; } = employerAccountId;
+    public VacancyUser User { get; } = user;
+    public UserType UserType { get; } = userType;
+    public string Title { get; } = title;
+    public string AccountLegalEntityPublicHashedId { get; set; } = accountLegalEntityPublicHashedId;
 }

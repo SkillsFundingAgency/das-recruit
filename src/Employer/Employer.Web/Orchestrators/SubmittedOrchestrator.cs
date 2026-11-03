@@ -8,20 +8,11 @@ using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators;
 
-public class SubmittedOrchestrator
+public class SubmittedOrchestrator(IRecruitVacancyClient vacancyClient, IUtility utility)
 {
-    private readonly IRecruitVacancyClient _vacancyClient;
-    private readonly IUtility _utility;
-
-    public SubmittedOrchestrator(IRecruitVacancyClient vacancyClient, IUtility utility)
-    {
-        _vacancyClient = vacancyClient;
-        _utility = utility;
-    }
-
     public async Task<VacancySubmittedConfirmationViewModel> GetVacancySubmittedConfirmationViewModelAsync(VacancyRouteModel vrm, VacancyUser vacancyUser)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyAsync(vrm);
+        var vacancy = await utility.GetAuthorisedVacancyAsync(vrm);
 
         if (vacancy.Status != VacancyStatus.Submitted)
             throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotSubmittedSuccessfully, vacancy.Title));
@@ -29,7 +20,7 @@ public class SubmittedOrchestrator
         var isResubmit = false;
         if (vacancy.VacancyReference.HasValue)
         {
-            var review = await _vacancyClient.GetCurrentReferredVacancyReviewAsync(vacancy.VacancyReference.Value);
+            var review = await vacancyClient.GetCurrentReferredVacancyReviewAsync(vacancy.VacancyReference.Value);
             isResubmit = review != null;
         }
 

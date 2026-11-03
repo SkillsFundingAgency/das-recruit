@@ -16,25 +16,20 @@ using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators;
 
-public class EditVacancyDatesOrchestrator : EntityValidatingOrchestrator<Vacancy, EditVacancyDatesEditModel>
+public class EditVacancyDatesOrchestrator(
+    IRecruitVacancyClient vacancyClient,
+    ILogger<EditVacancyDatesOrchestrator> logger,
+    ITimeProvider timeProvider,
+    IUtility utility)
+    : EntityValidatingOrchestrator<Vacancy, EditVacancyDatesEditModel>(logger)
 {
     private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate | VacancyRuleSet.MinimumWage;
-    private readonly IRecruitVacancyClient _vacancyClient;
-    private readonly ITimeProvider _timeProvider;
-    private readonly IUtility _utility;
-
-    public EditVacancyDatesOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<EditVacancyDatesOrchestrator> logger, ITimeProvider timeProvider, IUtility utility) : base(logger)
-    {
-        _vacancyClient = vacancyClient;
-        _timeProvider = timeProvider;
-        _utility = utility;
-    }
 
     public async Task<Vacancy> GetVacancyAsync(VacancyRouteModel vrm)
     {
-        var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
+        var vacancy = await vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
-        _utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
+        utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
         if (vacancy.CanExtendStartAndClosingDates == false)
             throw new InvalidStateException(string.Format(ErrMsg.VacancyDatesCannotBeEdited, vacancy.Title));
@@ -45,7 +40,7 @@ public class EditVacancyDatesOrchestrator : EntityValidatingOrchestrator<Vacancy
     public async Task<OrchestratorResponse<EditVacancyDatesViewModel>> GetEditVacancyDatesViewModelAsync(VacancyRouteModel vrm, DateTime? proposedClosingDate, DateTime? proposedStartDate)
     {
         var vacancyTask = GetVacancyAsync(vrm);
-        var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync(includePlaceholderProgramme: true);
+        var programmesTask = vacancyClient.GetActiveApprenticeshipProgrammesAsync(includePlaceholderProgramme: true);
 
         await Task.WhenAll(vacancyTask, programmesTask);
 
@@ -64,7 +59,7 @@ public class EditVacancyDatesOrchestrator : EntityValidatingOrchestrator<Vacancy
             StartMonth = $"{vacancy.StartDate.Value.Month:00}",
             StartYear = $"{vacancy.StartDate.Value.Year}",
 
-            CurrentYear = _timeProvider.Now.Year,
+            CurrentYear = timeProvider.Now.Year,
 
             ProgrammeName = programmes.FirstOrDefault(p => p.Id == vacancy.ProgrammeId)?.Title ?? "",
                 
@@ -102,7 +97,7 @@ public class EditVacancyDatesOrchestrator : EntityValidatingOrchestrator<Vacancy
         resp.Data.StartDay = m.StartDay;
         resp.Data.StartMonth = m.StartMonth;
         resp.Data.StartYear = m.StartYear;
-        resp.Data.CurrentYear = _timeProvider.Now.Year;
+        resp.Data.CurrentYear = timeProvider.Now.Year;
 
         return resp.Data;
     }
@@ -120,8 +115,8 @@ public class EditVacancyDatesOrchestrator : EntityValidatingOrchestrator<Vacancy
 
         return await ValidateAndExecute(
             vacancy, 
-            v => _vacancyClient.Validate(v, ValidationRules),
-            v => _vacancyClient.UpdatePublishedVacancyAsync(vacancy, user, updateKind)
+            v => vacancyClient.Validate(v, ValidationRules),
+            v => vacancyClient.UpdatePublishedVacancyAsync(vacancy, user, updateKind)
         );
     }
 

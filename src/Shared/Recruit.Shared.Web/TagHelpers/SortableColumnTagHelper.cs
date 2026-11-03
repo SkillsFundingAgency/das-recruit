@@ -12,7 +12,8 @@ using System.Text;
 namespace Esfa.Recruit.Shared.Web.TagHelpers;
 
 [HtmlTargetElement("sortable-column")]
-public class SortableColumnTagHelper : TagHelper
+public class SortableColumnTagHelper(IUrlHelperFactory urlHelperFactory, IActionContextAccessor contextAccessor)
+    : TagHelper
 {
     private const string CssClass = "govuk-link das-table__sort";
 
@@ -35,12 +36,7 @@ public class SortableColumnTagHelper : TagHelper
     [HtmlAttributeNotBound]
     public ViewContext ViewContext { get; set; }
 
-    private readonly IUrlHelper _urlHelper;
-
-    public SortableColumnTagHelper(IUrlHelperFactory urlHelperFactory, IActionContextAccessor contextAccessor)
-    {
-        _urlHelper = urlHelperFactory.GetUrlHelper(contextAccessor.ActionContext);
-    }
+    private readonly IUrlHelper _urlHelper = urlHelperFactory.GetUrlHelper(contextAccessor.ActionContext);
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {

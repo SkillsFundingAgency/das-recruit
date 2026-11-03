@@ -11,20 +11,13 @@ using Esfa.Recruit.Shared.Web.Extensions;
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
-public class SkillsController : Controller
+public class SkillsController(SkillsOrchestrator orchestrator) : Controller
 {
-    private readonly SkillsOrchestrator _orchestrator;
-
-    public SkillsController(SkillsOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
-
     [HttpGet("skills", Name = RouteNames.Skills_Get)]
     public async Task<IActionResult> Skills(VacancyRouteModel vrm)
     {
         // If adding/removing skill, tempdata will have the current draft list.
-        var vm = await _orchestrator.GetSkillsViewModelAsync(vrm, TempData[TempDataKeys.Skills] as string[]);
+        var vm = await orchestrator.GetSkillsViewModelAsync(vrm, TempData[TempDataKeys.Skills] as string[]);
 
         return View(vm);
     }
@@ -32,14 +25,14 @@ public class SkillsController : Controller
     [HttpPost("skills", Name = RouteNames.Skills_Post)]
     public async Task<IActionResult> Skills(VacancyRouteModel vrm, SkillsEditModel m)
     {
-        var response = await _orchestrator.PostSkillsEditModelAsync(vrm, m, User.ToVacancyUser());
+        var response = await orchestrator.PostSkillsEditModelAsync(vrm, m, User.ToVacancyUser());
 
         if (!response.Success)
         {
             response.AddErrorsToModelState(ModelState);
         }
 
-        var vm = await _orchestrator.GetSkillsViewModelAsync(vrm);
+        var vm = await orchestrator.GetSkillsViewModelAsync(vrm);
         if (!ModelState.IsValid)
         {
             return View(vm);

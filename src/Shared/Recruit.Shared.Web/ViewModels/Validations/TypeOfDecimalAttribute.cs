@@ -4,15 +4,8 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Validations;
 
 using System.ComponentModel.DataAnnotations;
 
-public class TypeOfDecimalAttribute : ValidationAttribute
+public class TypeOfDecimalAttribute(int numberOfDecimalPlaces) : ValidationAttribute
 {
-    private readonly int _numberOfDecimalPlaces;
-
-    public TypeOfDecimalAttribute(int numberOfDecimalPlaces)
-    {
-        _numberOfDecimalPlaces = numberOfDecimalPlaces;
-    }
-
     public override bool IsValid(object value)
     {
         if (value == null)
@@ -20,6 +13,6 @@ public class TypeOfDecimalAttribute : ValidationAttribute
             return true;
         }
 
-        return (((string)value).AsDecimal(_numberOfDecimalPlaces) != null);
+        return (((string)value).AsDecimal(numberOfDecimalPlaces) != null);
     }
 }

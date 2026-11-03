@@ -17,19 +17,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
 [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-public class DatesController : Controller
+public class DatesController(DatesOrchestrator orchestrator) : Controller
 {
-    private readonly DatesOrchestrator _orchestrator;
-
-    public DatesController(DatesOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
-
     [HttpGet("dates", Name = RouteNames.Dates_Get)]
     public async Task<IActionResult> Dates(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
     {
-        var vm = await _orchestrator.GetDatesViewModelAsync(vrm);
+        var vm = await orchestrator.GetDatesViewModelAsync(vrm);
         AddSoftValidationErrorsToModelState(vm);
         vm.PageInfo.SetWizard(wizard);
         return View(vm);
@@ -38,7 +31,7 @@ public class DatesController : Controller
     [HttpPost("dates", Name = RouteNames.Dates_Post)]
     public async Task<IActionResult> Dates(DatesEditModel m, [FromQuery] bool wizard)
     {
-        var response = await _orchestrator.PostDatesEditModelAsync(m, User.ToVacancyUser());
+        var response = await orchestrator.PostDatesEditModelAsync(m, User.ToVacancyUser());
             
         if (!response.Success)
         {
@@ -47,7 +40,7 @@ public class DatesController : Controller
 
         if (!ModelState.IsValid)
         {
-            var vm = await _orchestrator.GetDatesViewModelAsync(m);
+            var vm = await orchestrator.GetDatesViewModelAsync(m);
             vm.CanShowTrainingErrorHint = response.Errors.Errors.Any(e => e.ErrorCode == ErrorCodes.TrainingExpiryDate);
             vm.PageInfo.SetWizard(wizard);
             return View(vm);

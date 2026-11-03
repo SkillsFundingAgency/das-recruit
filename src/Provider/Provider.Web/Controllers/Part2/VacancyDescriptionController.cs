@@ -14,33 +14,26 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
 [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-public class VacancyDescriptionController : Controller
+public class VacancyDescriptionController(VacancyDescriptionOrchestrator orchestrator) : Controller
 {
-    private readonly VacancyDescriptionOrchestrator _orchestrator;
-
-    public VacancyDescriptionController(VacancyDescriptionOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
-
     [HttpGet("vacancy-description", Name = RouteNames.VacancyDescription_Index_Get)]
     public async Task<IActionResult> VacancyDescription(VacancyRouteModel vrm)
     {
-        var vm = await _orchestrator.GetVacancyDescriptionViewModelAsync(vrm);
+        var vm = await orchestrator.GetVacancyDescriptionViewModelAsync(vrm);
         return View(vm);
     }
 
     [HttpPost("vacancy-description", Name =  RouteNames.VacancyDescription_Index_Post)]
     public async Task<IActionResult> VacancyDescription(VacancyDescriptionEditModel m)
     {
-        var response = await _orchestrator.PostVacancyDescriptionEditModelAsync(m, User.ToVacancyUser());
+        var response = await orchestrator.PostVacancyDescriptionEditModelAsync(m, User.ToVacancyUser());
 
         if (!response.Success)
         {
             response.AddErrorsToModelState(ModelState);
         }
 
-        var vm = await _orchestrator.GetVacancyDescriptionViewModelAsync(m);
+        var vm = await orchestrator.GetVacancyDescriptionViewModelAsync(m);
         if (!ModelState.IsValid)
         {
             return View(vm);

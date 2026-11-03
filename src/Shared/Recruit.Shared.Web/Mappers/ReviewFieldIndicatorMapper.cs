@@ -7,15 +7,8 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Shared.Web.Mappers;
 
-public sealed class ReviewFieldIndicatorMapper
+public sealed class ReviewFieldIndicatorMapper(IRuleMessageTemplateRunner ruleTemplateRunner)
 {
-    private readonly IRuleMessageTemplateRunner _ruleTemplateRunner;
-
-    public ReviewFieldIndicatorMapper(IRuleMessageTemplateRunner ruleTemplateRunner)
-    {
-        _ruleTemplateRunner = ruleTemplateRunner;
-    }
-
     private IDictionary<string, string> ManualQaMessagesForApprenticeship => new Dictionary<string, string> 
     {
         { FieldIdentifiers.Title, "Title requires edit" },
@@ -85,7 +78,7 @@ public sealed class ReviewFieldIndicatorMapper
             }
 
             var autoQaOutcomes = autoQaReferredOutcomes.Where(x => pageMappings.VacancyPropertyMappingsLookup.TryGetValue(x.Target, out var value) && value.Contains(indicator.Key))
-                .Select(x => _ruleTemplateRunner.ToText(x.RuleId, x.Data, FieldDisplayNameResolver.Resolve(x.Target)));
+                .Select(x => ruleTemplateRunner.ToText(x.RuleId, x.Data, FieldDisplayNameResolver.Resolve(x.Target)));
 
             indicator.Value.AutoQaTexts.AddRange(autoQaOutcomes);
         }

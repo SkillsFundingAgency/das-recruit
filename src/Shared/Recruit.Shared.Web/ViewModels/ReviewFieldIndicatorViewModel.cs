@@ -2,17 +2,10 @@
 
 namespace Esfa.Recruit.Shared.Web.ViewModels;
 
-public class ReviewFieldIndicatorViewModel
+public class ReviewFieldIndicatorViewModel(string reviewFieldIdentifier, string anchor)
 {
-    public ReviewFieldIndicatorViewModel(string reviewFieldIdentifier, string anchor)
-    {
-        ReviewFieldIdentifier = reviewFieldIdentifier;
-        Anchor = anchor;
-        AutoQaTexts = new List<string>();
-    }
-
-    public string ReviewFieldIdentifier { get; }
-    public string Anchor { get; }
+    public string ReviewFieldIdentifier { get; } = reviewFieldIdentifier;
+    public string Anchor { get; } = anchor;
     public string ManualQaText { get; set; }
-    public List<string> AutoQaTexts { get; }
+    public List<string> AutoQaTexts { get; } = new();
 }

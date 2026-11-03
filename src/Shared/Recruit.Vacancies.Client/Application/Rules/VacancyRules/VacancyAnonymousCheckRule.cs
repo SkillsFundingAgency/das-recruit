@@ -4,13 +4,8 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules;
 
-public sealed class VacancyAnonymousCheckRule : Rule, IRule<Vacancy>
+public sealed class VacancyAnonymousCheckRule() : Rule(RuleId.VacancyAnonymous), IRule<Vacancy>
 {
-    public VacancyAnonymousCheckRule() : base(RuleId.VacancyAnonymous)
-    {
-            
-    }
-
     public Task<RuleOutcome> EvaluateAsync(Vacancy subject)
     {
         var outcomeBuilder = RuleOutcomeDetailsBuilder.Create(RuleId);

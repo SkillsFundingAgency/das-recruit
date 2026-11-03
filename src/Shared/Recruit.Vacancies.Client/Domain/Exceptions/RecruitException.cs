@@ -2,7 +2,4 @@
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 
-public abstract class RecruitException : Exception
-{
-    protected RecruitException(string message) : base(message) { }
-}
+public abstract class RecruitException(string message) : Exception(message);

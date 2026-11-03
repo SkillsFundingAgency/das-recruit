@@ -6,14 +6,8 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 namespace Esfa.Recruit.Employer.Web.TagHelpers;
 
 [HtmlTargetElement("field-review-tag")]
-public class ReviewTagHelper : TagHelper
+public class ReviewTagHelper(IFieldReviewHelper fieldReviewHelper) : TagHelper
 {
-    private readonly IFieldReviewHelper _fieldReviewHelper;
-
-    public ReviewTagHelper(IFieldReviewHelper fieldReviewHelper)
-    {
-        _fieldReviewHelper = fieldReviewHelper;
-    }
     public string Class { get; set; }
     public string FieldName { get; set; }
     public string TagName { get; set; }
@@ -21,7 +15,7 @@ public class ReviewTagHelper : TagHelper
         
     public override void Process(TagHelperContext tagHelperContext, TagHelperOutput tagHelperOutput)
     {
-        if (_fieldReviewHelper.ShowReviewField(Model, FieldName))
+        if (fieldReviewHelper.ShowReviewField(Model, FieldName))
         {
             tagHelperOutput.TagName = TagName;
             tagHelperOutput.AddClass("govuk-tag",HtmlEncoder.Default);
@@ -38,21 +32,15 @@ public class ReviewTagHelper : TagHelper
 }
 
 [HtmlTargetElement("dt-review-section")]
-public class AdvisorReviewTagHelper : TagHelper
+public class AdvisorReviewTagHelper(IFieldReviewHelper fieldReviewHelper) : TagHelper
 {
-    private readonly IFieldReviewHelper _fieldReviewHelper;
-
-    public AdvisorReviewTagHelper(IFieldReviewHelper fieldReviewHelper)
-    {
-        _fieldReviewHelper = fieldReviewHelper;
-    }
     public string SectionState { get; set; }
     public override void Process(TagHelperContext context, TagHelperOutput tagHelperOutput)
     {
         tagHelperOutput.TagName = "dt";
         tagHelperOutput.AddClass("govuk-summary-list__key", HtmlEncoder.Default);
         tagHelperOutput.AddClass("app-check-answers__key", HtmlEncoder.Default);
-        tagHelperOutput.AddClass(_fieldReviewHelper.GetReviewSectionClass(SectionState), HtmlEncoder.Default);
+        tagHelperOutput.AddClass(fieldReviewHelper.GetReviewSectionClass(SectionState), HtmlEncoder.Default);
         tagHelperOutput.TagMode = TagMode.StartTagAndEndTag;
     }
 }

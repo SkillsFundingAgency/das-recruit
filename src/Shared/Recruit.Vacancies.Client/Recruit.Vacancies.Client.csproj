@@ -30,7 +30,7 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.14" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.14" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="NServiceBus" Version="7.8.5" />
+    <PackageReference Include="NServiceBus" Version="10.2.9" />
     <PackageReference Include="SFA.DAS.Account.Api.Client" Version="1.6.3195" />
     <PackageReference Include="SFA.DAS.Encoding" Version="1.1.94" />
     <PackageReference Include="SFA.DAS.Http" Version="3.2.69" />

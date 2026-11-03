@@ -14,15 +14,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
 [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-public class DeleteVacancyController : Controller
+public class DeleteVacancyController(DeleteVacancyOrchestrator orchestrator) : Controller
 {
-    private readonly DeleteVacancyOrchestrator _orchestrator;
-
-    public DeleteVacancyController(DeleteVacancyOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
-
     [HttpGet("delete", Name = RouteNames.DeleteVacancy_Get)]
     public Task<IActionResult> Delete(VacancyRouteModel vrm)
     {
@@ -46,7 +39,7 @@ public class DeleteVacancyController : Controller
             return RedirectToRoute(RouteNames.VacanciesGetAll, new { m.Ukprn });
         }
 
-        var vm = await _orchestrator.DeleteVacancyAsync(m, User.ToVacancyUser());
+        var vm = await orchestrator.DeleteVacancyAsync(m, User.ToVacancyUser());
 
         TempData.Add(TempDataKeys.VacanciesInfoMessage, string.Format(InfoMessages.VacancyDeleted, vm.VacancyReference, vm.Title));
 
@@ -55,7 +48,7 @@ public class DeleteVacancyController : Controller
 
     private async Task<IActionResult> GetDeleteVacancyConfirmationView(VacancyRouteModel vrm)
     {
-        var vm = await _orchestrator.GetDeleteViewModelAsync(vrm);
+        var vm = await orchestrator.GetDeleteViewModelAsync(vrm);
         return View(vm);
     }
 }

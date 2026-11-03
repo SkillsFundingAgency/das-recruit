@@ -7,15 +7,8 @@ using SFA.DAS.VacancyServices.Wage;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 
-public class NationalMinimumWageProvider : IMinimumWageProvider
+public class NationalMinimumWageProvider(ILogger<NationalMinimumWageProvider> logger) : IMinimumWageProvider
 {
-    private readonly ILogger<NationalMinimumWageProvider> _logger;
-
-    public NationalMinimumWageProvider(ILogger<NationalMinimumWageProvider> logger)
-    {
-        _logger = logger;
-    }   
-
     public MinimumWage GetWagePeriod(DateTime date)
     {
         try
@@ -49,7 +42,7 @@ public class NationalMinimumWageProvider : IMinimumWageProvider
         }
         catch(InvalidOperationException ex)
         {
-            _logger.LogError(ex, $"Unable to find Wage Period for date: {date}");
+            logger.LogError(ex, $"Unable to find Wage Period for date: {date}");
                 
             throw;
         }

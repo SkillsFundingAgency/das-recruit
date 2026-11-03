@@ -17,15 +17,8 @@ using System.Net;
 namespace Esfa.Recruit.Employer.Web.Controllers;
 
 [AllowAnonymous]
-public class ErrorController : Controller
+public class ErrorController(ILogger<ErrorController> logger) : Controller
 {
-    private readonly ILogger<ErrorController> _logger;
-
-    public ErrorController(ILogger<ErrorController> logger)
-    {
-        _logger = logger;
-    }
-
     [Route("error/{id?}")]
     public IActionResult Error(int id)
     {
@@ -65,14 +58,14 @@ public class ErrorController : Controller
             if (exception is AggregateException aggregateException)
             {
                 var flattenedExceptions = aggregateException.Flatten();
-                _logger.LogError(flattenedExceptions, "Aggregate exception on path: {route}", routeWhereExceptionOccurred);
+                logger.LogError(flattenedExceptions, "Aggregate exception on path: {route}", routeWhereExceptionOccurred);
 
                 exception = flattenedExceptions.InnerExceptions.FirstOrDefault();
             }
 
             if (exception is InvalidStateException)
             {
-                _logger.LogWarning(exception, "Exception on path: {route}", routeWhereExceptionOccurred);
+                logger.LogWarning(exception, "Exception on path: {route}", routeWhereExceptionOccurred);
                 AddDashboardMessage(exception.Message);
                 return RedirectToRoute(RouteNames.VacanciesGetAll, new { EmployerAccountId = employerAccountId });
             }
@@ -97,7 +90,7 @@ public class ErrorController : Controller
                 return ApplicationWithdrawn(employerAccountId.ToString(), withdrawnException);
             }
 
-            _logger.LogError(exception, "Unhandled exception on path: {route}", routeWhereExceptionOccurred);
+            logger.LogError(exception, "Unhandled exception on path: {route}", routeWhereExceptionOccurred);
         }
 
         Response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -118,7 +111,7 @@ public class ErrorController : Controller
 
     private IActionResult ApplicationWithdrawn(string employerAccountId, ApplicationWithdrawnException exception)
     {
-        _logger.LogInformation(exception.Message);
+        logger.LogInformation(exception.Message);
         Response.StatusCode = (int)HttpStatusCode.NotFound;
         var returnLink = Url.RouteUrl(RouteNames.VacancyManage_Get, new VacancyRouteModel
         {
@@ -132,7 +125,7 @@ public class ErrorController : Controller
     private void AddDashboardMessage(string message)
     {
         if(TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
-            _logger.LogError($"Dashboard message already set in {nameof(ErrorController)}. Existing message:{TempData[TempDataKeys.DashboardErrorMessage]}. New message:{message}");
+            logger.LogError($"Dashboard message already set in {nameof(ErrorController)}. Existing message:{TempData[TempDataKeys.DashboardErrorMessage]}. New message:{message}");
 
         TempData[TempDataKeys.DashboardErrorMessage] = message;
     }

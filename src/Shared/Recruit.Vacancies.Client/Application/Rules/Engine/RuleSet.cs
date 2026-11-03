@@ -11,20 +11,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
 /// the ruleset can be evaluated to produce a single overall outcome
 /// </summary>
 /// <typeparam name="TSubject"></typeparam>
-public abstract class RuleSet<TSubject> : IRuleSet<TSubject>
+public abstract class RuleSet<TSubject>(string ruleSetId) : IRuleSet<TSubject>
 {
-    private readonly RuleSetOptions _defaultOptions;
-    private readonly IList<IRule<TSubject>> _rules;
+    private readonly RuleSetOptions _defaultOptions = RuleSetOptions.ZeroTolerance;
+    private readonly IList<IRule<TSubject>> _rules = new List<IRule<TSubject>>();
 
-    public string RuleSetId { get; }
+    public string RuleSetId { get; } = ruleSetId;
     public int RuleCount => _rules.Count;
-
-    protected RuleSet(string ruleSetId)
-    {
-        RuleSetId = ruleSetId;
-        _defaultOptions = RuleSetOptions.ZeroTolerance;
-        _rules = new List<IRule<TSubject>>();
-    }
 
     public async Task<RuleSetOutcome> EvaluateAsync(TSubject subject, RuleSetOptions options = null)
     {

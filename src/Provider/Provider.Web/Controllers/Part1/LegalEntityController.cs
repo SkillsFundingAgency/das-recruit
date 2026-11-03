@@ -17,24 +17,17 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
 [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-public class LegalEntityController : EmployerControllerBase
+public class LegalEntityController(
+    LegalEntityOrchestrator orchestrator,
+    IWebHostEnvironment hostingEnvironment)
+    : EmployerControllerBase(hostingEnvironment)
 {
-    private readonly LegalEntityOrchestrator _orchestrator;
-
-    public LegalEntityController(
-        LegalEntityOrchestrator orchestrator, 
-        IWebHostEnvironment hostingEnvironment)
-        : base(hostingEnvironment)
-    {
-        _orchestrator = orchestrator;
-    }
-
     [HttpGet("legal-entity", Name = RouteNames.LegalEntity_Get)]
     public async Task<IActionResult> LegalEntity(VacancyRouteModel vrm, [FromQuery]string searchTerm, [FromQuery]int? page, [FromQuery] string wizard = "true")
     {
         var info = GetVacancyEmployerInfoCookie(vrm.VacancyId.GetValueOrDefault());
 
-        var vm = await _orchestrator.GetLegalEntityViewModelAsync(vrm, User.GetUkprn(), searchTerm, page, info?.AccountLegalEntityPublicHashedId);
+        var vm = await orchestrator.GetLegalEntityViewModelAsync(vrm, User.GetUkprn(), searchTerm, page, info?.AccountLegalEntityPublicHashedId);
 
         if (info == null || !string.IsNullOrEmpty(info.AccountLegalEntityPublicHashedId))
         {
@@ -54,7 +47,7 @@ public class LegalEntityController : EmployerControllerBase
             {
                 SelectedOrganisationId = vm.Organisations.FirstOrDefault()?.Id
             };
-            await _orchestrator.SetAccountLegalEntityPublicId(vrm,model, User.ToVacancyUser());
+            await orchestrator.SetAccountLegalEntityPublicId(vrm,model, User.ToVacancyUser());
 
             return RedirectToRoute(RouteNames.Training_Get, new {Wizard = wizard, vrm.Ukprn, vrm.VacancyId});
         }
@@ -76,7 +69,7 @@ public class LegalEntityController : EmployerControllerBase
                 ValidationMessages.EmployerSelectionValidationMessages.EmployerSelectionRequired);
         }
 
-        var vm = await _orchestrator.GetLegalEntityViewModelAsync(m, User.GetUkprn(), m.SearchTerm, m.Page, info.AccountLegalEntityPublicHashedId);
+        var vm = await orchestrator.GetLegalEntityViewModelAsync(m, User.GetUkprn(), m.SearchTerm, m.Page, info.AccountLegalEntityPublicHashedId);
         if (!ModelState.IsValid)
         {
             SetVacancyEmployerInfoCookie(vm.VacancyEmployerInfoModel);
@@ -94,7 +87,7 @@ public class LegalEntityController : EmployerControllerBase
         }
 
         SetVacancyEmployerInfoCookie(info);
-        await _orchestrator.SetAccountLegalEntityPublicId(new VacancyRouteModel
+        await orchestrator.SetAccountLegalEntityPublicId(new VacancyRouteModel
         {
             Ukprn = m.Ukprn,
             VacancyId = m.VacancyId

@@ -5,23 +5,16 @@ using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Provider.Web.Controllers;
 
-public class ContentPolicyReportController : Controller
+public class ContentPolicyReportController(ILogger<ContentPolicyReportController> logger) : Controller
 {
-    private readonly ILogger<ContentPolicyReportController> _logger;
-
-    public ContentPolicyReportController(ILogger<ContentPolicyReportController> logger)
-    {
-        _logger = logger;
-    }
-
     [AllowAnonymous]
     [HttpPost("contentpolicyreport/report")]
     [IgnoreAntiforgeryToken]
     public IActionResult Report([FromBody] CspReportRequest request)
     {
-        _logger.LogInformation($" Request Path: {HttpContext.Request.Path} and Query: {HttpContext.Request.Query}");
+        logger.LogInformation($" Request Path: {HttpContext.Request.Path} and Query: {HttpContext.Request.Query}");
             
-        _logger.LogWarning("CSP Violation: {cspReport}", request);
+        logger.LogWarning("CSP Violation: {cspReport}", request);
 
         return Ok();
     }

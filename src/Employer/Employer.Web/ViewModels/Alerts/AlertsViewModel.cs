@@ -1,11 +1,15 @@
 ﻿namespace Esfa.Recruit.Employer.Web.ViewModels.Alerts;
 
-public class AlertsViewModel
+public class AlertsViewModel(
+    EmployerTransferredVacanciesAlertViewModel employerRevokedTransferredVacanciesAlert,
+    EmployerTransferredVacanciesAlertViewModel blockedProviderTransferredVacanciesAlert,
+    BlockedProviderAlertViewModel blockedProviderAlert,
+    WithdrawnVacanciesAlertViewModel withdrawnByQaVacanciesAlert)
 {
-    public EmployerTransferredVacanciesAlertViewModel EmployerRevokedTransferredVacanciesAlert { get; internal set; }
-    public EmployerTransferredVacanciesAlertViewModel BlockedProviderTransferredVacanciesAlert { get; internal set; }
-    public BlockedProviderAlertViewModel BlockedProviderAlert { get; internal set; }
-    public WithdrawnVacanciesAlertViewModel WithdrawnByQaVacanciesAlert { get; internal set; }
+    public EmployerTransferredVacanciesAlertViewModel EmployerRevokedTransferredVacanciesAlert { get; internal set; } = employerRevokedTransferredVacanciesAlert;
+    public EmployerTransferredVacanciesAlertViewModel BlockedProviderTransferredVacanciesAlert { get; internal set; } = blockedProviderTransferredVacanciesAlert;
+    public BlockedProviderAlertViewModel BlockedProviderAlert { get; internal set; } = blockedProviderAlert;
+    public WithdrawnVacanciesAlertViewModel WithdrawnByQaVacanciesAlert { get; internal set; } = withdrawnByQaVacanciesAlert;
 
     public bool ShowEmployerRevokedTransferredVacanciesAlert => EmployerRevokedTransferredVacanciesAlert is
     {
@@ -23,15 +27,4 @@ public class AlertsViewModel
     {
         ClosedVacanciesCount: > 0
     };
-
-    public AlertsViewModel(EmployerTransferredVacanciesAlertViewModel employerRevokedTransferredVacanciesAlert,
-        EmployerTransferredVacanciesAlertViewModel blockedProviderTransferredVacanciesAlert,
-        BlockedProviderAlertViewModel blockedProviderAlert,
-        WithdrawnVacanciesAlertViewModel withdrawnByQaVacanciesAlert)
-    {
-        EmployerRevokedTransferredVacanciesAlert = employerRevokedTransferredVacanciesAlert;
-        BlockedProviderTransferredVacanciesAlert = blockedProviderTransferredVacanciesAlert;
-        BlockedProviderAlert = blockedProviderAlert;
-        WithdrawnByQaVacanciesAlert = withdrawnByQaVacanciesAlert;
-    }
 }

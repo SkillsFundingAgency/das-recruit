@@ -12,19 +12,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
 
 [Route(RoutePaths.AccountRoutePath)]
 [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-public class EmployerController : Controller
+public class EmployerController(EmployerOrchestrator orchestrator) : Controller
 {
-    private readonly EmployerOrchestrator _orchestrator;
-
-    public EmployerController(EmployerOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
-
     [HttpGet("employer", Name = RouteNames.Employer_Get)]
     public async Task<IActionResult> Employer(VacancyRouteModel vacancyRouteModel)
     {
-        var vm = await _orchestrator.GetEmployersViewModelAsync(vacancyRouteModel);
+        var vm = await orchestrator.GetEmployersViewModelAsync(vacancyRouteModel);
         return View(vm);
     }
 
@@ -38,7 +31,7 @@ public class EmployerController : Controller
 
         if (!ModelState.IsValid)
         {
-            var vm = await _orchestrator.GetEmployersViewModelAsync(model);
+            var vm = await orchestrator.GetEmployersViewModelAsync(model);
             return View(vm);
         }
 

@@ -6,20 +6,13 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Services;
 
-public class SlaService : ISlaService
+public class SlaService(IBankHolidayProvider bankholidayProvider) : ISlaService
 {
     private const int SlaHours = 24;
 
-    private readonly IBankHolidayProvider _bankholidayProvider;
-
-    public SlaService(IBankHolidayProvider bankholidayProvider)
-    {
-        _bankholidayProvider = bankholidayProvider;
-    }
-
     public async Task<DateTime> GetSlaDeadlineAsync(DateTime utcDate)
     {
-        var bankHolidays = await _bankholidayProvider.GetBankHolidaysAsync();
+        var bankHolidays = await bankholidayProvider.GetBankHolidaysAsync();
 
         var slaDate = utcDate;
 

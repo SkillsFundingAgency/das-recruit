@@ -11,24 +11,17 @@ using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules;
 
-public sealed class VacancyBannedPhraseChecksRule : BaseBannedPhraseChecksRule, IRule<Vacancy>
+public sealed class VacancyBannedPhraseChecksRule(
+    IBannedPhrasesProvider bannedPhrasesProvider,
+    ConsolidationOption consolidationOption = ConsolidationOption.NoConsolidation,
+    decimal weighting = 100.0m)
+    : BaseBannedPhraseChecksRule(RuleId.BannedPhraseChecks, consolidationOption, weighting), IRule<Vacancy>
 {
-    private readonly IBannedPhrasesProvider _bannedPhrasesProvider;
-
-    public VacancyBannedPhraseChecksRule(
-        IBannedPhrasesProvider bannedPhrasesProvider, 
-        ConsolidationOption consolidationOption = ConsolidationOption.NoConsolidation, 
-        decimal weighting = 100.0m) 
-        : base(RuleId.BannedPhraseChecks, consolidationOption, weighting)
-    {
-        _bannedPhrasesProvider = bannedPhrasesProvider;
-    }
-
     public async Task<RuleOutcome> EvaluateAsync(Vacancy subject)
     {
         var outcomeBuilder = RuleOutcomeDetailsBuilder.Create(RuleId);
 
-        BannedPhrases = await _bannedPhrasesProvider.GetBannedPhrasesAsync();
+        BannedPhrases = await bannedPhrasesProvider.GetBannedPhrasesAsync();
 
         var outcomes = new List<RuleOutcome>();
         outcomes.AddRange(BannedPhraseCheck(() => subject.Title));

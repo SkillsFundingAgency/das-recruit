@@ -8,22 +8,15 @@ using Microsoft.AspNetCore.Mvc;
 namespace Esfa.Recruit.Employer.Web.Controllers;
 
 [Route(RoutePaths.AccountRoutePath)]
-public class EmployerVacancyController : Controller
+public class EmployerVacancyController(EmployerVacancyOrchestrator employerVacancyOrchestrator) : Controller
 {
-    private readonly EmployerVacancyOrchestrator _employerVacancyOrchestrator;
-
-    public EmployerVacancyController(EmployerVacancyOrchestrator employerVacancyOrchestrator)
-    {
-        _employerVacancyOrchestrator = employerVacancyOrchestrator;
-    }
-
     [HttpGet("employer-create-vacancy", Name = RouteNames.EmployerCreateVacancy_Get)]        
     public async Task<IActionResult> CreateVacancy([FromRoute] string employerAccountId,[FromQuery]string ukprn, [FromQuery]string programmeId)
     {
         TempData[TempDataKeys.ReferredFromMa] = true;
 
-        var providerTask = _employerVacancyOrchestrator.GetProviderUkprn(ukprn);
-        var programmeTask = _employerVacancyOrchestrator.GetProgrammeId(programmeId);
+        var providerTask = employerVacancyOrchestrator.GetProviderUkprn(ukprn);
+        var programmeTask = employerVacancyOrchestrator.GetProgrammeId(programmeId);
 
         await Task.WhenAll(providerTask, programmeTask);
 

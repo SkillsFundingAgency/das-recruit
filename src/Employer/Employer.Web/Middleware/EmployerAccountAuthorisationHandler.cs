@@ -15,26 +15,19 @@ using SFA.DAS.GovUK.Auth.Employer;
 
 namespace Esfa.Recruit.Employer.Web.Middleware;
 
-public class EmployerAccountAuthorizationHandler : IEmployerAccountAuthorizationHandler
+public class EmployerAccountAuthorizationHandler(
+    IHttpContextAccessor httpContextAccessor,
+    IGovAuthEmployerAccountService accountsService,
+    ILogger<EmployerAccountAuthorizationHandler> logger)
+    : IEmployerAccountAuthorizationHandler
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IGovAuthEmployerAccountService _accountsService;
-    private readonly ILogger<EmployerAccountAuthorizationHandler> _logger;
-
-    public EmployerAccountAuthorizationHandler(IHttpContextAccessor httpContextAccessor, IGovAuthEmployerAccountService accountsService, ILogger<EmployerAccountAuthorizationHandler> logger)
-    {
-        _httpContextAccessor = httpContextAccessor;
-        _accountsService = accountsService;
-        _logger = logger;
-    }
-    
     public async Task<bool> IsEmployerAuthorized(AuthorizationHandlerContext context, EmployerUserRole minimumAllowedRole)
     {
-        if (!_httpContextAccessor.HttpContext.Request.RouteValues.ContainsKey(RouteValueKeys.EmployerAccountHashedId))
+        if (!httpContextAccessor.HttpContext.Request.RouteValues.ContainsKey(RouteValueKeys.EmployerAccountHashedId))
         {
             return false;
         }
-        var accountIdFromUrl = _httpContextAccessor.HttpContext.Request.RouteValues[RouteValueKeys.EmployerAccountHashedId].ToString().ToUpper();
+        var accountIdFromUrl = httpContextAccessor.HttpContext.Request.RouteValues[RouteValueKeys.EmployerAccountHashedId].ToString().ToUpper();
         var employerAccountClaim = context.User.FindFirst(c=>c.Type.Equals(EmployerRecruitClaims.AccountsClaimsTypeIdentifier));
 
         if(employerAccountClaim?.Value == null)
@@ -48,7 +41,7 @@ public class EmployerAccountAuthorizationHandler : IEmployerAccountAuthorization
         }
         catch (JsonSerializationException e)
         {
-            _logger.LogError(e, "Could not deserialize employer account claim for user");
+            logger.LogError(e, "Could not deserialize employer account claim for user");
             return false;
         }
 
@@ -72,7 +65,7 @@ public class EmployerAccountAuthorizationHandler : IEmployerAccountAuthorization
 
             var userId = userClaim.Value;
 
-            var result = _accountsService.GetUserAccounts(userId, email).Result;
+            var result = accountsService.GetUserAccounts(userId, email).Result;
             
             var accountsAsJson = JsonConvert.SerializeObject(result.EmployerAccounts.ToDictionary(k => k.AccountId));
             var associatedAccountsClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsAsJson, JsonClaimValueTypes.Json);

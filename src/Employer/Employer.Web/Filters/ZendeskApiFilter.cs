@@ -6,15 +6,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Filters;
 
-public class ZendeskApiFilter : ActionFilterAttribute
+public class ZendeskApiFilter(ILogger<ZendeskApiFilter> logger) : ActionFilterAttribute
 {
-    private readonly ILogger<ZendeskApiFilter> _logger;
-
-    public ZendeskApiFilter(ILogger<ZendeskApiFilter> logger)
-    {
-        _logger = logger;
-    }
-
     public override void OnActionExecuting(ActionExecutingContext filterContext)
     {
         try
@@ -33,7 +26,7 @@ public class ZendeskApiFilter : ActionFilterAttribute
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"ZendeskApiFilter Cannot set ZendeskApiData for Employer");
+            logger.LogError(ex, $"ZendeskApiFilter Cannot set ZendeskApiData for Employer");
         }
             
         base.OnActionExecuting(filterContext);

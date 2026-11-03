@@ -7,15 +7,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Filters;
 
-public class GoogleAnalyticsFilter : ActionFilterAttribute
+public class GoogleAnalyticsFilter(ILogger<GoogleAnalyticsFilter> logger) : ActionFilterAttribute
 {
-    private readonly ILogger<GoogleAnalyticsFilter> _logger;
-
-    public GoogleAnalyticsFilter(ILogger<GoogleAnalyticsFilter> logger)
-    {
-        _logger = logger;
-    }
-
     public override void OnActionExecuting(ActionExecutingContext filterContext)
     {
         try
@@ -34,7 +27,7 @@ public class GoogleAnalyticsFilter : ActionFilterAttribute
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"GoogleAnalyticsFilter Cannot set GaData for Employer");
+            logger.LogError(ex, $"GoogleAnalyticsFilter Cannot set GaData for Employer");
         }
             
         base.OnActionExecuting(filterContext);

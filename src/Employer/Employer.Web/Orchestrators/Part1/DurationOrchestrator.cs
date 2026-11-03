@@ -13,28 +13,20 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 
-public class DurationOrchestrator : VacancyValidatingOrchestrator<DurationEditModel>
+public class DurationOrchestrator(
+    IRecruitVacancyClient vacancyClient,
+    ILogger<DurationOrchestrator> logger,
+    IReviewSummaryService reviewSummaryService,
+    IUtility utility)
+    : VacancyValidatingOrchestrator<DurationEditModel>(logger)
 {
     private const VacancyRuleSet ValidationRules = VacancyRuleSet.Duration | VacancyRuleSet.WorkingWeekDescription | VacancyRuleSet.WeeklyHours;
-    private readonly IRecruitVacancyClient _vacancyClient;
-    private readonly IReviewSummaryService _reviewSummaryService;
-    private readonly IUtility _utility;
-
-    public DurationOrchestrator(IRecruitVacancyClient vacancyClient,
-        ILogger<DurationOrchestrator> logger,
-        IReviewSummaryService reviewSummaryService,
-        IUtility utility) : base(logger)
-    {
-        _vacancyClient = vacancyClient;
-        _reviewSummaryService = reviewSummaryService;
-        _utility = utility;
-    }
 
     public async Task<DurationViewModel> GetDurationViewModelAsync(VacancyRouteModel vrm)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm);
 
-        var training = await _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+        var training = await vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
         var vm = new DurationViewModel
         {
@@ -44,7 +36,7 @@ public class DurationOrchestrator : VacancyValidatingOrchestrator<DurationEditMo
             DurationUnit = vacancy.Wage?.DurationUnit ?? DurationUnit.Month,
             WorkingWeekDescription = vacancy.Wage?.WorkingWeekDescription,
             WeeklyHours = $"{vacancy.Wage?.WeeklyHours:0.##}",
-            PageInfo = _utility.GetPartOnePageInfo(vacancy),
+            PageInfo = utility.GetPartOnePageInfo(vacancy),
             TrainingTitle = training?.Title,
             TrainingDurationMonths = training?.Duration ?? 0,
             VacancyTitle = vacancy.Title,
@@ -52,7 +44,7 @@ public class DurationOrchestrator : VacancyValidatingOrchestrator<DurationEditMo
 
         if (vacancy.Status == VacancyStatus.Referred)
         {
-            vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                 ReviewFieldMappingLookups.GetDurationReviewFieldIndicators());
         }
 
@@ -73,7 +65,7 @@ public class DurationOrchestrator : VacancyValidatingOrchestrator<DurationEditMo
 
     public async Task<OrchestratorResponse> PostDurationEditModelAsync(DurationEditModel m, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m);
 
         if(vacancy.Wage == null)
             vacancy.Wage = new Wage();
@@ -116,8 +108,8 @@ public class DurationOrchestrator : VacancyValidatingOrchestrator<DurationEditMo
 
         return await ValidateAndExecute(
             vacancy, 
-            v => _vacancyClient.Validate(v, ValidationRules),
-            v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+            v => vacancyClient.Validate(v, ValidationRules),
+            v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
         );
     }
 

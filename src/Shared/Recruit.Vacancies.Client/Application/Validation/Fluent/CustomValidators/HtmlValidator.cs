@@ -6,19 +6,13 @@ using FluentValidation.Validators;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators;
 
-internal class HtmlValidator<T, TProperty> : PropertyValidator<T, TProperty>
+internal class HtmlValidator<T, TProperty>(IHtmlSanitizerService sanitizer) : PropertyValidator<T, TProperty>
 {
     public override string Name => "HtmlValidator";
 
     public const string HtmlRegularExpression = @"^[a-zA-Z0-9\u0080-\uFFA7?$@#()""'!,+\-=_:;.&€£*%\s\/<>\[\]]+$";
-    private IHtmlSanitizerService _sanitizer;
-    private Regex _regex;
+    private Regex _regex = CreateRegEx();
 
-    public HtmlValidator(IHtmlSanitizerService sanitizer)
-    {
-        _regex = CreateRegEx();
-        _sanitizer = sanitizer;
-    }
     protected override string GetDefaultMessageTemplate(string errorCode) 
     {
         return base.GetDefaultMessageTemplate("{PropertyName} must contain valid characters");
@@ -29,7 +23,7 @@ internal class HtmlValidator<T, TProperty> : PropertyValidator<T, TProperty>
     {
         var value = PropertyValue as string;
 
-        var isHtmlValid = _sanitizer.IsValid(value);
+        var isHtmlValid = sanitizer.IsValid(value);
 
         if (isHtmlValid == false)
             return false;

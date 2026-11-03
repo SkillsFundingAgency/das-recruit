@@ -12,23 +12,16 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Esfa.Recruit.Employer.Web.Middleware;
 
-public class EmployerAccountHandler : AuthorizationHandler<EmployerAccountRequirement>
+public class EmployerAccountHandler(
+    IWebHostEnvironment hostingEnvironment,
+    IEmployerVacancyClient client,
+    IEmployerAccountAuthorizationHandler handler)
+    : AuthorizationHandler<EmployerAccountRequirement>
 {
-    private readonly IWebHostEnvironment _hostingEnvironment;
-    private readonly IEmployerVacancyClient _client;
-    private readonly IEmployerAccountAuthorizationHandler _handler;
-
-    public EmployerAccountHandler(IWebHostEnvironment hostingEnvironment, IEmployerVacancyClient client, IEmployerAccountAuthorizationHandler handler)
-    {
-        _hostingEnvironment = hostingEnvironment;
-        _client = client;
-        _handler = handler;
-    }
-
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, EmployerAccountRequirement requirement)
     {
             
-        if (!await _handler.IsEmployerAuthorized(context, EmployerUserRole.Viewer))
+        if (!await handler.IsEmployerAuthorized(context, EmployerUserRole.Viewer))
         {
             return;
         }
@@ -60,8 +53,8 @@ public class EmployerAccountHandler : AuthorizationHandler<EmployerAccountRequir
 
         if (context.Request.Cookies[key] == null)
         {
-            await _client.SetupEmployerAsync(employerAccountId);
-            context.Response.Cookies.Append(key, "1", EsfaCookieOptions.GetDefaultHttpCookieOption(_hostingEnvironment));
+            await client.SetupEmployerAsync(employerAccountId);
+            context.Response.Cookies.Append(key, "1", EsfaCookieOptions.GetDefaultHttpCookieOption(hostingEnvironment));
         }
     }
 }

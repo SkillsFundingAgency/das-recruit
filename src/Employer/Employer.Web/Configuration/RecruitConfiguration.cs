@@ -1,10 +1,6 @@
 namespace Employer.Web.Configuration;
 
-public class RecruitConfiguration
+public class RecruitConfiguration(string employerAccountId)
 {
-    public RecruitConfiguration(string employerAccountId)
-    {
-        EmployerAccountId = employerAccountId;
-    }
-    public string EmployerAccountId { get; set; }
+    public string EmployerAccountId { get; set; } = employerAccountId;
 }

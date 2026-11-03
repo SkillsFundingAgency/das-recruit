@@ -16,39 +16,30 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 
-public class DatesOrchestrator : VacancyValidatingOrchestrator<DatesEditModel>
+public class DatesOrchestrator(
+    IRecruitVacancyClient vacancyClient,
+    ILogger<DatesOrchestrator> logger,
+    ITimeProvider timeProvider,
+    IReviewSummaryService reviewSummaryService,
+    IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider,
+    IUtility utility)
+    : VacancyValidatingOrchestrator<DatesEditModel>(logger)
 {
     private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate;
-    private readonly IRecruitVacancyClient _vacancyClient;
-    private readonly ITimeProvider _timeProvider;
-    private readonly IReviewSummaryService _reviewSummaryService;
-    private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammeProvider;
-    private readonly IUtility _utility;
-
-    public DatesOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<DatesOrchestrator> logger, 
-        ITimeProvider timeProvider, IReviewSummaryService reviewSummaryService, 
-        IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider, IUtility utility) : base(logger)
-    {
-        _vacancyClient = vacancyClient;
-        _timeProvider = timeProvider;
-        _reviewSummaryService = reviewSummaryService;
-        _apprenticeshipProgrammeProvider = apprenticeshipProgrammeProvider;
-        _utility = utility;
-    }
 
     public async Task<DatesViewModel> GetDatesViewModelAsync(VacancyRouteModel vrm)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Dates_Get);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Dates_Get);
             
         var vm = new DatesViewModel
         {
             VacancyId = vacancy.Id,
             IsDisabilityConfident = vacancy.IsDisabilityConfident,
-            PageInfo = _utility.GetPartOnePageInfo(vacancy),
-            CurrentYear = _timeProvider.Now.Year,
+            PageInfo = utility.GetPartOnePageInfo(vacancy),
+            CurrentYear = timeProvider.Now.Year,
             Ukprn = vrm.Ukprn,
             Title = vacancy.Title,
-            IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
+            IsTaskListCompleted = utility.IsTaskListCompleted(vacancy)
         };
 
         if (vacancy.ClosingDate.HasValue)
@@ -69,7 +60,7 @@ public class DatesOrchestrator : VacancyValidatingOrchestrator<DatesEditModel>
 
         if (vacancy.Status == VacancyStatus.Referred)
         {
-            vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                 ReviewFieldMappingLookups.GetDatesReviewFieldIndicators());
         }
         if (vacancy.StartDate.HasValue && vacancy.ClosingDate.HasValue)
@@ -97,7 +88,7 @@ public class DatesOrchestrator : VacancyValidatingOrchestrator<DatesEditModel>
 
     public async Task<OrchestratorResponse> PostDatesEditModelAsync(DatesEditModel m, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Dates_Post);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Dates_Post);
 
         SetVacancyWithProviderReviewFieldIndicators(
             vacancy.ClosingDate,
@@ -128,8 +119,8 @@ public class DatesOrchestrator : VacancyValidatingOrchestrator<DatesEditModel>
 
         return await ValidateAndExecute(
             vacancy, 
-            v => _vacancyClient.Validate(v, ValidationRules),
-            v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+            v => vacancyClient.Validate(v, ValidationRules),
+            v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
         );
     }
 
@@ -138,7 +129,7 @@ public class DatesOrchestrator : VacancyValidatingOrchestrator<DatesEditModel>
         if (string.IsNullOrEmpty(vacancy.ProgrammeId))
             return;
 
-        var programme = await _apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+        var programme = await apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
         if (programme?.EffectiveTo.HasValue == true)
         {
@@ -159,7 +150,7 @@ public class DatesOrchestrator : VacancyValidatingOrchestrator<DatesEditModel>
 
     private EntityValidationResult GetSoftValidationErrors(Vacancy vacancy)
     {
-        var result = _vacancyClient.Validate(vacancy, ValidationRules);
+        var result = vacancyClient.Validate(vacancy, ValidationRules);
         MapValidationPropertiesToViewModel(result);
         return result;
     }

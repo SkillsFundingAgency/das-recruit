@@ -11,17 +11,9 @@ using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Provider.Web.Controllers;
 
-public class LogoutController : Controller
+public class LogoutController(ProviderApprenticeshipsLinkHelper externalLinksOptions, IConfiguration configuration)
+    : Controller
 {
-    private readonly ProviderApprenticeshipsLinkHelper _externalLinks;
-    private readonly IConfiguration _configuration;
-
-    public LogoutController(ProviderApprenticeshipsLinkHelper externalLinksOptions, IConfiguration configuration)
-    {
-        _configuration = configuration;
-        _externalLinks = externalLinksOptions;
-    }
-
     [AllowAnonymous]
     [Route("signout", Name = RouteNames.ProviderSignOut)]
     [Route("service/signout", Name = RouteNames.ProviderTimeoutSignOut)]
@@ -30,7 +22,7 @@ public class LogoutController : Controller
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         await HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme, new AuthenticationProperties
         {
-            RedirectUri = _externalLinks.AccountHome,
+            RedirectUri = externalLinksOptions.AccountHome,
         });
     }
 
@@ -38,6 +30,6 @@ public class LogoutController : Controller
     [Route("dashboard", Name = RouteNames.PasDashboard_Get)]
     public IActionResult Dashboard()
     {
-        return RedirectPermanent(_configuration["ProviderSharedUIConfiguration:DashboardUrl"]);
+        return RedirectPermanent(configuration["ProviderSharedUIConfiguration:DashboardUrl"]);
     }
 }

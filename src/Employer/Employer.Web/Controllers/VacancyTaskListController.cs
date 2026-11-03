@@ -11,15 +11,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers;
 
 [Route(RoutePaths.AccountRoutePath)]
 [Authorize(Policy = nameof(PolicyNames.HasEmployerOwnerOrTransactorAccount))]
-public class VacancyTaskListController : Controller
+public class VacancyTaskListController(VacancyTaskListOrchestrator orchestrator) : Controller
 {
-    private readonly VacancyTaskListOrchestrator _orchestrator;
-
-    public VacancyTaskListController (VacancyTaskListOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
-
     [HttpGet("vacancies/create/start", Name=RouteNames.CreateVacancyStart)]
     public IActionResult StartVacancyCreate(VacancyRouteModel vrm)
     {
@@ -29,14 +22,14 @@ public class VacancyTaskListController : Controller
     [HttpGet("vacancies/create/task-list", Name = RouteNames.EmployerTaskListCreateGet)]
     public async Task<IActionResult> CreateEmployerTaskList(VacancyRouteModel vrm)
     {
-        var viewModel = await _orchestrator.GetCreateVacancyTaskListModel(vrm);
+        var viewModel = await orchestrator.GetCreateVacancyTaskListModel(vrm);
         return View("EmployerTaskList", viewModel);
     }
 
     [HttpGet("vacancies/{vacancyId:guid}/task-list", Name = RouteNames.EmployerTaskListGet)]
     public async Task<IActionResult> EmployerTaskList(VacancyRouteModel vrm)
     {
-        var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm); 
+        var viewModel = await orchestrator.GetVacancyTaskListModel(vrm); 
         return viewModel.Status is VacancyStatus.Rejected or VacancyStatus.Referred or VacancyStatus.Review
             ? RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, vrm)
             : View(viewModel);

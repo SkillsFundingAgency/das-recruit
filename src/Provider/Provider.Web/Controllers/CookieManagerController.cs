@@ -8,24 +8,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace Esfa.Recruit.Provider.Web.Controllers;
 
 [Route(RoutePaths.AccountRoutePath)]
-public class CookieManagerController : Controller
+public class CookieManagerController(IWebHostEnvironment hostingEnvironment, ITimeProvider timeProvider)
+    : Controller
 {
-    private readonly IWebHostEnvironment _hostingEnvironment;
-    private readonly ITimeProvider _timeProvider;
-
-    public CookieManagerController(IWebHostEnvironment hostingEnvironment, ITimeProvider timeProvider)
-    {
-        _hostingEnvironment = hostingEnvironment;
-        _timeProvider = timeProvider;
-    }
-
     [HttpPost("dismiss-outage-message", Name = RouteNames.DismissOutageMessage_Post)]
     public IActionResult DismissOutageMessage([FromForm]string returnUrl)
     {
         const string SeenCookieValue = "1";
 
         if (!Request.Cookies.ContainsKey(CookieNames.SeenOutageMessage))
-            Response.Cookies.Append(CookieNames.SeenOutageMessage, SeenCookieValue, EsfaCookieOptions.GetSingleDayLifetimeHttpCookieOption(_hostingEnvironment, _timeProvider));
+            Response.Cookies.Append(CookieNames.SeenOutageMessage, SeenCookieValue, EsfaCookieOptions.GetSingleDayLifetimeHttpCookieOption(hostingEnvironment, timeProvider));
 
         if (IsValidReturnUrl(returnUrl))
             return Redirect(returnUrl);

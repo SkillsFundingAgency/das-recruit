@@ -17,24 +17,18 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
 
 [Route(RoutePaths.AccountRoutePath)]
 [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-public class TitleController : Controller
+public class TitleController(TitleOrchestrator orchestrator, IProviderVacancyClient providerVacancyClient)
+    : Controller
 {
     private const string NewVacancyTitleRoute = "create-vacancy";
     private const string ExistingVacancyTitleRoute = "vacancies/{vacancyId:guid}/title";
-    private readonly TitleOrchestrator _orchestrator;
 
-    public IProviderVacancyClient ProviderVacancyClient { get; }
-
-    public TitleController(TitleOrchestrator orchestrator, IProviderVacancyClient providerVacancyClient)
-    {
-        this.ProviderVacancyClient = providerVacancyClient;
-        _orchestrator = orchestrator;
-    }
+    public IProviderVacancyClient ProviderVacancyClient { get; } = providerVacancyClient;
 
     [HttpGet(NewVacancyTitleRoute, Name = RouteNames.CreateVacancy_Get)]
     public async Task<IActionResult> Title([FromQuery] string employerAccountId)
     {
-        var vm = await _orchestrator.GetTitleViewModelForNewVacancyAsync(employerAccountId, User.GetUkprn());
+        var vm = await orchestrator.GetTitleViewModelForNewVacancyAsync(employerAccountId, User.GetUkprn());
         vm.PageInfo.SetWizard();
         return View(vm);
     }
@@ -42,7 +36,7 @@ public class TitleController : Controller
     [HttpGet(ExistingVacancyTitleRoute, Name = RouteNames.Title_Get)]
     public async Task<IActionResult> Title(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
     {            
-        var vm = await _orchestrator.GetTitleViewModelForExistingVacancyAsync(vrm);
+        var vm = await orchestrator.GetTitleViewModelForExistingVacancyAsync(vrm);
         vm.PageInfo.SetWizard(wizard);
         return View(vm);
     }
@@ -52,7 +46,7 @@ public class TitleController : Controller
     public async Task<IActionResult> Title(VacancyRouteModel vrm, TitleEditModel model, [FromQuery] bool wizard)
     {
         var ukprn = User.GetUkprn();
-        var response = await _orchestrator.PostTitleEditModelAsync(vrm, model, User.ToVacancyUser(), ukprn);
+        var response = await orchestrator.PostTitleEditModelAsync(vrm, model, User.ToVacancyUser(), ukprn);
             
         if (!response.Success)
         {
@@ -61,7 +55,7 @@ public class TitleController : Controller
 
         if(!ModelState.IsValid)
         {
-            var vm = await _orchestrator.GetTitleViewModelFromEditModelAsync(vrm, model, ukprn);
+            var vm = await orchestrator.GetTitleViewModelFromEditModelAsync(vrm, model, ukprn);
             vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }

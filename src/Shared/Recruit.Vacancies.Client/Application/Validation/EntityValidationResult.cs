@@ -6,14 +6,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation;
 
 public class EntityValidationResult
 {
-    public EntityValidationResult()
-    {
-        Errors = new List<EntityValidationError>();
-    }
-
     public bool HasErrors => Errors?.Count() > 0;
 
-    public IList<EntityValidationError> Errors { get; set; }
+    public IList<EntityValidationError> Errors { get; set; } = new List<EntityValidationError>();
 
     public static EntityValidationResult FromFluentValidationResult(ValidationResult fluentResult)
     {

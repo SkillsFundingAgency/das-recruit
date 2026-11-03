@@ -7,15 +7,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Services;
 
-public class HtmlSanitizerService : IHtmlSanitizerService
+public class HtmlSanitizerService(ILogger<HtmlSanitizerService> logger) : IHtmlSanitizerService
 {
-    private readonly ILogger<HtmlSanitizerService> _logger;
-
-    public HtmlSanitizerService(ILogger<HtmlSanitizerService> logger)
-    {
-        _logger = logger;
-    }
-
     public string Sanitize(string html)
     {
         return string.IsNullOrWhiteSpace(html) ? 
@@ -52,7 +45,7 @@ public class HtmlSanitizerService : IHtmlSanitizerService
         }
         watch.Stop();
 
-        _logger.LogInformation("Sanitized html input in {timer}ms", watch.ElapsedMilliseconds);
+        logger.LogInformation("Sanitized html input in {timer}ms", watch.ElapsedMilliseconds);
 
         return sanitized;
     }

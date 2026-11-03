@@ -11,20 +11,14 @@ using Esfa.Recruit.Shared.Web.ViewModels.Qualifications;
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
-public class QualificationsController : Controller
+public class QualificationsController(QualificationsOrchestrator orchestrator) : Controller
 {
     private const string QualificationDeletedTempDataKey = "QualificationDeletedTempDataKey";
-    private readonly QualificationsOrchestrator _orchestrator;
-
-    public QualificationsController(QualificationsOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
 
     [HttpGet("qualifications", Name = RouteNames.Qualifications_Get)]
     public async Task<IActionResult> Qualifications(VacancyRouteModel vrm)
     {
-        var vm = await _orchestrator.GetQualificationsViewModelAsync(vrm);
+        var vm = await orchestrator.GetQualificationsViewModelAsync(vrm);
 
         if (TempData[QualificationDeletedTempDataKey] != null)
             vm.InfoMessage = "Successfully removed qualification";
@@ -37,11 +31,11 @@ public class QualificationsController : Controller
     {
         if (!ModelState.IsValid)
         {
-            var vm = await _orchestrator.GetQualificationsViewModelAsync(m);
+            var vm = await orchestrator.GetQualificationsViewModelAsync(m);
             return View(vm);
         }
 
-        await _orchestrator.PostAddQualificationEditModel(m, User.ToVacancyUser());
+        await orchestrator.PostAddQualificationEditModel(m, User.ToVacancyUser());
 
         if (m.AddQualificationRequirement is true)
         {
@@ -56,7 +50,7 @@ public class QualificationsController : Controller
     [HttpGet("qualifications/add", Name = RouteNames.Qualification_Add_Get)]
     public async Task<IActionResult> Qualification(VacancyRouteModel vrm)
     {
-        var vm = await _orchestrator.GetQualificationViewModelForAddAsync(vrm);
+        var vm = await orchestrator.GetQualificationViewModelForAddAsync(vrm);
 
         return View(vm);
     }
@@ -64,7 +58,7 @@ public class QualificationsController : Controller
     [HttpGet("qualifications/{index:int}", Name = RouteNames.Qualification_Edit_Get)]
     public async Task<IActionResult> Qualification(VacancyRouteModel vrm, int index)
     {
-        var vm = await _orchestrator.GetQualificationViewModelForEditAsync(vrm, index);
+        var vm = await orchestrator.GetQualificationViewModelForEditAsync(vrm, index);
 
         return View(vm);
     }
@@ -72,7 +66,7 @@ public class QualificationsController : Controller
     [HttpPost("qualifications/add", Name = RouteNames.Qualification_Add_Post)]
     public async Task<IActionResult> Qualification(VacancyRouteModel vrm, QualificationEditModel m)
     {
-        var response = await _orchestrator.PostQualificationEditModelForAddAsync(vrm, m, User.ToVacancyUser());
+        var response = await orchestrator.PostQualificationEditModelForAddAsync(vrm, m, User.ToVacancyUser());
 
         if (!response.Success)
         {
@@ -81,7 +75,7 @@ public class QualificationsController : Controller
 
         if (!ModelState.IsValid)
         {
-            var vm = await _orchestrator.GetQualificationViewModelForAddAsync(vrm,m);
+            var vm = await orchestrator.GetQualificationViewModelForAddAsync(vrm,m);
                 
             return View(vm);
         }
@@ -92,7 +86,7 @@ public class QualificationsController : Controller
     [HttpPost("qualifications/{index:int}", Name = RouteNames.Qualification_Edit_Post)]
     public async Task<IActionResult> Qualification(VacancyRouteModel vrm, QualificationEditModel m, [FromRoute] int index)
     {
-        var response = await _orchestrator.PostQualificationEditModelForEditAsync(vrm, m, User.ToVacancyUser(), index);
+        var response = await orchestrator.PostQualificationEditModelForEditAsync(vrm, m, User.ToVacancyUser(), index);
 
         if (!response.Success)
         {
@@ -101,7 +95,7 @@ public class QualificationsController : Controller
 
         if (!ModelState.IsValid)
         {
-            var vm = await _orchestrator.GetQualificationViewModelForEditAsync(vrm, m, index);
+            var vm = await orchestrator.GetQualificationViewModelForEditAsync(vrm, m, index);
 
             return View(vm);
         }
@@ -112,7 +106,7 @@ public class QualificationsController : Controller
     [HttpPost("qualifications/delete", Name = RouteNames.Qualification_Delete_Post)]
     public async Task<IActionResult> DeleteQualification(VacancyRouteModel vrm, [FromForm] int index)
     {
-        await _orchestrator.DeleteQualificationAsync(vrm, index, User.ToVacancyUser());
+        await orchestrator.DeleteQualificationAsync(vrm, index, User.ToVacancyUser());
 
         TempData[QualificationDeletedTempDataKey] = 1;
         return RedirectToRoute(RouteNames.Qualifications_Get, new {vrm.VacancyId, vrm.EmployerAccountId});

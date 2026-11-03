@@ -1,14 +1,7 @@
 ﻿namespace Esfa.Recruit.Vacancies.Client.Application.Services.VacancyComparer;
 
-public class VacancyComparerField
+public class VacancyComparerField(string fieldName, bool areEqual)
 {
-
-    public VacancyComparerField(string fieldName, bool areEqual)
-    {
-        FieldName = fieldName;
-        AreEqual = areEqual;
-    }
-
-    public string FieldName { get; }
-    public bool AreEqual { get; }
+    public string FieldName { get; } = fieldName;
+    public bool AreEqual { get; } = areEqual;
 }

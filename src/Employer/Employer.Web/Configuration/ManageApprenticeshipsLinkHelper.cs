@@ -3,14 +3,9 @@ using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Employer.Web.Configuration;
 
-public class ManageApprenticeshipsLinkHelper
+public class ManageApprenticeshipsLinkHelper(IOptions<ExternalLinksConfiguration> externalLinks)
 {
-    private readonly ExternalLinksConfiguration _externalLinks;
-        
-    public ManageApprenticeshipsLinkHelper(IOptions<ExternalLinksConfiguration> externalLinks)
-    {
-        _externalLinks = externalLinks.Value;
-    }
+    private readonly ExternalLinksConfiguration _externalLinks = externalLinks.Value;
 
     public string AccountHome => $"{_externalLinks.ManageApprenticeshipSiteUrl}{ManageApprenticeshipsRoutes.ManageApprenticeshipSiteAccountsHomeRoute}";
     public string RenameAccount => $"{_externalLinks.ManageApprenticeshipSiteUrl}{ManageApprenticeshipsRoutes.ManageApprenticeshipSiteRenameAccountRoute}";

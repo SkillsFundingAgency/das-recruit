@@ -10,21 +10,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace Esfa.Recruit.Employer.Web.Controllers;
 
 [Route(RoutePaths.AccountRoutePath)]
-public class AlertsController : Controller
+public class AlertsController(AlertsOrchestrator orchestrator) : Controller
 {
-    private readonly AlertsOrchestrator _orchestrator;
-
-    public AlertsController(AlertsOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
-
     [HttpPost("dismiss-alert", Name = RouteNames.Alerts_Dismiss_Post)]
     public async Task<IActionResult> DismissAlert(AlertDismissalEditModel model)
     {
         if (Enum.TryParse<AlertType>(model.AlertType, out var alertTypeEnum))
         {
-            await _orchestrator.DismissAlert(User.ToVacancyUser(), alertTypeEnum);
+            await orchestrator.DismissAlert(User.ToVacancyUser(), alertTypeEnum);
         }
 
         if (!string.IsNullOrWhiteSpace(model.ReturnUrl))

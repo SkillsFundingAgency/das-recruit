@@ -5,15 +5,13 @@ using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 namespace Esfa.Recruit.Provider.Web.Exceptions;
 
 [Serializable]
-public class InvalidRouteForVacancyException : RecruitException
+public class InvalidRouteForVacancyException(
+    string message,
+    string routeNameToRedirectTo,
+    VacancyRouteModel routeValues)
+    : RecruitException(message)
 {
-    public InvalidRouteForVacancyException(string message, string routeNameToRedirectTo, VacancyRouteModel routeValues) : base(message)
-    {
-        RouteNameToRedirectTo = routeNameToRedirectTo;
-        RouteValues = routeValues;
-    }
+    public string RouteNameToRedirectTo { get; } = routeNameToRedirectTo;
 
-    public string RouteNameToRedirectTo { get; }
-
-    public VacancyRouteModel RouteValues { get; set; }
+    public VacancyRouteModel RouteValues { get; set; } = routeValues;
 }

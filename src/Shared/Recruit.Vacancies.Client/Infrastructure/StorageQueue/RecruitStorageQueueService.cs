@@ -9,7 +9,7 @@ using Microsoft.WindowsAzure.Storage;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 
-internal class RecruitStorageQueueService : StorageQueueServiceBase, IRecruitQueueService
+internal class RecruitStorageQueueService(string connString) : StorageQueueServiceBase, IRecruitQueueService
 {
     private readonly Dictionary<Type, string> _messageToStorageQueueMapper = new Dictionary<Type, string>
     {
@@ -25,12 +25,7 @@ internal class RecruitStorageQueueService : StorageQueueServiceBase, IRecruitQue
         { typeof(TransferVacanciesFromEmployerReviewToQAReviewQueueMessage), QueueNames.TransferVacanciesFromEmployerReviewToQAReviewQueueName },
     };
 
-    protected override string ConnectionString { get; }
-
-    public RecruitStorageQueueService(string connString)
-    {
-        ConnectionString = connString;
-    }
+    protected override string ConnectionString { get; } = connString;
 
     public override async Task AddMessageAsync<T>(T message)
     {

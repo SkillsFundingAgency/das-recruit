@@ -14,38 +14,32 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 
-public class NumberOfPositionsOrchestrator : VacancyValidatingOrchestrator<NumberOfPositionsEditModel>
+public class NumberOfPositionsOrchestrator(
+    IRecruitVacancyClient recruitVacancyClient,
+    ILogger<NumberOfPositionsOrchestrator> logger,
+    IReviewSummaryService reviewSummaryService,
+    IUtility utility)
+    : VacancyValidatingOrchestrator<NumberOfPositionsEditModel>(logger)
 {
     private const VacancyRuleSet ValidationRules = VacancyRuleSet.NumberOfPositions;
-    private readonly IRecruitVacancyClient _recruitVacancyClient;
-    private readonly IReviewSummaryService _reviewSummaryService;
-    private readonly IUtility _utility;
-
-    public NumberOfPositionsOrchestrator(IRecruitVacancyClient recruitVacancyClient, 
-        ILogger<NumberOfPositionsOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
-    {
-        _recruitVacancyClient = recruitVacancyClient;
-        _reviewSummaryService = reviewSummaryService;
-        _utility = utility;
-    }
 
     public async Task<NumberOfPositionsViewModel> GetNumberOfPositionsViewModelForExistingVacancyAsync(VacancyRouteModel vrm)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.NumberOfPositions_Get);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.NumberOfPositions_Get);
 
         var vm = new NumberOfPositionsViewModel
         {
             Title = vacancy.Title,
             VacancyId = vacancy.Id,
             NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
-            PageInfo = _utility.GetPartOnePageInfo(vacancy),
+            PageInfo = utility.GetPartOnePageInfo(vacancy),
             Ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault(),
-            IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
+            IsTaskListCompleted = utility.IsTaskListCompleted(vacancy)
         };
 
         if (vacancy.Status == VacancyStatus.Referred)
         {
-            vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                 ReviewFieldMappingLookups.GetNumberOfPositionsFieldIndicators());
         }
 
@@ -61,7 +55,7 @@ public class NumberOfPositionsOrchestrator : VacancyValidatingOrchestrator<Numbe
 
     public async Task<OrchestratorResponse<Guid>> PostNumberOfPositionsEditModelAsync(NumberOfPositionsEditModel model, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.NumberOfPositions_Post);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.NumberOfPositions_Post);
             
         SetVacancyWithProviderReviewFieldIndicators(
             vacancy.NumberOfPositions,
@@ -74,10 +68,10 @@ public class NumberOfPositionsOrchestrator : VacancyValidatingOrchestrator<Numbe
 
         return await ValidateAndExecute(
             vacancy,
-            v => _recruitVacancyClient.Validate(v, ValidationRules),
+            v => recruitVacancyClient.Validate(v, ValidationRules),
             async v =>
             {
-                await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+                await recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
                 return v.Id;
             }
         );
