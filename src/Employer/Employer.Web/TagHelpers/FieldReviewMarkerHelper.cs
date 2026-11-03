@@ -49,23 +49,18 @@ public class FieldReviewMarkerHelper : TagHelper
         return Task.CompletedTask;
     }
 
-    private static Dictionary<string, string> Lookup
-    {
-        get
+    private static Dictionary<string, string> Lookup =>
+        new()
         {
-            return new Dictionary<string, string>
-            {
-                { "WorkingWeekDescription", "WorkingWeek" },
-                { "HoursPerWeek", "WorkingWeek" },
-                { "WageText", "Wage" },
-                { "EmployerAddressElements", "EmployerAddress" },
-                { "AvailableLocations", "EmployerAddress" },
-                { "IsDisabilityConfident", "DisabilityConfident" },
-                { "TrainingTitle", "Training" },
-                { "EmployerContactName", "EmployerContact" },
-                { "EmployerContactEmail", "EmployerContact" },
-                { "EmployerContactTelephone", "EmployerContact" }
-            };
-        }
-    }
+            { "WorkingWeekDescription", "WorkingWeek" },
+            { "HoursPerWeek", "WorkingWeek" },
+            { "WageText", "Wage" },
+            { "EmployerAddressElements", "EmployerAddress" },
+            { "AvailableLocations", "EmployerAddress" },
+            { "IsDisabilityConfident", "DisabilityConfident" },
+            { "TrainingTitle", "Training" },
+            { "EmployerContactName", "EmployerContact" },
+            { "EmployerContactEmail", "EmployerContact" },
+            { "EmployerContactTelephone", "EmployerContact" }
+        };
 }

@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+﻿using System.Linq;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using ApplicationReviewViewModel = Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel;
 
 namespace Esfa.Recruit.Employer.Web.Mappings.Extensions;
@@ -22,7 +21,7 @@ public static class ApplicationReviewMapperExtensions
                 FromDate = c.FromDate,
                 Provider = c.Provider,
                 ToDate = c.ToDate
-            }).ToList() ?? new List<TrainingCoursesViewModel>(),
+            }).ToList() ?? [],
             Postcode = r.Application.Postcode,
             AddressLine1 = r.Application.AddressLine1,
             AddressLine2 = r.Application.AddressLine2,
@@ -52,8 +51,8 @@ public static class ApplicationReviewMapperExtensions
                     Year = q.Year,
                     AdditionalInformation = q.AdditionalInformation,
                     QualificationOrder = q.QualificationOrder,
-                }).OrderBy(ord => ord.QualificationOrder).ToList() ?? new List<QualificationViewModel>(),
-            Skills = r.Application.Skills ?? new List<string>(),
+                }).OrderBy(ord => ord.QualificationOrder).ToList() ?? [],
+            Skills = r.Application.Skills ?? [],
             Status = r.Status,
             Strengths = r.Application.Strengths,
             Support = r.Application.Support,
@@ -65,7 +64,7 @@ public static class ApplicationReviewMapperExtensions
                 Employer = w.Employer,
                 Description = w.Description,
                 JobTitle = w.JobTitle
-            }).ToList() ?? new List<WorkExperienceViewModel>(),
+            }).ToList() ?? [],
             Jobs = r.Application.Jobs?.Select(w => new WorkExperienceViewModel
             {
                 FromDate = w.FromDate,
@@ -73,9 +72,8 @@ public static class ApplicationReviewMapperExtensions
                 Employer = w.Employer,
                 Description = w.Description,
                 JobTitle = w.JobTitle
-            }).ToList() ?? new List<WorkExperienceViewModel>(),
+            }).ToList() ?? [],
             IsFaaV2Application = r.Application.IsFaaV2Application
         };
     }
-        
 }

@@ -47,7 +47,7 @@ public class FieldReviewMessageHelper : TagHelper
         if (error != null)
         {
             tagHelperOutput.Content.AppendHtml(error.ManualQaText);
-            foreach (string autoQaText in error.AutoQaTexts)
+            foreach (var autoQaText in error.AutoQaTexts)
             {
                 tagHelperOutput.Content.AppendHtml("<br/>");
                 tagHelperOutput.Content.Append($"{autoQaText}");

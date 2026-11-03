@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Employer.Web;
 
 public static class StartupHealthChecks
 {
-    public static IApplicationBuilder UseHealthChecks(this IApplicationBuilder app)
+    public static void UseHealthChecks(this IApplicationBuilder app)
     {
         app.UseHealthChecks("/health", new HealthCheckOptions
         {
@@ -21,6 +21,5 @@ public static class StartupHealthChecks
                 return context.Response.WriteAsync("");
             }
         });
-        return app;
     }
 }

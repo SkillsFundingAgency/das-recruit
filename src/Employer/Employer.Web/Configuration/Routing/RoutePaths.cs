@@ -7,13 +7,13 @@ public static class RoutePaths
     public const string AccountRoutePath = "accounts/{employerAccountId:minlength(6)}";
     public const string VacanciesRoutePath = AccountRoutePath + "/vacancies";
 
-    public const string VacancyRoutePath = "vacancies/{vacancyId:guid}";
+    private const string VacancyRoutePath = "vacancies/{vacancyId:guid}";
     public const string AccountVacancyRoutePath = AccountRoutePath + "/" + VacancyRoutePath;
 
-    public const string ApplicationReviewPath = "applications/{applicationReviewId:guid}";
+    private const string ApplicationReviewPath = "applications/{applicationReviewId:guid}";
     public const string AccountApplicationReviewRoutePath = AccountVacancyRoutePath + "/" + ApplicationReviewPath;
 
-    public const string ApplicationReviewsPath = "applications";
+    private const string ApplicationReviewsPath = "applications";
     public const string AccountApplicationReviewsRoutePath = AccountVacancyRoutePath + "/" + ApplicationReviewsPath;
 
     public const string ExceptionHandlingPath = "/error/handle";

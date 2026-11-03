@@ -23,7 +23,7 @@ public partial class Startup
     private readonly AuthenticationConfiguration _authConfig;
     private readonly ILoggerFactory _loggerFactory;
 
-    public Startup(IConfiguration config, IWebHostEnvironment env, ILoggerFactory loggerFactory, ILogger<Startup> logger)
+    public Startup(IConfiguration config, IWebHostEnvironment env, ILoggerFactory loggerFactory)
     {
         _hostingEnvironment = env;
         var configBuilder = new ConfigurationBuilder()

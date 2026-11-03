@@ -90,7 +90,7 @@ public class VacancyLocationService(
             .ToList();
         var results = await locationsService.GetBulkPostcodeDataAsync(addressesToQuery);
  
-        bool isDirty = false;
+        var isDirty = false;
         locations.ForEach(x =>
         {
             if (x.Country is null && results.TryGetValue(x.Postcode, out var postcodeData) && postcodeData is not null)
@@ -113,17 +113,9 @@ public class VacancyLocationService(
         
         foreach (var address in addresses)
         {
-            string newAddressString = address.ToSingleLineFullAddress();
+            var newAddressString = address.ToSingleLineFullAddress();
             var existingLocation = existingLocations.FirstOrDefault(x => x.ToSingleLineFullAddress().Equals(newAddressString, StringComparison.InvariantCultureIgnoreCase));
-            if (existingLocation is null)
-            {
-                // will hit this when:
-                //   - it's the legal entity address
-                //   - unknown postcode 
-                continue;
-            }
-
-            existingLocation.Country = address.Country;
+            existingLocation?.Country = address.Country;
         }
         
         await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile);
@@ -132,7 +124,7 @@ public class VacancyLocationService(
     public async Task SaveEmployerAddress(Vacancy vacancy, Address address)
     {
         var existingLocations = await GetVacancyLocations(vacancy);
-        string newAddressString = address.ToSingleLineFullAddress();
+        var newAddressString = address.ToSingleLineFullAddress();
         if (existingLocations.Any(x => x.ToSingleLineFullAddress().Equals(newAddressString, StringComparison.InvariantCultureIgnoreCase)))
         {
             // Don't add existing addresses

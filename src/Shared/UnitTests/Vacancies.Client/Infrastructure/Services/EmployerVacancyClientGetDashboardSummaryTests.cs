@@ -1,9 +1,7 @@
 using AutoFixture.NUnit4;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.Services;

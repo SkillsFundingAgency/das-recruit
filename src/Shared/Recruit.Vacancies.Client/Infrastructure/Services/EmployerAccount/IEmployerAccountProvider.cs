@@ -11,8 +11,6 @@ public interface IEmployerAccountProvider
     Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email);
     Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string hashedAccountId);
     Task<IEnumerable<AccountLegalEntity>> GetLegalEntitiesConnectedToAccountAsync(string hashedAccountId);
-    Task<GetApplicationReviewStatsResponse> GetEmployerDashboardApplicationReviewStats(string hashedAccountId,
-        List<long> vacancyReferences, string applicationSharedFilteringStatus);
     Task<GetEmployerDashboardApiResponse> GetEmployerDashboardStats(string hashedAccountId);
     Task<GetAllAccountLegalEntitiesApiResponse> GetAllLegalEntitiesConnectedToAccountAsync(
         List<string> hashedAccountIds,
@@ -21,12 +19,6 @@ public interface IEmployerAccountProvider
         int pageSize,
         string sortColumn,
         bool isAscending);
-
-    Task<GetVacanciesDashboardResponse> GetEmployerVacancyDashboardStats(string hashedAccountId,
-        List<ApplicationReviewStatus> statuses,
-        int pageNumber,
-        int pageSize);
-
     Task<GetVacanciesByAccountIdApiResponse> GetEmployerVacancies(string hashedAccountId,
         int page,
         int pageSize,
@@ -34,6 +26,5 @@ public interface IEmployerAccountProvider
         string sortOrder,
         FilteringOptions filterBy,
         string searchTerm);
-
     Task<GetAlertsByAccountIdApiResponse> GetEmployerAlerts(string hashedAccountId, string userId);
 }

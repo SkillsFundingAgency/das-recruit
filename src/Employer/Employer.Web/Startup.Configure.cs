@@ -20,16 +20,16 @@ namespace Esfa.Recruit.Employer.Web;
 public partial class Startup
 {
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<ExternalLinksConfiguration> externalLinks, IHostApplicationLifetime applicationLifetime, ILogger<Startup> logger, IConfiguration config)
+    public void Configure(IApplicationBuilder app,
+        IWebHostEnvironment env,
+        IOptions<ExternalLinksConfiguration> externalLinks,
+        ILogger<Startup> logger,
+        IConfiguration config)
     {
         var cultureInfo = new CultureInfo("en-GB");
 
         CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
         CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-
-        applicationLifetime.ApplicationStarted.Register(() => logger.LogInformation("Host fully started"));
-        applicationLifetime.ApplicationStopping.Register(() => logger.LogInformation("Host shutting down...waiting to complete requests."));
-        applicationLifetime.ApplicationStopped.Register(() => logger.LogInformation("Host fully stopped. All requests processed."));
 
         app.UseStatusCodePagesWithReExecute("/error/{0}");
 
@@ -175,7 +175,7 @@ public partial class Startup
         app.UseXContentTypeOptions();
         app.UseXXssProtection(opts => opts.EnabledWithBlockMode());
 
-        if (_isAuthEnabled)
+        if (IsAuthEnabled)
         {
             app.UseAuthentication();
         }
@@ -231,13 +231,11 @@ public partial class Startup
         destinations.Add("https://oidc.integration.account.gov.uk");
         destinations.Add("https://oidc.account.gov.uk");
         destinations.Add("".GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]));
-        var stubSignInRedirectUrl = RedirectExtension.GetStubSignInRedirectUrl("",configuration["ResourceEnvironmentName"]);
+        var stubSignInRedirectUrl = "".GetStubSignInRedirectUrl(configuration["ResourceEnvironmentName"]);
         if (!string.IsNullOrEmpty(stubSignInRedirectUrl))
         {
             destinations.Add(stubSignInRedirectUrl);    
         }
-            
-            
-        return destinations.ToArray();
+        return [.. destinations];
     }
 }

@@ -42,7 +42,7 @@ public class NationalMinimumWageProvider(ILogger<NationalMinimumWageProvider> lo
         }
         catch(InvalidOperationException ex)
         {
-            logger.LogError(ex, $"Unable to find Wage Period for date: {date}");
+            logger.LogError(ex, "Unable to find Wage Period for date: {DateTime}", date);
                 
             throw;
         }

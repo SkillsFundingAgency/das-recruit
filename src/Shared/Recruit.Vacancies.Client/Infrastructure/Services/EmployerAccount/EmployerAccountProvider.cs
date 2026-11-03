@@ -101,22 +101,6 @@ public class EmployerAccountProvider(
         }
     }
 
-    public async Task<string> GetEmployerAccountPublicHashedIdAsync(string hashedAccountId)
-    {
-        try
-        {
-            var accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
-            var account = await outerApiClient.Get<GetAccountResponse>(new GetAccountRequest(accountId));
-                
-            return account.HashedAccountId;
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Failed to retrieve account information for account Id: {HashedAccountId}", hashedAccountId);
-            throw;
-        }
-    }
-
     public async Task<GetApplicationReviewStatsResponse> GetEmployerDashboardApplicationReviewStats(string hashedAccountId, List<long> vacancyReferences, string applicationSharedFilteringStatus)
     {
         try

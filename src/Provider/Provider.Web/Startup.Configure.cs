@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Logging;
 using SFA.DAS.DfESignIn.Auth.Configuration;
@@ -23,16 +22,15 @@ public partial class Startup
     private readonly DfEOidcConfiguration _dfEOidcConfig;
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<ExternalLinksConfiguration> externalLinks, IHostApplicationLifetime applicationLifetime, ILogger<Startup> logger, IConfiguration config)
+    public void Configure(IApplicationBuilder app,
+        IWebHostEnvironment env,
+        IOptions<ExternalLinksConfiguration> externalLinks,
+        IConfiguration config)
     {
         var cultureInfo = new CultureInfo("en-GB");
 
         CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
         CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-
-        applicationLifetime.ApplicationStarted.Register(() => logger.LogInformation("Host fully started"));
-        applicationLifetime.ApplicationStopping.Register(() => logger.LogInformation("Host shutting down...waiting to complete requests."));
-        applicationLifetime.ApplicationStopped.Register(() => logger.LogInformation("Host fully stopped. All requests processed."));
 
         app.UseStatusCodePagesWithReExecute("/error/{0}");
 
@@ -67,7 +65,7 @@ public partial class Startup
         app.UseXfo(xfo => xfo.Deny());
         app.UseRedirectValidation(opts =>
         {
-            string sharedUiDashboardUrl = _configuration["ProviderSharedUIConfiguration:DashboardUrl"];
+            var sharedUiDashboardUrl = _configuration["ProviderSharedUIConfiguration:DashboardUrl"];
             opts.AllowSameHostRedirectsToHttps();
             opts.AllowedDestinations(GetAllowableDestinations(_authConfig, externalLinks.Value, _dfEOidcConfig, sharedUiDashboardUrl));
         }); //Register this earlier if there's middleware that might redirect.

@@ -10,17 +10,17 @@ namespace Esfa.Recruit.Employer.Web.Extensions;
 
 public static class ClaimsPrincipalExtensions
 {
-    public static string GetDisplayName(this ClaimsPrincipal user)
+    private static string GetDisplayName(this ClaimsPrincipal user)
     {
         return user.FindFirstValue(EmployerRecruitClaims.IdamsUserDisplayNameClaimTypeIdentifier);
     }
 
-    public static string GetEmailAddress(this ClaimsPrincipal user)
+    private static string GetEmailAddress(this ClaimsPrincipal user)
     {
         return user.FindFirstValue(EmployerRecruitClaims.IdamsUserEmailClaimTypeIdentifier) ?? user.FindFirstValue(ClaimTypes.Email);
     }
 
-    public static string GetUserId(this ClaimsPrincipal user)
+    private static string GetUserId(this ClaimsPrincipal user)
     {
         return user.FindFirstValue(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier);
     }

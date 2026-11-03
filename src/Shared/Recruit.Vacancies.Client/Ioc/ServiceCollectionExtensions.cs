@@ -6,7 +6,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Application.Services.Reports;
 using Esfa.Recruit.Vacancies.Client.Application.Services.VacancyComparer;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -23,13 +22,11 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipP
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BannedPhrases;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Profanities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Reports;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerProfile;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Report;
@@ -60,8 +57,8 @@ public static class ServiceCollectionExtensions
         RegisterClients(services);
         RegisterServiceDeps(services, configuration);
         RegisterAccountApiClientDeps(services);
-        RegisterRepositories(services, configuration);
-        RegisterOutOfProcessEventDelegatorDeps(services, configuration);
+        RegisterRepositories(services);
+        RegisterOutOfProcessEventDelegatorDeps(services);
         RegisterQueueStorageServices(services, configuration);
         AddValidation(services);
         AddRules(services);
@@ -106,7 +103,6 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IVacancyAnalyticsService, VacancyAnalyticsService>();
         services.AddTransient<ITrainingProviderSummaryProvider, TrainingProviderSummaryProvider>();
         services.AddHttpClient<IOuterApiClient, OuterApiClient>();
-        services.AddTransient<IOuterApiGeocodeService, OuterApiGeocodeService>();
         services.AddTransient<ILocationsService, LocationsService>();
         services.AddTransient<IProviderReportService, ProviderReportService>();
         services.AddTransient<IEmployerProfileService, EmployerProfileService>();
@@ -118,12 +114,10 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IBannedPhrasesProvider, BannedPhrasesProvider>();
 
         // Reference Data update services
-        services.AddTransient<ITrainingProvidersUpdateService, TrainingProvidersUpdateService>();
         services.AddTransient<IBankHolidayProvider, BankHolidayProvider>();
-
     }
 
-    private static void RegisterRepositories(IServiceCollection services, IConfiguration configuration)
+    private static void RegisterRepositories(IServiceCollection services)
     {
         //Repositories
         services.AddTransient<IVacancyRepository, SqlVacancyRepository>();
@@ -139,7 +133,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IVacancyReviewQuery, VacancyReviewService>();
     }
 
-    private static void RegisterOutOfProcessEventDelegatorDeps(IServiceCollection services, IConfiguration configuration)
+    private static void RegisterOutOfProcessEventDelegatorDeps(IServiceCollection services)
     {
         services.AddTransient<IEventStore, StorageQueueEventStore>();
     }

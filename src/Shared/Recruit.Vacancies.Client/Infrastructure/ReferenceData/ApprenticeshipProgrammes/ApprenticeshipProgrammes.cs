@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;

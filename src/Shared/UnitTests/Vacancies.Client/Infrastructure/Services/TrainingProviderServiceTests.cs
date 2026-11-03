@@ -5,8 +5,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
@@ -20,7 +18,6 @@ public class TrainingProviderServiceTests
     public async Task GetProviderAsync_ShouldReturnEsfaTestTrainingProvider()
     {
         var loggerMock = new Mock<ILogger<TrainingProviderService>>();
-        var referenceDataReader = new Mock<IReferenceDataReader>();
         var outerApiClient = new Mock<IOuterApiClient>();
 
         var sut = new TrainingProviderService(loggerMock.Object, outerApiClient.Object);
@@ -30,8 +27,6 @@ public class TrainingProviderServiceTests
         provider.Ukprn.Should().Be(EsfaTestTrainingProvider.Ukprn);
         provider.Name.Should().Be(EsfaTestTrainingProvider.Name);
         provider.Address.Postcode.Should().Be("CV1 2WT");
-
-        referenceDataReader.Verify(p => p.GetReferenceData<TrainingProviders>(), Times.Never);
     }
 
     [Test, MoqAutoData]

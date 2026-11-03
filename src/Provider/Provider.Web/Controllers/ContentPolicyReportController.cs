@@ -8,11 +8,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers;
 public class ContentPolicyReportController(ILogger<ContentPolicyReportController> logger) : Controller
 {
     [AllowAnonymous]
-    [HttpPost("contentpolicyreport/report")]
+    [HttpPost("contentPolicyReport/report")]
     [IgnoreAntiforgeryToken]
     public IActionResult Report([FromBody] CspReportRequest request)
     {
-        logger.LogInformation($" Request Path: {HttpContext.Request.Path} and Query: {HttpContext.Request.Query}");
+        logger.LogInformation("Request Path: {Path} and Query: {Query}", HttpContext.Request.Path, HttpContext.Request.Query);
             
         logger.LogWarning("CSP Violation: {cspReport}", request);
 
