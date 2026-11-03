@@ -139,63 +139,29 @@ public class LegalEntityAndEmployerOrchestrator(
             vacancyId = vacancy.Id;
         }
 
-        string employerName;
-        string accountLegalEntityName;
-        string accountLegalEntityPublicHashedId;
-        if (feature.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles))
+        //Implement
+        // Only include employer accounts where the provider has recruitment permission
+        var allLegalEntities = await providerRelationshipsService.GetLegalEntitiesForProvider(
+            vacancyRouteModel.Ukprn, "", [OperationType.Recruitment, OperationType.RecruitmentRequiresReview]);
+
+        var legalEntities = allLegalEntities.ToList();
+
+        if (legalEntities.Count == 0)
         {
-            //Implement
-            // Only include employer accounts where the provider has recruitment permission
-            var allLegalEntities = await providerRelationshipsService.GetLegalEntitiesForProvider(
-                vacancyRouteModel.Ukprn, "", [OperationType.Recruitment, OperationType.RecruitmentRequiresReview]);
-
-            var legalEntities = allLegalEntities.ToList();
-
-            if (legalEntities.Count == 0)
-            {
-                throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vacancyRouteModel.Ukprn));
-            }
-
-            var employerAccount = legalEntities.FirstOrDefault(c => c.EmployerAccountId == employerAccountId);
-            employerName = employerAccount?.Name;
-            var legalEntity = employerAccount?.LegalEntities.FirstOrDefault(c => c.AccountLegalEntityPublicHashedId == employerAccountLegalEntityPublicHashedId);
-
-            if (legalEntity == null)
-            {
-                throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vacancyRouteModel.Ukprn));
-            }
-
-            accountLegalEntityPublicHashedId = employerAccountLegalEntityPublicHashedId;
-            accountLegalEntityName = legalEntity?.Name;
+            throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vacancyRouteModel.Ukprn));
         }
-        else
+
+        var employerAccount = legalEntities.FirstOrDefault(c => c.EmployerAccountId == employerAccountId);
+        var employerName = employerAccount?.Name;
+        var legalEntity = employerAccount?.LegalEntities.FirstOrDefault(c => c.AccountLegalEntityPublicHashedId == employerAccountLegalEntityPublicHashedId);
+
+        if (legalEntity == null)
         {
-            var employerVacancyInfo = await providerVacancyClient.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, employerAccountId);
-            if (employerVacancyInfo?.LegalEntities == null || !employerVacancyInfo.LegalEntities.Any())
-            {
-                throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vacancyRouteModel.Ukprn));
-            }
-
-            var selectedOrganisation = employerVacancyInfo.LegalEntities.SingleOrDefault(l => l.AccountLegalEntityPublicHashedId == employerAccountLegalEntityPublicHashedId);
-
-            if (selectedOrganisation == null)
-            {
-                throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vacancyRouteModel.Ukprn));
-            }
-
-            if (!await providerRelationshipsService.HasProviderGotEmployersPermissionAsync(vacancyRouteModel.Ukprn, employerAccountId, employerAccountLegalEntityPublicHashedId, OperationType.Recruitment))
-            {
-                if (!await providerRelationshipsService.HasProviderGotEmployersPermissionAsync(vacancyRouteModel.Ukprn,
-                        employerAccountId, employerAccountLegalEntityPublicHashedId,
-                        OperationType.RecruitmentRequiresReview))
-                {
-                    throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vacancyRouteModel.Ukprn));
-                }
-            }
-            accountLegalEntityPublicHashedId = selectedOrganisation?.AccountLegalEntityPublicHashedId;
-            accountLegalEntityName = selectedOrganisation.Name;
-            employerName = employerVacancyInfo.Name;
+            throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vacancyRouteModel.Ukprn));
         }
+
+        var accountLegalEntityPublicHashedId = employerAccountLegalEntityPublicHashedId;
+        var accountLegalEntityName = legalEntity?.Name;
 
         return new ConfirmLegalEntityAndEmployerViewModel
         {

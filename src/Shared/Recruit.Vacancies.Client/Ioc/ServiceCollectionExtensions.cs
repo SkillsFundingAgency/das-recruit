@@ -172,7 +172,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
                 .AddTransient<IRecruitVacancyClient, VacancyClient>()
                 .AddTransient<IEmployerVacancyClient, VacancyClient>()
                 .AddTransient<IProviderVacancyClient, VacancyClient>()
-                .AddTransient<IJobsVacancyClient, VacancyClient>()
                 .AddTransient<IGetAddressesClient, OuterApiGetAddressesClient>()
                 .AddTransient<IGetProviderStatusClient, OuterApiGetProviderStatusClient>()
                 .AddTransient<ILocationsClient, LocationsClient>()
