@@ -35,7 +35,6 @@
     <PackageReference Include="SFA.DAS.Encoding" Version="1.1.94" />
     <PackageReference Include="SFA.DAS.Http" Version="3.2.69" />
     <PackageReference Include="SFA.DAS.VacancyServices.Wage" Version="1.0.45" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.11" />
     <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.13" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
     <PackageReference Include="FluentValidation" Version="11.11.0" />
