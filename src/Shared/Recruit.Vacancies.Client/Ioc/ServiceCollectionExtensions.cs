@@ -1,5 +1,4 @@
-﻿using System;
-using Esfa.Recruit.Vacancies.Client.Application.Aspects;
+﻿using Esfa.Recruit.Vacancies.Client.Application.Aspects;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Client.Application.Events;
@@ -20,7 +19,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BannedPhrases;
@@ -38,7 +36,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Report;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProviderSummaryProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancyAnalytics;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
@@ -175,7 +172,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
                 .AddTransient<IRecruitVacancyClient, VacancyClient>()
                 .AddTransient<IEmployerVacancyClient, VacancyClient>()
                 .AddTransient<IProviderVacancyClient, VacancyClient>()
-                .AddTransient<IJobsVacancyClient, VacancyClient>()
                 .AddTransient<IGetAddressesClient, OuterApiGetAddressesClient>()
                 .AddTransient<IGetProviderStatusClient, OuterApiGetProviderStatusClient>()
                 .AddTransient<ILocationsClient, LocationsClient>()

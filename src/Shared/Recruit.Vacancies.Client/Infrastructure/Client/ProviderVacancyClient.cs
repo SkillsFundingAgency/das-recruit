@@ -57,8 +57,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             );
 
             await messaging.SendCommandAsync(command);
-
-            await AssignVacancyNumber(id);
         }
         
         public async Task<ProviderDashboardSummary> GetDashboardSummary(long ukprn, string userId)
@@ -180,11 +178,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return employerInfos;
         }
 
-        public Task SetupProviderAsync(long ukprn)
+        public async Task SetupProviderAsync(long ukprn)
         {
-            var command = new SetupProviderCommand(ukprn);
+            var employerInfosTask = providerRelationshipsService.GetLegalEntitiesForProvider(ukprn, "", [OperationType.Recruitment]);
+            var providerStatus = providerStatusClient.GetProviderStatus(ukprn);
 
-            return messaging.SendCommandAsync(command);
+            await Task.WhenAll(employerInfosTask, providerStatus);
+
+            var employerInfos = employerInfosTask.Result;
+
+            foreach (var employerInfo in employerInfos)
+            {
+                await SetupEmployerAsync(employerInfo.EmployerAccountId);
+            }
         }
 
         public async Task<Guid> CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate,

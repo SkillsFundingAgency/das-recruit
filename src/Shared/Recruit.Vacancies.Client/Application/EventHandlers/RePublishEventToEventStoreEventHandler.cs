@@ -12,24 +12,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
         ILogger<RePublishEventToEventStoreEventHandler> logger,
         IEventStore eventStore)
         :
-            INotificationHandler<DraftVacancyUpdatedEvent>,
             INotificationHandler<VacancyReviewApprovedEvent>,
-            INotificationHandler<SetupEmployerEvent>,
-            INotificationHandler<SetupProviderEvent>,
             INotificationHandler<VacancyClosedEvent>,
             INotificationHandler<LiveVacancyUpdatedEvent>
     {
-        public Task Handle(DraftVacancyUpdatedEvent notification, CancellationToken cancellationToken)
-            => HandleUsingEventStore(notification);
-
         public Task Handle(VacancyReviewApprovedEvent notification, CancellationToken cancellationToken)
-            => HandleUsingEventStore(notification);
-
-
-        public Task Handle(SetupEmployerEvent notification, CancellationToken cancellationToken)
-            => HandleUsingEventStore(notification);
-
-        public Task Handle(SetupProviderEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
 
         public Task Handle(VacancyClosedEvent notification, CancellationToken cancellationToken)
