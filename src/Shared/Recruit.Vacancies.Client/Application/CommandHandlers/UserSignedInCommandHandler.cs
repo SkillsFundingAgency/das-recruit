@@ -49,7 +49,7 @@ public class UserSignedInCommandHandler(
             CreatedDate = now,
             DfEUserId = user.DfEUserId
         };
-                                                         
+
         userEntity.Name = user.Name;
         userEntity.LastSignedInDate = now;
         userEntity.Email = user.Email;
@@ -59,7 +59,7 @@ public class UserSignedInCommandHandler(
             userEntity.Ukprn = user.Ukprn;
             if (string.IsNullOrEmpty(userEntity.DfEUserId) || userEntity.DfEUserId != user.DfEUserId)
             {
-                userEntity.DfEUserId = user.DfEUserId;    
+                userEntity.DfEUserId = user.DfEUserId;
             }
         }
 

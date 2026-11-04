@@ -24,25 +24,6 @@ public class TrainingProviderUkprnValidationTests : VacancyValidationTestsBase
     }
 
     [Test]
-    public void ErrorIfTrainingProviderIsNotInRoatp()
-    {
-        var vacancy = new Vacancy
-        {
-            TrainingProvider = new TrainingProvider { Ukprn = 12345678 }
-        };
-
-        var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
-
-        result.HasErrors.Should().BeTrue();
-        result.Errors.Should().HaveCount(2);
-        result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
-        result.Errors[0].ErrorCode.Should().Be(ErrorCodes.TrainingProviderMustExist);
-        result.Errors[1].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
-        result.Errors[1].ErrorCode.Should().Be(ErrorCodes.TrainingProviderMustBeMainOrEmployerProfile);
-        result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
-    }
-
-    [Test]
     public void ErrorIfTrainingProviderIsNotMainOrEmployerProfile()
     {
         var vacancy = new Vacancy

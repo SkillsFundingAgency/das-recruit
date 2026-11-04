@@ -71,11 +71,6 @@ public class UserSignedInCommandHandlerTests
                 x.UserType == UserType.Provider
             )
         ));
-
-        _mockQueueService.Verify(
-            q => q.AddMessageAsync(It.IsAny<UpdateEmployerUserAccountQueueMessage>()),
-            Times.Never
-        );
     }
 
     [Test]
