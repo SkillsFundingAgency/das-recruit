@@ -6,6 +6,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyName>Esfa.Recruit.Provider.Web</AssemblyName>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.21.0" />

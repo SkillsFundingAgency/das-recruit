@@ -3,6 +3,7 @@
 	  <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>Esfa.Recruit.Shared.Web</RootNamespace>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Humanizer.Core" Version="3.0.10" />
