@@ -1,26 +1,24 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
-using Xunit;
+using System.Collections.Generic;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation;
 
 public class VacancyReviewTests
 {
-    private class ManualQaCommentTestData : TheoryData<string, string>
+    private static IEnumerable<TestCaseData> ManualQaCommentTestData()
     {
-        public ManualQaCommentTestData()
-        {
-            var manualQaCommentTooLong =
-                new string('a',VacancyReviewValidator.ManualQaCommentMaxLength + 1);
+        var manualQaCommentTooLong =
+            new string('a', VacancyReviewValidator.ManualQaCommentMaxLength + 1);
 
-            Add(">", VacancyReviewValidator.ManualQaCommentFreeTextCharactersMessage);
-            Add(manualQaCommentTooLong, string.Format(VacancyReviewValidator.ManualQaCommentLengthMessage, VacancyReviewValidator.ManualQaCommentMaxLength));
-        }
+        yield return new TestCaseData(">", VacancyReviewValidator.ManualQaCommentFreeTextCharactersMessage);
+        yield return new TestCaseData(manualQaCommentTooLong, string.Format(VacancyReviewValidator.ManualQaCommentLengthMessage, VacancyReviewValidator.ManualQaCommentMaxLength));
     }
 
-    [Theory]
-    [ClassData(typeof(ManualQaCommentTestData))]
+    [Test]
+    [TestCaseSource(nameof(ManualQaCommentTestData))]
     public void ShouldValidateManaulQaComment(string manualQaComment, string expectedErrorMessage)
     {
         var m = new VacancyReview
@@ -37,7 +35,7 @@ public class VacancyReviewTests
         result.Errors[0].ErrorMessage.Should().Be(expectedErrorMessage);
     }
 
-    [Fact]
+    [Test]
     public void ShouldNotRequireCandidateFeedbackIfSuccessful()
     {
         var m = new ApplicationReview
@@ -54,9 +52,9 @@ public class VacancyReviewTests
         result.Errors.Count.Should().Be(0);
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
     public void ApplicationReviewShouldBeValid(string manualQaComment)
     {
         var m = new VacancyReview

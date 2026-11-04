@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
 
@@ -15,7 +15,7 @@ public class StartDateValidationTests : VacancyValidationTestsBase
             new object[] { -15 }
         };
 
-    [Fact]
+    [Test]
     public void NoErrorsWhenStartDateIsValid()
     {
         var vacancy = new Vacancy
@@ -30,7 +30,7 @@ public class StartDateValidationTests : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
 
-    [Fact]
+    [Test]
     public void StartDateMustHaveAValue()
     {
         var vacancy = new Vacancy 
@@ -47,8 +47,8 @@ public class StartDateValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.StartDate);
     }
 
-    [Theory]
-    [MemberData(nameof(InvalidDaysFromClosingDate))]
+    [Test]
+    [TestCaseSource(nameof(InvalidDaysFromClosingDate))]
     public void StartDateMustBeGreaterThanToday(int startDate)
     {
         var closingDate = DateTime.Today.AddDays(50);

@@ -2,7 +2,7 @@
 using Esfa.Recruit.Shared.Web.ViewModels.Skills;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
-using Xunit;
+using NUnit.Framework;
 using System.Linq;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 
@@ -14,7 +14,7 @@ public class SkillsOrchestratorHelperTests
     public SkillsOrchestratorHelperTests()
     {}
 
-    [Fact]
+    [Test]
     public void SetViewModelSkillsFromDraftSkills_ShouldOrderVacancySkills()
     {
         var helper = new SkillsOrchestratorHelper(GetBaseSkills);
@@ -57,7 +57,7 @@ public class SkillsOrchestratorHelperTests
         vm.Column2Checkboxes[8].Selected.Should().BeTrue();
     }
 
-    [Fact]
+    [Test]
     public void SetViewModelSkillsFromVacancy_ShouldOrderVacancySkills()
     {
         var helper = new SkillsOrchestratorHelper(GetBaseSkills);
@@ -102,7 +102,7 @@ public class SkillsOrchestratorHelperTests
         vm.Column2Checkboxes[8].Selected.Should().BeTrue();
     }
 
-    [Fact]
+    [Test]
     public void SetVacancyFromEditModel_ShouldOrderVacancySkills()
     {
         var helper = new SkillsOrchestratorHelper(GetBaseSkills);

@@ -7,7 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Microsoft.Extensions.Logging;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.CommandHandlers;
 
@@ -19,7 +19,7 @@ public class UserSignedInCommandHandlerTests
     private readonly Mock<IRecruitQueueService> _mockQueueService = new Mock<IRecruitQueueService>();
     private readonly Fixture _fixture = new Fixture();
 
-    [Fact]
+    [Test]
     public async Task GivenEmployerUser_ShouldRaiseUserAccountUpdateMessage()
     {
         var userType= UserType.Employer;
@@ -37,7 +37,7 @@ public class UserSignedInCommandHandlerTests
         _mockQueueService.Verify(q => q.AddMessageAsync(It.Is<UpdateEmployerUserAccountQueueMessage>(u => u.IdamsUserId == user.IdamsUserId)));
     }
 
-    [Fact]
+    [Test]
     public async Task GivenProviderUser_ShouldNotRaiseUserAccountUpdateMessage()
     {
         var userType= UserType.Provider;
@@ -54,7 +54,7 @@ public class UserSignedInCommandHandlerTests
         _mockQueueService.Verify(q => q.AddMessageAsync(It.IsAny<UpdateEmployerUserAccountQueueMessage>()), Times.Never);
     }
 
-    [Fact]
+    [Test]
     public async Task GivenProviderUser_ShouldAssignUkprn()
     {
         var userType= UserType.Provider;
@@ -71,7 +71,7 @@ public class UserSignedInCommandHandlerTests
         _mockUserWriteRepository.Verify(u => u.UpsertUserAsync(It.Is<User>(c=> c.Ukprn == vacancyUser.Ukprn)));
     }
         
-    [Fact]
+    [Test]
     public async Task GivenProviderUser_ShouldGetByDfESignIn()
     {
         var userType= UserType.Provider;
@@ -90,7 +90,7 @@ public class UserSignedInCommandHandlerTests
         _mockUserWriteRepository.Verify(u => u.UpsertUserAsync(It.Is<User>(c=> c.Ukprn == vacancyUser.Ukprn)));
     }
         
-    [Fact]
+    [Test]
     public async Task GivenProviderUser_NoDfESignInId_ShouldUpsertDfESignInIdToUser()
     {
         var userType= UserType.Provider;
@@ -110,7 +110,7 @@ public class UserSignedInCommandHandlerTests
         _mockUserWriteRepository.Verify(u => u.UpsertUserAsync(It.Is<User>(c=> c.Ukprn == vacancyUser.Ukprn && c.DfEUserId == command.User.DfEUserId)));
     }
 
-    [Fact]
+    [Test]
     public async Task GivenEmployerUser_ShouldAssignUkprn()
     {
         var userType= UserType.Employer;

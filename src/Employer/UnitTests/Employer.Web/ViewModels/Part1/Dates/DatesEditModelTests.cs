@@ -32,7 +32,7 @@ public class DatesEditModelTests
             new object[] { nameof(DatesEditModel.StartYear), "18", nameof(DatesEditModel.StartDate), ErrMsg.TypeOfDate.StartDate}
         };
 
-    [Theory]
+    [Test]
     [TestCaseSource(nameof(InvalidDatesData))]
     public void ShouldErrorIfClosingDateIsInvalid(string propertyName, object actualPropertyValue, string expectedErrorPropertyName, string expectedErrorMessage)
     {

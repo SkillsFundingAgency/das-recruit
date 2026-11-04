@@ -1,12 +1,12 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
 
 public class DescriptionValidationTests : VacancyValidationTestsBase
 {
-    [Fact]
+    [Test]
     public void NoErrorsWhenDescriptionFieldIsValid()
     {
         var vacancy = new Vacancy 
@@ -20,9 +20,9 @@ public class DescriptionValidationTests : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
         
-    [Theory]
-    [InlineData(null, "will do at work")]
-    [InlineData("", "will do at work")]
+    [Test]
+    [TestCase(null, "will do at work")]
+    [TestCase("", "will do at work")]
     public void DescriptionMustNotBeEmpty(string description, string errorMessage)
     {
         var vacancy = new Vacancy 
@@ -40,7 +40,7 @@ public class DescriptionValidationTests : VacancyValidationTestsBase
         result.Errors[0].ErrorMessage.Should().Contain(errorMessage);
     }
 
-    [Fact]
+    [Test]
     public void DescriptionMustNotBeLongerThanMaxLength()
     {
         var vacancy = new Vacancy 
@@ -57,10 +57,10 @@ public class DescriptionValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Description);
     }
 
-    [Theory]
-    [InlineData("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
-    [InlineData("<script>alert('not allowed')</script>", false)]
-    [InlineData("<p>`</p>", false)]
+    [Test]
+    [TestCase("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
+    [TestCase("<script>alert('not allowed')</script>", false)]
+    [TestCase("<p>`</p>", false)]
     public void DescriptionMustContainValidHtml(string actual, bool expectedResult)
     {
         var vacancy = new Vacancy 
@@ -84,11 +84,11 @@ public class DescriptionValidationTests : VacancyValidationTestsBase
         }
     }
 
-    [Theory]
-    [InlineData("some text bother")]
-    [InlineData("some text dang")]
-    [InlineData("some text drat")]
-    [InlineData("some text balderdash")]
+    [Test]
+    [TestCase("some text bother")]
+    [TestCase("some text dang")]
+    [TestCase("some text drat")]
+    [TestCase("some text balderdash")]
     public void Description_Should_Fail_IfContainsWordsFromTheProfanityList(string freeText)
     {
         var vacancy = new Vacancy()
@@ -103,11 +103,11 @@ public class DescriptionValidationTests : VacancyValidationTestsBase
         result.Errors[0].ErrorCode.Should().Be("609");
     }
 
-    [Theory]
-    [InlineData("some textbother")]
-    [InlineData("some textdang")]
-    [InlineData("some textdrat")]
-    [InlineData("some textbalderdash")]
+    [Test]
+    [TestCase("some textbother")]
+    [TestCase("some textdang")]
+    [TestCase("some textdrat")]
+    [TestCase("some textbalderdash")]
     public void Description_Should_Not_Fail_IfContainsWordsFromTheProfanityList(string freeText)
     {
         var vacancy = new Vacancy()

@@ -2,13 +2,13 @@ using System;
 using Esfa.Recruit.Vacancies.Client.Application.Mappers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Mappers;
 
 public class VacancyUserMapperTests
 {
-    [Fact]
+    [Test]
     public void MapFromUser()
     {
         var user = new User

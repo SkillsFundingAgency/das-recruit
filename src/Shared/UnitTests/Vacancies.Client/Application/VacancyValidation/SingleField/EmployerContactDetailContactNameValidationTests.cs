@@ -1,16 +1,16 @@
 ﻿using Esfa.Recruit.UnitTests.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
 
 public partial class EmployerContactDetailValidationTests : VacancyValidationTestsBase
 {
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("contact name")]
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("contact name")]
     public void NoErrorsWhenEmployerContactNameIsValid(string contactName)
     {
         var vacancy = new Vacancy
@@ -24,7 +24,7 @@ public partial class EmployerContactDetailValidationTests : VacancyValidationTes
         result.Errors.Should().HaveCount(0);
     }
 
-    [Fact]
+    [Test]
     public void EmployerContactNameMustBe100CharactersOrLess()
     {
         var vacancy = new Vacancy
@@ -40,13 +40,13 @@ public partial class EmployerContactDetailValidationTests : VacancyValidationTes
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerContactDetails);
     }
 
-    [Theory]
-    [MemberData(nameof(TestData.BlacklistedCharacters), MemberType = typeof(TestData))]
-    public void EmployerContactNameMustNotContainInvalidCharacters(string invalidChar)
+    [Test]
+    [TestCaseSource(typeof(TestData), nameof(TestData.BlacklistedCharacters))]
+    public void EmployerContactNameMustNotContainInvalidCharacters(char invalidChar)
     {
         var vacancy = new Vacancy
         {
-            EmployerContact = new ContactDetail { Name = invalidChar }
+            EmployerContact = new ContactDetail { Name = invalidChar.ToString() }
         };
 
         var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerContactDetails);

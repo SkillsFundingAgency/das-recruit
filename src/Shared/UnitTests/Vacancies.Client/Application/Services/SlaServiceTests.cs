@@ -5,13 +5,13 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using FluentAssertions;
 using Moq;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services;
 
 public class SlaServiceTests
 {
-    [Fact]
+    [Test]
     public void GetSlaDeadlineAsync_ShouldHandleWorkingDays()
     {
         var bankholidaysProviderMock = new Mock<IBankHolidayProvider>();
@@ -24,7 +24,7 @@ public class SlaServiceTests
         actual.Should().Be(DateTime.Parse("2018-07-24 14:38"));
     }
 
-    [Fact]
+    [Test]
     public void GetSlaDeadlineAsync_ShouldHandleWeekends()
     {
         var bankholidaysProviderMock = new Mock<IBankHolidayProvider>();
@@ -37,7 +37,7 @@ public class SlaServiceTests
         actual.Should().Be(DateTime.Parse("2018-07-30 14:38"));
     }
 
-    [Fact]
+    [Test]
     public void GetSlaDeadlineAsync_ShouldHandleBankHolidays()
     {
         var bankholidaysProviderMock = new Mock<IBankHolidayProvider>();
@@ -51,7 +51,7 @@ public class SlaServiceTests
         actual.Should().Be(DateTime.Parse("2018-08-28 14:38"));
     }
 
-    [Fact]
+    [Test]
     public void GetSlaDeadlineAsync_ShouldHandleEaster()
     {
         var bankholidaysProviderMock = new Mock<IBankHolidayProvider>();
@@ -69,7 +69,7 @@ public class SlaServiceTests
         actual.Should().Be(DateTime.Parse("2019-04-23 14:38"));
     }
 
-    [Fact]
+    [Test]
     public void GetSlaDeadlineAsync_ShouldHandleSubmissionsOnNonWorkingDays()
     {
         var bankholidaysProviderMock = new Mock<IBankHolidayProvider>();

@@ -5,14 +5,13 @@ using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Microsoft.Extensions.Logging;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers;
 
-[Trait("Category", "Unit")]
+[Category("Unit")]
 public class CloneVacancyCommandHandlerTests
 {
     private readonly Fixture _autoFixture = new Fixture();
@@ -24,11 +23,11 @@ public class CloneVacancyCommandHandlerTests
         Ignore
     }
 
-    [Theory]
-    [InlineData(VacancyStatus.Draft)]
-    [InlineData(VacancyStatus.Rejected)]
-    [InlineData(VacancyStatus.Referred)]
-    [InlineData(VacancyStatus.Approved)]
+    [Test]
+    [TestCase(VacancyStatus.Draft)]
+    [TestCase(VacancyStatus.Rejected)]
+    [TestCase(VacancyStatus.Referred)]
+    [TestCase(VacancyStatus.Approved)]
     public async Task IfInvalidVacancyStatus_ShouldThrowError(VacancyStatus invalidCloneStatus)
     {
         var newVacancyId = Guid.NewGuid();
@@ -59,10 +58,10 @@ public class CloneVacancyCommandHandlerTests
             mockTimeProvider.Object
         );
 
-        await Assert.ThrowsAsync<InvalidStateException>(() => handler.Handle(command, new CancellationToken()));
+        Assert.ThrowsAsync<InvalidStateException>(() => handler.Handle(command, new CancellationToken()));
     }
 
-    [Fact]
+    [Test]
     public async Task CheckClonedVacancyHasCorrectFieldsSet()
     {
         var newVacancyId = Guid.NewGuid();

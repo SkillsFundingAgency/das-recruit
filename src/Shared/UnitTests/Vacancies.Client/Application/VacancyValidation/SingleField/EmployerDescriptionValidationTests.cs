@@ -1,13 +1,13 @@
 using Esfa.Recruit.UnitTests.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
 
 public class EmployerDescriptionValidationTests : VacancyValidationTestsBase
 {
-    [Fact]
+    [Test]
     public void NoErrorsWhenEmployerDescriptionFieldIsValid()
     {
         var vacancy = new Vacancy 
@@ -21,9 +21,9 @@ public class EmployerDescriptionValidationTests : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
     public void DescriptionMustNotBeEmpty(string description)
     {
         var vacancy = new Vacancy 
@@ -40,7 +40,7 @@ public class EmployerDescriptionValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerDescription);
     }
 
-    [Fact]
+    [Test]
     public void EmployerDescriptionMustNotBeLongerThanMaxLength()
     {
         var vacancy = new Vacancy 
@@ -57,10 +57,10 @@ public class EmployerDescriptionValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerDescription);
     }
 
-    [Theory]
-    [InlineData("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
-    [InlineData("<script>alert('not allowed')</script>", false)]
-    [InlineData("<p>`</p>", false)]
+    [Test]
+    [TestCase("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
+    [TestCase("<script>alert('not allowed')</script>", false)]
+    [TestCase("<p>`</p>", false)]
     public void EmployerDescriptionMustContainValidCharacters(string invalidChar, bool expectedResult)
     {
         var vacancy = new Vacancy 
@@ -84,11 +84,11 @@ public class EmployerDescriptionValidationTests : VacancyValidationTestsBase
         }
     }
 
-    [Theory]
-    [InlineData("some text bother")]
-    [InlineData("some text dang")]
-    [InlineData("some text drat")]
-    [InlineData("some text balderdash")]
+    [Test]
+    [TestCase("some text bother")]
+    [TestCase("some text dang")]
+    [TestCase("some text drat")]
+    [TestCase("some text balderdash")]
     public void EmployerDescription_ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
     {
         var vacancy = new Vacancy()
@@ -103,11 +103,11 @@ public class EmployerDescriptionValidationTests : VacancyValidationTestsBase
         result.Errors[0].ErrorCode.Should().Be("609");
     }
 
-    [Theory]
-    [InlineData("some textbother")]
-    [InlineData("some textdang")]
-    [InlineData("some textdrat")]
-    [InlineData("some textbalderdash")]
+    [Test]
+    [TestCase("some textbother")]
+    [TestCase("some textdang")]
+    [TestCase("some textdrat")]
+    [TestCase("some textbalderdash")]
     public void EmployerDescription_Should_Not_FailIfContainsWordsFromTheProfanityList(string freeText)
     {
         var vacancy = new Vacancy()

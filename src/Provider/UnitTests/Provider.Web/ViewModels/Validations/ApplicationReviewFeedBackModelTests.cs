@@ -2,7 +2,8 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
-using Xunit;
+using System.Collections.Generic;
+using NUnit.Framework;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -12,22 +13,19 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation;
 
 public class ApplicationReviewFeedbackModelTests
 {
-    public class ShouldRequireCandiateFeedbackIfUnsuccessfulTestData : TheoryData<string, string>
+    public static IEnumerable<TestCaseData> ShouldRequireCandiateFeedbackIfUnsuccessfulTestData()
     {
-        public ShouldRequireCandiateFeedbackIfUnsuccessfulTestData()
-        {
-            var candidateFeedbackTooLong =
-                new string('a', ApplicationReviewValidator.CandidateFeedbackMaxLength + 1);
+        var candidateFeedbackTooLong =
+            new string('a', ApplicationReviewValidator.CandidateFeedbackMaxLength + 1);
 
-            Add(null, ApplicationReviewValidator.CandidateFeedbackRequired);
-            Add("", ApplicationReviewValidator.CandidateFeedbackRequired);
-            Add(">", ApplicationReviewValidator.CandidateFeedbackFreeTextCharacters);
-            Add(candidateFeedbackTooLong, string.Format(ApplicationReviewValidator.CandidateFeedbackLength, ApplicationReviewValidator.CandidateFeedbackMaxLength));
-        }
+        yield return new TestCaseData(null, ApplicationReviewValidator.CandidateFeedbackRequired);
+        yield return new TestCaseData("", ApplicationReviewValidator.CandidateFeedbackRequired);
+        yield return new TestCaseData(">", ApplicationReviewValidator.CandidateFeedbackFreeTextCharacters);
+        yield return new TestCaseData(candidateFeedbackTooLong, string.Format(ApplicationReviewValidator.CandidateFeedbackLength, ApplicationReviewValidator.CandidateFeedbackMaxLength));
     }
 
-    [Theory]
-    [ClassData(typeof(ShouldRequireCandiateFeedbackIfUnsuccessfulTestData))]
+    [Test]
+    [TestCaseSource(nameof(ShouldRequireCandiateFeedbackIfUnsuccessfulTestData))]
     public void ShouldRequireCandiateFeedbackIfUnsuccessful(string candidateFeedback, string expectedErrorMessage)
     {
         var profanityListProvider = Mock.Of<IProfanityListProvider>();
@@ -47,7 +45,7 @@ public class ApplicationReviewFeedbackModelTests
         result.Errors[0].ErrorMessage.Should().Be(expectedErrorMessage);
     }
 
-    [Fact]
+    [Test]
     public void CandidateFeedback_WithinMaxWords_ShouldPassValidation()
     {
         var profanityListProvider = Mock.Of<IProfanityListProvider>();
@@ -64,7 +62,7 @@ public class ApplicationReviewFeedbackModelTests
         result.IsValid.Should().BeTrue();
     }
 
-    [Fact]
+    [Test]
     public void CandidateFeedback_ExceedsMaxWords_ShouldFailValidation()
     {
         var profanityListProvider = Mock.Of<IProfanityListProvider>();
@@ -83,7 +81,7 @@ public class ApplicationReviewFeedbackModelTests
         result.Errors[0].ErrorMessage.Should().Be(string.Format(ApplicationReviewValidator.CandidateFeedbackWordsLength, ApplicationReviewValidator.CandidateFeedbackMaxWordLength));
     }
 
-    [Fact]
+    [Test]
     public void CandidateFeedback_ExceedsMaxCharacters_ShouldFailValidation()
     {
         var profanityListProvider = Mock.Of<IProfanityListProvider>();
@@ -102,9 +100,9 @@ public class ApplicationReviewFeedbackModelTests
         result.Errors[0].ErrorMessage.Should().Be(string.Format(ApplicationReviewValidator.CandidateFeedbackLength, ApplicationReviewValidator.CandidateFeedbackMaxLength));
     }
 
-    [Theory]
-    [InlineData(ApplicationReviewStatus.Successful, null)]
-    [InlineData(ApplicationReviewStatus.Unsuccessful, "Some candidate feedback")]
+    [Test]
+    [TestCase(ApplicationReviewStatus.Successful, null)]
+    [TestCase(ApplicationReviewStatus.Unsuccessful, "Some candidate feedback")]
     public void ApplicationReviewShouldBeValid(ApplicationReviewStatus status, string feedback)
     {
         var profanityListProvider = Mock.Of<IProfanityListProvider>();

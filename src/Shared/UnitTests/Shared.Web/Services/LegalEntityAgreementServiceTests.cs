@@ -6,7 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using FluentAssertions;
 using Moq;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services;
 
@@ -16,7 +16,7 @@ public class LegalEntityAgreementServiceTests
     const string AccountLegalEntityPublicHashedId = "XYZPQR";
     private Mock<IEmployerVacancyClient> _clientMock;
 
-    [Fact]
+    [Test]
     public async Task HasLegalEntityAgreementAsync_ShouldReturnFalseIfNoMatchingLegalEntity()
     {
         var sut = GetLegalEntityAgreementService(EmployerAccountId, true, "5678",true, "5678");
@@ -27,7 +27,7 @@ public class LegalEntityAgreementServiceTests
         _clientMock.Verify(c => c.GetEmployerLegalEntitiesAsync(EmployerAccountId), Times.Never);
     }
 
-    [Fact]
+    [Test]
     public async Task HasLegalEntityAgreementAsync_ShouldNotCheckEmployerServiceWhenHasAgreement()
     {
         var sut = GetLegalEntityAgreementService(EmployerAccountId, true, AccountLegalEntityPublicHashedId,true, AccountLegalEntityPublicHashedId);
@@ -38,7 +38,7 @@ public class LegalEntityAgreementServiceTests
         _clientMock.Verify(c => c.GetEmployerLegalEntitiesAsync(EmployerAccountId), Times.Never);
     }
 
-    [Fact]
+    [Test]
     public async Task HasLegalEntityAgreementAsync_ShouldCheckEmployerServiceWhenHasNoAgreement()
     {
         var sut = GetLegalEntityAgreementService(EmployerAccountId, false, AccountLegalEntityPublicHashedId,true, AccountLegalEntityPublicHashedId);
@@ -50,7 +50,7 @@ public class LegalEntityAgreementServiceTests
         _clientMock.Verify(c => c.SetupEmployerAsync(EmployerAccountId), Times.Once);
     }
 
-    [Fact]
+    [Test]
     public async Task HasLegalEntityAgreementAsync_ShouldReturnFalseWhenEmployerServiceLegalEntityHasNoAgreement()
     {
         var sut = GetLegalEntityAgreementService(EmployerAccountId, false, AccountLegalEntityPublicHashedId,false, AccountLegalEntityPublicHashedId);
@@ -62,7 +62,7 @@ public class LegalEntityAgreementServiceTests
         _clientMock.Verify(c => c.SetupEmployerAsync(EmployerAccountId), Times.Never);
     }
 
-    [Fact]
+    [Test]
     public async Task HasLegalEntityAgreementAsync_ShouldReturnFalseWhenEmployerServiceCantLocateLegalEntity()
     {
         var sut = GetLegalEntityAgreementService(EmployerAccountId, false, "5678",true, AccountLegalEntityPublicHashedId);

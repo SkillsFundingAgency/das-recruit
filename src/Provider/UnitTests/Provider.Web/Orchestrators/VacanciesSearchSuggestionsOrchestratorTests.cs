@@ -1,5 +1,5 @@
 using Esfa.Recruit.Provider.Web.Orchestrators;
-using Xunit;
+using NUnit.Framework;
 using System.Threading.Tasks;
 using System.Linq;
 using FluentAssertions;
@@ -31,13 +31,13 @@ public class VacanciesSearchSuggestionsOrchestratorTests
         new VacancySummary(){Title="in this century", LegalEntityName="The quick Brown ltd", VacancyReference=1000000108}
     };
 
-    [Theory]
-    [InlineData( "x", true)]
-    [InlineData( "xx", true)]
-    [InlineData( "xxx", true)]
-    [InlineData( "xxxx", true)]
-    [InlineData( "xxxxx", false)]
-    [InlineData( "xxxxxx", false)]
+    [Test]
+    [TestCase( "x", true)]
+    [TestCase( "xx", true)]
+    [TestCase( "xxx", true)]
+    [TestCase( "xxxx", true)]
+    [TestCase( "xxxxx", false)]
+    [TestCase( "xxxxxx", false)]
     public async Task When_The_Search_Term_Is_Less_Than_The_Minimum_Search_Threshold_Then_Empty_List_Returned(string searchTerm, bool shouldBeEmptyList)
     {
         var orch = GetSut(_testVacancies, searchTerm);
@@ -45,7 +45,7 @@ public class VacanciesSearchSuggestionsOrchestratorTests
         result.Any().Should().Be(!shouldBeEmptyList);
     }
 
-    [Fact]
+    [Test]
     public async Task WhenTermMatchesMoreThan50Title_ThenLegalEntityNameWillBeFilteredOut()
     {
         var LegalEntityName = "20th Century Fox";

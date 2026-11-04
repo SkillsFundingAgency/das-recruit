@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
 
@@ -12,7 +12,7 @@ public class QualificationsTests : VacancyValidationTestsBase
         MockReferenceDataClient.Setup(q => q.GetCandidateQualificationsAsync()).ReturnsAsync(["type"]);
     }
 
-    [Fact]
+    [Test]
     public void NoErrorWhenQualificationsAreValid()
     {
         var vacancy = GetVacancy();
@@ -22,7 +22,7 @@ public class QualificationsTests : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
         
-    [Fact]
+    [Test]
     public void HasNoErrorWhenOptedNotToAddQualifications()
     {
         var vacancy = new Vacancy
@@ -44,8 +44,8 @@ public class QualificationsTests : VacancyValidationTestsBase
             new object[] {new List<Qualification>()},
         };
 
-    [Theory]
-    [MemberData(nameof(NullOrZeroQualificationCollection))]
+    [Test]
+    [TestCaseSource(nameof(NullOrZeroQualificationCollection))]
     public void QualificationsMustNotBeNullOrZeroCount(List<Qualification> qualifications)
     {
         var vacancy = new Vacancy
@@ -59,9 +59,9 @@ public class QualificationsTests : VacancyValidationTestsBase
         AssertSingleError(result, nameof(vacancy.Qualifications), "52");
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
     public void QualificationTypeMustNotBeEmpty(string emptyString)
     {
         var vacancy = GetVacancy(qualificationType: emptyString);
@@ -72,9 +72,9 @@ public class QualificationsTests : VacancyValidationTestsBase
         AssertSingleError(result, propertyName, "53");
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
     public void SubjectMustNotBeEmpty(string emptyString)
     {
         var vacancy = GetVacancy(subject: emptyString);
@@ -85,7 +85,7 @@ public class QualificationsTests : VacancyValidationTestsBase
         AssertSingleError(result, propertyName, "54");
     }
 
-    [Fact]
+    [Test]
     public void SubjectMustNotBeLongerThanMaxLength()
     {
         var vacancy = GetVacancy(subject: new string('a', 51));
@@ -96,7 +96,7 @@ public class QualificationsTests : VacancyValidationTestsBase
         AssertSingleError(result, propertyName, "7");
     }
 
-    [Fact]
+    [Test]
     public void SubjectMustNotContainInvalidCharacters()
     {
         var vacancy = GetVacancy(subject: "<");
@@ -107,9 +107,9 @@ public class QualificationsTests : VacancyValidationTestsBase
         AssertSingleError(result, propertyName, "6");
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
     public void GradeMustNotBeEmpty(string emptyString)
     {
         var vacancy = GetVacancy(grade: emptyString);
@@ -120,7 +120,7 @@ public class QualificationsTests : VacancyValidationTestsBase
         AssertSingleError(result, propertyName, "55");
     }
 
-    [Fact]
+    [Test]
     public void GradeMustNotBeLongerThanMaxLength()
     {
         var vacancy = GetVacancy(grade: new string('a', 31));
@@ -131,7 +131,7 @@ public class QualificationsTests : VacancyValidationTestsBase
         AssertSingleError(result, propertyName, "7");
     }
 
-    [Fact]
+    [Test]
     public void GradeMustNotContainInvalidCharacters()
     {
         var vacancy = GetVacancy(grade: "<");
@@ -142,7 +142,7 @@ public class QualificationsTests : VacancyValidationTestsBase
         AssertSingleError(result, propertyName, "6");
     }
 
-    [Fact]
+    [Test]
     public void WeightingMustNotBeNull()
     {
         var vacancy = GetVacancy(weighting: null);

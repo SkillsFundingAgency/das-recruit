@@ -1,13 +1,13 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Rules;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Rules.VacancyRules;
 
 public class VacancyAnonymousCheckRuleTests
 {
-    [Fact]
+    [Test]
     public async Task WhenInvoked_ForNonAnonymousEmployer()
     {
         var rule = new VacancyAnonymousCheckRule();
@@ -23,7 +23,7 @@ public class VacancyAnonymousCheckRuleTests
         outcome.Score.Should().Be(0);
     }
 
-    [Fact]
+    [Test]
     public async Task WhenInvoked_ForAnonymousEmployer()
     {
         var rule = new VacancyAnonymousCheckRule();

@@ -4,13 +4,13 @@ using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using FluentAssertions;
 using Moq;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
 
 public class ProviderApplicationsReportCreateEditModelValidatorTests
 {
-    [Fact]
+    [Test]
     public void ShouldValidateDateRange()
     {
         var m = new ProviderApplicationsReportCreateEditModel {DateRange = null};
@@ -23,12 +23,12 @@ public class ProviderApplicationsReportCreateEditModelValidatorTests
         result.Errors[0].ErrorMessage.Should().Be("You must select the time period for the report");
     }
 
-    [Theory]
-    [InlineData(null, null, null)]
-    [InlineData("", "", "")]
-    [InlineData("32", "01", "2019")]
-    [InlineData("30", "13", "2019")]
-    [InlineData("30", "12", "201")]
+    [Test]
+    [TestCase(null, null, null)]
+    [TestCase("", "", "")]
+    [TestCase("32", "01", "2019")]
+    [TestCase("30", "13", "2019")]
+    [TestCase("30", "12", "201")]
     public void ShouldValidateFromDate(string day, string month, string year)
     {
         var m = new ProviderApplicationsReportCreateEditModel {
@@ -49,12 +49,12 @@ public class ProviderApplicationsReportCreateEditModelValidatorTests
         result.Errors[0].ErrorMessage.Should().Be("Date from format should be dd/mm/yyyy");
     }
 
-    [Theory]
-    [InlineData(null, null, null)]
-    [InlineData("", "", "")]
-    [InlineData("32", "01", "2019")]
-    [InlineData("30", "13", "2019")]
-    [InlineData("30", "12", "201")]
+    [Test]
+    [TestCase(null, null, null)]
+    [TestCase("", "", "")]
+    [TestCase("32", "01", "2019")]
+    [TestCase("30", "13", "2019")]
+    [TestCase("30", "12", "201")]
     public void ShouldValidateToDate(string day, string month, string year)
     {
         var m = new ProviderApplicationsReportCreateEditModel {
@@ -75,7 +75,7 @@ public class ProviderApplicationsReportCreateEditModelValidatorTests
         result.Errors[0].ErrorMessage.Should().Be("Date to format should be dd/mm/yyyy");
     }
 
-    [Fact]
+    [Test]
     public void ShouldValidateToDateIsNotGreaterThanToday()
     {
         var m = new ProviderApplicationsReportCreateEditModel {
@@ -96,7 +96,7 @@ public class ProviderApplicationsReportCreateEditModelValidatorTests
         result.Errors[0].ErrorMessage.Should().Be("Date to cannot be in the future");
     }
 
-    [Fact]
+    [Test]
     public void ShouldValidateToDateIsGreaterThanFromDate()
     {
         var m = new ProviderApplicationsReportCreateEditModel {

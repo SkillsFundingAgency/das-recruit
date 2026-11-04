@@ -3,7 +3,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.Services;
 
@@ -18,7 +18,7 @@ public class NationalMinimumWageProviderTests
         _provider = new NationalMinimumWageProvider(_mockLogger.Object);
     }
 
-    [Fact]
+    [Test]
     public void ShouldPickCorrectWageRangeBasedOnDate()
     {
         var testDate = new DateTime(2017, 5, 22);
@@ -29,7 +29,7 @@ public class NationalMinimumWageProviderTests
         wagePeriod.NationalMinimumWageUpperBound.Should().Be(7.50m);
     }
         
-    [Fact]
+    [Test]
     public void StartDateShouldBeInclusive()
     {
         var testDate = new DateTime(2018, 4, 1);
@@ -40,7 +40,7 @@ public class NationalMinimumWageProviderTests
         wagePeriod.NationalMinimumWageUpperBound.Should().Be(7.83m);
     }
         
-    [Fact]
+    [Test]
     public void EndDateShouldBeInclusive()
     {
         var testDate = new DateTime(2018, 3, 31);
@@ -51,7 +51,7 @@ public class NationalMinimumWageProviderTests
         wagePeriod.NationalMinimumWageUpperBound.Should().Be(7.50m);
     }
         
-    [Fact]
+    [Test]
     public void ShouldIgnoreTimePartOfDateTime()
     {
         var testDate = new DateTime(2018, 3, 31, 13, 22, 11);

@@ -7,13 +7,13 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Microsoft.Extensions.Options;
 using Moq.Protected;
 using Newtonsoft.Json;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.OuterApi;
 
 public class WhenHandlingAGetRequest
 {
-    [Fact]
+    [Test]
     public async Task Then_The_Endpoint_Is_Called_With_Authentication_Header_And_Data_Returned()
     {
         //Arrange
@@ -40,7 +40,7 @@ public class WhenHandlingAGetRequest
         actual.Should().BeEquivalentTo(testObject);
     }
         
-    [Fact]
+    [Test]
     public async Task Then_If_It_Is_Not_Successful_An_Exception_Is_Thrown()
     {
         //Arrange
@@ -60,7 +60,7 @@ public class WhenHandlingAGetRequest
         var apiClient = new OuterApiClient(client, mockConfig.Object);
 
         //Act Assert
-        await Assert.ThrowsAsync<HttpRequestException>(() => apiClient.Get<List<string>>(getTestRequest));
+        Assert.ThrowsAsync<HttpRequestException>(() => apiClient.Get<List<string>>(getTestRequest));
             
     }
 

@@ -4,13 +4,13 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.CrossField;
 
 public class TrainingNoLongerAvailableValidation : VacancyValidationTestsBase
 {
-    [Fact]
+    [Test]
     public void Training_Is_Valid_If_Last_Date_For_Starts_Is_In_The_Future()
     {
         var mockTimeProvider = new Mock<ITimeProvider>();
@@ -30,7 +30,7 @@ public class TrainingNoLongerAvailableValidation : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
         
-    [Fact]
+    [Test]
     public void Training_Is_Not_Valid_If_Last_Date_For_Starts_Is_In_The_Past()
     {
         var mockTimeProvider = new Mock<ITimeProvider>();
@@ -62,7 +62,7 @@ public class TrainingNoLongerAvailableValidation : VacancyValidationTestsBase
                 $"Start date must be on or before {dateToDisplay} as this is the last day for new starters for the training course you have selected. If you don't want to change the start date, you can change the training course");
     }
         
-    [Fact]
+    [Test]
     public void Training_Is_Not_Valid_If_Effective_To_Date_Is_In_The_Past()
     {
         var mockTimeProvider = new Mock<ITimeProvider>();
@@ -94,7 +94,7 @@ public class TrainingNoLongerAvailableValidation : VacancyValidationTestsBase
                 $"Start date must be on or before {dateToDisplay} as this is the last day for new starters for the training course you have selected. If you don't want to change the start date, you can change the training course");
     }
 
-    [Fact]
+    [Test]
     public void Training_Is_Not_Valid_If_No_Longer_Available()
     {
         var mockTimeProvider = new Mock<ITimeProvider>();

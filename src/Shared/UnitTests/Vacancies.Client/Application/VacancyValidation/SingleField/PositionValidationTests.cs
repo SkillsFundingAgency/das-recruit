@@ -1,12 +1,12 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
 
 public class PositionValidationTests : VacancyValidationTestsBase
 {
-    [Fact]
+    [Test]
     public void NoErrorsWhenPositionFieldsAreValid()
     {
         var vacancy = new Vacancy
@@ -21,9 +21,9 @@ public class PositionValidationTests : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData(0)]
+    [Test]
+    [TestCase(null)]
+    [TestCase(0)]
     public void NumberOfPositionMustHaveAValue(int? numOfPositionsValue)
     {
         var vacancy = new Vacancy 
@@ -40,9 +40,9 @@ public class PositionValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.NumberOfPositions);
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
     public void ShortDescriptionMustHaveAValue(string shortDescriptionValue)
     {
         var vacancy = new Vacancy
@@ -59,7 +59,7 @@ public class PositionValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ShortDescription);
     }
 
-    [Fact]
+    [Test]
     public void NoErrorsWhenShortDescriptionAreValid()
     {
         var vacancy = new Vacancy
@@ -73,7 +73,7 @@ public class PositionValidationTests : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
 
-    [Fact]
+    [Test]
     public void ShortDescriptionMustNotBeMoreThan350Characters()
     {
         var vacancy = new Vacancy
@@ -90,7 +90,7 @@ public class PositionValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ShortDescription);
     }
 
-    [Fact]
+    [Test]
     public void ShortDescriptionMustNotBeLessThan50Characters()
     {
         var vacancy = new Vacancy
@@ -108,10 +108,10 @@ public class PositionValidationTests : VacancyValidationTestsBase
     }
 
 
-    [Theory]
-    [InlineData("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
-    [InlineData("<script>alert('not allowed')</script>", false)]
-    [InlineData("<p>`</p>", false)]
+    [Test]
+    [TestCase("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
+    [TestCase("<script>alert('not allowed')</script>", false)]
+    [TestCase("<p>`</p>", false)]
     public void ShortDescriptionMustContainValidCharacters(string invalidCharacter, bool expectedResult)
     {
         var vacancy = new Vacancy
@@ -135,11 +135,11 @@ public class PositionValidationTests : VacancyValidationTestsBase
         }
     }
 
-    [Theory]
-    [InlineData("some text bother random text random text random text random text")]
-    [InlineData("some text dang random text random text random text random text")]
-    [InlineData("some text drat random text random text random text random text")]
-    [InlineData("some text balderdash random text random text random text random text")]
+    [Test]
+    [TestCase("some text bother random text random text random text random text")]
+    [TestCase("some text dang random text random text random text random text")]
+    [TestCase("some text drat random text random text random text random text")]
+    [TestCase("some text balderdash random text random text random text random text")]
     public void ShortDescription_Should_Fail_IfContainsWordsFromTheProfanityList(string freeText)
     {
         var vacancy = new Vacancy()
@@ -154,11 +154,11 @@ public class PositionValidationTests : VacancyValidationTestsBase
         result.Errors[0].ErrorCode.Should().Be("605");
     }
 
-    [Theory]
-    [InlineData("some textbother random text random text random text random text")]
-    [InlineData("some textdang random text random text random text random text")]
-    [InlineData("some textdrat random text random text random text random text")]
-    [InlineData("some textbalderdash random text random text random text random text")]
+    [Test]
+    [TestCase("some textbother random text random text random text random text")]
+    [TestCase("some textdang random text random text random text random text")]
+    [TestCase("some textdrat random text random text random text random text")]
+    [TestCase("some textbalderdash random text random text random text random text")]
     public void ShortDescription_Should_Not_Fail_IfContainsWordsFromTheProfanityList(string freeText)
     {
         var vacancy = new Vacancy()

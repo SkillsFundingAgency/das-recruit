@@ -8,13 +8,13 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProviderSummaryProvider;
 using FluentAssertions;
 using Moq;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.Services;
 
 public class TrainingProviderSummaryProviderTests
 {
-    [Fact]
+    [Test]
     public async Task GetAsync_ShouldReturnEsfaTestProviderForUkrpn()
     {
         var providerClientMock = new Mock<ITrainingProviderService>();
@@ -28,7 +28,7 @@ public class TrainingProviderSummaryProviderTests
         providerClientMock.Verify(c => c.FindAllAsync(), Times.Never);
     }
 
-    [Fact]
+    [Test]
     public async Task GetAsync_ShouldAttemptToFindTrainingProvider()
     {
         var ukprn = 88888888;
@@ -48,7 +48,7 @@ public class TrainingProviderSummaryProviderTests
         provider.ProviderName.Should().Be("provider 1");
     }
 
-    [Fact]
+    [Test]
     public async Task GetAll_ShouldGetAllTrainingProviders()
     {
         var providerClientMock = new Mock<ITrainingProviderService>();

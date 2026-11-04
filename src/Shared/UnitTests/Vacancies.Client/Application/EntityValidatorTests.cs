@@ -1,13 +1,13 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation;
 using FluentValidation;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application;
 
 public class EntityValidatorTests : VacancyValidationTestsBase
 {
-    [Fact]
+    [Test]
     public void ValidateReturnsFailWhenValidationFails()
     {
         var validator = new EntityValidator<TestEntity, TestEntityRules>(new TestEntityFluentValidator());
@@ -22,7 +22,7 @@ public class EntityValidatorTests : VacancyValidationTestsBase
         result.HasErrors.Should().BeTrue();
     }
 
-    [Fact]
+    [Test]
     public void ValidateReturnsListOfValidationErrorWhenValidationFails()
     {
         var validator = new EntityValidator<TestEntity, TestEntityRules>(new TestEntityFluentValidator());
@@ -37,7 +37,7 @@ public class EntityValidatorTests : VacancyValidationTestsBase
         result.Errors.Should().HaveCountGreaterThan(0);
     }
 
-    [Fact]
+    [Test]
     public void ValidateReturnsNoErrorWhenValidationPasses()
     {
         var validator = new EntityValidator<TestEntity, TestEntityRules>(new TestEntityFluentValidator());

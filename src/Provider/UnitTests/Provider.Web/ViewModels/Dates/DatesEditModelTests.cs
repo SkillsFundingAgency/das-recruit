@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Dates;
 using FluentAssertions;
-using Xunit;
+using NUnit.Framework;
 using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ValidationMessages.DateValidationMessages;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Dates;
@@ -35,8 +35,8 @@ public class DatesEditModelTests
             new object[] { nameof(DatesEditModel.StartYear), "18", nameof(DatesEditModel.StartDate), ErrMsg.TypeOfDate.StartDate}
         };
 
-    [Theory]
-    [MemberData(nameof(InvalidDatesData))]
+    [Test]
+    [TestCaseSource(nameof(InvalidDatesData))]
     public void ShouldErrorIfClosingDateIsInvalid(string propertyName, object actualPropertyValue, string expectedErrorPropertyName, string expectedErrorMessage)
     {
         //a valid model

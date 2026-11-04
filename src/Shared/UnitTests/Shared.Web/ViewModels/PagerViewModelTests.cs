@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using FluentAssertions;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.UnitTests.Shared.Web.ViewModels;
 
 public class PagerViewModelTests
 {
-    [Fact]
+[Test]
     public void ShouldNotDisplayIfLessThanOnePageOfResults()
     {
         var vm = new PagerViewModel(
@@ -21,7 +21,7 @@ public class PagerViewModelTests
         vm.ShowPager.Should().BeFalse();
     }
 
-    [Fact]
+[Test]
     public void ShouldNotDisplayPrevIfOnFirstPage()
     {
         var vm = new PagerViewModel(
@@ -45,7 +45,7 @@ public class PagerViewModelTests
         vm.NextPageRouteData["page"].Should().Be("2");
     }
 
-    [Fact]
+[Test]
     public void ShouldNotDisplayNextIfOnLastPage()
     {
         var vm = new PagerViewModel(
@@ -69,7 +69,7 @@ public class PagerViewModelTests
         vm.PreviousPageRouteData["page"].Should().Be("3");
     }
 
-    [Fact]
+[Test]
     public void ShouldDisplayPrevAndNextIfMiddle()
     {
         var vm = new PagerViewModel(

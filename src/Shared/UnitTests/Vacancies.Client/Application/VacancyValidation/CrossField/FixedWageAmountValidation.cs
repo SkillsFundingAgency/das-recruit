@@ -1,14 +1,14 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.CrossField;
 
 public class FixedWageAmountValidation : VacancyValidationTestsBase
 {
-    [Theory]
-    [InlineData(3.70, 40, 12000.00)] // £5.77 per hour
-    public void FixedWageAmountIsValidIfOverMinimumWage(float minimumWageTestValue, int hoursPerWeekValue, float yearlyWageAmcountValue)
+    [Test]
+    [TestCase(3.70, 40, 12000.00)] // £5.77 per hour
+    public void FixedWageAmountIsValidIfOverMinimumWage(double minimumWageTestValue, int hoursPerWeekValue, double yearlyWageAmountValue)
     {
         var startDate = DateTime.UtcNow.Date;
         var minimumWageAmount = Convert.ToDecimal(minimumWageTestValue);
@@ -19,7 +19,7 @@ public class FixedWageAmountValidation : VacancyValidationTestsBase
             Wage = new Wage
             {
                 WageType = WageType.FixedWage,
-                FixedWageYearlyAmount = Convert.ToDecimal(yearlyWageAmcountValue),
+                FixedWageYearlyAmount = Convert.ToDecimal(yearlyWageAmountValue),
                 WeeklyHours = hoursPerWeekValue
             }
         };
@@ -33,10 +33,10 @@ public class FixedWageAmountValidation : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
 
-    [Theory]
-    [InlineData(3.70, 40, "7000.00")] // £3.37 per hour
-    [InlineData(3.70, 40, null)]
-    public void FixedWageAmountIsNotValidIfUnderMinimumWage(float minimumWageTestValue, int hoursPerWeekValue, string yearlyWageAmcountValue)
+    [Test]
+    [TestCase(3.70, 40, "7000.00")] // £3.37 per hour
+    [TestCase(3.70, 40, null)]
+    public void FixedWageAmountIsNotValidIfUnderMinimumWage(double minimumWageTestValue, int hoursPerWeekValue, string yearlyWageAmountValue)
     {
         var startDate = DateTime.UtcNow.Date;
         var minimumWageAmount = Convert.ToDecimal(minimumWageTestValue);
@@ -47,7 +47,7 @@ public class FixedWageAmountValidation : VacancyValidationTestsBase
             Wage = new Wage
             {
                 WageType = WageType.FixedWage,
-                FixedWageYearlyAmount = yearlyWageAmcountValue != null ? Convert.ToDecimal(yearlyWageAmcountValue) : default(decimal?),
+                FixedWageYearlyAmount = yearlyWageAmountValue != null ? Convert.ToDecimal(yearlyWageAmountValue) : default(decimal?),
                 WeeklyHours = hoursPerWeekValue
             }
         };

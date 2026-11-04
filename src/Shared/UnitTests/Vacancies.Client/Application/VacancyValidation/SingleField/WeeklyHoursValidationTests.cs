@@ -1,12 +1,12 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
 
 public class WeeklyHoursValidationTests : VacancyValidationTestsBase
 {
-    [Fact]
+    [Test]
     public void NoErrorsWhenWeeklyHoursIsValid()
     {
         var vacancy = new Vacancy
@@ -23,7 +23,7 @@ public class WeeklyHoursValidationTests : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
 
-    [Fact]
+    [Test]
     public void WeeklyHoursMustHaveAValue()
     {
         var vacancy = new Vacancy
@@ -43,7 +43,7 @@ public class WeeklyHoursValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.WeeklyHours);
     }
 
-    [Fact]
+    [Test]
     public void WeeklyHoursMustBeMoreThan16()
     {
         var vacancy = new Vacancy
@@ -63,7 +63,7 @@ public class WeeklyHoursValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.WeeklyHours);
     }
 
-    [Fact]
+    [Test]
     public void WeeklyHoursMustBeLeeThan48()
     {
         var vacancy = new Vacancy

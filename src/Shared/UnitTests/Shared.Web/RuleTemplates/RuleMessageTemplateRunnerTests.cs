@@ -1,13 +1,13 @@
 ﻿using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Vacancies.Client.Application.Rules;
 using FluentAssertions;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.RuleTemplates;
 
 public class RuleMessageTemplateRunnerTests
 {
-    [Fact]
+    [Test]
     public void ShouldCreateProfanityCheckMessage()
     {
         var sut = new RuleMessageTemplateRunner();
@@ -19,7 +19,7 @@ public class RuleMessageTemplateRunnerTests
         actual.Should().Be("Profanity field contains the phrase 'drat' 3 times");
     }
 
-    [Fact]
+    [Test]
     public void ShouldCreateBannedPhraseCheckMessage()
     {
         var sut = new RuleMessageTemplateRunner();

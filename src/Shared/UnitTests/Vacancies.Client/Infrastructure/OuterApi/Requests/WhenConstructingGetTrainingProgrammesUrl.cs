@@ -1,12 +1,12 @@
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using FluentAssertions;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.OuterApi.Requests;
 
 public class WhenConstructingGetTrainingProgrammesUrl
 {
-    [Fact]
+    [Test]
     public void Then_It_Is_Correctly_Constructed()
     {
         //Arrange

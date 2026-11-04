@@ -1,12 +1,12 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
 
 public class EmployerValidationTests : VacancyValidationTestsBase
 {
-    [Fact]
+    [Test]
     public void NoErrorsWhenEmployerFieldsAreValid()
     {
         var vacancy = new Vacancy
@@ -25,9 +25,9 @@ public class EmployerValidationTests : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
         
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
     public void EmployerMustBeSet(string organisationValue)
     {
         var vacancy = new Vacancy 
@@ -45,7 +45,7 @@ public class EmployerValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerName);
     }
 
-    [Fact]
+    [Test]
     public void ShouldErrorIfEmployerLocationIsNull()
     {
         var vacancy = new Vacancy
@@ -62,9 +62,9 @@ public class EmployerValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
     public void EmployerAddressLine1MustBeSet(string addressValue)
     {
         var vacancy = new Vacancy
@@ -85,9 +85,9 @@ public class EmployerValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
     }
 
-    [Theory]
-    [InlineData("<")]
-    [InlineData(">")]
+    [Test]
+    [TestCase("<")]
+    [TestCase(">")]
     public void EmployerAddressLine1MustContainValidCharacters(string testValue)
     {
         var vacancy = new Vacancy
@@ -108,7 +108,7 @@ public class EmployerValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
     }
 
-    [Fact]
+    [Test]
     public void EmployerAddressLine1CannotBeLongerThan100Characters()
     {
         var vacancy = new Vacancy
@@ -129,9 +129,9 @@ public class EmployerValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
     }
 
-    [Theory]
-    [InlineData("<")]
-    [InlineData(">")]
+    [Test]
+    [TestCase("<")]
+    [TestCase(">")]
     public void EmployerAddressLine2MustContainValidCharacters(string testValue)
     {
         var vacancy = new Vacancy
@@ -153,7 +153,7 @@ public class EmployerValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
     }
 
-    [Fact]
+    [Test]
     public void EmployerAddressLine2CannotBeLongerThan100Characters()
     {
         var vacancy = new Vacancy
@@ -175,9 +175,9 @@ public class EmployerValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
     }
 
-    [Theory]
-    [InlineData("<")]
-    [InlineData(">")]
+    [Test]
+    [TestCase("<")]
+    [TestCase(">")]
     public void EmployerAddressLine3MustContainValidCharacters(string testValue)
     {
         var vacancy = new Vacancy
@@ -199,7 +199,7 @@ public class EmployerValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
     }
 
-    [Fact]
+    [Test]
     public void EmployerAddressLine3CannotBeLongerThan100Characters()
     {
         var vacancy = new Vacancy
@@ -221,9 +221,9 @@ public class EmployerValidationTests : VacancyValidationTestsBase
         result.Errors[0].ErrorCode.Should().Be("7");
     }
 
-    [Theory]
-    [InlineData("<")]
-    [InlineData(">")]
+    [Test]
+    [TestCase("<")]
+    [TestCase(">")]
     public void EmployerAddressLine4MustContainValidCharacters(string testValue)
     {
         var vacancy = new Vacancy
@@ -245,7 +245,7 @@ public class EmployerValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
     }
 
-    [Fact]
+    [Test]
     public void EmployerAddressLine4CannotBeLongerThan100Characters()
     {
         var vacancy = new Vacancy
@@ -267,9 +267,9 @@ public class EmployerValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
     public void EmployerPostCodeMustBeSet(string postCodeValue)
     {
         var vacancy = new Vacancy
@@ -290,10 +290,10 @@ public class EmployerValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
     }
 
-    [Theory]
-    [InlineData("12345")]
-    [InlineData("AAAAAA")]
-    [InlineData("AS123 1JJ")]
+    [Test]
+    [TestCase("12345")]
+    [TestCase("AAAAAA")]
+    [TestCase("AS123 1JJ")]
     public void EmployerPostCodeMustBeValidFormat(string postCodeValue)
     {
         var vacancy = new Vacancy

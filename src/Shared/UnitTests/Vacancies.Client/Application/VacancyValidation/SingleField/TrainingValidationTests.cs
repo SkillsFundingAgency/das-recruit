@@ -1,12 +1,12 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
 
 public class TrainingValidationTests : VacancyValidationTestsBase
 {
-    [Fact]
+    [Test]
     public void ErrorWhenProgrammeIsNull()
     {
         var vacancy = new Vacancy
@@ -23,7 +23,7 @@ public class TrainingValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProgramme);
     }
 
-    [Fact]
+    [Test]
     public void NoErrorsWhenClosingDateIsValid()
     {
         var vacancy = new Vacancy
@@ -41,7 +41,7 @@ public class TrainingValidationTests : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
 
-    [Fact]
+    [Test]
     public void ErrorWhenDoesNotExist()
     {
         var vacancy = new Vacancy
@@ -60,9 +60,9 @@ public class TrainingValidationTests : VacancyValidationTestsBase
         result.Errors[0].ErrorCode.Should().Be("27");
     }
 
-    [Theory]
-    [InlineData("")]
-    [InlineData(null)]
+    [Test]
+    [TestCase("")]
+    [TestCase(null)]
     public void IdMustHaveAValue(string idValue)
     {
         var vacancy = new Vacancy
@@ -79,7 +79,7 @@ public class TrainingValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProgramme);
     }
 
-    [Fact]
+    [Test]
     public void ErrorWhenProgrammeIdIsWhitespace()
     {
         var vacancy = new Vacancy

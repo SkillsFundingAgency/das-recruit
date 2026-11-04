@@ -2,27 +2,27 @@
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Domain.Entities;
 
 public class ApprenticeshipLevelHelperTests
 {
-    [Fact]
+    [Test]
     public void RemapFromInt_ShouldReturnHigher_WhenConvertingFromFoundation5()
     {
         ApprenticeshipLevel result = ApprenticeshipLevelHelper.RemapFromInt(5);
         result.Should().Be(ApprenticeshipLevel.Higher);
     }
 
-    [Fact]
+    [Test]
     public void RemapFromInt_ShouldReturnDegree_WhenConvertingFromMasters7()
     {
         ApprenticeshipLevel result = ApprenticeshipLevelHelper.RemapFromInt(7);
         result.Should().Be(ApprenticeshipLevel.Degree);
     }
 
-    [Fact]
+    [Test]
     public void RemapFromInt_ShouldReturnCorrectEnum_WhenPassedAnIntWithCorrespondingValue()
     {
         var enumValues = Enum.GetValues(typeof(ApprenticeshipLevel))
@@ -34,7 +34,7 @@ public class ApprenticeshipLevelHelperTests
         }
     }
 
-    [Fact]
+    [Test]
     public void RemapFromInt_ShouldThrowArgumentException_WhenPassedAnIntWithNoCorrespondingValue()
     {
         int intValueToConvert = (int)ApprenticeshipLevel.Degree + 2;
@@ -44,7 +44,7 @@ public class ApprenticeshipLevelHelperTests
         });
     }
 
-    [Fact]
+    [Test]
     public void TryRemapFromInt_ShouldSucceedAndReturnHigher_WhenConvertingFromFoundation5()
     {
         bool success = ApprenticeshipLevelHelper.TryRemapFromInt(5, out ApprenticeshipLevel result);
@@ -52,7 +52,7 @@ public class ApprenticeshipLevelHelperTests
         result.Should().Be(ApprenticeshipLevel.Higher);
     }
 
-    [Fact]
+    [Test]
     public void TryRemapFromInt_ShouldSucceedAndReturnDegree_WhenConvertingFromMasters7()
     {
         bool success = ApprenticeshipLevelHelper.TryRemapFromInt(7, out ApprenticeshipLevel result);
@@ -60,7 +60,7 @@ public class ApprenticeshipLevelHelperTests
         result.Should().Be(ApprenticeshipLevel.Degree);
     }
 
-    [Fact]
+    [Test]
     public void TryRemapFromInt_ShouldSucceedAndReturnEnum_WhenPassedAnIntWithCorrespondingValue()
     {
         var enumValues = Enum.GetValues(typeof(ApprenticeshipLevel))
@@ -73,7 +73,7 @@ public class ApprenticeshipLevelHelperTests
         }
     }
 
-    [Fact]
+    [Test]
     public void TryRemapFromInt_ShouldFail_WhenPassedAnIntWithNoCorrespondingValue()
     {
         int intValueToConvert = (int)ApprenticeshipLevel.Degree + 2;

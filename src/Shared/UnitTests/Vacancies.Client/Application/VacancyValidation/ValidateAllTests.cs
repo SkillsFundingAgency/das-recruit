@@ -1,12 +1,12 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation;
 
 public class ValidateAllTests : VacancyValidationTestsBase
 {
-    [Fact]
+    [Test]
     public void ShouldNotCrashWhenValidatingAnEmptyVacancy()
     {
         var vacancy = new Vacancy();

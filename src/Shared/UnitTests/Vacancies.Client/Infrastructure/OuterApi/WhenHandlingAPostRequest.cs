@@ -8,13 +8,13 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
 using Newtonsoft.Json;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.OuterApi;
 
 public class WhenHandlingAPostRequest
 {
-    [Fact]
+    [Test]
     public async Task Then_The_Endpoint_Is_Called_With_Authentication_Header_And_Data_Returned()
     {
         //Arrange

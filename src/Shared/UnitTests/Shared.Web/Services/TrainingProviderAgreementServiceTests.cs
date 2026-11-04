@@ -1,7 +1,7 @@
 ﻿using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services;
 
@@ -12,7 +12,7 @@ public class TrainingProviderAgreementServiceTests
 
     private const long Ukprn = 99999999;
 
-    [Fact]
+    [Test]
     public async Task HasAgreement_ShouldReturnFalseWhenPasHasNoAgreement()
     {
         var sut = GetService(false);
@@ -25,7 +25,7 @@ public class TrainingProviderAgreementServiceTests
         _clientMock.Verify(c => c.SetupProviderAsync(It.IsAny<long>()), Times.Never);
     }
 
-    [Fact]
+    [Test]
     public async Task HasAgreement_ShouldReturnTrueAndSetupProviderWhenPasHasAgreement()
     {
         var sut = GetService(true);

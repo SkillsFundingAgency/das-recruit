@@ -4,7 +4,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.Extensions.Logging;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports;
 
@@ -13,7 +13,7 @@ public class ReportOrchestratorBaseTests
     private readonly Guid _reportId = Guid.NewGuid();
     private const long Ukprn = 11111111;
 
-    [Fact]
+    [Test]
     public async Task GetReportAsync_ShouldThrowReportNotFoundExceptionWhenReportIsNotFound()
     {
         var orchestrator = GetOrchestrator();
@@ -26,7 +26,7 @@ public class ReportOrchestratorBaseTests
         err.WithMessage($"Cannot find report: {incorrectReportId}");
     }
 
-    [Fact]
+    [Test]
     public async Task GetReportAsync_ShouldThrowAuthorisationExceptionIfNotOwner()
     {
         var orchestrator = GetOrchestrator();
@@ -39,7 +39,7 @@ public class ReportOrchestratorBaseTests
         err.WithMessage($"Ukprn: {incorrectUkprn} does not have access to report: {_reportId}");
     }
 
-    [Fact]
+    [Test]
     public async Task GetReportAsync_ShouldReturnOwnedReport()
     {
         var orchestrator = GetOrchestrator();

@@ -1,12 +1,12 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
 
 public class AnonymousReasonTests : VacancyValidationTestsBase
 {
-    [Fact]
+    [Test]
     public void EmployerWeb_Anonymous_ShouldValidateEmpty()        
     {
         var vacancy = new Vacancy()
@@ -25,7 +25,7 @@ public class AnonymousReasonTests : VacancyValidationTestsBase
         result.Errors[0].ErrorCode.Should().Be("408");
     }
 
-    [Fact]
+    [Test]
     public void EmployerWeb_Anonymous_ShouldValidateSpecialCharactersAndLength()
     {
         var vacancy = new Vacancy() {
@@ -45,11 +45,11 @@ public class AnonymousReasonTests : VacancyValidationTestsBase
         result.Errors[1].ErrorCode.Should().Be("410");
     }
 
-    [Theory]
-    [InlineData("some text bother")]
-    [InlineData("some text dang")]
-    [InlineData("some text drat")]
-    [InlineData("some text balderdash")]
+    [Test]
+    [TestCase("some text bother")]
+    [TestCase("some text dang")]
+    [TestCase("some text drat")]
+    [TestCase("some text balderdash")]
     public void EmployerWeb_Anonymous_ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
     {
         var vacancy = new Vacancy()
@@ -67,10 +67,10 @@ public class AnonymousReasonTests : VacancyValidationTestsBase
         result.Errors[0].ErrorCode.Should().Be("604");
     }
 
-    [Theory]
-    [InlineData("some textdang")]
-    [InlineData("some textdrat")]
-    [InlineData("some textbalderdash")]
+    [Test]
+    [TestCase("some textdang")]
+    [TestCase("some textdrat")]
+    [TestCase("some textbalderdash")]
     public void EmployerWeb_Anonymous_ShouldNotFailIfContainsWordsFromTheProfanityList(string freeText)
     {
         var vacancy = new Vacancy()

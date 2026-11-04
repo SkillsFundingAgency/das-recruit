@@ -1,16 +1,16 @@
 ﻿using Esfa.Recruit.UnitTests.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
 
 public class ExternalApplicationInstructionsValidationTests : VacancyValidationTestsBase
 {
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("You can apply online or through post.")]
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("You can apply online or through post.")]
     public void NoErrorsWhenExternalApplicationInstructionsIsValid(string instructions)
     {
         var vacancy = new Vacancy
@@ -26,7 +26,7 @@ public class ExternalApplicationInstructionsValidationTests : VacancyValidationT
         result.Errors.Should().HaveCount(0);
     }
 
-    [Fact]
+    [Test]
     public void ExternalApplicationInstructionsMustBe500CharactersOrLess()
     {
         var vacancy = new Vacancy
@@ -44,15 +44,15 @@ public class ExternalApplicationInstructionsValidationTests : VacancyValidationT
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ApplicationMethod);
     }
 
-    [Theory]
-    [MemberData(nameof(TestData.BlacklistedCharacters), MemberType = typeof(TestData))]
-    public void ExternalApplicationInstructionsMustNotContainInvalidCharacters(string invalidChar)
+    [Test]
+    [TestCaseSource(typeof(TestData), nameof(TestData.BlacklistedCharacters))]
+    public void ExternalApplicationInstructionsMustNotContainInvalidCharacters(char invalidChar)
     {
         var vacancy = new Vacancy
         {
             ApplicationMethod = ApplicationMethod.ThroughExternalApplicationSite,
             ApplicationUrl = "http://www.apply.com",
-            ApplicationInstructions = invalidChar
+            ApplicationInstructions = invalidChar.ToString()
         };
 
         var result = Validator.Validate(vacancy, VacancyRuleSet.ApplicationMethod);

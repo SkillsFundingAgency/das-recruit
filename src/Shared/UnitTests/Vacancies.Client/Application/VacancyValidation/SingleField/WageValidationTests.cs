@@ -1,15 +1,15 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
 
 public class WageValidationTests : VacancyValidationTestsBase
 {
-    [Theory]
-    [InlineData(WageType.FixedWage, 30000, null)]
-    [InlineData(WageType.NationalMinimumWage, null, null)]
-    [InlineData(WageType.NationalMinimumWageForApprentices, null, null)]
+    [Test]
+    [TestCase(WageType.FixedWage, 30000, null)]
+    [TestCase(WageType.NationalMinimumWage, null, null)]
+    [TestCase(WageType.NationalMinimumWageForApprentices, null, null)]
     public void NoErrorsWhenWageFieldsAreValid(WageType wageTypeValue, int? yearlyFixedWageAmountValue, string wageAdditionalInfoValue)
     {
         var vacancy = new Vacancy
@@ -28,7 +28,7 @@ public class WageValidationTests : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
 
-    [Fact]
+    [Test]
     public void WageMustNotBeNull()
     {
         var vacancy = new Vacancy
@@ -45,7 +45,7 @@ public class WageValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
     }
 
-    [Fact]
+    [Test]
     public void WageTypeMustHaveAValue()
     {
         var vacancy = new Vacancy
@@ -65,7 +65,7 @@ public class WageValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
     }
 
-    [Fact]
+    [Test]
     public void WageTypeMustHaveAValidValue()
     {
         var vacancy = new Vacancy
@@ -85,9 +85,9 @@ public class WageValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
     public void WageAdditionalInfoIsOptional(string descriptionValue)
     {
         var vacancy = new Vacancy
@@ -105,10 +105,10 @@ public class WageValidationTests : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
 
-    [Theory]
-    [InlineData("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
-    [InlineData("<script>alert('not allowed')</script>", false)]
-    [InlineData("<p>`</p>", false)]
+    [Test]
+    [TestCase("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
+    [TestCase("<script>alert('not allowed')</script>", false)]
+    [TestCase("<p>`</p>", false)]
     public void WageAdditionalInfoMustContainValidCharacters(string invalidCharacter, bool expectedResult)
     {
         var vacancy = new Vacancy
@@ -136,7 +136,7 @@ public class WageValidationTests : VacancyValidationTestsBase
         }
     }
 
-    [Fact]
+    [Test]
     public void WageAdditionalInfoMustBeLessThan501Characters()
     {
         var vacancy = new Vacancy
@@ -156,9 +156,9 @@ public class WageValidationTests : VacancyValidationTestsBase
         result.Errors[0].ErrorCode.Should().Be("44");
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
     }
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
     public void WageCompanyBenefitsInfoIsOptional(string descriptionValue)
     {
         var vacancy = new Vacancy
@@ -176,10 +176,10 @@ public class WageValidationTests : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
 
-    [Theory]
-    [InlineData("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
-    [InlineData("<script>alert('not allowed')</script>", false)]
-    [InlineData("<p>`</p>", false)]
+    [Test]
+    [TestCase("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
+    [TestCase("<script>alert('not allowed')</script>", false)]
+    [TestCase("<p>`</p>", false)]
     public void WageCompanyBenefitsInfoMustContainValidCharacters(string invalidCharacter,  bool expectedResult)
     {
         var vacancy = new Vacancy
@@ -208,7 +208,7 @@ public class WageValidationTests : VacancyValidationTestsBase
         }
     }
 
-    [Fact]
+    [Test]
     public void WageCompanyBenefitsInfoMustBeLessThan251Characters()
     {
         var vacancy = new Vacancy

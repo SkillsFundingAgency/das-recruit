@@ -1,12 +1,12 @@
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders;
 
 public class WhenMappingFromApiResponseToTrainingProvider
 {
-    [Fact]
+    [Test]
     public void Then_The_Fields_Are_Correctly_Mapped()
     {
         var fixture = new Fixture();
@@ -22,11 +22,11 @@ public class WhenMappingFromApiResponseToTrainingProvider
         actual.Address.Postcode.Should().Be(source.Address.Postcode);
     }
 
-    [Theory]
-    [InlineData("one","","one")]
-    [InlineData("one","two","one, two")]
-    [InlineData("","two","two")]
-    [InlineData("","","")]
+    [Test]
+    [TestCase("one","","one")]
+    [TestCase("one","two","one, two")]
+    [TestCase("","two","two")]
+    [TestCase("","","")]
     public void Then_The_Address3_Is_Concatanated(string address3, string address4, string expected)
     {
         var fixture = new Fixture();

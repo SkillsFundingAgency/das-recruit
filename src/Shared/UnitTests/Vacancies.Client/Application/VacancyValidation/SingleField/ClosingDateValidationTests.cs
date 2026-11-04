@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
 
@@ -50,7 +50,7 @@ public class ClosingDateValidationTests : VacancyValidationTestsBase
         result.Errors.Should().BeEmpty();
     }
 
-    [Fact]
+    [Test]
     public void NoErrorsWhenClosingDateIsValid()
     {
         var vacancy = new Vacancy
@@ -64,7 +64,7 @@ public class ClosingDateValidationTests : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
 
-    [Fact]
+    [Test]
     public void ClosingDateMustHaveAValue()
     {
         var vacancy = new Vacancy
@@ -81,8 +81,8 @@ public class ClosingDateValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ClosingDate);
     }
 
-    [Theory]
-    [MemberData(nameof(InvalidClosingDates))]
+    [Test]
+    [TestCaseSource(nameof(InvalidClosingDates))]
     public void ClosingDateMustBeGreaterThanToday(DateTime closingDateValue)
     {
         var vacancy = new Vacancy
@@ -97,7 +97,7 @@ public class ClosingDateValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ClosingDate);
     }
 
-    [Fact]
+    [Test]
     public void NewAdvert_ClosingDateLessThan7DaysFromToday_IsInvalid()
     {
         var stubTime = new StubTimeProvider { Now = new DateTime(2025, 01, 01) };
@@ -114,7 +114,7 @@ public class ClosingDateValidationTests : VacancyValidationTestsBase
         AssertInvalidForClosingDate(result, expectedErrorCode: ErrorCode_ClosingDateTooSoon);
     }
 
-    [Fact]
+    [Test]
     public void NewAdvert_ClosingDateExactly7DaysFromToday_IsValid()
     {
         var stubTime = new StubTimeProvider { Now = new DateTime(2025, 01, 01) };
@@ -131,7 +131,7 @@ public class ClosingDateValidationTests : VacancyValidationTestsBase
         AssertValid(result);
     }
 
-    [Fact]
+    [Test]
     public void LiveExtension_ClosingDateCannotBeInPast_AllowsToday()
     {
         var stubTime = new StubTimeProvider { Now = new DateTime(2025, 01, 10) };
@@ -145,11 +145,11 @@ public class ClosingDateValidationTests : VacancyValidationTestsBase
 
         var result = Validator.Validate(vacancy, VacancyRuleSet.ClosingDate);
         Assert.NotNull(result);
-        Assert.NotEmpty(result.Errors);
+        result.Errors.Should().NotBeNullOrEmpty();
 
         vacancy.ClosingDate = stubTime.Now.Date; // today
         var resultToday = Validator.Validate(vacancy, VacancyRuleSet.ClosingDate);
         Assert.NotNull(resultToday);
-        Assert.Empty(resultToday.Errors);
+        resultToday.Errors.Should().BeNullOrEmpty();
     }
 }

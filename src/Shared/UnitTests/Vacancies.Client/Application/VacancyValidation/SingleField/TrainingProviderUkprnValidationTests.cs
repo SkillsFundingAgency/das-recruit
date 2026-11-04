@@ -1,13 +1,13 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
 
 public class TrainingProviderUkprnValidationTests : VacancyValidationTestsBase
 {
-    [Fact]
+    [Test]
     public void NoErrorsWhenTrainingProviderUkprnIsValid()
     {
         var vacancy = new Vacancy
@@ -23,7 +23,7 @@ public class TrainingProviderUkprnValidationTests : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
 
-    [Fact]
+    [Test]
     public void ErrorIfTrainingProviderIsNotInRoatp()
     {
         var vacancy = new Vacancy
@@ -42,7 +42,7 @@ public class TrainingProviderUkprnValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
     }
 
-    [Fact]
+    [Test]
     public void ErrorIfTrainingProviderIsNotMainOrEmployerProfile()
     {
         var vacancy = new Vacancy
@@ -61,7 +61,7 @@ public class TrainingProviderUkprnValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
     }
 
-    [Fact]
+    [Test]
     public void ErrorIfTrainingProviderIsNull()
     {
         var vacancy = new Vacancy
@@ -78,7 +78,7 @@ public class TrainingProviderUkprnValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
     }
 
-    [Fact]
+    [Test]
     public void EmptyUkprnNotAllowed()
     {
         var vacancy = new Vacancy
@@ -94,10 +94,10 @@ public class TrainingProviderUkprnValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
     }
 
-    [Theory]
-    [InlineData(0L)]
-    [InlineData(1234L)]
-    [InlineData(123456789L)]
+    [Test]
+    [TestCase(0L)]
+    [TestCase(1234L)]
+    [TestCase(123456789L)]
     public void TrainingProviderUkprnMustBe8Digits(long? ukprn)
     {
         var vacancy = new Vacancy
@@ -114,7 +114,7 @@ public class TrainingProviderUkprnValidationTests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
     }
 
-    [Fact]
+    [Test]
     public void ShouldNotErrorIfProviderVacancyHasEmployerPermission()
     {
         const long ukprn = 12345678;
@@ -140,7 +140,7 @@ public class TrainingProviderUkprnValidationTests : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
 
-    [Fact]
+    [Test]
     public void ErrorIfProviderVacancyDoesNotHaveEmployerPermission()
     {
         const long ukprn = 12345678;
@@ -174,7 +174,7 @@ public class TrainingProviderUkprnValidationTests : VacancyValidationTestsBase
             e.RuleId == (long)VacancyRuleSet.TrainingProvider);
     }
 
-    [Fact]
+    [Test]
     public void NoErrorIfProviderVacancyHasEmployerPermissionAndIsValid()
     {
         const long ukprn = 12345678;
@@ -203,7 +203,7 @@ public class TrainingProviderUkprnValidationTests : VacancyValidationTestsBase
         result.Errors.Should().BeEmpty();
     }
 
-    [Fact]
+    [Test]
     public void OnlyPermissionErrorWhenProviderIsValidButLacksPermission()
     {
         const long ukprn = 12345678;

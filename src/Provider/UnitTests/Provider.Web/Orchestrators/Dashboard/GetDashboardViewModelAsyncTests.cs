@@ -5,7 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard;
 
@@ -18,7 +18,7 @@ public class GetDashboardViewModelAsyncTests
     private readonly VacancyUser _user = new() {UserId = UserId,  Ukprn = Ukprn };
     private Mock<IRecruitVacancyClient> _clientMock;
 
-    [Fact]
+    [Test]
     public async Task WhenHasVacancies_ShouldReturnViewModelAsync()
     {
         var fixture = new Fixture();
@@ -33,7 +33,7 @@ public class GetDashboardViewModelAsyncTests
         actualDashboard.Ukprn.Should().Be(Ukprn);
     }
 
-    [Fact]
+    [Test]
     public async Task WhenHasNoVacancies_ShouldReturnViewModelAsync()
     {
         var orchestrator = GetSut(new ProviderDashboardSummary());
@@ -47,7 +47,7 @@ public class GetDashboardViewModelAsyncTests
         actualDashboard.Ukprn.Should().Be(Ukprn);
     }
 
-    [Fact]
+    [Test]
     public async Task Then_Upserts_Provider_User()
     {
         var orchestrator = GetSut(new ProviderDashboardSummary());

@@ -2,13 +2,13 @@
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Domain.Entities;
 
 public class VacancyTests
 {
-    [Fact]
+    [Test]
     public void CanSubmit_ShouldNotSubmitDeletedVacancy()
     {
         var vacancy = new Vacancy
@@ -20,7 +20,7 @@ public class VacancyTests
         vacancy.CanSubmit.Should().BeFalse();
     }
 
-    [Fact]
+    [Test]
     public void CanSubmit_ShouldNotSubmitVacancyInUnexpectedStatus()
     {
         foreach (var status in Enum.GetValues(typeof(VacancyStatus)).Cast<VacancyStatus>()

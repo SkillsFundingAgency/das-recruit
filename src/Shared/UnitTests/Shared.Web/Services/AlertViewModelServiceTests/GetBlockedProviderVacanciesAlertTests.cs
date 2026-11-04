@@ -4,16 +4,16 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using FluentAssertions;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services.AlertViewModelServiceTests;
 
 public class GetBlockedProviderVacanciesAlertTests : AlertViewModelServiceTestBase
 {
-    [Theory]
-    [InlineData(null, 5)]
-    [InlineData("2019-07-16", 2)]
-    [InlineData("2019-07-18", null)]
+    [Test]
+    [TestCase(null, 5)]
+    [TestCase("2019-07-16", 2)]
+    [TestCase("2019-07-18", null)]
     public void ShouldReturnNonDismissedVacancies(string userLastDismissedDateString, int? expectedNumberOfVacanciesReturned)
     {
         var vacancies = GetVacancies();
@@ -34,10 +34,10 @@ public class GetBlockedProviderVacanciesAlertTests : AlertViewModelServiceTestBa
         }
     }
 
-    [Theory]
-    [InlineData(null, "Provider A, Provider B and Provider C")]
-    [InlineData("2019-07-15", "Provider B and Provider C")]
-    [InlineData("2019-07-17", "Provider C")]
+    [Test]
+    [TestCase(null, "Provider A, Provider B and Provider C")]
+    [TestCase("2019-07-15", "Provider B and Provider C")]
+    [TestCase("2019-07-17", "Provider C")]
     public void ShouldReturnGroupedProviders(string userLastDismissedDateString, string expectedBlockedProviderNamesCaption)
     {
         var vacancies = GetVacancies();
@@ -51,7 +51,7 @@ public class GetBlockedProviderVacanciesAlertTests : AlertViewModelServiceTestBa
         vm.BlockedProviderNamesCaption.Should().Be(expectedBlockedProviderNamesCaption);
     }
 
-    [Fact]
+    [Test]
     public void ShouldReturnFormattedClosedVacancies()
     {
         var vacancies = GetVacancies();

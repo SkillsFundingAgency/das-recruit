@@ -1,15 +1,15 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
 
 public partial class EmployerContactDetailValidationTests : VacancyValidationTestsBase
 {
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("02086695847")]
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("02086695847")]
     public void NoErrorsWhenEmployerContactPhoneIsValid(string phoneNo)
     {
         var vacancy = new Vacancy
@@ -23,7 +23,7 @@ public partial class EmployerContactDetailValidationTests : VacancyValidationTes
         result.Errors.Should().HaveCount(0);
     }
 
-    [Fact]
+    [Test]
     public void EmployerContactPhoneNumberMustBe16CharactersOrLess()
     {
         var vacancy = new Vacancy
@@ -39,7 +39,7 @@ public partial class EmployerContactDetailValidationTests : VacancyValidationTes
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerContactDetails);
     }
 
-    [Fact]
+    [Test]
     public void EmployerContactPhoneNumberMustBe8CharactersOrMore()
     {
         var vacancy = new Vacancy
@@ -55,7 +55,7 @@ public partial class EmployerContactDetailValidationTests : VacancyValidationTes
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerContactDetails);
     }
 
-    [Fact]
+    [Test]
     public void EmployerContactPhoneNumberMustBeValidEmailFormat()
     {
         var vacancy = new Vacancy

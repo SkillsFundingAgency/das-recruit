@@ -3,13 +3,13 @@ using Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.Cros
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.CrossField;
 
 public class TrainingExpiryDateValidation : VacancyValidationTestsBase
 {
-    [Fact]
+    [Test]
     public void TrainingIsValidIfExpiryDateOfTrainingIsNull()
     {
         var vacancy = new Vacancy
@@ -31,9 +31,9 @@ public class TrainingExpiryDateValidation : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(1)]
+    [Test]
+    [TestCase(0)]
+    [TestCase(1)]
     public void TrainingIsValidIfLastDateStartsOfTrainingIsAfterStartDate(int daysAfterStartDate)
     {
         var startDate = DateTime.UtcNow.Date.AddDays(20);
@@ -57,9 +57,9 @@ public class TrainingExpiryDateValidation : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
         
-    [Theory]
-    [InlineData(0)]
-    [InlineData(1)]
+    [Test]
+    [TestCase(0)]
+    [TestCase(1)]
     public void TrainingIsValidIfEffectiveToDateOfTrainingIsAfterStartDate(int daysAfterStartDate)
     {
         var startDate = DateTime.UtcNow.Date.AddDays(20);
@@ -83,7 +83,7 @@ public class TrainingExpiryDateValidation : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
 
-    [Fact]
+    [Test]
     public void TrainingIsNotValidIfExpiryDateOfTrainingBeforeStartDate()
     {
         var startDate = DateTime.UtcNow.Date.AddDays(20);
@@ -111,7 +111,7 @@ public class TrainingExpiryDateValidation : VacancyValidationTestsBase
         result.Errors[0].ErrorMessage.Should().Be($"Start date must be on or before {effectiveTo.AsGdsDate()} as this is the last day for new starters for the training course you have selected. If you don't want to change the start date, you can change the training course");
     }
         
-    [Fact]
+    [Test]
     public void TrainingIsNotValidIfLastDateForNewStartsOfTrainingBeforeStartDate()
     {
         var startDate = DateTime.UtcNow.Date.AddDays(20);

@@ -8,19 +8,19 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Moq;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports;
 
 public class ProviderApplicationsReportOrchestratorTests
 {
-    [Theory]
-    [InlineData(DateRangeType.Last7Days, "2019-02-26Z", "2019-03-05Z")] //GMT
-    [InlineData(DateRangeType.Last14Days, "2019-02-19Z", "2019-03-05Z")] //GMT
-    [InlineData(DateRangeType.Last30Days, "2019-02-03Z", "2019-03-05Z")] //GMT
-    [InlineData(DateRangeType.Last7Days, "2019-04-01Z", "2019-04-08Z")] //BST
-    [InlineData(DateRangeType.Last14Days, "2019-04-01Z", "2019-04-15Z")] //BST
-    [InlineData(DateRangeType.Last30Days, "2019-04-01Z", "2019-05-01Z")] //BST
+    [Test]
+    [TestCase(DateRangeType.Last7Days, "2019-02-26Z", "2019-03-05Z")] //GMT
+    [TestCase(DateRangeType.Last14Days, "2019-02-19Z", "2019-03-05Z")] //GMT
+    [TestCase(DateRangeType.Last30Days, "2019-02-03Z", "2019-03-05Z")] //GMT
+    [TestCase(DateRangeType.Last7Days, "2019-04-01Z", "2019-04-08Z")] //BST
+    [TestCase(DateRangeType.Last14Days, "2019-04-01Z", "2019-04-15Z")] //BST
+    [TestCase(DateRangeType.Last30Days, "2019-04-01Z", "2019-05-01Z")] //BST
     public async Task PostCreateViewModelAsync_ShouldUseCorrectTimespan(DateRangeType dateRangeType, string fromDate, string toDate)
     {
         var mockClient = new Mock<IProviderVacancyClient>();
@@ -51,9 +51,9 @@ public class ProviderApplicationsReportOrchestratorTests
             Times.Once);
     }
 
-    [Theory]
-    [InlineData("1", "2", "2018", "20", "2", "2019")] //GMT
-    [InlineData("1", "4", "2018", "20", "4", "2019")] //BST
+    [Test]
+    [TestCase("1", "2", "2018", "20", "2", "2019")] //GMT
+    [TestCase("1", "4", "2018", "20", "4", "2019")] //BST
     public async Task PostCreateViewModelAsync_ShouldUseCustomTimespan_With_Correct_VacancyType(string fromDay, string fromMonth, string fromYear, string toDay, string toMonth, string toYear)
     {
             

@@ -1,12 +1,12 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
 
 public class ThroughFaaApplicationMethodValidationTests : VacancyValidationTestsBase
 {
-    [Fact]
+    [Test]
     public void ApplicationMethodCannotBeNull()
     {
         var vacancy = new Vacancy
@@ -22,7 +22,7 @@ public class ThroughFaaApplicationMethodValidationTests : VacancyValidationTests
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ApplicationMethod);
     }
 
-    [Fact]
+    [Test]
     public void NoErrorsWhenApplicationMethodIsThroughFaa()
     {
         var vacancy = new Vacancy
@@ -36,7 +36,7 @@ public class ThroughFaaApplicationMethodValidationTests : VacancyValidationTests
         result.Errors.Should().HaveCount(0);
     }
 
-    [Fact]
+    [Test]
     public void WhenApplicationMethodIsThroughFaaExternalApplicationUrlShouldBeEmpty()
     {
         var vacancy = new Vacancy
@@ -53,7 +53,7 @@ public class ThroughFaaApplicationMethodValidationTests : VacancyValidationTests
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ApplicationMethod);
     }
 
-    [Fact]
+    [Test]
     public void WhenApplicationMethodIsThroughFaaExternalApplicationInstructionsShouldBeEmpty()
     {
         var vacancy = new Vacancy
@@ -70,11 +70,11 @@ public class ThroughFaaApplicationMethodValidationTests : VacancyValidationTests
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ApplicationMethod);
     }
 
-    [Theory]
-    [InlineData("some text bother")]
-    [InlineData("some text dang")]
-    [InlineData("some text drat")]
-    [InlineData("some text balderdash")]
+    [Test]
+    [TestCase("some text bother")]
+    [TestCase("some text dang")]
+    [TestCase("some text drat")]
+    [TestCase("some text balderdash")]
     public void WhenApplicationMethodIsThroughFaaExternalApplicationInstructions_ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
     {
         var vacancy = new Vacancy
@@ -91,11 +91,11 @@ public class ThroughFaaApplicationMethodValidationTests : VacancyValidationTests
         result.Errors[0].ErrorCode.Should().Be("612");
     }
 
-    [Theory]
-    [InlineData("some textbother")]
-    [InlineData("some textdang")]
-    [InlineData("some textdrat")]
-    [InlineData("some textbalderdash")]
+    [Test]
+    [TestCase("some textbother")]
+    [TestCase("some textdang")]
+    [TestCase("some textdrat")]
+    [TestCase("some textbalderdash")]
     public void WhenApplicationMethodIsThroughFaaExternalApplicationInstructions_Should_Not_FailIfContainsWordsFromTheProfanityList(string freeText)
     {
         var vacancy = new Vacancy

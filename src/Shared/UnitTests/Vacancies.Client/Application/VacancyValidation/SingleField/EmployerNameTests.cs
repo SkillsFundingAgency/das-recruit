@@ -1,13 +1,13 @@
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
 
 public class EmployerNameTests : VacancyValidationTestsBase
 {
-    [Fact]
+    [Test]
     public void RegisteredName_ShouldValidateEmpty()
     {
         var vacancy = new Vacancy() {
@@ -22,7 +22,7 @@ public class EmployerNameTests : VacancyValidationTestsBase
         result.Errors[0].ErrorCode.Should().Be("4");
     }
 
-    [Fact]
+    [Test]
     public void TradingName_ShouldValidateEmpty()
     {
         var vacancy = new Vacancy() {
@@ -38,7 +38,7 @@ public class EmployerNameTests : VacancyValidationTestsBase
         result.Errors[0].ErrorCode.Should().Be("401");
     }
 
-    [Fact]
+    [Test]
     public void TradingName_ShouldValidateSpecialCharactersAndLength()
     {
         var vacancy = new Vacancy() {
@@ -54,7 +54,7 @@ public class EmployerNameTests : VacancyValidationTestsBase
         result.Errors.Any(e => e.ErrorCode == "403").Should().BeTrue();
     }
 
-    [Fact]
+    [Test]
     public void Anonymous_ShouldValidateEmpty()        
     {
         var vacancy = new Vacancy()
@@ -72,7 +72,7 @@ public class EmployerNameTests : VacancyValidationTestsBase
         result.Errors[0].ErrorCode.Should().Be("405");
     }
 
-    [Fact]
+    [Test]
     public void Anonymous_ShouldValidateSpecialCharactersAndLength()
     {
         var vacancy = new Vacancy() {
@@ -89,11 +89,11 @@ public class EmployerNameTests : VacancyValidationTestsBase
         result.Errors.Any(e => e.ErrorCode == "407").Should().BeTrue();
     }
 
-    [Theory]
-    [InlineData("some text bother")]
-    [InlineData("some text dang")]
-    [InlineData("some text drat")]
-    [InlineData("some text balderdash")]
+    [Test]
+    [TestCase("some text bother")]
+    [TestCase("some text dang")]
+    [TestCase("some text drat")]
+    [TestCase("some text balderdash")]
     public void Anonymous_ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
     {
         var vacancy = new Vacancy()
@@ -109,11 +109,11 @@ public class EmployerNameTests : VacancyValidationTestsBase
         result.Errors[0].ErrorCode.Should().Be("603");
     }
 
-    [Theory]
-    [InlineData("some textbother")]
-    [InlineData("some textdang")]
-    [InlineData("some textdrat")]
-    [InlineData("some textbalderdash")]
+    [Test]
+    [TestCase("some textbother")]
+    [TestCase("some textdang")]
+    [TestCase("some textdrat")]
+    [TestCase("some textbalderdash")]
     public void Anonymous_Should_Not_FailIfContainsWordsFromTheProfanityList(string freeText)
     {
         var vacancy = new Vacancy()

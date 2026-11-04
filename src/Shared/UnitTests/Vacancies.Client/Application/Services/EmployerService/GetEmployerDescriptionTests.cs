@@ -1,6 +1,6 @@
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerProfile;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Services.EmployerService;
 
@@ -8,9 +8,9 @@ public class GetEmployerDescriptionTests
 {
     private readonly Mock<IEmployerProfileService> _mockEmployerProfileService = new();
 
-    [Theory]
-    [InlineData(VacancyStatus.Draft)]
-    [InlineData(VacancyStatus.Referred)]
+    [Test]
+    [TestCase(VacancyStatus.Draft)]
+    [TestCase(VacancyStatus.Referred)]
     public async Task GetEmployerDescriptionAsync_ShouldReturnEmployerProfileAboutOrganisation(VacancyStatus status)
     {
         var employerProfileAboutOrganisation = "Employer Profile About Organisation";
@@ -33,11 +33,11 @@ public class GetEmployerDescriptionTests
         result.Should().Be(employerProfileAboutOrganisation);
     }
 
-    [Theory]
-    [InlineData(VacancyStatus.Live)]
-    [InlineData(VacancyStatus.Submitted)]
-    [InlineData(VacancyStatus.Approved)]
-    [InlineData(VacancyStatus.Closed)]
+    [Test]
+    [TestCase(VacancyStatus.Live)]
+    [TestCase(VacancyStatus.Submitted)]
+    [TestCase(VacancyStatus.Approved)]
+    [TestCase(VacancyStatus.Closed)]
     public async Task GetEmployerDescriptionAsync_ShouldReturnVacancyEmployerDescription(VacancyStatus status)
     {
         var employerDescription = "Employer Description";

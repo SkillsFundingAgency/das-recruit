@@ -1,6 +1,6 @@
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerProfile;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Services.EmployerService;
 
@@ -8,11 +8,11 @@ public class GetEmployerNameTests
 {
     private readonly Mock<IEmployerProfileService> _mockEmployerProfileService = new();
 
-    [Theory]
-    [InlineData(VacancyStatus.Live)]
-    [InlineData(VacancyStatus.Submitted)]
-    [InlineData(VacancyStatus.Approved)]
-    [InlineData(VacancyStatus.Closed)]
+    [Test]
+    [TestCase(VacancyStatus.Live)]
+    [TestCase(VacancyStatus.Submitted)]
+    [TestCase(VacancyStatus.Approved)]
+    [TestCase(VacancyStatus.Closed)]
     public async Task GetEmployerNameAsync_ShouldReturnVacancyEmployerName(VacancyStatus status)
     {
         var employerName = "Employer Name";
@@ -29,9 +29,9 @@ public class GetEmployerNameTests
         result.Should().Be(employerName);
     }
 
-    [Theory]
-    [InlineData(VacancyStatus.Draft)]
-    [InlineData(VacancyStatus.Referred)]
+    [Test]
+    [TestCase(VacancyStatus.Draft)]
+    [TestCase(VacancyStatus.Referred)]
     public async Task GetEmployerNameAsync_ShouldReturnVacancyLegalEntityName(VacancyStatus status)
     {
         var employerName = "Employer Name";
@@ -51,9 +51,9 @@ public class GetEmployerNameTests
         result.Should().Be(legalEntityName);
     }
 
-    [Theory]
-    [InlineData(VacancyStatus.Draft)]
-    [InlineData(VacancyStatus.Referred)]
+    [Test]
+    [TestCase(VacancyStatus.Draft)]
+    [TestCase(VacancyStatus.Referred)]
     public async Task GetEmployerNameAsync_ShouldReturnTradingName(VacancyStatus status)
     {
         var employerName = "Employer Name";
@@ -81,9 +81,9 @@ public class GetEmployerNameTests
         result.Should().Be(tradingName);
     }
 
-    [Theory]
-    [InlineData(VacancyStatus.Draft)]
-    [InlineData(VacancyStatus.Referred)]
+    [Test]
+    [TestCase(VacancyStatus.Draft)]
+    [TestCase(VacancyStatus.Referred)]
     public async Task GetEmployerNameAsync_ShouldReturnVacancyEmployerNameForAnonymous(VacancyStatus status)
     {
         var employerName = "Employer Name";

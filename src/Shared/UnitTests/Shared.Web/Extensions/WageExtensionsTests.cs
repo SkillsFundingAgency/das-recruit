@@ -2,13 +2,13 @@
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Shared.Web.UnitTests.Extensions;
 
 public class WageExtensionsTests
 {
-    [Fact]
+    [Test]
     public void ShouldFormatFixedWageCorrectly()
     {
         var wage = new Wage
@@ -22,7 +22,7 @@ public class WageExtensionsTests
         actual.Should().Be("£12,345,678.91 a year");
     }
 
-    [Fact]
+    [Test]
     public void ShouldFormatNationalMinimumWageCorrectly()
     {
         var wage = new Wage
@@ -36,7 +36,7 @@ public class WageExtensionsTests
         actual.Should().Be("£8,202.01 to £15,290.89 a year");
     }
 
-    [Fact]
+    [Test]
     public void ShouldFormatNationalMinimumWageForApprenticesCorrectly()
     {
         var wage = new Wage
@@ -50,7 +50,7 @@ public class WageExtensionsTests
         actual.Should().Be("£7,225.58 a year");
     }
 
-    [Fact]
+    [Test]
     public void ShouldReturnCompetitiveSalaryText()
     {
         var wage = new Wage
