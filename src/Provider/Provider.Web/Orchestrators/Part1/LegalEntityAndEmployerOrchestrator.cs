@@ -9,12 +9,10 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Microsoft.Extensions.Logging;
@@ -28,8 +26,7 @@ public class LegalEntityAndEmployerOrchestrator(
     IProviderRelationshipsService providerRelationshipsService,
     IEmployerAccountProvider employerAccountProvider,
     IRecruitVacancyClient recruitVacancyClient,
-    IUtility utility,
-    IFeature feature)
+    IUtility utility)
     : VacancyValidatingOrchestrator<LegalEntityAndEmployerEditModel>(logger)
 {
     private const VacancyRuleSet ValidationRules = VacancyRuleSet.None;
@@ -261,11 +258,4 @@ public class LegalEntityAndEmployerOrchestrator(
 
         return mappings;
     }
-}
-
-public class LegalEntityEmployerViewModel
-{
-    public LegalEntity LegalEntity { get; set; }
-    public string EmployerName { get; set; }
-    public string EmployerAccountId { get; set; }
 }

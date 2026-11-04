@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using Esfa.Recruit.Proivder.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Exceptions;

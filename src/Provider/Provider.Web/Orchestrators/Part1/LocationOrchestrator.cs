@@ -166,7 +166,7 @@ public class LocationOrchestrator(
         return matchingLocation;
     }
 
-    private Address ConvertToDomainAddress(LocationEditModel locationEditModel)
+    private static Address ConvertToDomainAddress(LocationEditModel locationEditModel)
     {
         return new Address
         {

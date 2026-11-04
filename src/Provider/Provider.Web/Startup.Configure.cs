@@ -50,7 +50,7 @@ public partial class Startup
             IdentityModelEventSource.ShowPII = true;
         }
 
-        // Add Content Security Policy           
+        // Add Content Security Policy
         //AddCsp(app, env);
 
         //Registered before static files to always set header
@@ -236,14 +236,13 @@ public partial class Startup
         if (!string.IsNullOrWhiteSpace(sharedUiDashboardUrl))
             destinations.Add(sharedUiDashboardUrl);
 
-        return destinations.ToArray();
+        return [.. destinations];
     }
 
     private static string ExtractAuthHost(AuthenticationConfiguration authConfig)
     {
         var metaDataAddress = new Uri(authConfig.MetaDataAddress);
         var authHost = new UriBuilder(metaDataAddress.Scheme, metaDataAddress.Host).ToString();
-
         return authHost;
     }
 }

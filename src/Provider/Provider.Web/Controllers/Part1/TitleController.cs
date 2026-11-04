@@ -8,10 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Esfa.Recruit.Provider.Web.Orchestrators;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
 

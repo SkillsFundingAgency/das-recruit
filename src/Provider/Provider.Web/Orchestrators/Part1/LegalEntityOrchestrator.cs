@@ -30,8 +30,8 @@ public class LegalEntityOrchestrator(
 
     public async Task<LegalEntityViewModel> GetLegalEntityViewModelAsync(VacancyRouteModel vrm, long ukprn, string searchTerm, int? requestedPageNo, string selectedAccountLegalEntityPublicHashedId)
     {
-        const int NotFoundIndex = -1;
-        var setPage = requestedPageNo.HasValue ? requestedPageNo.Value : 1;
+        const int notFoundIndex = -1;
+        var setPage = requestedPageNo ?? 1;
 
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.LegalEntity_Get);
         var legalEntities = (await GetLegalEntityViewModelsAsync(ukprn, vacancy.EmployerAccountId)).ToList();
@@ -64,7 +64,7 @@ public class LegalEntityOrchestrator(
         var totalNumberOfPages = PagingHelper.GetTotalNoOfPages(MaxLegalEntitiesPerPage, filteredLegalEntitiesTotal);
         var indexOfSelectedLegalEntity = !string.IsNullOrEmpty(selectedAccountLegalEntityPublicHashedId)
             ? filteredLegalEntities.FindIndex(le => le.Id == selectedAccountLegalEntityPublicHashedId) + 1
-            : NotFoundIndex;
+            : notFoundIndex;
 
         setPage = GetPageNo(requestedPageNo, setPage, totalNumberOfPages, indexOfSelectedLegalEntity);
 
@@ -94,7 +94,7 @@ public class LegalEntityOrchestrator(
         return vm;
     }
 
-    private int GetPageNo(int? requestedPageNo, int page, int totalNumberOfPages, int indexOfSelectedLegalEntity)
+    private static int GetPageNo(int? requestedPageNo, int page, int totalNumberOfPages, int indexOfSelectedLegalEntity)
     {
         if (indexOfSelectedLegalEntity > MaxLegalEntitiesPerPage && requestedPageNo.HasValue == false)
             page = PagingHelper.GetPageNoOfSelectedItem(totalNumberOfPages, MaxLegalEntitiesPerPage, indexOfSelectedLegalEntity);
@@ -103,7 +103,7 @@ public class LegalEntityOrchestrator(
         return page;
     }
 
-    private void SetPager(string searchTerm, int page, LegalEntityViewModel vm, int filteredLegalEntitiesTotal)
+    private static void SetPager(string searchTerm, int page, LegalEntityViewModel vm, int filteredLegalEntitiesTotal)
     {
         var pager = new PagerViewModel(
             filteredLegalEntitiesTotal,
@@ -119,7 +119,7 @@ public class LegalEntityOrchestrator(
         vm.Pager = pager;
     }
 
-    private void SetFilteredOrganisationsForPage(int page, LegalEntityViewModel vm, List<OrganisationViewModel> filteredLegalEntities)
+    private static void SetFilteredOrganisationsForPage(int page, LegalEntityViewModel vm, List<OrganisationViewModel> filteredLegalEntities)
     {
         var skip = (page - 1) * MaxLegalEntitiesPerPage;
 
@@ -129,7 +129,7 @@ public class LegalEntityOrchestrator(
             .ToList();
     }
 
-    private OrganisationViewModel ConvertToOrganisationViewModel(LegalEntity data)
+    private static OrganisationViewModel ConvertToOrganisationViewModel(LegalEntity data)
     {
         return new OrganisationViewModel { Id = data.AccountLegalEntityPublicHashedId, Name = data.Name };
     }

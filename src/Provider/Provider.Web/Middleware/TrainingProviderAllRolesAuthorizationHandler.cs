@@ -16,22 +16,15 @@ public class TrainingProviderAllRolesAuthorizationHandler(
 {
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, TrainingProviderAllRolesRequirement requirement)
     {
-        HttpContext currentContext;
-        switch (context.Resource)
+        HttpContext currentContext = context.Resource switch
         {
-            case HttpContext resource:
-                currentContext = resource;
-                break;
-            case AuthorizationFilterContext authorizationFilterContext:
-                currentContext = authorizationFilterContext.HttpContext;
-                break;
-            default:
-                currentContext = null;
-                break;
-        }
+            HttpContext resource => resource,
+            AuthorizationFilterContext authorizationFilterContext => authorizationFilterContext.HttpContext,
+            _ => null
+        };
 
-        string claimValue = context.User.FindFirst(c => c.Type.Equals(ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier))?.Value
-                            ?? context.User.FindFirst(c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier))?.Value;
+        var claimValue = context.User.FindFirst(c => c.Type.Equals(ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier))?.Value
+                         ?? context.User.FindFirst(c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier))?.Value;
 
         if (!int.TryParse(claimValue, out _))
         {
@@ -39,7 +32,7 @@ public class TrainingProviderAllRolesAuthorizationHandler(
             return;
         }
 
-        bool isStubProviderValidationEnabled = GetUseStubProviderValidationSetting();
+        var isStubProviderValidationEnabled = GetUseStubProviderValidationSetting();
 
         // check if the stub is activated to by-pass the validation. Mostly used for local development purpose.
         // logic to check if the provider is authorized if not redirect the user to PAS 401 un-authorized page.
@@ -53,7 +46,7 @@ public class TrainingProviderAllRolesAuthorizationHandler(
 
     private bool GetUseStubProviderValidationSetting()
     {
-        string value = configuration.GetSection("UseStubProviderValidation").Value;
+        var value = configuration.GetSection("UseStubProviderValidation").Value;
 
         return value != null && bool.TryParse(value, out bool result) && result;
     }

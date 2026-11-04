@@ -122,17 +122,10 @@ public static class IoC
         services.AddTransient<VacancyManageOrchestrator>();
         services.AddTransient<VacancyPreviewOrchestrator>();
         services.AddTransient<VacancyViewOrchestrator>();
-        services.AddTransient<IWageOrchestrator, WageOrchestrator>();
-        services.AddTransient<ICustomWageOrchestrator,CustomWageOrchestrator>();
         services.AddTransient<CloseVacancyOrchestrator>();
         services.AddTransient<EditVacancyDatesOrchestrator>();
-        services.AddTransient<IApplicationReviewOrchestrator, ApplicationReviewOrchestrator>();
-        services.AddTransient<IApplicationReviewsOrchestrator, ApplicationReviewsOrchestrator>();
         services.AddTransient<CloneVacancyOrchestrator>();
         services.AddTransient<DeleteVacancyOrchestrator>();
-        services.AddTransient<IArchiveVacancyOrchestrator, ArchiveVacancyOrchestrator>();
-        services.AddTransient<IReportDashboardOrchestrator, ReportDashboardOrchestrator>();
-        services.AddTransient<IProviderApplicationsReportOrchestrator, ProviderApplicationsReportOrchestrator>();
         services.AddTransient<DashboardOrchestrator>();
         services.AddTransient<VacanciesSearchSuggestionsOrchestrator>();
         services.AddTransient<ManageNotificationsOrchestrator>();
@@ -143,9 +136,16 @@ public static class IoC
         services.AddTransient<VacancyTaskListOrchestrator>();
         services.AddTransient<VacancyCheckYourAnswersOrchestrator>();
         services.AddTransient<FutureProspectsOrchestrator>();
-        services.AddTransient<IAdditionalQuestionsOrchestrator, AdditionalQuestionsOrchestrator>();
         services.AddTransient<VacancyWorkDescriptionOrchestrator>();
         services.AddTransient<VacancyHowWillTheApprenticeTrainOrchestrator>();
+        services.AddTransient<IAdditionalQuestionsOrchestrator, AdditionalQuestionsOrchestrator>();
+        services.AddTransient<IArchiveVacancyOrchestrator, ArchiveVacancyOrchestrator>();
+        services.AddTransient<IReportDashboardOrchestrator, ReportDashboardOrchestrator>();
+        services.AddTransient<IProviderApplicationsReportOrchestrator, ProviderApplicationsReportOrchestrator>();
+        services.AddTransient<IWageOrchestrator, WageOrchestrator>();
+        services.AddTransient<ICustomWageOrchestrator, CustomWageOrchestrator>();
+        services.AddTransient<IApplicationReviewOrchestrator, ApplicationReviewOrchestrator>();
+        services.AddTransient<IApplicationReviewsOrchestrator, ApplicationReviewsOrchestrator>();
     }
 
     private static void RegisterMapperDeps(IServiceCollection services)

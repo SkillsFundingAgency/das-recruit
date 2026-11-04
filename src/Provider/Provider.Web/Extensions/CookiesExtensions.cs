@@ -22,16 +22,6 @@ public static class CookiesExtensions
         return cookies[key]?.Trim();
     }
         
-    public static void SetProposedClosingDate(this IResponseCookies cookies, IWebHostEnvironment hostingEnvironment, Guid vacancyId, DateTime date)
-    {
-        cookies.Append(string.Format(CookieNames.VacancyProposedClosingDate, vacancyId), date.ToShortDateString(), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(hostingEnvironment));
-    }
-
-    public static void ClearProposedClosingDate(this IResponseCookies cookies, IWebHostEnvironment hostingEnvironment, Guid vacancyId)
-    {
-        cookies.Delete(string.Format(CookieNames.VacancyProposedClosingDate, vacancyId), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(hostingEnvironment));
-    }
-
     public static DateTime? GetProposedClosingDate(this IRequestCookieCollection cookies, Guid vacancyId)
     {
         var proposedClosingDateCookieData = cookies[string.Format(CookieNames.VacancyProposedClosingDate, vacancyId)]?.Trim();
@@ -40,16 +30,6 @@ public static class CookiesExtensions
             return proposedClosingDate;
 
         return null;
-    }
-
-    public static void SetProposedStartDate(this IResponseCookies cookies, IWebHostEnvironment hostingEnvironment, Guid vacancyId, DateTime date)
-    {
-        cookies.Append(string.Format(CookieNames.VacancyProposedStartDate, vacancyId), date.ToShortDateString(), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(hostingEnvironment));
-    }
-
-    public static void ClearProposedStartDate(this IResponseCookies cookies, IWebHostEnvironment hostingEnvironment, Guid vacancyId)
-    {
-        cookies.Delete(string.Format(CookieNames.VacancyProposedStartDate, vacancyId), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(hostingEnvironment));
     }
 
     public static DateTime? GetProposedStartDate(this IRequestCookieCollection cookies, Guid vacancyId)

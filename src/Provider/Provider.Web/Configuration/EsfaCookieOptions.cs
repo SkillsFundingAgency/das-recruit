@@ -8,13 +8,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration;
 
 public static class EsfaCookieOptions
 {
-    public static CookieOptions GetDefaultHttpCookieOption(IWebHostEnvironment env) => new CookieOptions
-    {
-        Secure = !env.IsDevelopment(),
-        SameSite = SameSiteMode.Strict,
-        HttpOnly = true
-    };
-
     public static CookieOptions GetSessionLifetimeHttpCookieOption(IWebHostEnvironment env) => new CookieOptions
     {
         Secure = !env.IsDevelopment(),

@@ -53,7 +53,11 @@ public static class ConfigurationExtensions
         });
     }
 
-    public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, bool isAuthEnabled, ILoggerFactory loggerFactory, IConfiguration configuration)
+    public static void AddMvcService(this IServiceCollection services,
+        IWebHostEnvironment hostingEnvironment,
+        bool isAuthEnabled,
+        ILoggerFactory loggerFactory,
+        IConfiguration configuration)
     {
         services.AddAntiforgery(options =>
         {

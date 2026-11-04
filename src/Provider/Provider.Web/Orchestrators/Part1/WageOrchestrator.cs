@@ -22,7 +22,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 public interface IWageOrchestrator
 {
     Task<WageViewModel> GetWageViewModelAsync(VacancyRouteModel vrm);
-    Task<WageViewModel> GetWageViewModelAsync(WageEditModel m);
     Task<OrchestratorResponse> PostExtraInformationEditModelAsync(WageExtraInformationViewModel m, VacancyUser user);
     Task<WageExtraInformationViewModel> GetExtraInformationViewModelAsync(VacancyRouteModel vrm);
     Task<OrchestratorResponse> PostWageEditModelAsync(WageEditModel m, VacancyUser user);
@@ -190,17 +189,6 @@ public class WageOrchestrator(
             vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                 ReviewFieldMappingLookups.GetAdditionalWageInformationFieldIndicators());
         }
-
-        return vm;
-    }
-
-    public async Task<WageViewModel> GetWageViewModelAsync(WageEditModel m)
-    {
-        var vm = await GetWageViewModelAsync((VacancyRouteModel)m);
-
-        vm.WageType = m.WageType;
-        vm.FixedWageYearlyAmount = m.FixedWageYearlyAmount;
-        vm.WageAdditionalInformation = m.WageAdditionalInformation;
 
         return vm;
     }

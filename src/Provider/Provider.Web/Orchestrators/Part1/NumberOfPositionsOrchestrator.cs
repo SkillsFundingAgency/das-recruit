@@ -63,7 +63,7 @@ public class NumberOfPositionsOrchestrator(
             vacancy,
             (v) =>
             {
-                return v.NumberOfPositions = int.TryParse(model.NumberOfPositions, out var n) ? n : default(int?);
+                return v.NumberOfPositions = int.TryParse(model.NumberOfPositions, out var n) ? n : null;
             });
 
         return await ValidateAndExecute(
@@ -79,8 +79,10 @@ public class NumberOfPositionsOrchestrator(
 
     protected override EntityToViewModelPropertyMappings<Vacancy, NumberOfPositionsEditModel> DefineMappings()
     {
-        var mappings = new EntityToViewModelPropertyMappings<Vacancy, NumberOfPositionsEditModel>();
-        mappings.Add(e => e.NumberOfPositions, vm => vm.NumberOfPositions);
+        var mappings = new EntityToViewModelPropertyMappings<Vacancy, NumberOfPositionsEditModel>
+        {
+            {e => e.NumberOfPositions, vm => vm.NumberOfPositions}
+        };
         return mappings;
     }
 }

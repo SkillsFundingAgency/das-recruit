@@ -83,15 +83,13 @@ public partial class Startup
         services.AddControllersWithViews().AddRazorRuntimeCompilation();
 #endif
 
-            
         services.AddAndConfigureDfESignInAuthentication(
             _configuration,
             "SFA.DAS.ProviderApprenticeshipService",
             typeof(CustomServiceRole),
             ClientName.ProviderRoatp,
             "/signout",
-            "");    
-        
+            "");
             
         services.AddAuthorizationService();
         services.AddDasEncoding(_configuration);
