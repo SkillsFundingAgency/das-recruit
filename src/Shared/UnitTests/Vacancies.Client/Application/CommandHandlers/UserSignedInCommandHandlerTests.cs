@@ -40,18 +40,42 @@ public class UserSignedInCommandHandlerTests
     [Test]
     public async Task GivenProviderUser_ShouldNotRaiseUserAccountUpdateMessage()
     {
-        var userType= UserType.Provider;
+        var userType = UserType.Provider;
         var dfeUserId = _fixture.Create<Guid>().ToString();
-        var user = _fixture.Build<User>().With(u => u.UserType, userType).With(u => u.DfEUserId, dfeUserId).Create();
-        var preference = _fixture.Build<UserNotificationPreferences>().With(p => p.DfeUserId, dfeUserId).Create();
-        var vacancyUser = _fixture.Build<VacancyUser>().With(v => v.DfEUserId, dfeUserId).Create();
+        var user = _fixture.Build<User>()
+            .With(u => u.UserType, userType)
+            .With(u => u.DfEUserId, dfeUserId)
+            .Create();
+        var preference = _fixture.Build<UserNotificationPreferences>()
+            .With(p => p.DfeUserId, dfeUserId)
+            .Create();
+        var vacancyUser = _fixture.Build<VacancyUser>()
+            .With(v => v.DfEUserId, dfeUserId)
+            .Create();
         var command = new UserSignedInCommand(vacancyUser, userType);
+
+        // Ensure both lookup paths return your fixture user
+        _mockUserRepository
+            .Setup(r => r.GetByDfEUserId(dfeUserId))
+            .ReturnsAsync(user);
+        _mockUserRepository
+            .Setup(r => r.GetUserByEmail(vacancyUser.Email, UserType.Provider))
+            .ReturnsAsync((User)null);
 
         var sut = GetSut(user, preference, true);
         await sut.Handle(command, new CancellationToken());
 
-        _mockUserWriteRepository.Verify(u => u.UpsertUserAsync(user));
-        _mockQueueService.Verify(q => q.AddMessageAsync(It.IsAny<UpdateEmployerUserAccountQueueMessage>()), Times.Never);
+        _mockUserWriteRepository.Verify(u => u.UpsertUserAsync(
+            It.Is<User>(x =>
+                x.DfEUserId == dfeUserId &&
+                x.UserType == UserType.Provider
+            )
+        ));
+
+        _mockQueueService.Verify(
+            q => q.AddMessageAsync(It.IsAny<UpdateEmployerUserAccountQueueMessage>()),
+            Times.Never
+        );
     }
 
     [Test]
