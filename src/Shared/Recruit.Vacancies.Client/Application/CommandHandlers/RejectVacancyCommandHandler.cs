@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Events;
@@ -14,12 +13,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 public class RejectVacancyCommandHandler(
     ILogger<RejectVacancyCommandHandler> logger,
     IVacancyRepository repository,
-    IMessaging messaging,
     IOuterApiClient outerApiClient)
     : IRequestHandler<RejectVacancyCommand, Unit>
 {
-    private readonly IMessaging _messaging = messaging;
-
     public async Task<Unit> Handle(RejectVacancyCommand message, CancellationToken cancellationToken)
     {
         logger.LogInformation("Rejecting vacancy {vacancyReference}.", message.VacancyReference);

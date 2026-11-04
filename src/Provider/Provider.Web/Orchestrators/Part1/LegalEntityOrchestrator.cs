@@ -140,8 +140,8 @@ public class LegalEntityOrchestrator(
 
         if (info == null || !info.LegalEntities.Any())
         {
-            logger.LogWarning("No legal entities found for {employerAccountId}", employerAccountId);
-            return new List<OrganisationViewModel>();
+            logger.LogWarning("No legal entities found for {AccountId}", employerAccountId);
+            return [];
         }
 
         return info.LegalEntities.Select(ConvertToOrganisationViewModel).ToList();

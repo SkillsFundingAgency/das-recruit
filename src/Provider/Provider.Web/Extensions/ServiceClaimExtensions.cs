@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Provider.Web.Extensions;
 
 public static class ServiceClaimExtensions
 {
-    private static readonly List<string> ServiceClaimsList = Enum.GetNames(typeof(ServiceClaim)).ToList();
+    private static readonly List<string> ServiceClaimsList = [.. Enum.GetNames<ServiceClaim>()];
 
     public static bool IsServiceClaim(this string claim)
     {

@@ -17,9 +17,8 @@ public class OuterApiGetAddressesClient(IOuterApiClient outerApiClient, ILogger<
         }
         catch(Exception e)
         {
-            string message = $"Get addresses failed for search term: {searchTerm}.";
-            logger.LogDebug(message);
-            throw new Exception(message, e);
+            logger.LogDebug("Get addresses failed for search term: {searchTerm}.", searchTerm);
+            throw new Exception($"Get addresses failed for search term: {searchTerm}.", e);
         }
     }
 }

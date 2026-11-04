@@ -10,13 +10,9 @@ using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators;
 
-public class CloseVacancyOrchestrator(
-    IProviderVacancyClient client,
-    IRecruitVacancyClient vacancyClient,
+public class CloseVacancyOrchestrator(IRecruitVacancyClient vacancyClient,
     IUtility utility)
 {
-    private readonly IProviderVacancyClient _client = client;
-
     public async Task<CloseViewModel> GetCloseViewModelAsync(VacancyRouteModel vrm)
     {
         var vacancy = await vacancyClient.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());

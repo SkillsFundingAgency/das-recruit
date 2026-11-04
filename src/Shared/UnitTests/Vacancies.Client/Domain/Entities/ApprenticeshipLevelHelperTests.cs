@@ -25,8 +25,7 @@ public class ApprenticeshipLevelHelperTests
     [Test]
     public void RemapFromInt_ShouldReturnCorrectEnum_WhenPassedAnIntWithCorrespondingValue()
     {
-        var enumValues = Enum.GetValues(typeof(ApprenticeshipLevel))
-            .OfType<ApprenticeshipLevel>();
+        var enumValues = Enum.GetValues<ApprenticeshipLevel>();
         foreach (ApprenticeshipLevel enumValue in enumValues)
         {
             ApprenticeshipLevel result = ApprenticeshipLevelHelper.RemapFromInt((int)enumValue);
@@ -63,11 +62,10 @@ public class ApprenticeshipLevelHelperTests
     [Test]
     public void TryRemapFromInt_ShouldSucceedAndReturnEnum_WhenPassedAnIntWithCorrespondingValue()
     {
-        var enumValues = Enum.GetValues(typeof(ApprenticeshipLevel))
-            .OfType<ApprenticeshipLevel>();
+        var enumValues = Enum.GetValues<ApprenticeshipLevel>();
         foreach (ApprenticeshipLevel enumValue in enumValues)
         {
-            bool success = ApprenticeshipLevelHelper.TryRemapFromInt((int)enumValue, out ApprenticeshipLevel result);
+            var success = ApprenticeshipLevelHelper.TryRemapFromInt((int)enumValue, out ApprenticeshipLevel result);
             success.Should().Be(true);
             result.Should().Be(enumValue);
         }

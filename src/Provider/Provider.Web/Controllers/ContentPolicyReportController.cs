@@ -14,7 +14,7 @@ public class ContentPolicyReportController(ILogger<ContentPolicyReportController
     {
         logger.LogInformation("Request Path: {Path} and Query: {Query}", HttpContext.Request.Path, HttpContext.Request.Query);
             
-        logger.LogWarning("CSP Violation: {cspReport}", request);
+        logger.LogWarning("Csp Violation: {cspReport}", request);
 
         return Ok();
     }

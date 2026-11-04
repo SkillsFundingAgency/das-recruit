@@ -33,7 +33,7 @@ public class EsfaFeatureDisabledTagHelper(IFeature feature) : TagHelper
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
-        if (feature.IsFeatureEnabled(Name) == false)
+        if (!feature.IsFeatureEnabled(Name))
         {
             output.TagName = null;
             return;

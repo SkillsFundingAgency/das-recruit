@@ -22,9 +22,9 @@ public class CloseVacancyCommandHandler(
     {
         var vacancy = await vacancyRepository.GetVacancyAsync(message.VacancyId);
 
-        if (vacancy == null || vacancy.Status != VacancyStatus.Live)
+        if (vacancy is not {Status: VacancyStatus.Live})
         {
-            logger.LogInformation($"Cannot close vacancy {message.VacancyId} as it was not found or is not in status live.");
+            logger.LogInformation("Cannot close vacancy {VacancyId} as it was not found or is not in status live.", message.VacancyId);
         }
 
         logger.LogInformation("Closing vacancy {vacancyId} by user {userEmail}.", vacancy.Id, message.User.Email);

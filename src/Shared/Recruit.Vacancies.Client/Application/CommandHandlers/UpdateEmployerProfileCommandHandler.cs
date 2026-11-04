@@ -16,8 +16,8 @@ public class UpdateEmployerProfileCommandHandler(
     {
         await employerProfileService.UpdateAsync(message.Profile);
 
-        logger.LogInformation("Update Employer profile for employer account: {employerAccountId} and " +
-                              "AccountLegalEntityPublicHashedId:{AccountLegalEntityPublicHashedId}", message.Profile.EmployerAccountId,
+        logger.LogInformation("Update Employer profile for employer account: {employerAccountId} and AccountLegalEntityPublicHashedId:{AccountLegalEntityPublicHashedId}",
+            message.Profile.EmployerAccountId, 
             message.Profile.AccountLegalEntityPublicHashedId);
             
         return Unit.Value;

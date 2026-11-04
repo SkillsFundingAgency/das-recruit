@@ -8,11 +8,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators;
 
 public class EmployerVacancyOrchestrator(
     IRecruitVacancyClient vacancyClient,
-    ITrainingProviderSummaryProvider trainingProviderSummaryProvider,
-    IEmployerVacancyClient employerVacancyClient)
+    ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
 {
-    private readonly IEmployerVacancyClient _employerVacancyClient = employerVacancyClient;
-
     public async Task<TrainingProviderSummary> GetProviderUkprn(string ukprn)
     {
         if (long.TryParse(ukprn, out long validUkprn) == false)

@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -19,7 +18,7 @@ public class VacancyService(
 {
     public async Task CloseExpiredVacancy(Guid vacancyId)
     {
-        logger.LogInformation("Closing vacancy {vacancyId}.", vacancyId);
+        logger.LogInformation("Closing vacancy {Id}", vacancyId);
 
         var vacancy = await vacancyRepository.GetVacancyAsync(vacancyId);
         vacancy.ClosureReason = ClosureReason.Auto;
@@ -31,7 +30,7 @@ public class VacancyService(
 
         await messaging.PublishEvent(new VacancyClosedEvent
         {
-            VacancyReference = vacancy.VacancyReference.Value,
+            VacancyReference = vacancy.VacancyReference.GetValueOrDefault(),
             VacancyId = vacancy.Id
         });
     }

@@ -10,8 +10,8 @@ internal class HtmlValidator<T, TProperty>(IHtmlSanitizerService sanitizer) : Pr
 {
     public override string Name => "HtmlValidator";
 
-    public const string HtmlRegularExpression = @"^[a-zA-Z0-9\u0080-\uFFA7?$@#()""'!,+\-=_:;.&€£*%\s\/<>\[\]]+$";
-    private Regex _regex = CreateRegEx();
+    private const string HtmlRegularExpression = @"^[a-zA-Z0-9\u0080-\uFFA7?$@#()""'!,+\-=_:;.&€£*%\s\/<>\[\]]+$";
+    private readonly Regex _regex = CreateRegEx();
 
     protected override string GetDefaultMessageTemplate(string errorCode) 
     {
@@ -25,16 +25,11 @@ internal class HtmlValidator<T, TProperty>(IHtmlSanitizerService sanitizer) : Pr
 
         var isHtmlValid = sanitizer.IsValid(value);
 
-        if (isHtmlValid == false)
+        if (!isHtmlValid)
             return false;
 
-        if (string.IsNullOrWhiteSpace(value) == false && 
-            _regex.IsMatch(value) == false)
-        {
-            return false;
-        }
-
-        return true;
+        return string.IsNullOrWhiteSpace(value) || 
+               _regex.IsMatch(value);
     }
 
     private static Regex CreateRegEx()
@@ -48,6 +43,7 @@ internal class HtmlValidator<T, TProperty>(IHtmlSanitizerService sanitizer) : Pr
         }
         catch (Exception)
         {
+            // ignore any exception and fallback to default constructor
         }
 
         return new Regex(HtmlRegularExpression, RegexOptions.IgnoreCase);

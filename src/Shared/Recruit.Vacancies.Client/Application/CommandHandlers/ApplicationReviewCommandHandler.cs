@@ -61,6 +61,7 @@ public class ApplicationReviewCommandHandler(
         }
 
         Validate(applicationReview);
+        
         logger.LogInformation("Setting application review:{applicationReviewId} to {status}", message.ApplicationReviewId, message.Outcome.Value);
 
         await applicationReviewRepositoryRunner.UpdateAsync(applicationReview);

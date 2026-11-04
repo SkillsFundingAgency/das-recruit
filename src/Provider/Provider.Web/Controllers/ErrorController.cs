@@ -11,7 +11,6 @@ using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Provider.Web.ViewModels.Error;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
@@ -26,13 +25,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers;
 public class ErrorController(
     ILogger<ErrorController> logger,
     IOptions<ExternalLinksConfiguration> externalLinks,
-    IRecruitVacancyClient vacancyClient,
     ITrainingProviderSummaryProvider trainingProviderSummaryProvider,
     IConfiguration configuration)
     : Controller
 {
     private readonly ExternalLinksConfiguration _externalLinks = externalLinks.Value;
-    private readonly IRecruitVacancyClient _vacancyClient = vacancyClient;
 
     [Route("error/{id?}")]
     public IActionResult Error(int id)
