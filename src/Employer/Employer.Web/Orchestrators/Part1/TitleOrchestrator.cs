@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
@@ -15,138 +14,129 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
+namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1;
+
+public class TitleOrchestrator(
+    IEmployerVacancyClient client,
+    IRecruitVacancyClient vacancyClient,
+    ILogger<TitleOrchestrator> logger,
+    IReviewSummaryService reviewSummaryService,
+    ITrainingProviderService trainingProviderService,
+    IUtility utility)
+    : VacancyValidatingOrchestrator<TitleEditModel>(logger)
 {
-    public class TitleOrchestrator : VacancyValidatingOrchestrator<TitleEditModel>
+    private const VacancyRuleSet ValidationRules = VacancyRuleSet.Title;
+
+    public static TitleViewModel GetTitleViewModel(string employerAccountId)
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Title;
-        private readonly IEmployerVacancyClient _client;
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly ITrainingProviderService _trainingProviderService;
-        private readonly IUtility _utility;
-
-        public TitleOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService, ITrainingProviderService trainingProviderService, IUtility utility) : base(logger)
+        var vm = new TitleViewModel
         {
-            _client = client;
-            _vacancyClient = vacancyClient;
-            _reviewSummaryService = reviewSummaryService;
-            _trainingProviderService = trainingProviderService;
-            _utility = utility;
-        }
+            EmployerAccountId = employerAccountId,
+            PageInfo = new PartOnePageInfoViewModel()
+        };
+        return vm;
+    }
 
-        public TitleViewModel GetTitleViewModel(string employerAccountId)
+    public async Task<TitleViewModel> GetTitleViewModelAsync(VacancyRouteModel vrm)
+    {
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm);
+        var vm = new TitleViewModel
         {
-            var vm = new TitleViewModel
-            {
-                EmployerAccountId = employerAccountId,
-                PageInfo = new PartOnePageInfoViewModel()
-            };
-            return vm;
-        }
-
-        public async Task<TitleViewModel> GetTitleViewModelAsync(VacancyRouteModel vrm)
-        {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
-            var vm = new TitleViewModel
-            {
-                VacancyId = vacancy.Id,
-                EmployerAccountId = vrm.EmployerAccountId,
-                Title = vacancy.Title,
-                PageInfo = _utility.GetPartOnePageInfo(vacancy),
-            };
+            VacancyId = vacancy.Id,
+            EmployerAccountId = vrm.EmployerAccountId,
+            Title = vacancy.Title,
+            PageInfo = utility.GetPartOnePageInfo(vacancy),
+        };
             
-            if (vacancy.Status == VacancyStatus.Referred)
-            {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
-                    ReviewFieldMappingLookups.GetTitleFieldIndicators());
-            }
+        if (vacancy.Status == VacancyStatus.Referred)
+        {
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.GetValueOrDefault(),
+                ReviewFieldMappingLookups.GetTitleFieldIndicators());
+        }
             
-            return vm;
+        return vm;
+    }
+
+    public async Task<TitleViewModel> GetTitleViewModelAsync(TitleEditModel m)
+    {
+        TitleViewModel vm;
+
+        if (m.VacancyId.HasValue)
+        {
+            var vrm = new VacancyRouteModel { EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId.Value };
+            vm = await GetTitleViewModelAsync(vrm);
+        }
+        else
+        {
+            vm = GetTitleViewModel(m.EmployerAccountId);
         }
 
-        public async Task<TitleViewModel> GetTitleViewModelAsync(TitleEditModel m)
+        vm.Title = m.Title;
+        return vm;
+    }
+
+    public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(TitleEditModel m, VacancyUser user)
+    {
+        TrainingProvider provider = null;
+        IApprenticeshipProgramme programme = null;
+        if (!m.VacancyId.HasValue) // Create if it's a new vacancy
         {
-            TitleViewModel vm;
-
-            if (m.VacancyId.HasValue)
+            var newVacancy = new Vacancy
             {
-                var vrm = new VacancyRouteModel { EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId.Value };
-                vm = await GetTitleViewModelAsync(vrm);
-            }
-            else
-            {
-                vm = GetTitleViewModel(m.EmployerAccountId);
-            }
-
-            vm.Title = m.Title;
-            return vm;
-        }
-
-        public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(TitleEditModel m, VacancyUser user)
-        {
-            TrainingProvider provider = null;
-            IApprenticeshipProgramme programme = null;
-            if (!m.VacancyId.HasValue) // Create if it's a new vacancy
-            {
-                var newVacancy = new Vacancy
-                {
-                    Title = m.Title
-                };
-                return await ValidateAndExecute(
-                    newVacancy, 
-                    v => _vacancyClient.Validate(v, ValidationRules),
-                    async v =>
-                    {
-                        if (m.ReferredFromSavedFavourites)
-                        {
-                            provider = await GetProvider(m.ReferredUkprn);
-                            programme = await GetProgramme(m.ReferredProgrammeId);
-                        }
-                        return await _client.CreateVacancyAsync(m.Title, m.EmployerAccountId, user, provider, programme?.Id);
-                    });
-            }
-
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(new VacancyRouteModel{EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId.Value});
-
-            SetVacancyWithEmployerReviewFieldIndicators(
-                vacancy.Title,
-                FieldIdResolver.ToFieldId(v => v.Title),
-                vacancy,
-                (v) =>
-                {
-                    return v.Title = m.Title;
-                });
-
+                Title = m.Title
+            };
             return await ValidateAndExecute(
-                vacancy, 
-                v => _vacancyClient.Validate(v, ValidationRules),
+                newVacancy, 
+                v => vacancyClient.Validate(v, ValidationRules),
                 async v =>
                 {
-                    await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
-                    return v.Id;
-                }
-            );
+                    if (m.ReferredFromSavedFavourites)
+                    {
+                        provider = await GetProvider(m.ReferredUkprn);
+                        programme = await GetProgramme(m.ReferredProgrammeId);
+                    }
+                    return await client.CreateVacancyAsync(m.Title, m.EmployerAccountId, user, provider, programme?.Id);
+                });
         }
 
-        protected override EntityToViewModelPropertyMappings<Vacancy, TitleEditModel> DefineMappings()
-        {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, TitleEditModel>();
-            mappings.Add(e => e.Title, vm => vm.Title);
-            return mappings;
-        }
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(new VacancyRouteModel { EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId.Value });
 
-        private async Task<TrainingProvider> GetProvider(string ukprn)
-        {
-            if(long.TryParse(ukprn, out long validUkprn) == false)
-                return null;
-            return await _trainingProviderService.GetProviderAsync(validUkprn);
-        }
+        SetVacancyWithEmployerReviewFieldIndicators(
+            vacancy.Title,
+            FieldIdResolver.ToFieldId(v => v.Title),
+            vacancy,
+            (v) =>
+            {
+                return v.Title = m.Title;
+            });
 
-        public async Task<IApprenticeshipProgramme> GetProgramme(string programmeId)
-        {
-            var programmesTask = await _vacancyClient.GetActiveApprenticeshipProgrammesAsync(includePlaceholderProgramme: true);
-            return programmesTask.SingleOrDefault(p => p.Id == programmeId);
-        }
+        return await ValidateAndExecute(
+            vacancy, 
+            v => vacancyClient.Validate(v, ValidationRules),
+            async v =>
+            {
+                await vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+                return v.Id;
+            }
+        );
+    }
+
+    protected override EntityToViewModelPropertyMappings<Vacancy, TitleEditModel> DefineMappings()
+    {
+        var mappings = new EntityToViewModelPropertyMappings<Vacancy, TitleEditModel> { { e => e.Title, vm => vm.Title } };
+        return mappings;
+    }
+
+    private async Task<TrainingProvider> GetProvider(string ukprn)
+    {
+        if(!long.TryParse(ukprn, out var validUkprn))
+            return null;
+        return await trainingProviderService.GetProviderAsync(validUkprn);
+    }
+
+    private async Task<IApprenticeshipProgramme> GetProgramme(string programmeId)
+    {
+        var programmesTask = await vacancyClient.GetActiveApprenticeshipProgrammesAsync(includePlaceholderProgramme: true);
+        return programmesTask.SingleOrDefault(p => p.Id == programmeId);
     }
 }

@@ -13,141 +13,133 @@ using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
+namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1;
+
+public class DatesOrchestrator(
+    IRecruitVacancyClient vacancyClient,
+    ILogger<DatesOrchestrator> logger,
+    ITimeProvider timeProvider,
+    IReviewSummaryService reviewSummaryService,
+    IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider,
+    IUtility utility)
+    : VacancyValidatingOrchestrator<DatesEditModel>(logger)
 {
-    public class DatesOrchestrator : VacancyValidatingOrchestrator<DatesEditModel>
+    private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate;
+
+    public async Task<DatesViewModel> GetDatesViewModelAsync(VacancyRouteModel vrm)
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate;
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly ITimeProvider _timeProvider;
-        private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammeProvider;
-        private readonly IUtility _utility;
-
-        public DatesOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<DatesOrchestrator> logger, ITimeProvider timeProvider, IReviewSummaryService reviewSummaryService, IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider, IUtility utility) : base(logger)
-        {
-            _vacancyClient = vacancyClient;
-            _timeProvider = timeProvider;
-            _reviewSummaryService = reviewSummaryService;
-            _apprenticeshipProgrammeProvider = apprenticeshipProgrammeProvider;
-            _utility = utility;
-        }
-        
-        public async Task<DatesViewModel> GetDatesViewModelAsync(VacancyRouteModel vrm)
-        {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm);
             
-            var vm = new DatesViewModel
-            {
-                VacancyId = vacancy.Id,
-                EmployerAccountId = vrm.EmployerAccountId,
-                IsDisabilityConfident = vacancy.IsDisabilityConfident,
-                PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                CurrentYear = _timeProvider.Now.Year,
-                Title = vacancy.Title
-            };
+        var vm = new DatesViewModel
+        {
+            VacancyId = vacancy.Id,
+            EmployerAccountId = vrm.EmployerAccountId,
+            IsDisabilityConfident = vacancy.IsDisabilityConfident,
+            PageInfo = utility.GetPartOnePageInfo(vacancy),
+            CurrentYear = timeProvider.Now.Year,
+            Title = vacancy.Title
+        };
 
-            if (vacancy.ClosingDate.HasValue)
-            {
-                vm.ClosingDay = $"{vacancy.ClosingDate.Value.Day:00}";
-                vm.ClosingMonth = $"{vacancy.ClosingDate.Value.Month:00}";
-                vm.ClosingYear = $"{vacancy.ClosingDate.Value.Year}";
-            }
-
-            if (vacancy.StartDate.HasValue)
-            {
-                vm.StartDay = $"{vacancy.StartDate.Value.Day:00}";
-                vm.StartMonth = $"{vacancy.StartDate.Value.Month:00}";
-                vm.StartYear = $"{vacancy.StartDate.Value.Year}";
-            }
-
-            await SetTrainingProgrammeAsync(vacancy, vm);
-
-            if (vacancy.Status == VacancyStatus.Referred)
-            {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
-                    ReviewFieldMappingLookups.GetDatesReviewFieldIndicators());
-            }
-            if (vacancy.StartDate.HasValue && vacancy.ClosingDate.HasValue)
-                vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
-            return vm;
+        if (vacancy.ClosingDate.HasValue)
+        {
+            vm.ClosingDay = $"{vacancy.ClosingDate.Value.Day:00}";
+            vm.ClosingMonth = $"{vacancy.ClosingDate.Value.Month:00}";
+            vm.ClosingYear = $"{vacancy.ClosingDate.Value.Year}";
         }
 
-        private EntityValidationResult GetSoftValidationErrors(Vacancy vacancy)
+        if (vacancy.StartDate.HasValue)
         {
-            var result = _vacancyClient.Validate(vacancy, ValidationRules);
-            MapValidationPropertiesToViewModel(result);
-            return result;
+            vm.StartDay = $"{vacancy.StartDate.Value.Day:00}";
+            vm.StartMonth = $"{vacancy.StartDate.Value.Month:00}";
+            vm.StartYear = $"{vacancy.StartDate.Value.Year}";
         }
 
-        public async Task<DatesViewModel> GetDatesViewModelAsync(DatesEditModel m)
+        await SetTrainingProgrammeAsync(vacancy, vm);
+
+        if (vacancy.Status == VacancyStatus.Referred)
         {
-            var vm = await GetDatesViewModelAsync((VacancyRouteModel)m);
-
-            vm.ClosingDay = m.ClosingDay;
-            vm.ClosingMonth = m.ClosingMonth;
-            vm.ClosingYear = m.ClosingYear;
-
-            vm.StartDay = m.StartDay;
-            vm.StartMonth = m.StartMonth;
-            vm.StartYear = m.StartYear;
-
-            return vm;
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+                ReviewFieldMappingLookups.GetDatesReviewFieldIndicators());
         }
+        if (vacancy.StartDate.HasValue && vacancy.ClosingDate.HasValue)
+            vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
+        return vm;
+    }
 
-        public async Task<OrchestratorResponse> PostDatesEditModelAsync(DatesEditModel m, VacancyUser user)
-        {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m);
+    private EntityValidationResult GetSoftValidationErrors(Vacancy vacancy)
+    {
+        var result = vacancyClient.Validate(vacancy, ValidationRules);
+        MapValidationPropertiesToViewModel(result);
+        return result;
+    }
 
-            SetVacancyWithEmployerReviewFieldIndicators(
-                vacancy.ClosingDate,
-                FieldIdResolver.ToFieldId(v => v.ClosingDate),
-                vacancy,
-                (v) =>
-                {
-                    return v.ClosingDate = m.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
-                });
+    public async Task<DatesViewModel> GetDatesViewModelAsync(DatesEditModel m)
+    {
+        var vm = await GetDatesViewModelAsync((VacancyRouteModel)m);
 
-            SetVacancyWithEmployerReviewFieldIndicators(
-                vacancy.StartDate,
-                FieldIdResolver.ToFieldId(v => v.StartDate),
-                vacancy,
-                (v) =>
-                {
-                    return v.StartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();
-                });
+        vm.ClosingDay = m.ClosingDay;
+        vm.ClosingMonth = m.ClosingMonth;
+        vm.ClosingYear = m.ClosingYear;
+
+        vm.StartDay = m.StartDay;
+        vm.StartMonth = m.StartMonth;
+        vm.StartYear = m.StartYear;
+
+        return vm;
+    }
+
+    public async Task<OrchestratorResponse> PostDatesEditModelAsync(DatesEditModel m, VacancyUser user)
+    {
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m);
+
+        SetVacancyWithEmployerReviewFieldIndicators(
+            vacancy.ClosingDate,
+            FieldIdResolver.ToFieldId(v => v.ClosingDate),
+            vacancy,
+            (v) =>
+            {
+                return v.ClosingDate = m.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
+            });
+
+        SetVacancyWithEmployerReviewFieldIndicators(
+            vacancy.StartDate,
+            FieldIdResolver.ToFieldId(v => v.StartDate),
+            vacancy,
+            (v) =>
+            {
+                return v.StartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();
+            });
 
             
 
-            return await ValidateAndExecute(
-                vacancy, 
-                v => _vacancyClient.Validate(v, ValidationRules),
-                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
-            );
-        }
+        return await ValidateAndExecute(
+            vacancy, 
+            v => vacancyClient.Validate(v, ValidationRules),
+            v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+        );
+    }
 
-        private async Task SetTrainingProgrammeAsync(Vacancy vacancy, DatesViewModel vm)
+    private async Task SetTrainingProgrammeAsync(Vacancy vacancy, DatesViewModel vm)
+    {
+        if (string.IsNullOrEmpty(vacancy.ProgrammeId))
+            return;
+
+        var programme = await apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+
+        if (programme?.EffectiveTo.HasValue == true)
         {
-            if (string.IsNullOrEmpty(vacancy.ProgrammeId))
-                return;
-
-            var programme = await _apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
-
-            if (programme?.EffectiveTo.HasValue == true)
-            {
-                vm.TrainingDescription = $"{programme.Title}, Level:{(int)programme.ApprenticeshipLevel}";
-                vm.TrainingEffectiveToDate = programme.EffectiveTo.Value.AsGdsDate();
-            }
+            vm.TrainingDescription = $"{programme.Title}, Level:{(int)programme.ApprenticeshipLevel}";
+            vm.TrainingEffectiveToDate = programme.EffectiveTo.Value.AsGdsDate();
         }
+    }
 
-        protected override EntityToViewModelPropertyMappings<Vacancy, DatesEditModel> DefineMappings()
-        {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, DatesEditModel>();
+    protected override EntityToViewModelPropertyMappings<Vacancy, DatesEditModel> DefineMappings()
+    {
+        var mappings = new EntityToViewModelPropertyMappings<Vacancy, DatesEditModel>();
 
-            mappings.Add(e => e.StartDate, vm => vm.StartDate);
-            mappings.Add(e => e.ClosingDate, vm => vm.ClosingDate);
+        mappings.Add(e => e.StartDate, vm => vm.StartDate);
+        mappings.Add(e => e.ClosingDate, vm => vm.ClosingDate);
 
-            return mappings;
-        }
+        return mappings;
     }
 }

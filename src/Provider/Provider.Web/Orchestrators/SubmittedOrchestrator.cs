@@ -7,46 +7,36 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
-namespace Esfa.Recruit.Provider.Web.Orchestrators
+namespace Esfa.Recruit.Provider.Web.Orchestrators;
+
+public class SubmittedOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, IUtility utility)
 {
-    public class SubmittedOrchestrator
+    private readonly IProviderVacancyClient _client = client;
+
+
+    public async Task<VacancySubmittedConfirmationViewModel> GetVacancySubmittedConfirmationViewModelAsync(VacancyRouteModel vrm, VacancyUser vacancyUser)
     {
-        private readonly IProviderVacancyClient _client;
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IUtility _utility;
+        var vacancy = await utility.GetAuthorisedVacancyAsync(vrm, RouteNames.Submitted_Index_Get);
 
+        if (vacancy.Status != VacancyStatus.Submitted)
+            throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotSubmittedSuccessfully, vacancy.Title));
 
-        public SubmittedOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, IUtility utility)
+        var isResubmit = false;
+        if (vacancy.VacancyReference.HasValue)
         {
-            _client = client;
-            _vacancyClient = vacancyClient;
-            _utility = utility;
+            var review = await vacancyClient.GetCurrentReferredVacancyReviewAsync(vacancy.VacancyReference.Value);
+            isResubmit = review != null;
         }
 
-        public async Task<VacancySubmittedConfirmationViewModel> GetVacancySubmittedConfirmationViewModelAsync(VacancyRouteModel vrm, VacancyUser vacancyUser)
+        var vm = new VacancySubmittedConfirmationViewModel
         {
-            var vacancy = await _utility.GetAuthorisedVacancyAsync(vrm, RouteNames.Submitted_Index_Get);
+            Title = vacancy.Title,
+            VacancyReference = vacancy.VacancyReference?.ToString(),
+            IsResubmit = isResubmit,
+            Ukprn = vrm.Ukprn,
+            VacancyId = vrm.VacancyId
+        };
 
-            if (vacancy.Status != VacancyStatus.Submitted)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotSubmittedSuccessfully, vacancy.Title));
-
-            var isResubmit = false;
-            if (vacancy.VacancyReference.HasValue)
-            {
-                var review = await _vacancyClient.GetCurrentReferredVacancyReviewAsync(vacancy.VacancyReference.Value);
-                isResubmit = review != null;
-            }
-
-            var vm = new VacancySubmittedConfirmationViewModel
-            {
-                Title = vacancy.Title,
-                VacancyReference = vacancy.VacancyReference?.ToString(),
-                IsResubmit = isResubmit,
-                Ukprn = vrm.Ukprn,
-                VacancyId = vrm.VacancyId
-            };
-
-            return vm;
-        }
+        return vm;
     }
 }

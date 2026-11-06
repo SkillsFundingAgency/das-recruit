@@ -1,20 +1,19 @@
-﻿using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit4;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using NUnit.Framework;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.OuterApi.Requests
-{
-    [TestFixture]
-    public class WhenBuildingGetProviderDashboardCountApiRequest
-    {
-        [Test, AutoData]
-        public void Then_It_Is_Correctly_Constructed(
-            int ukprn,
-            string userId)
-        {
-            var actual = new GetProviderDashboardCountApiRequest(ukprn, userId);
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.OuterApi.Requests;
 
-            actual.GetUrl.Should().Be($"providers/{ukprn}/dashboard?userId={userId}");
-        }
+[TestFixture]
+public class WhenBuildingGetProviderDashboardCountApiRequest
+{
+    [Test, AutoData]
+    public void Then_It_Is_Correctly_Constructed(
+        int ukprn,
+        string userId)
+    {
+        var actual = new GetProviderDashboardCountApiRequest(ukprn, userId);
+
+        actual.GetUrl.Should().Be($"providers/{ukprn}/dashboard?userId={userId}");
     }
 }

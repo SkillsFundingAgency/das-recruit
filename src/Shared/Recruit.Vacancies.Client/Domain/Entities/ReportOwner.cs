@@ -1,9 +1,8 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public class ReportOwner
 {
-    public class ReportOwner
-    {
-        public ReportOwnerType OwnerType { get; set; }
-        public string EmployerAccountId { get; set; }
-        public long? Ukprn { get; set; }
-    }
+    public ReportOwnerType OwnerType { get; set; }
+    public string EmployerAccountId { get; set; }
+    public long? Ukprn { get; set; }
 }

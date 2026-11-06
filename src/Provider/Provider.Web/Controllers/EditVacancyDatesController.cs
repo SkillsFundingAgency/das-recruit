@@ -10,58 +10,50 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Esfa.Recruit.Provider.Web.Controllers
+namespace Esfa.Recruit.Provider.Web.Controllers;
+
+[Route(RoutePaths.AccountVacancyRoutePath)]
+[Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+public class EditVacancyDatesController(EditVacancyDatesOrchestrator orchestrator) : Controller
 {
-    [Route(RoutePaths.AccountVacancyRoutePath)]
-    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public class EditVacancyDatesController : Controller
+    [HttpGet("edit-dates", Name = RouteNames.VacancyEditDates_Get)]
+    public async Task<IActionResult> EditVacancyDates(VacancyRouteModel vrm)
     {
-        private readonly EditVacancyDatesOrchestrator _orchestrator;
+        var proposedClosingDate = Request.Cookies.GetProposedClosingDate(vrm.VacancyId.GetValueOrDefault());
+        var proposedStartDate = Request.Cookies.GetProposedStartDate(vrm.VacancyId.GetValueOrDefault());
 
-        public EditVacancyDatesController(EditVacancyDatesOrchestrator orchestrator)
+        var response = await orchestrator.GetEditVacancyDatesViewModelAsync(vrm, proposedClosingDate, proposedStartDate);
+
+        if (!response.Success)
         {
-            _orchestrator = orchestrator;
+            response.AddErrorsToModelState(ModelState);
         }
 
-        [HttpGet("edit-dates", Name = RouteNames.VacancyEditDates_Get)]
-        public async Task<IActionResult> EditVacancyDates(VacancyRouteModel vrm)
+        response.Data.Ukprn = vrm.Ukprn;
+        response.Data.VacancyId = vrm.VacancyId;
+
+        return View(response.Data);
+    }
+
+    [HttpPost("edit-dates", Name = RouteNames.VacancyEditDates_Post)]
+    public async Task<IActionResult> EditVacancyDates(EditVacancyDatesEditModel m)
+    {
+        var response = await orchestrator.PostEditVacancyDatesEditModelAsync(m, User.ToVacancyUser());
+
+        if (!response.Success)
         {
-            var proposedClosingDate = Request.Cookies.GetProposedClosingDate(vrm.VacancyId.GetValueOrDefault());
-            var proposedStartDate = Request.Cookies.GetProposedStartDate(vrm.VacancyId.GetValueOrDefault());
-
-            var response = await _orchestrator.GetEditVacancyDatesViewModelAsync(vrm, proposedClosingDate, proposedStartDate);
-
-            if (!response.Success)
-            {
-                response.AddErrorsToModelState(ModelState);
-            }
-
-            response.Data.Ukprn = vrm.Ukprn;
-            response.Data.VacancyId = vrm.VacancyId;
-
-            return View(response.Data);
+            response.AddErrorsToModelState(ModelState);
         }
 
-        [HttpPost("edit-dates", Name = RouteNames.VacancyEditDates_Post)]
-        public async Task<IActionResult> EditVacancyDates(EditVacancyDatesEditModel m)
+        if (!ModelState.IsValid)
         {
-            var response = await _orchestrator.PostEditVacancyDatesEditModelAsync(m, User.ToVacancyUser());
-
-            if (!response.Success)
-            {
-                response.AddErrorsToModelState(ModelState);
-            }
-
-            if (!ModelState.IsValid)
-            {
-                var vm = await _orchestrator.GetEditVacancyDatesViewModelAsync(m);
-                return View(vm);
-            }
+            var vm = await orchestrator.GetEditVacancyDatesViewModelAsync(m);
+            return View(vm);
+        }
             
-            TempData.Add(TempDataKeys.VacanciesInfoMessage, string.Format(InfoMessages.VacancyUpdated, m.Title));
+        TempData.Add(TempDataKeys.VacanciesInfoMessage, string.Format(InfoMessages.VacancyUpdated, m.Title));
 
 
-            return RedirectToRoute(RouteNames.VacanciesGetAll, new {m.Ukprn});
-        }
+        return RedirectToRoute(RouteNames.VacanciesGetAll, new {m.Ukprn});
     }
 }

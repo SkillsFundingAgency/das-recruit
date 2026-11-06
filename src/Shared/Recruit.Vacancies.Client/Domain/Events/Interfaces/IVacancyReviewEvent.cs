@@ -1,10 +1,9 @@
 using System;
 
-namespace Esfa.Recruit.Vacancies.Client.Domain.Events.Interfaces
+namespace Esfa.Recruit.Vacancies.Client.Domain.Events.Interfaces;
+
+public interface IVacancyReviewEvent
 {
-    public interface IVacancyReviewEvent
-    {
-        long VacancyReference { get; }
-        Guid ReviewId { get; }
-    }
+    long VacancyReference { get; }
+    Guid ReviewId { get; }
 }

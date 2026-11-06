@@ -8,54 +8,46 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
 
-namespace Esfa.Recruit.Employer.Web.Controllers.Part2
-{
-    [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class SkillsController : Controller
-    {
-        private readonly SkillsOrchestrator _orchestrator;
+namespace Esfa.Recruit.Employer.Web.Controllers.Part2;
 
-        public SkillsController(SkillsOrchestrator orchestrator)
+[Route(RoutePaths.AccountVacancyRoutePath)]
+public class SkillsController(SkillsOrchestrator orchestrator) : Controller
+{
+    [HttpGet("skills", Name = RouteNames.Skills_Get)]
+    public async Task<IActionResult> Skills(VacancyRouteModel vrm)
+    {
+        // If adding/removing skill, tempdata will have the current draft list.
+        var vm = await orchestrator.GetSkillsViewModelAsync(vrm, TempData[TempDataKeys.Skills] as string[]);
+
+        return View(vm);
+    }
+
+    [HttpPost("skills", Name = RouteNames.Skills_Post)]
+    public async Task<IActionResult> Skills(VacancyRouteModel vrm, SkillsEditModel m)
+    {
+        var response = await orchestrator.PostSkillsEditModelAsync(vrm, m, User.ToVacancyUser());
+
+        if (!response.Success)
         {
-            _orchestrator = orchestrator;
+            response.AddErrorsToModelState(ModelState);
         }
 
-        [HttpGet("skills", Name = RouteNames.Skills_Get)]
-        public async Task<IActionResult> Skills(VacancyRouteModel vrm)
+        var vm = await orchestrator.GetSkillsViewModelAsync(vrm);
+        if (!ModelState.IsValid)
         {
-            // If adding/removing skill, tempdata will have the current draft list.
-            var vm = await _orchestrator.GetSkillsViewModelAsync(vrm, TempData[TempDataKeys.Skills] as string[]);
-
             return View(vm);
         }
 
-        [HttpPost("skills", Name = RouteNames.Skills_Post)]
-        public async Task<IActionResult> Skills(VacancyRouteModel vrm, SkillsEditModel m)
+        if (!string.IsNullOrEmpty(m.AddCustomSkillAction))
         {
-            var response = await _orchestrator.PostSkillsEditModelAsync(vrm, m, User.ToVacancyUser());
-
-            if (!response.Success)
-            {
-                response.AddErrorsToModelState(ModelState);
-            }
-
-            var vm = await _orchestrator.GetSkillsViewModelAsync(vrm);
-            if (!ModelState.IsValid)
-            {
-                return View(vm);
-            }
-
-            if (!string.IsNullOrEmpty(m.AddCustomSkillAction))
-            {
-                TempData[TempDataKeys.Skills] = m.Skills;
-                return RedirectToRoute(RouteNames.Skills_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
-            }
-            
-            if (vm.IsTaskListCompleted)
-            {
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vrm.VacancyId, vrm.EmployerAccountId});
-            }
-            return RedirectToRoute(RouteNames.Qualifications_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
+            TempData[TempDataKeys.Skills] = m.Skills;
+            return RedirectToRoute(RouteNames.Skills_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
         }
+            
+        if (vm.IsTaskListCompleted)
+        {
+            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vrm.VacancyId, vrm.EmployerAccountId});
+        }
+        return RedirectToRoute(RouteNames.Qualifications_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
     }
 }

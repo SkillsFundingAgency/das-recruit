@@ -11,267 +11,266 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using NUnit.Framework;
 
-namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.ApplicationReviewsOrchestratorTests
+namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.ApplicationReviewsOrchestratorTests;
+
+public class ApplicationReviewsOrchestratorTests
 {
-    public class ApplicationReviewsOrchestratorTests
+    private Fixture _fixture;
+    private Mock<IRecruitVacancyClient> _vacancyClient;
+    private ApplicationReviewsOrchestrator _orchestrator;
+
+    [SetUp]
+    public void Setup()
     {
-        private Fixture _fixture;
-        private Mock<IRecruitVacancyClient> _vacancyClient;
-        private ApplicationReviewsOrchestrator _orchestrator;
+        _fixture = new Fixture();
+        _vacancyClient = new Mock<IRecruitVacancyClient>();
+        _orchestrator = new ApplicationReviewsOrchestrator(_vacancyClient.Object);
+    }
 
-        [SetUp]
-        public void Setup()
+    [Test]
+    public async Task GetApplicationReviewsToUnsuccessfulViewModelAsync_ReturnsViewModelWithCorrectData()
+    {
+        // Arrange
+        var routeModel = _fixture.Create<VacancyRouteModel>();
+        var vacancy = _fixture.Create<Vacancy>();
+        var applicationReview1 = _fixture.Create<ApplicationReview>();
+        var applicationReview2 = _fixture.Create<ApplicationReview>();
+        var applicationReview3 = _fixture.Create<ApplicationReview>();
+        var applications = new List<ApplicationReview>
         {
-            _fixture = new Fixture();
-            _vacancyClient = new Mock<IRecruitVacancyClient>();
-            _orchestrator = new ApplicationReviewsOrchestrator(_vacancyClient.Object);
+            applicationReview1,
+            applicationReview2,
+            applicationReview3
+        };
+        foreach (var applicationReview in applications)
+        {
+            applicationReview.IsWithdrawn = false;
         }
+        const SortColumn sortColumn = SortColumn.DateApplied;
+        const SortOrder sortOrder = SortOrder.Descending;
 
-        [Test]
-        public async Task GetApplicationReviewsToUnsuccessfulViewModelAsync_ReturnsViewModelWithCorrectData()
+        _vacancyClient.Setup(x => x.GetVacancyAsync(routeModel.VacancyId.GetValueOrDefault()))
+            .ReturnsAsync(vacancy);
+        _vacancyClient.Setup(x => x.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, It.Is<SortColumn>(x => x.Equals(sortColumn)), It.Is<SortOrder>(x => x.Equals(sortOrder)), false))
+            .ReturnsAsync(applications.AsQueryable().Sort(sortColumn, sortOrder, false).Select(c => (VacancyApplication)c).ToList());
+        _vacancyClient
+            .Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(routeModel.VacancyId.Value,
+                ApplicationReviewStatus.PendingToMakeUnsuccessful)).ReturnsAsync(new List<VacancyApplication>());
+
+        // Act
+        var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(routeModel, sortColumn, sortOrder);
+
+        // Assert
+        Assert.That(viewModel.VacancyApplications, Is.Not.Empty);
+        Assert.That(viewModel.VacancyApplications.Count, Is.EqualTo(applications.Count));
+        Assert.That(viewModel.Ukprn, Is.EqualTo(routeModel.Ukprn));
+        Assert.That(viewModel.VacancyId, Is.EqualTo(vacancy.Id));
+        Assert.That(viewModel.VacancyApplications[0].SubmittedDate, Is.GreaterThan(viewModel.VacancyApplications[1].SubmittedDate));
+        Assert.That(viewModel.VacancyApplications[1].SubmittedDate, Is.GreaterThan(viewModel.VacancyApplications[2].SubmittedDate));
+    }
+
+    [Test, MoqAutoData]
+    public async Task GetApplicationReviewsToUnsuccessfulConfirmationViewModel_ReturnsViewModelWithCorrectData(
+        List<VacancyApplication> vacancyApplications,
+        ApplicationReviewsToUnsuccessfulRouteModel request,
+        [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
+        ApplicationReviewsOrchestrator orchestrator)
+    {
+        vacancyClient.Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(request.VacancyId.Value,
+                ApplicationReviewStatus.PendingToMakeUnsuccessful))
+            .ReturnsAsync(vacancyApplications);
+
+        var viewModel = await orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(request);
+
+        viewModel.ApplicationsToUnsuccessful.Should().BeEquivalentTo(vacancyApplications);
+        viewModel.CandidateFeedback.Should().Be(vacancyApplications.First().CandidateFeedback);
+        Assert.That(viewModel.ApplicationsToUnsuccessful, Is.Not.Empty);
+        Assert.That(viewModel.ApplicationsToUnsuccessful.Count, Is.EqualTo(vacancyApplications.Count));
+        Assert.That(viewModel.Ukprn, Is.EqualTo(request.Ukprn));
+        Assert.That(viewModel.VacancyId, Is.EqualTo(request.VacancyId));
+    }
+
+    [Test]
+    [MoqInlineAutoData("")]
+    [MoqInlineAutoData(null)]
+    public async Task GetApplicationReviewsToUnsuccessfulConfirmationViewModel_ReturnsView_Default_CandidateFeedback(string candidateFeedback,
+        List<VacancyApplication> vacancyApplications,
+        ApplicationReviewsToUnsuccessfulRouteModel request,
+        [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
+        ApplicationReviewsOrchestrator orchestrator)
+    {
+        foreach (VacancyApplication vacancyApplication in vacancyApplications)
         {
-            // Arrange
-            var routeModel = _fixture.Create<VacancyRouteModel>();
-            var vacancy = _fixture.Create<Vacancy>();
-            var applicationReview1 = _fixture.Create<ApplicationReview>();
-            var applicationReview2 = _fixture.Create<ApplicationReview>();
-            var applicationReview3 = _fixture.Create<ApplicationReview>();
-            var applications = new List<ApplicationReview>
-            {
-                applicationReview1,
-                applicationReview2,
-                applicationReview3
-            };
-            foreach (var applicationReview in applications)
-            {
-                applicationReview.IsWithdrawn = false;
-            }
-            const SortColumn sortColumn = SortColumn.DateApplied;
-            const SortOrder sortOrder = SortOrder.Descending;
-
-            _vacancyClient.Setup(x => x.GetVacancyAsync(routeModel.VacancyId.GetValueOrDefault()))
-                .ReturnsAsync(vacancy);
-            _vacancyClient.Setup(x => x.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, It.Is<SortColumn>(x => x.Equals(sortColumn)), It.Is<SortOrder>(x => x.Equals(sortOrder)), false))
-                .ReturnsAsync(applications.AsQueryable().Sort(sortColumn, sortOrder, false).Select(c => (VacancyApplication)c).ToList());
-            _vacancyClient
-                .Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(routeModel.VacancyId.Value,
-                    ApplicationReviewStatus.PendingToMakeUnsuccessful)).ReturnsAsync(new List<VacancyApplication>());
-
-            // Act
-            var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(routeModel, sortColumn, sortOrder);
-
-            // Assert
-            Assert.That(viewModel.VacancyApplications, Is.Not.Empty);
-            Assert.That(viewModel.VacancyApplications.Count, Is.EqualTo(applications.Count));
-            Assert.That(viewModel.Ukprn, Is.EqualTo(routeModel.Ukprn));
-            Assert.That(viewModel.VacancyId, Is.EqualTo(vacancy.Id));
-            Assert.That(viewModel.VacancyApplications[0].SubmittedDate, Is.GreaterThan(viewModel.VacancyApplications[1].SubmittedDate));
-            Assert.That(viewModel.VacancyApplications[1].SubmittedDate, Is.GreaterThan(viewModel.VacancyApplications[2].SubmittedDate));
+            vacancyApplication.CandidateFeedback = candidateFeedback;
         }
-
-        [Test, MoqAutoData]
-        public async Task GetApplicationReviewsToUnsuccessfulConfirmationViewModel_ReturnsViewModelWithCorrectData(
-            List<VacancyApplication> vacancyApplications,
-            ApplicationReviewsToUnsuccessfulRouteModel request,
-            [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
-            ApplicationReviewsOrchestrator orchestrator)
-        {
-            vacancyClient.Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(request.VacancyId.Value,
-                    ApplicationReviewStatus.PendingToMakeUnsuccessful))
-                .ReturnsAsync(vacancyApplications);
-
-            var viewModel = await orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(request);
-
-            viewModel.ApplicationsToUnsuccessful.Should().BeEquivalentTo(vacancyApplications);
-            viewModel.CandidateFeedback.Should().Be(vacancyApplications.First().CandidateFeedback);
-            Assert.That(viewModel.ApplicationsToUnsuccessful, Is.Not.Empty);
-            Assert.That(viewModel.ApplicationsToUnsuccessful.Count, Is.EqualTo(vacancyApplications.Count));
-            Assert.That(viewModel.Ukprn, Is.EqualTo(request.Ukprn));
-            Assert.That(viewModel.VacancyId, Is.EqualTo(request.VacancyId));
-        }
-
-        [Test]
-        [MoqInlineAutoData("")]
-        [MoqInlineAutoData(null)]
-        public async Task GetApplicationReviewsToUnsuccessfulConfirmationViewModel_ReturnsView_Default_CandidateFeedback(string candidateFeedback,
-            List<VacancyApplication> vacancyApplications,
-            ApplicationReviewsToUnsuccessfulRouteModel request,
-            [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
-            ApplicationReviewsOrchestrator orchestrator)
-        {
-            foreach (VacancyApplication vacancyApplication in vacancyApplications)
-            {
-                vacancyApplication.CandidateFeedback = candidateFeedback;
-            }
             
-            vacancyClient.Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(request.VacancyId.Value,
-                    ApplicationReviewStatus.PendingToMakeUnsuccessful))
-                .ReturnsAsync(vacancyApplications);
+        vacancyClient.Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(request.VacancyId.Value,
+                ApplicationReviewStatus.PendingToMakeUnsuccessful))
+            .ReturnsAsync(vacancyApplications);
 
 
-            var viewModel = await orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(request);
+        var viewModel = await orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(request);
 
-            viewModel.ApplicationsToUnsuccessful.Should().BeEquivalentTo(vacancyApplications);
-            viewModel.CandidateFeedback.Should().Be(Constants.DefaultCandidateFeedback);
-            Assert.That(viewModel.ApplicationsToUnsuccessful, Is.Not.Empty);
-            Assert.That(viewModel.ApplicationsToUnsuccessful.Count, Is.EqualTo(vacancyApplications.Count));
-            Assert.That(viewModel.Ukprn, Is.EqualTo(request.Ukprn));
-            Assert.That(viewModel.VacancyId, Is.EqualTo(request.VacancyId));
-        }
+        viewModel.ApplicationsToUnsuccessful.Should().BeEquivalentTo(vacancyApplications);
+        viewModel.CandidateFeedback.Should().Be(Constants.DefaultCandidateFeedback);
+        Assert.That(viewModel.ApplicationsToUnsuccessful, Is.Not.Empty);
+        Assert.That(viewModel.ApplicationsToUnsuccessful.Count, Is.EqualTo(vacancyApplications.Count));
+        Assert.That(viewModel.Ukprn, Is.EqualTo(request.Ukprn));
+        Assert.That(viewModel.VacancyId, Is.EqualTo(request.VacancyId));
+    }
 
-        [Test]
-        [MoqInlineAutoData("")]
-        [MoqInlineAutoData(null)]
-        public async Task GetApplicationReviewsFeedbackViewModel_ReturnsView_Default_CandidateFeedback(string candidateFeedback,
-            List<VacancyApplication> vacancyApplications,
-            ApplicationReviewsToUnsuccessfulRouteModel request,
-            [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
-            ApplicationReviewsOrchestrator orchestrator)
+    [Test]
+    [MoqInlineAutoData("")]
+    [MoqInlineAutoData(null)]
+    public async Task GetApplicationReviewsFeedbackViewModel_ReturnsView_Default_CandidateFeedback(string candidateFeedback,
+        List<VacancyApplication> vacancyApplications,
+        ApplicationReviewsToUnsuccessfulRouteModel request,
+        [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
+        ApplicationReviewsOrchestrator orchestrator)
+    {
+        foreach (VacancyApplication vacancyApplication in vacancyApplications)
         {
-            foreach (VacancyApplication vacancyApplication in vacancyApplications)
-            {
-                vacancyApplication.CandidateFeedback = candidateFeedback;
-            }
-
-            vacancyClient.Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(request.VacancyId.Value,
-                    ApplicationReviewStatus.PendingToMakeUnsuccessful))
-                .ReturnsAsync(vacancyApplications);
-
-
-            var viewModel = await orchestrator.GetApplicationReviewsFeedbackViewModel(request);
-
-            viewModel.ApplicationsToUnsuccessful.Should().BeEquivalentTo(vacancyApplications);
-            viewModel.CandidateFeedback.Should().Be(Constants.DefaultCandidateFeedback);
-            Assert.That(viewModel.ApplicationsToUnsuccessful, Is.Not.Empty);
-            Assert.That(viewModel.ApplicationsToUnsuccessful.Count, Is.EqualTo(vacancyApplications.Count));
-            Assert.That(viewModel.Ukprn, Is.EqualTo(request.Ukprn));
-            Assert.That(viewModel.VacancyId, Is.EqualTo(request.VacancyId));
+            vacancyApplication.CandidateFeedback = candidateFeedback;
         }
 
-        [Test]
-        public async Task GetApplicationReviewsToShareViewModelAsync_ReturnsViewModelWithCorrectData()
+        vacancyClient.Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(request.VacancyId.Value,
+                ApplicationReviewStatus.PendingToMakeUnsuccessful))
+            .ReturnsAsync(vacancyApplications);
+
+
+        var viewModel = await orchestrator.GetApplicationReviewsFeedbackViewModel(request);
+
+        viewModel.ApplicationsToUnsuccessful.Should().BeEquivalentTo(vacancyApplications);
+        viewModel.CandidateFeedback.Should().Be(Constants.DefaultCandidateFeedback);
+        Assert.That(viewModel.ApplicationsToUnsuccessful, Is.Not.Empty);
+        Assert.That(viewModel.ApplicationsToUnsuccessful.Count, Is.EqualTo(vacancyApplications.Count));
+        Assert.That(viewModel.Ukprn, Is.EqualTo(request.Ukprn));
+        Assert.That(viewModel.VacancyId, Is.EqualTo(request.VacancyId));
+    }
+
+    [Test]
+    public async Task GetApplicationReviewsToShareViewModelAsync_ReturnsViewModelWithCorrectData()
+    {
+        // Arrange
+        var routeModel = _fixture.Create<VacancyRouteModel>();
+        var vacancy = _fixture.Create<Vacancy>();
+        var vacancyApplication1 = _fixture.Create<VacancyApplication>();
+        var vacancyApplication2 = _fixture.Create<VacancyApplication>();
+        var vacancyApplications = new List<VacancyApplication>
         {
-            // Arrange
-            var routeModel = _fixture.Create<VacancyRouteModel>();
-            var vacancy = _fixture.Create<Vacancy>();
-            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
-            var vacancyApplication2 = _fixture.Create<VacancyApplication>();
-            var vacancyApplications = new List<VacancyApplication>
-            {
-                vacancyApplication1,
-                vacancyApplication2
-            };
-            foreach (var vacancyApplication in vacancyApplications)
-            {
-                vacancyApplication.IsWithdrawn = false;
-            }
-
-            _vacancyClient.Setup(x => x.GetVacancyAsync(routeModel.VacancyId.GetValueOrDefault()))
-                .ReturnsAsync(vacancy);
-            _vacancyClient.Setup(x => x.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, It.IsAny<SortColumn>(), It.IsAny<SortOrder>(), false))
-                .ReturnsAsync(vacancyApplications);
-            _vacancyClient
-                .Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(routeModel.VacancyId.Value,
-                    ApplicationReviewStatus.PendingShared)).ReturnsAsync(vacancyApplications);
-
-            // Act
-            var viewModel = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(routeModel, SortColumn.Name, SortOrder.Ascending);
-
-            // Assert
-            Assert.That(viewModel.VacancyApplications, Is.Not.Empty);
-            Assert.That(viewModel.VacancyApplications.Count, Is.EqualTo(vacancyApplications.Count));
-            Assert.That(viewModel.Ukprn, Is.EqualTo(routeModel.Ukprn));
-            Assert.That(viewModel.VacancyId, Is.EqualTo(vacancy.Id));
-            Assert.That(viewModel.VacancyReference, Is.EqualTo(vacancy.VacancyReference));
-        }
-
-        [Test]
-        public async Task GetApplicationReviewsToShareViewModelAsync_With_WithDrawn_Status_ReturnsViewModelWithCorrectData()
+            vacancyApplication1,
+            vacancyApplication2
+        };
+        foreach (var vacancyApplication in vacancyApplications)
         {
-            // Arrange
-            var routeModel = _fixture.Create<VacancyRouteModel>();
-            var vacancy = _fixture.Create<Vacancy>();
-            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
-            var vacancyApplication2 = _fixture.Create<VacancyApplication>();
-            var vacancyApplications = new List<VacancyApplication>
-            {
-                vacancyApplication1,
-                vacancyApplication2
-            };
-            foreach (var vacancyApplication in vacancyApplications)
-            {
-                vacancyApplication.IsWithdrawn = true;
-            }
-
-            _vacancyClient.Setup(x => x.GetVacancyAsync(routeModel.VacancyId.GetValueOrDefault()))
-                .ReturnsAsync(vacancy);
-            _vacancyClient.Setup(x => x.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, It.IsAny<SortColumn>(), It.IsAny<SortOrder>(), false))
-                .ReturnsAsync(vacancyApplications);
-            _vacancyClient
-                .Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(routeModel.VacancyId.Value,
-                    ApplicationReviewStatus.PendingShared)).ReturnsAsync(vacancyApplications);
-
-            // Act
-            var viewModel = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(routeModel, SortColumn.Name, SortOrder.Ascending);
-
-            // Assert
-            Assert.That(viewModel.VacancyApplications.Count, Is.EqualTo(0));
-            Assert.That(viewModel.Ukprn, Is.EqualTo(routeModel.Ukprn));
-            Assert.That(viewModel.VacancyId, Is.EqualTo(vacancy.Id));
-            Assert.That(viewModel.VacancyReference, Is.EqualTo(vacancy.VacancyReference));
+            vacancyApplication.IsWithdrawn = false;
         }
 
-        [Test]
-        public async Task GetApplicationReviewsToShareConfirmationViewModel_ReturnsViewModelWithCorrectData()
+        _vacancyClient.Setup(x => x.GetVacancyAsync(routeModel.VacancyId.GetValueOrDefault()))
+            .ReturnsAsync(vacancy);
+        _vacancyClient.Setup(x => x.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, It.IsAny<SortColumn>(), It.IsAny<SortOrder>(), false))
+            .ReturnsAsync(vacancyApplications);
+        _vacancyClient
+            .Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(routeModel.VacancyId.Value,
+                ApplicationReviewStatus.PendingShared)).ReturnsAsync(vacancyApplications);
+
+        // Act
+        var viewModel = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(routeModel, SortColumn.Name, SortOrder.Ascending);
+
+        // Assert
+        Assert.That(viewModel.VacancyApplications, Is.Not.Empty);
+        Assert.That(viewModel.VacancyApplications.Count, Is.EqualTo(vacancyApplications.Count));
+        Assert.That(viewModel.Ukprn, Is.EqualTo(routeModel.Ukprn));
+        Assert.That(viewModel.VacancyId, Is.EqualTo(vacancy.Id));
+        Assert.That(viewModel.VacancyReference, Is.EqualTo(vacancy.VacancyReference));
+    }
+
+    [Test]
+    public async Task GetApplicationReviewsToShareViewModelAsync_With_WithDrawn_Status_ReturnsViewModelWithCorrectData()
+    {
+        // Arrange
+        var routeModel = _fixture.Create<VacancyRouteModel>();
+        var vacancy = _fixture.Create<Vacancy>();
+        var vacancyApplication1 = _fixture.Create<VacancyApplication>();
+        var vacancyApplication2 = _fixture.Create<VacancyApplication>();
+        var vacancyApplications = new List<VacancyApplication>
         {
-            // Arrange
-            var request = _fixture.Create<ShareApplicationReviewsRequest>();
-            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
-            var vacancyApplication2 = _fixture.Create<VacancyApplication>();
-            var vacancyApplications = new List<VacancyApplication>
-            {
-                vacancyApplication1,
-                vacancyApplication2
-            };
-
-            _vacancyClient.Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(request.VacancyId!.Value,ApplicationReviewStatus.PendingShared))
-                .ReturnsAsync(vacancyApplications);
-
-            // Act
-            var viewModel = await _orchestrator.GetApplicationReviewsToShareConfirmationViewModel(request);
-
-            // Assert
-            Assert.That(viewModel.ApplicationReviewsToShare, Is.Not.Empty);
-            Assert.That(viewModel.ApplicationReviewsToShare.Count(), Is.EqualTo(vacancyApplications.Count()));
-            Assert.That(viewModel.Ukprn, Is.EqualTo(request.Ukprn));
-            Assert.That(viewModel.VacancyId, Is.EqualTo(request.VacancyId));
-        }
-
-        [Test]
-        [MoqInlineAutoData(ApplicationReviewStatus.Successful, true)]
-        [MoqInlineAutoData(ApplicationReviewStatus.Unsuccessful, true)]
-        [MoqInlineAutoData(ApplicationReviewStatus.AllShared, false)]
-        [MoqInlineAutoData(ApplicationReviewStatus.InReview, false)]
-        [MoqInlineAutoData(ApplicationReviewStatus.Interviewing, false)]
-        [MoqInlineAutoData(ApplicationReviewStatus.EmployerInterviewing, false)]
-        [MoqInlineAutoData(ApplicationReviewStatus.EmployerUnsuccessful, false)]
-        [MoqInlineAutoData(ApplicationReviewStatus.PendingShared, false)]
-        [MoqInlineAutoData(ApplicationReviewStatus.PendingToMakeUnsuccessful, false)]
-        [MoqInlineAutoData(ApplicationReviewStatus.New, false)]
-        [MoqInlineAutoData(ApplicationReviewStatus.Shared, false)]
-        public async Task IsAllApplicationReviewsHasOutcomeAsync_Returns_Valid(ApplicationReviewStatus status, bool expectedResult)
+            vacancyApplication1,
+            vacancyApplication2
+        };
+        foreach (var vacancyApplication in vacancyApplications)
         {
-            var routeModel = _fixture.Create<VacancyRouteModel>();
-            var model = _fixture.Build<ApplicationReviewEditModel>()
-                .With(x => x.VacancyId, routeModel.VacancyId)
-                .Create();
-            _vacancyClient.Setup(x => x.IsAllApplicationReviewsHasOutcomeAsync(routeModel.VacancyId.Value))
-                .ReturnsAsync(expectedResult);
-
-            var result = await _orchestrator.IsAllApplicationReviewsHasOutcomeAsync(model.VacancyId);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result, Is.EqualTo(expectedResult));
+            vacancyApplication.IsWithdrawn = true;
         }
+
+        _vacancyClient.Setup(x => x.GetVacancyAsync(routeModel.VacancyId.GetValueOrDefault()))
+            .ReturnsAsync(vacancy);
+        _vacancyClient.Setup(x => x.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, It.IsAny<SortColumn>(), It.IsAny<SortOrder>(), false))
+            .ReturnsAsync(vacancyApplications);
+        _vacancyClient
+            .Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(routeModel.VacancyId.Value,
+                ApplicationReviewStatus.PendingShared)).ReturnsAsync(vacancyApplications);
+
+        // Act
+        var viewModel = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(routeModel, SortColumn.Name, SortOrder.Ascending);
+
+        // Assert
+        Assert.That(viewModel.VacancyApplications.Count, Is.EqualTo(0));
+        Assert.That(viewModel.Ukprn, Is.EqualTo(routeModel.Ukprn));
+        Assert.That(viewModel.VacancyId, Is.EqualTo(vacancy.Id));
+        Assert.That(viewModel.VacancyReference, Is.EqualTo(vacancy.VacancyReference));
+    }
+
+    [Test]
+    public async Task GetApplicationReviewsToShareConfirmationViewModel_ReturnsViewModelWithCorrectData()
+    {
+        // Arrange
+        var request = _fixture.Create<ShareApplicationReviewsRequest>();
+        var vacancyApplication1 = _fixture.Create<VacancyApplication>();
+        var vacancyApplication2 = _fixture.Create<VacancyApplication>();
+        var vacancyApplications = new List<VacancyApplication>
+        {
+            vacancyApplication1,
+            vacancyApplication2
+        };
+
+        _vacancyClient.Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(request.VacancyId!.Value,ApplicationReviewStatus.PendingShared))
+            .ReturnsAsync(vacancyApplications);
+
+        // Act
+        var viewModel = await _orchestrator.GetApplicationReviewsToShareConfirmationViewModel(request);
+
+        // Assert
+        Assert.That(viewModel.ApplicationReviewsToShare, Is.Not.Empty);
+        Assert.That(viewModel.ApplicationReviewsToShare.Count(), Is.EqualTo(vacancyApplications.Count()));
+        Assert.That(viewModel.Ukprn, Is.EqualTo(request.Ukprn));
+        Assert.That(viewModel.VacancyId, Is.EqualTo(request.VacancyId));
+    }
+
+    [Test]
+    [MoqInlineAutoData(ApplicationReviewStatus.Successful, true)]
+    [MoqInlineAutoData(ApplicationReviewStatus.Unsuccessful, true)]
+    [MoqInlineAutoData(ApplicationReviewStatus.AllShared, false)]
+    [MoqInlineAutoData(ApplicationReviewStatus.InReview, false)]
+    [MoqInlineAutoData(ApplicationReviewStatus.Interviewing, false)]
+    [MoqInlineAutoData(ApplicationReviewStatus.EmployerInterviewing, false)]
+    [MoqInlineAutoData(ApplicationReviewStatus.EmployerUnsuccessful, false)]
+    [MoqInlineAutoData(ApplicationReviewStatus.PendingShared, false)]
+    [MoqInlineAutoData(ApplicationReviewStatus.PendingToMakeUnsuccessful, false)]
+    [MoqInlineAutoData(ApplicationReviewStatus.New, false)]
+    [MoqInlineAutoData(ApplicationReviewStatus.Shared, false)]
+    public async Task IsAllApplicationReviewsHasOutcomeAsync_Returns_Valid(ApplicationReviewStatus status, bool expectedResult)
+    {
+        var routeModel = _fixture.Create<VacancyRouteModel>();
+        var model = _fixture.Build<ApplicationReviewEditModel>()
+            .With(x => x.VacancyId, routeModel.VacancyId)
+            .Create();
+        _vacancyClient.Setup(x => x.IsAllApplicationReviewsHasOutcomeAsync(routeModel.VacancyId.Value))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _orchestrator.IsAllApplicationReviewsHasOutcomeAsync(model.VacancyId);
+
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 }

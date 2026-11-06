@@ -21,246 +21,245 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship
 using Microsoft.Extensions.Logging;
 using ErrorMessages = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
 
-namespace Esfa.Recruit.Provider.Web.Orchestrators
+namespace Esfa.Recruit.Provider.Web.Orchestrators;
+
+public class VacancyCheckYourAnswersOrchestrator(
+    ILogger<VacancyCheckYourAnswersOrchestrator> logger,
+    DisplayVacancyViewModelMapper vacancyDisplayMapper,
+    IUtility utility,
+    IProviderVacancyClient providerVacancyClient,
+    IRecruitVacancyClient vacancyClient,
+    IReviewSummaryService reviewSummaryService,
+    IProviderRelationshipsService providerRelationshipsService,
+    ILegalEntityAgreementService legalEntityAgreementService,
+    ITrainingProviderAgreementService trainingProviderAgreementService,
+    IMessaging messaging,
+    ILocationsService locationsService)
+    : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>(logger)
 {
-    public class VacancyCheckYourAnswersOrchestrator(
-        ILogger<VacancyCheckYourAnswersOrchestrator> logger,
-        DisplayVacancyViewModelMapper vacancyDisplayMapper,
-        IUtility utility,
-        IProviderVacancyClient providerVacancyClient,
-        IRecruitVacancyClient vacancyClient,
-        IReviewSummaryService reviewSummaryService,
-        IProviderRelationshipsService providerRelationshipsService,
-        ILegalEntityAgreementService legalEntityAgreementService,
-        ITrainingProviderAgreementService trainingProviderAgreementService,
-        IMessaging messaging,
-        ILocationsService locationsService)
-        : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>(logger)
+    private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
+
+    private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage |
+                                                       VacancyRuleSet.TrainingExpiryDate |
+                                                       VacancyRuleSet.TrainingProgramme |
+                                                       VacancyRuleSet.TrainingProviderDeliverCourse |
+                                                       VacancyRuleSet.EmployerWebsiteUrl |
+                                                       VacancyRuleSet.ApplicationMethod |
+                                                       VacancyRuleSet.TrainingProvider;
+
+    public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel routeModel)
     {
-        private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(routeModel, RouteNames.ProviderTaskListGet);
+            
+        var employerInfo = await providerVacancyClient.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn, vacancy.EmployerAccountId);
+            
+        var hasProviderReviewPermission = await providerRelationshipsService.HasProviderGotEmployersPermissionAsync(routeModel.Ukprn, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
+            
+        var vm = new VacancyPreviewViewModel();
+        await vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
 
-        private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage |
-                                                           VacancyRuleSet.TrainingExpiryDate |
-                                                           VacancyRuleSet.TrainingProgramme |
-                                                           VacancyRuleSet.TrainingProviderDeliverCourse |
-                                                           VacancyRuleSet.EmployerWebsiteUrl |
-                                                           VacancyRuleSet.ApplicationMethod |
-                                                           VacancyRuleSet.TrainingProvider;
-
-        public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel routeModel)
+        vm.HasWage = vacancy.Wage != null;
+        vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
+        vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
+        vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
+        vm.Ukprn = routeModel.Ukprn;
+        vm.VacancyId = routeModel.VacancyId;
+        vm.RequiresEmployerReview = hasProviderReviewPermission;
+        vm.AdditionalQuestionCount = vacancy.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4;
+            
+        if (vacancy.Status == VacancyStatus.Referred)
         {
-            var vacancy = await utility.GetAuthorisedVacancyForEditAsync(routeModel, RouteNames.ProviderTaskListGet);
-            
-            var employerInfo = await providerVacancyClient.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn, vacancy.EmployerAccountId);
-            
-            var hasProviderReviewPermission = await providerRelationshipsService.HasProviderGotEmployersPermissionAsync(routeModel.Ukprn, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
-            
-            var vm = new VacancyPreviewViewModel();
-            await vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.GetValueOrDefault(), ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
+        }
 
-            vm.HasWage = vacancy.Wage != null;
-            vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
-            vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
-            vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
-            vm.Ukprn = routeModel.Ukprn;
-            vm.VacancyId = routeModel.VacancyId;
-            vm.RequiresEmployerReview = hasProviderReviewPermission;
-            vm.AdditionalQuestionCount = vacancy.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4;
+        vm.AccountLegalEntityCount = employerInfo?.LegalEntities.Count ?? 0;
+        vm.AccountCount = 1;
+        return vm;
+    }
+        
+    public async Task<OrchestratorResponse<SubmitVacancyResponse>> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
+    {
+        var vacancy = await utility.GetAuthorisedVacancyAsync(m, RouteNames.Preview_Submit_Post);
             
-            if (vacancy.Status == VacancyStatus.Referred)
+        if (!vacancy.CanSubmit)
+            throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+            
+        vacancy.EmployerName = await vacancyClient.GetEmployerNameAsync(vacancy);
+            
+        await UpdateAddressCountriesAsync(vacancy, user);
+
+        return await ValidateAndExecute(
+            vacancy,
+            v => ValidateVacancy(v, SubmitValidationRules),
+            v => SubmitActionAsync(vacancy, user)
+        );
+    }
+        
+    private async Task<SubmitVacancyResponse> SubmitActionAsync(Vacancy vacancy, VacancyUser user)
+    {
+        var hasLegalEntityAgreementTask = legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
+        var hasProviderAgreementTask = trainingProviderAgreementService.HasAgreementAsync(vacancy.TrainingProvider.Ukprn.GetValueOrDefault());
+
+        await Task.WhenAll(hasLegalEntityAgreementTask, hasProviderAgreementTask);
+
+        var hasProviderReviewPermission = await providerRelationshipsService.HasProviderGotEmployersPermissionAsync(
+            vacancy.TrainingProvider.Ukprn.GetValueOrDefault(),
+            vacancy.EmployerAccountId,
+            vacancy.AccountLegalEntityPublicHashedId,
+            OperationType.RecruitmentRequiresReview);
+
+        var response = new SubmitVacancyResponse
+        {
+            HasLegalEntityAgreement = hasLegalEntityAgreementTask.Result,
+            HasProviderAgreement = hasProviderAgreementTask.Result,
+            IsSubmitted = false
+        };
+
+        if (response.HasLegalEntityAgreement && response.HasProviderAgreement)
+        {
+            if (hasProviderReviewPermission)
             {
-                vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.GetValueOrDefault(), ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
+                var command = new ReviewVacancyCommand(vacancy.Id, user, OwnerType.Provider);
+                await messaging.SendCommandAsync(command);
+                response.IsSentForReview = true;
             }
-
-            vm.AccountLegalEntityCount = employerInfo?.LegalEntities.Count ?? 0;
-            vm.AccountCount = 1;
-            return vm;
+            else
+            {
+                var command = new SubmitVacancyCommand(vacancy.Id, user, OwnerType.Provider);
+                await messaging.SendCommandAsync(command);
+                response.IsSubmitted = true;
+            }
         }
-        
-        public async Task<OrchestratorResponse<SubmitVacancyResponse>> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
-        {
-            var vacancy = await utility.GetAuthorisedVacancyAsync(m, RouteNames.Preview_Submit_Post);
             
-            if (!vacancy.CanSubmit)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-            
-            vacancy.EmployerName = await vacancyClient.GetEmployerNameAsync(vacancy);
-            
-            await UpdateAddressCountriesAsync(vacancy, user);
-
-            return await ValidateAndExecute(
-                vacancy,
-                v => ValidateVacancy(v, SubmitValidationRules),
-                v => SubmitActionAsync(vacancy, user)
-            );
-        }
+        return response;
+    }
         
-        private async Task<SubmitVacancyResponse> SubmitActionAsync(Vacancy vacancy, VacancyUser user)
+    private EntityValidationResult GetSoftValidationErrors(Vacancy vacancy)
+    {
+        var result = ValidateVacancy(vacancy, SoftValidationRules);
+        MapValidationPropertiesToViewModel(result);
+        return result;
+    }
+        
+    private EntityValidationResult ValidateVacancy(Vacancy vacancy, VacancyRuleSet rules)
+    {
+        var result = vacancyClient.Validate(vacancy, rules);
+        result.Errors = FlattenErrors(result.Errors, vacancy);
+        return result;
+    }
+        
+    private static List<EntityValidationError> FlattenErrors(IList<EntityValidationError> errors, Vacancy vacancy)
+    {
+        //Flatten Qualification errors to its ViewModel parent instead. 'Qualifications[1].Grade' becomes 'Qualifications'
+        foreach (var error in errors.Where(e => e.PropertyName.StartsWith(nameof(Vacancy.Qualifications))))
         {
-            var hasLegalEntityAgreementTask = legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
-            var hasProviderAgreementTask = trainingProviderAgreementService.HasAgreementAsync(vacancy.TrainingProvider.Ukprn.GetValueOrDefault());
-
-            await Task.WhenAll(hasLegalEntityAgreementTask, hasProviderAgreementTask);
-
-            var hasProviderReviewPermission = await providerRelationshipsService.HasProviderGotEmployersPermissionAsync(
-                vacancy.TrainingProvider.Ukprn.GetValueOrDefault(),
-                vacancy.EmployerAccountId,
-                vacancy.AccountLegalEntityPublicHashedId,
-                OperationType.RecruitmentRequiresReview);
-
-            var response = new SubmitVacancyResponse
-            {
-                HasLegalEntityAgreement = hasLegalEntityAgreementTask.Result,
-                HasProviderAgreement = hasProviderAgreementTask.Result,
-                IsSubmitted = false
-            };
-
-            if (response.HasLegalEntityAgreement && response.HasProviderAgreement)
-            {
-                if (hasProviderReviewPermission)
-                {
-                    var command = new ReviewVacancyCommand(vacancy.Id, user, OwnerType.Provider);
-                    await messaging.SendCommandAsync(command);
-                    response.IsSentForReview = true;
-                }
-                else
-                {
-                    var command = new SubmitVacancyCommand(vacancy.Id, user, OwnerType.Provider);
-                    await messaging.SendCommandAsync(command);
-                    response.IsSubmitted = true;
-                }
-            }
-            
-            return response;
+            error.PropertyName = nameof(VacancyPreviewViewModel.Qualifications);
         }
-        
-        private EntityValidationResult GetSoftValidationErrors(Vacancy vacancy)
-        {
-            var result = ValidateVacancy(vacancy, SoftValidationRules);
-            MapValidationPropertiesToViewModel(result);
-            return result;
-        }
-        
-        private EntityValidationResult ValidateVacancy(Vacancy vacancy, VacancyRuleSet rules)
-        {
-            var result = vacancyClient.Validate(vacancy, rules);
-            result.Errors = FlattenErrors(result.Errors, vacancy);
-            return result;
-        }
-        
-        private static List<EntityValidationError> FlattenErrors(IList<EntityValidationError> errors, Vacancy vacancy)
-        {
-            //Flatten Qualification errors to its ViewModel parent instead. 'Qualifications[1].Grade' becomes 'Qualifications'
-            foreach (var error in errors.Where(e => e.PropertyName.StartsWith(nameof(Vacancy.Qualifications))))
-            {
-                error.PropertyName = nameof(VacancyPreviewViewModel.Qualifications);
-            }
 
-            //Flatten EmployerLocations errors, e.g. 'EmployerLocations[0].Country' becomes 'EmployerLocations.Country'
-            var addressErrors = errors.Where(e => e.PropertyName.StartsWith("EmployerLocations[")).ToList();
-            foreach (var error in addressErrors)
-            {
-                string[] tokens = error.PropertyName.Split('.');
-                error.PropertyName = $"EmployerLocations.{tokens.LastOrDefault()}";
-            }
-
-            if (vacancy.EmployerLocationOption == AvailableWhere.MultipleLocations)
-            {
-                errors.Where(x => x.PropertyName == "EmployerLocations.Country").ToList().ForEach(x =>
-                {
-                    x.ErrorCode = $"Multiple-{VacancyValidationErrorCodes.AddressCountryNotInEngland}";
-                });
-            }
-
-            return errors.DistinctBy(x => $"{x.PropertyName}: {x.ErrorMessage}").ToList();
-        }
-        
-        
-        protected override EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel> DefineMappings()
+        //Flatten EmployerLocations errors, e.g. 'EmployerLocations[0].Country' becomes 'EmployerLocations.Country'
+        var addressErrors = errors.Where(e => e.PropertyName.StartsWith("EmployerLocations[")).ToList();
+        foreach (var error in addressErrors)
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel>
-            {
-                {e => e.ShortDescription, vm => vm.ShortDescription},
-                {e => e.ClosingDate, vm => vm.ClosingDate},
-                {e => e.Wage, vm => vm.HasWage},
-                {e => e.Wage.FixedWageYearlyAmount, vm => vm.WageText},
-                {e => e.Wage.WeeklyHours, vm => vm.HoursPerWeek},
-                {e => e.Wage.WorkingWeekDescription, vm => vm.WorkingWeekDescription},
-                {e => e.Wage.WageType, vm => vm.WageText},
-                {e => e.Wage.Duration, vm => vm.ExpectedDuration},
-                {e => e.Wage.DurationUnit, vm => vm.ExpectedDuration},
-                {e => e.StartDate, vm => vm.PossibleStartDate},
-                {e => e.ProgrammeId, vm => vm.HasProgramme},
-                {e => e.NumberOfPositions, vm => vm.NumberOfPositions},
-                {e => e.Description, vm => vm.VacancyDescription},
-                {e => e.TrainingDescription, vm => vm.TrainingDescription},
-                {e => e.AdditionalTrainingDescription, vm => vm.AdditionalTrainingDescription},
-                {e => e.OutcomeDescription, vm => vm.OutcomeDescription},
-                {e => e.Skills, vm => vm.Skills},
-                {e => e.Qualifications, vm => vm.Qualifications},
-                {e => e.ThingsToConsider, vm => vm.ThingsToConsider},
-                {e => e.EmployerName, vm => vm.EmployerName},
-                {e => e.EmployerDescription, vm => vm.EmployerDescription},
-                {e => e.EmployerWebsiteUrl, vm => vm.EmployerWebsiteUrl},
-                {e => e.ProviderContact.Name, vm => vm.ProviderContactName},
-                {e => e.ProviderContact.Email, vm => vm.ProviderContactEmail},
-                {e => e.ProviderContact.Phone, vm => vm.ProviderContactTelephone},
-                {e => e.EmployerLocation, vm => vm.EmployerAddressElements},
-                {e => e.EmployerLocation.AddressLine1, vm => vm.EmployerAddressElements},
-                {e => e.EmployerLocation.AddressLine2, vm => vm.EmployerAddressElements},
-                {e => e.EmployerLocation.AddressLine3, vm => vm.EmployerAddressElements},
-                {e => e.EmployerLocation.AddressLine4, vm => vm.EmployerAddressElements},
-                {e => e.EmployerLocation.Postcode, vm => vm.EmployerAddressElements},
-                {e => e.EmployerLocation.Latitude, vm => vm.EmployerAddressElements},
-                {e => e.EmployerLocation.Longitude, vm => vm.EmployerAddressElements},
-                {e => e.ApplicationInstructions, vm => vm.ApplicationInstructions},
-                {e => e.ApplicationUrl, vm => vm.ApplicationUrl},
-                {e => e.TrainingProvider, vm => vm.ProviderName},
-                {e => e.TrainingProvider.Ukprn, vm => vm.ProviderName},
-                {e => e.AdditionalQuestion1, vm => vm.AdditionalQuestion1},
-                {e => e.AdditionalQuestion2, vm => vm.AdditionalQuestion2}
-            };
-
-            return mappings;
+            string[] tokens = error.PropertyName.Split('.');
+            error.PropertyName = $"EmployerLocations.{tokens.LastOrDefault()}";
         }
-        
-        private async Task UpdateAddressCountriesAsync(Vacancy vacancy, VacancyUser user)
+
+        if (vacancy.EmployerLocationOption == AvailableWhere.MultipleLocations)
         {
-            var locations = new List<Address>();
-            switch (vacancy.EmployerLocationOption)
+            errors.Where(x => x.PropertyName == "EmployerLocations.Country").ToList().ForEach(x =>
             {
-                case AvailableWhere.AcrossEngland:
-                    return;
-                case AvailableWhere.OneLocation:
-                case AvailableWhere.MultipleLocations:
-                    locations.AddRange(vacancy.EmployerLocations);
-                    break;
-                default:
-                    locations.Add(vacancy.EmployerLocation);
-                    break;
-            }
-        
-            var addressesToQuery = locations
-                .Where(x => x.Country is null)
-                .Select(x => x.Postcode)
-                .Distinct()
-                .ToList();
-            var results = await locationsService.GetBulkPostcodeDataAsync(addressesToQuery);
-        
-            bool isDirty = false;
-            locations.ForEach(x =>
-            {
-                if (x.Country is null && results.TryGetValue(x.Postcode, out var postcodeData) && postcodeData is not null)
-                {
-                    x.Country = postcodeData.Country;
-                    isDirty = true;
-                }
+                x.ErrorCode = $"Multiple-{VacancyValidationErrorCodes.AddressCountryNotInEngland}";
             });
+        }
+
+        return errors.DistinctBy(x => $"{x.PropertyName}: {x.ErrorMessage}").ToList();
+    }
         
-            if (isDirty)
+        
+    protected override EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel> DefineMappings()
+    {
+        var mappings = new EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel>
+        {
+            {e => e.ShortDescription, vm => vm.ShortDescription},
+            {e => e.ClosingDate, vm => vm.ClosingDate},
+            {e => e.Wage, vm => vm.HasWage},
+            {e => e.Wage.FixedWageYearlyAmount, vm => vm.WageText},
+            {e => e.Wage.WeeklyHours, vm => vm.HoursPerWeek},
+            {e => e.Wage.WorkingWeekDescription, vm => vm.WorkingWeekDescription},
+            {e => e.Wage.WageType, vm => vm.WageText},
+            {e => e.Wage.Duration, vm => vm.ExpectedDuration},
+            {e => e.Wage.DurationUnit, vm => vm.ExpectedDuration},
+            {e => e.StartDate, vm => vm.PossibleStartDate},
+            {e => e.ProgrammeId, vm => vm.HasProgramme},
+            {e => e.NumberOfPositions, vm => vm.NumberOfPositions},
+            {e => e.Description, vm => vm.VacancyDescription},
+            {e => e.TrainingDescription, vm => vm.TrainingDescription},
+            {e => e.AdditionalTrainingDescription, vm => vm.AdditionalTrainingDescription},
+            {e => e.OutcomeDescription, vm => vm.OutcomeDescription},
+            {e => e.Skills, vm => vm.Skills},
+            {e => e.Qualifications, vm => vm.Qualifications},
+            {e => e.ThingsToConsider, vm => vm.ThingsToConsider},
+            {e => e.EmployerName, vm => vm.EmployerName},
+            {e => e.EmployerDescription, vm => vm.EmployerDescription},
+            {e => e.EmployerWebsiteUrl, vm => vm.EmployerWebsiteUrl},
+            {e => e.ProviderContact.Name, vm => vm.ProviderContactName},
+            {e => e.ProviderContact.Email, vm => vm.ProviderContactEmail},
+            {e => e.ProviderContact.Phone, vm => vm.ProviderContactTelephone},
+            {e => e.EmployerLocation, vm => vm.EmployerAddressElements},
+            {e => e.EmployerLocation.AddressLine1, vm => vm.EmployerAddressElements},
+            {e => e.EmployerLocation.AddressLine2, vm => vm.EmployerAddressElements},
+            {e => e.EmployerLocation.AddressLine3, vm => vm.EmployerAddressElements},
+            {e => e.EmployerLocation.AddressLine4, vm => vm.EmployerAddressElements},
+            {e => e.EmployerLocation.Postcode, vm => vm.EmployerAddressElements},
+            {e => e.EmployerLocation.Latitude, vm => vm.EmployerAddressElements},
+            {e => e.EmployerLocation.Longitude, vm => vm.EmployerAddressElements},
+            {e => e.ApplicationInstructions, vm => vm.ApplicationInstructions},
+            {e => e.ApplicationUrl, vm => vm.ApplicationUrl},
+            {e => e.TrainingProvider, vm => vm.ProviderName},
+            {e => e.TrainingProvider.Ukprn, vm => vm.ProviderName},
+            {e => e.AdditionalQuestion1, vm => vm.AdditionalQuestion1},
+            {e => e.AdditionalQuestion2, vm => vm.AdditionalQuestion2}
+        };
+
+        return mappings;
+    }
+        
+    private async Task UpdateAddressCountriesAsync(Vacancy vacancy, VacancyUser user)
+    {
+        var locations = new List<Address>();
+        switch (vacancy.EmployerLocationOption)
+        {
+            case AvailableWhere.AcrossEngland:
+                return;
+            case AvailableWhere.OneLocation:
+            case AvailableWhere.MultipleLocations:
+                locations.AddRange(vacancy.EmployerLocations);
+                break;
+            default:
+                locations.Add(vacancy.EmployerLocation);
+                break;
+        }
+        
+        var addressesToQuery = locations
+            .Where(x => x.Country is null)
+            .Select(x => x.Postcode)
+            .Distinct()
+            .ToList();
+        var results = await locationsService.GetBulkPostcodeDataAsync(addressesToQuery);
+        
+        bool isDirty = false;
+        locations.ForEach(x =>
+        {
+            if (x.Country is null && results.TryGetValue(x.Postcode, out var postcodeData) && postcodeData is not null)
             {
-                await vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+                x.Country = postcodeData.Country;
+                isDirty = true;
             }
+        });
+        
+        if (isDirty)
+        {
+            await vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
         }
     }
 }

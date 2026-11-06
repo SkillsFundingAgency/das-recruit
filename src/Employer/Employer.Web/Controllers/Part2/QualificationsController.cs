@@ -8,114 +8,107 @@ using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels.Qualifications;
 
-namespace Esfa.Recruit.Employer.Web.Controllers.Part2
+namespace Esfa.Recruit.Employer.Web.Controllers.Part2;
+
+[Route(RoutePaths.AccountVacancyRoutePath)]
+public class QualificationsController(QualificationsOrchestrator orchestrator) : Controller
 {
-    [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class QualificationsController : Controller
+    private const string QualificationDeletedTempDataKey = "QualificationDeletedTempDataKey";
+
+    [HttpGet("qualifications", Name = RouteNames.Qualifications_Get)]
+    public async Task<IActionResult> Qualifications(VacancyRouteModel vrm)
     {
-        private const string QualificationDeletedTempDataKey = "QualificationDeletedTempDataKey";
-        private readonly QualificationsOrchestrator _orchestrator;
+        var vm = await orchestrator.GetQualificationsViewModelAsync(vrm);
 
-        public QualificationsController(QualificationsOrchestrator orchestrator)
+        if (TempData[QualificationDeletedTempDataKey] != null)
+            vm.InfoMessage = "Successfully removed qualification";
+
+        return View(vm);
+    }
+
+    [HttpPost("qualifications", Name = RouteNames.Qualifications_Get)]
+    public async Task<IActionResult> Qualifications(AddQualificationsEditModel m)
+    {
+        if (!ModelState.IsValid)
         {
-            _orchestrator = orchestrator;
-        }
-
-        [HttpGet("qualifications", Name = RouteNames.Qualifications_Get)]
-        public async Task<IActionResult> Qualifications(VacancyRouteModel vrm)
-        {
-            var vm = await _orchestrator.GetQualificationsViewModelAsync(vrm);
-
-            if (TempData[QualificationDeletedTempDataKey] != null)
-                vm.InfoMessage = "Successfully removed qualification";
-
+            var vm = await orchestrator.GetQualificationsViewModelAsync(m);
             return View(vm);
         }
 
-        [HttpPost("qualifications", Name = RouteNames.Qualifications_Get)]
-        public async Task<IActionResult> Qualifications(AddQualificationsEditModel m)
+        await orchestrator.PostAddQualificationEditModel(m, User.ToVacancyUser());
+
+        if (m.AddQualificationRequirement is true)
         {
-            if (!ModelState.IsValid)
-            {
-                var vm = await _orchestrator.GetQualificationsViewModelAsync(m);
-                return View(vm);
-            }
-
-            await _orchestrator.PostAddQualificationEditModel(m, User.ToVacancyUser());
-
-            if (m.AddQualificationRequirement is true)
-            {
-                return RedirectToRoute(RouteNames.Qualification_Add_Get, new { m.VacancyId, m.EmployerAccountId });
-            }
-
-            return RedirectToRoute(m.IsTaskListCompleted
-                ? RouteNames.EmployerCheckYourAnswersGet
-                : RouteNames.FutureProspects_Get, new { m.VacancyId, m.EmployerAccountId });
+            return RedirectToRoute(RouteNames.Qualification_Add_Get, new { m.VacancyId, m.EmployerAccountId });
         }
 
-        [HttpGet("qualifications/add", Name = RouteNames.Qualification_Add_Get)]
-        public async Task<IActionResult> Qualification(VacancyRouteModel vrm)
-        {
-            var vm = await _orchestrator.GetQualificationViewModelForAddAsync(vrm);
+        return RedirectToRoute(m.IsTaskListCompleted
+            ? RouteNames.EmployerCheckYourAnswersGet
+            : RouteNames.FutureProspects_Get, new { m.VacancyId, m.EmployerAccountId });
+    }
 
-            return View(vm);
+    [HttpGet("qualifications/add", Name = RouteNames.Qualification_Add_Get)]
+    public async Task<IActionResult> Qualification(VacancyRouteModel vrm)
+    {
+        var vm = await orchestrator.GetQualificationViewModelForAddAsync(vrm);
+
+        return View(vm);
+    }
+
+    [HttpGet("qualifications/{index:int}", Name = RouteNames.Qualification_Edit_Get)]
+    public async Task<IActionResult> Qualification(VacancyRouteModel vrm, int index)
+    {
+        var vm = await orchestrator.GetQualificationViewModelForEditAsync(vrm, index);
+
+        return View(vm);
+    }
+
+    [HttpPost("qualifications/add", Name = RouteNames.Qualification_Add_Post)]
+    public async Task<IActionResult> Qualification(VacancyRouteModel vrm, QualificationEditModel m)
+    {
+        var response = await orchestrator.PostQualificationEditModelForAddAsync(vrm, m, User.ToVacancyUser());
+
+        if (!response.Success)
+        {
+            response.AddErrorsToModelState(ModelState);
         }
 
-        [HttpGet("qualifications/{index:int}", Name = RouteNames.Qualification_Edit_Get)]
-        public async Task<IActionResult> Qualification(VacancyRouteModel vrm, int index)
+        if (!ModelState.IsValid)
         {
-            var vm = await _orchestrator.GetQualificationViewModelForEditAsync(vrm, index);
-
-            return View(vm);
-        }
-
-        [HttpPost("qualifications/add", Name = RouteNames.Qualification_Add_Post)]
-        public async Task<IActionResult> Qualification(VacancyRouteModel vrm, QualificationEditModel m)
-        {
-            var response = await _orchestrator.PostQualificationEditModelForAddAsync(vrm, m, User.ToVacancyUser());
-
-            if (!response.Success)
-            {
-                response.AddErrorsToModelState(ModelState);
-            }
-
-            if (!ModelState.IsValid)
-            {
-                var vm = await _orchestrator.GetQualificationViewModelForAddAsync(vrm,m);
+            var vm = await orchestrator.GetQualificationViewModelForAddAsync(vrm,m);
                 
-                return View(vm);
-            }
+            return View(vm);
+        }
             
-            return RedirectToRoute(RouteNames.Qualifications_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
-        }
+        return RedirectToRoute(RouteNames.Qualifications_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
+    }
 
-        [HttpPost("qualifications/{index:int}", Name = RouteNames.Qualification_Edit_Post)]
-        public async Task<IActionResult> Qualification(VacancyRouteModel vrm, QualificationEditModel m, [FromRoute] int index)
+    [HttpPost("qualifications/{index:int}", Name = RouteNames.Qualification_Edit_Post)]
+    public async Task<IActionResult> Qualification(VacancyRouteModel vrm, QualificationEditModel m, [FromRoute] int index)
+    {
+        var response = await orchestrator.PostQualificationEditModelForEditAsync(vrm, m, User.ToVacancyUser(), index);
+
+        if (!response.Success)
         {
-            var response = await _orchestrator.PostQualificationEditModelForEditAsync(vrm, m, User.ToVacancyUser(), index);
-
-            if (!response.Success)
-            {
-                response.AddErrorsToModelState(ModelState);
-            }
-
-            if (!ModelState.IsValid)
-            {
-                var vm = await _orchestrator.GetQualificationViewModelForEditAsync(vrm, m, index);
-
-                return View(vm);
-            }
-
-            return RedirectToRoute(RouteNames.Qualifications_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
+            response.AddErrorsToModelState(ModelState);
         }
 
-        [HttpPost("qualifications/delete", Name = RouteNames.Qualification_Delete_Post)]
-        public async Task<IActionResult> DeleteQualification(VacancyRouteModel vrm, [FromForm] int index)
+        if (!ModelState.IsValid)
         {
-            await _orchestrator.DeleteQualificationAsync(vrm, index, User.ToVacancyUser());
+            var vm = await orchestrator.GetQualificationViewModelForEditAsync(vrm, m, index);
 
-            TempData[QualificationDeletedTempDataKey] = 1;
-            return RedirectToRoute(RouteNames.Qualifications_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
+            return View(vm);
         }
+
+        return RedirectToRoute(RouteNames.Qualifications_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
+    }
+
+    [HttpPost("qualifications/delete", Name = RouteNames.Qualification_Delete_Post)]
+    public async Task<IActionResult> DeleteQualification(VacancyRouteModel vrm, [FromForm] int index)
+    {
+        await orchestrator.DeleteQualificationAsync(vrm, index, User.ToVacancyUser());
+
+        TempData[QualificationDeletedTempDataKey] = 1;
+        return RedirectToRoute(RouteNames.Qualifications_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
     }
 }

@@ -1,11 +1,10 @@
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
+namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
+
+public interface IApplicationReviewEditModel
 {
-    public interface IApplicationReviewEditModel
-    {
-        ApplicationReviewStatus? Outcome { get; set; }
-        string CandidateFeedback { get; set; }
-        bool IsApplicationSharedByProvider { get; set; }
-    }
+    ApplicationReviewStatus? Outcome { get; set; }
+    string CandidateFeedback { get; set; }
+    bool IsApplicationSharedByProvider { get; set; }
 }

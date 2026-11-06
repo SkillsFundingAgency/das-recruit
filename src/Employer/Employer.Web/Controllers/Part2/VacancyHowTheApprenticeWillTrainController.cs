@@ -7,49 +7,41 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.VacancyHowTheApprenticeWillTrain;
 using Esfa.Recruit.Shared.Web.Extensions;
 
-namespace Esfa.Recruit.Employer.Web.Controllers.Part2
-{
-    [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class VacancyHowTheApprenticeWillTrainController : Controller
-    {
-        private readonly VacancyHowWillTheApprenticeTrainOrchestrator _orchestrator;
+namespace Esfa.Recruit.Employer.Web.Controllers.Part2;
 
-        public VacancyHowTheApprenticeWillTrainController(VacancyHowWillTheApprenticeTrainOrchestrator orchestrator)
+[Route(RoutePaths.AccountVacancyRoutePath)]
+public class VacancyHowTheApprenticeWillTrainController(VacancyHowWillTheApprenticeTrainOrchestrator orchestrator)
+    : Controller
+{
+    [HttpGet("how-will-the-apprentice-train", Name = RouteNames.VacancyHowTheApprenticeWillTrain_Index_Get)]
+    public async Task<IActionResult> VacancyHowTheApprenticeWillTrain(VacancyRouteModel vrm)
+    {
+        var vm = await orchestrator.GetVacancyDescriptionViewModelAsync(vrm);
+        return View(vm);
+    }
+
+    [HttpPost("how-will-the-apprentice-train", Name =  RouteNames.VacancyHowTheApprenticeWillTrain_Index_Post)]
+    public async Task<IActionResult> VacancyHowTheApprenticeWillTrain(VacancyHowTheApprenticeWillTrainEditModel m)
+    {
+        var response = await orchestrator.PostVacancyDescriptionEditModelAsync(m, User.ToVacancyUser());
+
+        if (!response.Success)
         {
-            _orchestrator = orchestrator;
+            response.AddErrorsToModelState(ModelState);
         }
 
-        [HttpGet("how-will-the-apprentice-train", Name = RouteNames.VacancyHowTheApprenticeWillTrain_Index_Get)]
-        public async Task<IActionResult> VacancyHowTheApprenticeWillTrain(VacancyRouteModel vrm)
+        var vm = await orchestrator.GetVacancyDescriptionViewModelAsync(m);
+        if (!ModelState.IsValid)
         {
-            var vm = await _orchestrator.GetVacancyDescriptionViewModelAsync(vrm);
+            vm.AdditionalTrainingDescription = m.AdditionalTrainingDescription;
+            vm.TrainingDescription = m.TrainingDescription;
             return View(vm);
         }
-
-        [HttpPost("how-will-the-apprentice-train", Name =  RouteNames.VacancyHowTheApprenticeWillTrain_Index_Post)]
-        public async Task<IActionResult> VacancyHowTheApprenticeWillTrain(VacancyHowTheApprenticeWillTrainEditModel m)
-        {
-            var response = await _orchestrator.PostVacancyDescriptionEditModelAsync(m, User.ToVacancyUser());
-
-            if (!response.Success)
-            {
-                response.AddErrorsToModelState(ModelState);
-            }
-
-            var vm = await _orchestrator.GetVacancyDescriptionViewModelAsync(m);
-            if (!ModelState.IsValid)
-            {
-                vm.AdditionalTrainingDescription = m.AdditionalTrainingDescription;
-                vm.TrainingDescription = m.TrainingDescription;
-                return View(vm);
-            }
             
-            if (vm.IsTaskListCompleted)
-            {
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId});
-            }
-            return RedirectToRoute(RouteNames.EmployerTaskListGet, new {m.VacancyId, m.EmployerAccountId});
+        if (vm.IsTaskListCompleted)
+        {
+            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId});
         }
+        return RedirectToRoute(RouteNames.EmployerTaskListGet, new {m.VacancyId, m.EmployerAccountId});
     }
-    
 }

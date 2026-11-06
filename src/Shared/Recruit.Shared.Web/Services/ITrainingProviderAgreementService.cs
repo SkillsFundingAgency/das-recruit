@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Shared.Web.Services
+namespace Esfa.Recruit.Shared.Web.Services;
+
+public interface ITrainingProviderAgreementService
 {
-    public interface ITrainingProviderAgreementService
-    {
-        Task<bool> HasAgreementAsync(long ukprn);
-    }
+    Task<bool> HasAgreementAsync(long ukprn);
 }

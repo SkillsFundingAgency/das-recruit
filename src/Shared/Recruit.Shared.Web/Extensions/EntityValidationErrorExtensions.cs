@@ -1,35 +1,33 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Validation;
 
-namespace Esfa.Recruit.Shared.Web.Extensions
+namespace Esfa.Recruit.Shared.Web.Extensions;
+
+public static class EntityValidationErrorExtensions
 {
-    public static class EntityValidationErrorExtensions
+    private const char PositionStart = '[';
+    private const char PositionEnd = ']';
+
+    public static int? GetIndexPosition(this EntityValidationError error)
     {
-        private const char PositionStart = '[';
-        private const char PositionEnd = ']';
+        var start = error.PropertyName.IndexOf(PositionStart) + 1;
 
-        public static int? GetIndexPosition(this EntityValidationError error)
+        if (start == 0)
         {
-            var start = error.PropertyName.IndexOf(PositionStart) + 1;
-
-            if (start == 0)
-            {
-                return null;
-            }
-
-            var end = error.PropertyName.IndexOf(PositionEnd, start);
-
-            if (end == -1)
-            {
-                return null;
-            }
-
-            if (int.TryParse(error.PropertyName.Substring(start, end - start), out var position))
-            {
-                return position;
-            }
-
             return null;
         }
+
+        var end = error.PropertyName.IndexOf(PositionEnd, start);
+
+        if (end == -1)
+        {
+            return null;
+        }
+
+        if (int.TryParse(error.PropertyName.Substring(start, end - start), out var position))
+        {
+            return position;
+        }
+
+        return null;
     }
 }
-

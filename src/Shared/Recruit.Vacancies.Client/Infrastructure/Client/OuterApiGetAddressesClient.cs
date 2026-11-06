@@ -4,31 +4,21 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+
+public class OuterApiGetAddressesClient(IOuterApiClient outerApiClient, ILogger<OuterApiGetAddressesClient> logger)
+    : IGetAddressesClient
 {
-    public class OuterApiGetAddressesClient : IGetAddressesClient
+    public async Task<GetAddressesListResponse> GetAddresses(string searchTerm)
     {
-        private readonly IOuterApiClient _outerApiClient;
-        private readonly ILogger<OuterApiGetAddressesClient> _logger;
-
-        public OuterApiGetAddressesClient(IOuterApiClient outerApiClient, ILogger<OuterApiGetAddressesClient> logger)
+        try
         {
-            _outerApiClient = outerApiClient;
-            _logger = logger;
+            return await outerApiClient.Get<GetAddressesListResponse>(new GetAddressesRequest(searchTerm));
         }
-
-        public async Task<GetAddressesListResponse> GetAddresses(string searchTerm)
+        catch(Exception e)
         {
-            try
-            {
-               return await _outerApiClient.Get<GetAddressesListResponse>(new GetAddressesRequest(searchTerm));
-            }
-            catch(Exception e)
-            {
-                string message = $"Get addresses failed for search term: {searchTerm}.";
-                _logger.LogDebug(message);
-                throw new Exception(message, e);
-            }
+            logger.LogDebug("Get addresses failed for search term: {searchTerm}.", searchTerm);
+            throw new Exception($"Get addresses failed for search term: {searchTerm}.", e);
         }
     }
 }

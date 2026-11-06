@@ -2,25 +2,17 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Cache
+namespace Esfa.Recruit.Vacancies.Client.Application.Cache;
+
+public class Cache(IMemoryCache memoryCache) : ICache
 {
-    public class Cache : ICache
+    public Task<T> CacheAsideAsync<T>(string key, DateTime absoluteExpiration, Func<Task<T>> objectToCache)
     {
-        private readonly IMemoryCache _memoryCache;
-
-        public Cache(IMemoryCache memoryCache)
+        return memoryCache.GetOrCreateAsync(key, entry =>
         {
-            _memoryCache = memoryCache;
-        }
+            entry.AbsoluteExpiration = absoluteExpiration;
 
-        public Task<T> CacheAsideAsync<T>(string key, DateTime absoluteExpiration, Func<Task<T>> objectToCache)
-        {
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpiration = absoluteExpiration;
-
-                return objectToCache();
-            });
-        }
+            return objectToCache();
+        });
     }
 }

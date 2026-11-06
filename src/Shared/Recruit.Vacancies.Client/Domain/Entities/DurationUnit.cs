@@ -1,9 +1,8 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum DurationUnit
 {
-    public enum DurationUnit
-    {
-        Week,
-        Month,
-        Year
-    }
+    Week,
+    Month,
+    Year
 }

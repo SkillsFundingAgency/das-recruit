@@ -1,8 +1,7 @@
-namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum OrganisationType
 {
-    public enum OrganisationType
-    {
-        Employer,
-        Provider
-    }
+    Employer,
+    Provider
 }

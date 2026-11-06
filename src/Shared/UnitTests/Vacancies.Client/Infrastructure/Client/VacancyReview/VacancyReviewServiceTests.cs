@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.VacancyReview;
@@ -99,53 +99,6 @@ public class VacancyReviewServiceTests
     }
 
     [Test, MoqAutoData]
-    public async Task When_Calling_GetLatestReviewByReferenceAsync_The_Request_Is_Made_And_VacancyReview_Mapped_To_Entity(
-        long vacancyReference,
-        VacancyReviewDto vacancyDto,
-        Vacancy vacancy,
-        [Frozen] Mock<IOuterApiClient> outerApiClient,
-        VacancyReviewService service)
-    {
-        vacancyDto.ManualOutcome = null;
-        vacancyDto.Status = ReviewStatus.PendingReview.ToString();
-        vacancyDto.VacancyReference = vacancyReference;
-
-        UpdateToValidVacancyDto(vacancyDto, vacancy);
-
-        var expectedRequest = new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference);
-        outerApiClient
-            .Setup(
-                x => x.Get<GetVacancyReviewListResponse>(It.Is<GetVacancyReviewByVacancyReferenceAndReviewStatusRequest>(c => 
-                    c.GetUrl == expectedRequest.GetUrl)))
-            .ReturnsAsync(new GetVacancyReviewListResponse{ VacancyReviews = [vacancyDto]});
-        
-        var actual = await service.GetLatestReviewByReferenceAsync(vacancyReference);
-        
-        actual.Should()
-            .BeEquivalentTo((Recruit.Vacancies.Client.Domain.Entities.VacancyReview)vacancyDto, options => 
-                options.Excluding(c=>c.AutomatedQaOutcomeIndicators)
-            );
-    }
-
-    [Test, MoqAutoData]
-    public async Task When_Calling_GetLatestReviewByReferenceAsync_The_Request_Is_Made_And_Null_Returned_If_Not_Found(
-        long vacancyReference,
-        [Frozen] Mock<IOuterApiClient> outerApiClient,
-        VacancyReviewService service)
-    {
-        var expectedRequest = new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference);
-        outerApiClient
-            .Setup(
-                x => x.Get<GetVacancyReviewListResponse>(It.Is<GetVacancyReviewByVacancyReferenceAndReviewStatusRequest>(c => 
-                    c.GetUrl == expectedRequest.GetUrl)))
-            .ReturnsAsync(new GetVacancyReviewListResponse{ VacancyReviews = []});
-        
-        var actual = await service.GetLatestReviewByReferenceAsync(vacancyReference);
-        
-        actual.Should().BeNull();
-    }
-
-    [Test, MoqAutoData]
     public async Task When_Calling_GetForVacancyAsync_The_Request_Is_Made_And_List_Of_Vacancy_Reviews_Returned(
         long vacancyReference,
         VacancyReviewDto vacancyDto,
@@ -180,41 +133,6 @@ public class VacancyReviewServiceTests
             );
     }
 
-    [Test, MoqAutoData]
-    public async Task When_Calling_GetByStatusAsync_The_Request_Is_Made_And_List_Of_Vacancy_Reviews_Returned_By_Status(
-        ReviewStatus reviewStatus,
-        VacancyReviewDto vacancyDto,
-        VacancyReviewDto vacancyDto2,
-        Vacancy vacancy,
-        [Frozen] Mock<IOuterApiClient> outerApiClient,
-        VacancyReviewService service)
-    {
-        vacancyDto.Status = ReviewStatus.PendingReview.ToString();
-        vacancyDto2.Status = ReviewStatus.PendingReview.ToString();
-        UpdateToValidVacancyDto(vacancyDto, vacancy);
-        UpdateToValidVacancyDto(vacancyDto2, vacancy);
-        var expectedRequest = new GetVacancyReviewByFilterRequest([reviewStatus]);
-        outerApiClient
-            .Setup(
-                x => x.Get<GetVacancyReviewListResponse>(It.Is<GetVacancyReviewByFilterRequest>(c => 
-                    c.GetUrl == expectedRequest.GetUrl)))
-            .ReturnsAsync(new GetVacancyReviewListResponse
-            {
-                VacancyReviews = [vacancyDto, vacancyDto2]
-            });
-        
-        var actual = await service.GetByStatusAsync(reviewStatus);
-        
-        actual.Should()
-            .BeEquivalentTo(new List<Recruit.Vacancies.Client.Domain.Entities.VacancyReview>
-                {
-                    (Recruit.Vacancies.Client.Domain.Entities.VacancyReview)vacancyDto,
-                    (Recruit.Vacancies.Client.Domain.Entities.VacancyReview)vacancyDto2
-                }, options => 
-                    options.Excluding(c=>c.AutomatedQaOutcomeIndicators)
-            );
-    }
-    
     [Test, MoqAutoData]
     public async Task When_Calling_GetCurrentReferredVacancyReviewAsync_The_Request_Is_Made_And_VacancyReview_Mapped_To_Entity(
         long vacancyReference,

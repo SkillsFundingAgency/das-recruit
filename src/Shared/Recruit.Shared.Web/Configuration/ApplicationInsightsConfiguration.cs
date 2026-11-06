@@ -1,7 +1,6 @@
-﻿namespace Esfa.Recruit.Shared.Web.Configuration
+﻿namespace Esfa.Recruit.Shared.Web.Configuration;
+
+public class ApplicationInsightsConfiguration
 {
-    public class ApplicationInsightsConfiguration
-    {
-        public string InstrumentationKey { get; set; }
-    }
+    public string InstrumentationKey { get; set; }
 }

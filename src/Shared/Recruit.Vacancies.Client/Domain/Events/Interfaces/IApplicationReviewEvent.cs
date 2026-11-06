@@ -1,7 +1,6 @@
-namespace Esfa.Recruit.Vacancies.Client.Domain.Events.Interfaces
+namespace Esfa.Recruit.Vacancies.Client.Domain.Events.Interfaces;
+
+public interface IApplicationReviewEvent
 {
-    public interface IApplicationReviewEvent
-    {
-        long VacancyReference { get; }
-    }
+    long VacancyReference { get; }
 }

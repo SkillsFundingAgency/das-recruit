@@ -4,18 +4,17 @@ using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Microsoft.Extensions.Logging;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers;
 
-[Trait("Category", "Unit")]
+[Category("Unit")]
 public class ReviewVacancyCommandHandlerTests
 {
-    [Fact]
+    [Test]
     public async Task GivenEmployerDescription_ThenShouldUpdateVacancyWithThatDescription()
     {
         var expectedDescription = "updated description";
@@ -47,7 +46,7 @@ public class ReviewVacancyCommandHandlerTests
         vacancy.EmployerDescription.Should().Be(expectedDescription);
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldNotChangeEmployerDescriptionIfNotSpecifiedInCommand()
     {
         var expectedDescription = "initial description";
@@ -79,7 +78,7 @@ public class ReviewVacancyCommandHandlerTests
         vacancy.EmployerDescription.Should().Be(expectedDescription);
     }
 
-    [Fact]
+    [Test]
     public async Task WhenVacancyNotFound_ShouldRaiseException()
     {
         var id = Guid.NewGuid();
@@ -89,12 +88,12 @@ public class ReviewVacancyCommandHandlerTests
         var message = new ReviewVacancyCommand(id, user, OwnerType.Provider);
 
         var sut = GetSut(id, null, now);
-        var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await sut.Handle(message, new CancellationToken()));
+        var exception = Assert.ThrowsAsync<ArgumentException>(async () => await sut.Handle(message, new CancellationToken()));
 
         exception.Message.Should().Be(expectedExceptionMessage);
     }
 
-    [Fact]
+    [Test]
     public async Task WhenStatusIsIncorrect_ShouldRaiseException()
     {
         var vacancy = new Vacancy
@@ -112,12 +111,12 @@ public class ReviewVacancyCommandHandlerTests
         var expectedExceptionMessage = string.Format(ReviewVacancyCommandHandler.InvalidStateExceptionMessageFormat, vacancy.Id, vacancy.Status);
 
         var sut = GetSut(vacancy.Id, vacancy, now);
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.Handle(message, new CancellationToken()));
+        var exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.Handle(message, new CancellationToken()));
 
         exception.Message.Should().Be(expectedExceptionMessage);
     }
 
-    [Fact]
+    [Test]
     public async Task WhenReferenceNumberIsNotGenerated_ShouldRaiseException()
     {
         var vacancy = new Vacancy
@@ -135,13 +134,13 @@ public class ReviewVacancyCommandHandlerTests
         var expectedExceptionMessage = string.Format(ReviewVacancyCommandHandler.MissingReferenceNumberExceptionMessageFormat, vacancy.Id);
 
         var sut = GetSut(vacancy.Id, vacancy, now);
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.Handle(message, new CancellationToken()));
+        var exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.Handle(message, new CancellationToken()));
 
         exception.Message.Should().Be(expectedExceptionMessage);
     }
 
 
-    [Fact]
+    [Test]
     public async Task WhenOwnerHasChanged_ShouldRaiseException()
     {
         var vacancy = new Vacancy
@@ -159,12 +158,12 @@ public class ReviewVacancyCommandHandlerTests
         var expectedExceptionMessage = string.Format(ReviewVacancyCommandHandler.InvalidOwnerExceptionMessageFormat, vacancy.Id, message.SubmissionOwner, vacancy.OwnerType);
 
         var sut = GetSut(vacancy.Id, vacancy, now);
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.Handle(message, new CancellationToken()));
+        var exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.Handle(message, new CancellationToken()));
 
         exception.Message.Should().Be(expectedExceptionMessage);
     }
 
-    public ReviewVacancyCommandHandler GetSut(Guid id, Vacancy vacancy, DateTime now)
+    private ReviewVacancyCommandHandler GetSut(Guid id, Vacancy vacancy, DateTime now)
     {
         var mockLogger = new Mock<ILogger<ReviewVacancyCommandHandler>>();
 

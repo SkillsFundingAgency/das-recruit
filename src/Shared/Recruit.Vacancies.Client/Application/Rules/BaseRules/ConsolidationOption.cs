@@ -1,8 +1,7 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
+﻿namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules;
+
+public enum ConsolidationOption
 {
-    public enum ConsolidationOption
-    {
-        NoConsolidation,
-        ConsolidateByField
-    }   
+    NoConsolidation,
+    ConsolidateByField
 }

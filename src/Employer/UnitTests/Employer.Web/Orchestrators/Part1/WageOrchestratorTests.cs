@@ -78,18 +78,9 @@ public class WageOrchestratorTests
     public class WageOrchestratorTestsFixture
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Wage;
-        public VacancyUser User { get; }
-        public Vacancy Vacancy { get; }
+        public VacancyUser User { get; } = VacancyOrchestratorTestData.GetVacancyUser();
+        public Vacancy Vacancy { get; } = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
         public WageOrchestrator Sut {get; private set;}
-
-        public WageOrchestratorTestsFixture()
-        {
-            MockClient = new Mock<IEmployerVacancyClient>();
-            MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
-
-            User = VacancyOrchestratorTestData.GetVacancyUser();
-            Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
-        }
 
         public WageOrchestratorTestsFixture WithWageType(WageType wageType)
         {
@@ -151,7 +142,7 @@ public class WageOrchestratorTests
                 .Match<EmployerReviewFieldIndicator>((x) => x.IsChangeRequested == value);
         }
 
-        public Mock<IEmployerVacancyClient> MockClient { get; set; }
-        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
+        public Mock<IEmployerVacancyClient> MockClient { get; set; } = new();
+        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; } = new();
     }
 }

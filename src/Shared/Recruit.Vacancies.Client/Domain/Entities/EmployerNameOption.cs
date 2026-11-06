@@ -1,9 +1,8 @@
-namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum EmployerNameOption
 {
-    public enum EmployerNameOption
-    {
-        RegisteredName,
-        TradingName,
-        Anonymous
-    }
+    RegisteredName,
+    TradingName,
+    Anonymous
 }

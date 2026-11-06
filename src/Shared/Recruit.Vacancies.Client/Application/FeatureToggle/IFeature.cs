@@ -1,7 +1,6 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Application.FeatureToggle
+﻿namespace Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
+
+public interface IFeature
 {
-    public interface IFeature
-    {
-        bool IsFeatureEnabled(string feature);
-    }
+    bool IsFeatureEnabled(string feature);
 }

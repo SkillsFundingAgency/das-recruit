@@ -7,7 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Microsoft.Extensions.Logging;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.CommandHandlers;
 
@@ -18,11 +18,11 @@ public class DeleteVacancyCommandHandlerTests
     private readonly Mock<IMessaging> _mockMessaging = new();
     private readonly Mock<ITimeProvider> _mockTimeProvider = new();
 
-    [Theory]
-    [InlineData(VacancyStatus.Live)]
-    [InlineData(VacancyStatus.Approved)]
-    [InlineData(VacancyStatus.Closed)]
-    [InlineData(VacancyStatus.Submitted)]
+    [Test]
+    [TestCase(VacancyStatus.Live)]
+    [TestCase(VacancyStatus.Approved)]
+    [TestCase(VacancyStatus.Closed)]
+    [TestCase(VacancyStatus.Submitted)]
     public async Task WhenVacancyIsNotInValidState_ShouldNotSetVacancyDeleted(VacancyStatus status)
     {
         var fixture = new Fixture();
@@ -33,7 +33,7 @@ public class DeleteVacancyCommandHandlerTests
         _mockVacancyRepository.Verify(m => m.UpdateAsync(It.IsAny<Vacancy>()), Times.Never);
     }
 
-    [Fact]
+    [Test]
     public async Task WhenVacancyIsAlreadyDeleted_ShouldNotSetVacancyDeleted()
     {
         var fixture = new Fixture();
@@ -44,7 +44,7 @@ public class DeleteVacancyCommandHandlerTests
         _mockVacancyRepository.Verify(m => m.UpdateAsync(It.IsAny<Vacancy>()), Times.Never);
     }
 
-    [Fact]
+    [Test]
     public async Task WhenVacancyIsNotFound_ShouldNotSetVacancyDeleted()
     {
         var fixture = new Fixture();

@@ -1,29 +1,28 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Employer.UnitTests.Core.Entities
+namespace Esfa.Recruit.Employer.UnitTests.Core.Entities;
+
+public class VacancyExtensionsTest
 {
-    public class VacancyExtensionsTest
+    [Test]
+    public void ShouldBeAbleToSubmitIfStatusIsDraft()
     {
-        [Test]
-        public void ShouldBeAbleToSubmitIfStatusIsDraft()
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
-            {
-                Status = VacancyStatus.Draft
-            };
+            Status = VacancyStatus.Draft
+        };
 
-            vacancy.CanSubmit.Should().BeTrue();
-        }
+        vacancy.CanSubmit.Should().BeTrue();
+    }
 
-        [Test]
-        public void ShouldNotBeAbleToSubmitIfStatusIsNotDraft()
+    [Test]
+    public void ShouldNotBeAbleToSubmitIfStatusIsNotDraft()
+    {
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
-            {
-                Status = VacancyStatus.Submitted
-            };
+            Status = VacancyStatus.Submitted
+        };
 
-            vacancy.CanSubmit.Should().BeFalse();
-        }
+        vacancy.CanSubmit.Should().BeFalse();
     }
 }

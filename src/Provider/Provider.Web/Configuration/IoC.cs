@@ -31,134 +31,133 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Esfa.Recruit.Provider.Web.Configuration
+namespace Esfa.Recruit.Provider.Web.Configuration;
+
+public static class IoC
 {
-    public static class IoC
+    public static void AddIoC(this IServiceCollection services, IConfiguration configuration)
     {
-        public static void AddIoC(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddRecruitStorageClient(configuration);
+        services.AddRecruitStorageClient(configuration);
 
-            //Configuration
-            services.Configure<ApplicationInsightsConfiguration>(configuration.GetSection("ApplicationInsights"));
-            services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
-            services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
-            services.Configure<GoogleAnalyticsConfiguration>(configuration.GetSection("GoogleAnalytics"));
-            services.Configure<ZenDeskConfiguration>(configuration.GetSection("ZenDesk"));
-            services.AddSingleton<ProviderApprenticeshipsLinkHelper>();
-            services.AddFeatureToggle();
+        //Configuration
+        services.Configure<ApplicationInsightsConfiguration>(configuration.GetSection("ApplicationInsights"));
+        services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
+        services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
+        services.Configure<GoogleAnalyticsConfiguration>(configuration.GetSection("GoogleAnalytics"));
+        services.Configure<ZenDeskConfiguration>(configuration.GetSection("ZenDesk"));
+        services.AddSingleton<ProviderApprenticeshipsLinkHelper>();
+        services.AddFeatureToggle();
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // Used by NLog to log out traceidentifier value.
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // Used by NLog to log out traceidentifier value.
 
-            RegisterServiceDeps(services, configuration);
+        RegisterServiceDeps(services, configuration);
 
-            RegisterOrchestratorDeps(services);
+        RegisterOrchestratorDeps(services);
 
-            RegisterMapperDeps(services);
+        RegisterMapperDeps(services);
 
-            RegisterFilterDeps(services);
+        RegisterFilterDeps(services);
 
-            RegisterFluentValidators(services);
-        }
+        RegisterFluentValidators(services);
+    }
 
-        private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddTransient<ITaskListValidator, TaskListValidator>();
-            services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("RecruitConfiguration:GoogleMapsPrivateKey")));
-            services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
-            services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
-            services.AddTransient<AlertViewModelService>();
-            services.AddTransient<IProviderAlertsViewModelFactory, ProviderAlertsViewModelFactory>();
-            services.AddTransient<ITrainingProviderAgreementService, TrainingProviderAgreementService>();
-            services.AddTransient<IUtility, Utility>();
-            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            services.AddTransient<IFieldReviewHelper, FieldReviewHelper>();
-            services.AddSingleton<IReviewFieldIndicatorService, ReviewFieldIndicatorService>();
-            services.AddSingleton<IVacancyLocationService, VacancyLocationService>();
-        }
+    private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddTransient<ITaskListValidator, TaskListValidator>();
+        services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("RecruitConfiguration:GoogleMapsPrivateKey")));
+        services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
+        services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
+        services.AddTransient<AlertViewModelService>();
+        services.AddTransient<IProviderAlertsViewModelFactory, ProviderAlertsViewModelFactory>();
+        services.AddTransient<ITrainingProviderAgreementService, TrainingProviderAgreementService>();
+        services.AddTransient<IUtility, Utility>();
+        services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+        services.AddTransient<IFieldReviewHelper, FieldReviewHelper>();
+        services.AddSingleton<IReviewFieldIndicatorService, ReviewFieldIndicatorService>();
+        services.AddSingleton<IVacancyLocationService, VacancyLocationService>();
+    }
 
-        private static void RegisterFluentValidators(IServiceCollection services)
-        {
-            services.AddSingleton<IValidator<CompetitiveWageEditModel>, CompetitiveWageEditModelValidator>();
-            services.AddSingleton<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
+    private static void RegisterFluentValidators(IServiceCollection services)
+    {
+        services.AddSingleton<IValidator<CompetitiveWageEditModel>, CompetitiveWageEditModelValidator>();
+        services.AddSingleton<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
 
-            services.AddSingleton<IValidator<WageEditModel>, WageEditModelValidator>();
+        services.AddSingleton<IValidator<WageEditModel>, WageEditModelValidator>();
 
-            services.AddSingleton<IValidator<ApplicationReviewFeedbackViewModel>, ViewModels.Validations.Fluent.ApplicationReviewFeedbackModelValidator>();
-            services.AddSingleton<IValidator<ApplicationReviewsFeedbackViewModel>, ApplicationReviewsFeedbackModelValidator>();
-            services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulFeedbackViewModel>, ApplicationReviewsFeedbackModelValidator>();
-            services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulRequest>, ApplicationReviewsToUnsuccessfulModelValidator>();
-            services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulConfirmationViewModel>, ApplicationReviewsToUnsuccessfulConfirmationModelValidator>();
+        services.AddSingleton<IValidator<ApplicationReviewFeedbackViewModel>, ViewModels.Validations.Fluent.ApplicationReviewFeedbackModelValidator>();
+        services.AddSingleton<IValidator<ApplicationReviewsFeedbackViewModel>, ApplicationReviewsFeedbackModelValidator>();
+        services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulFeedbackViewModel>, ApplicationReviewsFeedbackModelValidator>();
+        services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulRequest>, ApplicationReviewsToUnsuccessfulModelValidator>();
+        services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulConfirmationViewModel>, ApplicationReviewsToUnsuccessfulConfirmationModelValidator>();
 
-            services.AddSingleton<IValidator<ApplicationReviewStatusConfirmationEditModel>, ApplicationReviewStatusConfirmationEditModelValidator>();
-            services.AddSingleton<IValidator<ProviderApplicationsReportCreateEditModel>, ProviderApplicationsReportCreateEditModelValidator>();
-            services.AddSingleton<IValidator<ApplicationReviewsToShareRouteModel>, ApplicationReviewsToShareModelValidator>();
-            services.AddSingleton<IValidator<AddLocationEditModel>, AddLocationEditModelValidator>();
-            services.AddSingleton<IValidator<EnterLocationManuallyEditModel>, EnterLocationManuallyEditModelValidator>();
-        }
+        services.AddSingleton<IValidator<ApplicationReviewStatusConfirmationEditModel>, ApplicationReviewStatusConfirmationEditModelValidator>();
+        services.AddSingleton<IValidator<ProviderApplicationsReportCreateEditModel>, ProviderApplicationsReportCreateEditModelValidator>();
+        services.AddSingleton<IValidator<ApplicationReviewsToShareRouteModel>, ApplicationReviewsToShareModelValidator>();
+        services.AddSingleton<IValidator<AddLocationEditModel>, AddLocationEditModelValidator>();
+        services.AddSingleton<IValidator<EnterLocationManuallyEditModel>, EnterLocationManuallyEditModelValidator>();
+    }
 
-        private static void RegisterOrchestratorDeps(IServiceCollection services)
-        {
-            services.AddTransient<AboutEmployerOrchestrator>();
-            services.AddTransient<ApplicationProcessOrchestrator>();
-            services.AddTransient<ConsiderationsOrchestrator>();
-            services.AddTransient<VacanciesOrchestrator>();
-            services.AddTransient<EmployerOrchestrator>();
-            services.AddTransient<LegalEntityOrchestrator>();
-            services.AddTransient<LegalEntityAndEmployerOrchestrator>();
-            services.AddTransient<EmployerNameOrchestrator>();
-            services.AddTransient<LegalEntityAgreementOrchestrator>();
-            services.AddTransient<LocationOrchestrator>();
-            services.AddTransient<ProviderContactDetailsOrchestrator>();
-            services.AddTransient<QualificationsOrchestrator>();
-            services.AddTransient<ShortDescriptionOrchestrator>();
-            services.AddTransient<SkillsOrchestrator>();
-            services.AddTransient<SubmittedOrchestrator>();
-            services.AddTransient<ReviewedOrchestrator>();
-            services.AddTransient<TitleOrchestrator>();
-            services.AddTransient<NumberOfPositionsOrchestrator>();
-            services.AddTransient<TrainingOrchestrator>();
-            services.AddTransient<VacancyDescriptionOrchestrator>();
-            services.AddTransient<VacancyManageOrchestrator>();
-            services.AddTransient<VacancyPreviewOrchestrator>();
-            services.AddTransient<VacancyViewOrchestrator>();
-            services.AddTransient<IWageOrchestrator, WageOrchestrator>();
-            services.AddTransient<ICustomWageOrchestrator,CustomWageOrchestrator>();
-            services.AddTransient<CloseVacancyOrchestrator>();
-            services.AddTransient<EditVacancyDatesOrchestrator>();
-            services.AddTransient<IApplicationReviewOrchestrator, ApplicationReviewOrchestrator>();
-            services.AddTransient<IApplicationReviewsOrchestrator, ApplicationReviewsOrchestrator>();
-            services.AddTransient<CloneVacancyOrchestrator>();
-            services.AddTransient<DeleteVacancyOrchestrator>();
-            services.AddTransient<IArchiveVacancyOrchestrator, ArchiveVacancyOrchestrator>();
-            services.AddTransient<IReportDashboardOrchestrator, ReportDashboardOrchestrator>();
-            services.AddTransient<IProviderApplicationsReportOrchestrator, ProviderApplicationsReportOrchestrator>();
-            services.AddTransient<DashboardOrchestrator>();
-            services.AddTransient<VacanciesSearchSuggestionsOrchestrator>();
-            services.AddTransient<ManageNotificationsOrchestrator>();
-            services.AddTransient<DatesOrchestrator>();
-            services.AddTransient<AlertsOrchestrator>();
-            services.AddTransient<ProviderAgreementOrchestrator>();
-            services.AddTransient<DurationOrchestrator>();
-            services.AddTransient<VacancyTaskListOrchestrator>();
-            services.AddTransient<VacancyCheckYourAnswersOrchestrator>();
-            services.AddTransient<FutureProspectsOrchestrator>();
-            services.AddTransient<IAdditionalQuestionsOrchestrator, AdditionalQuestionsOrchestrator>();
-            services.AddTransient<VacancyWorkDescriptionOrchestrator>();
-            services.AddTransient<VacancyHowWillTheApprenticeTrainOrchestrator>();
-        }
+    private static void RegisterOrchestratorDeps(IServiceCollection services)
+    {
+        services.AddTransient<AboutEmployerOrchestrator>();
+        services.AddTransient<ApplicationProcessOrchestrator>();
+        services.AddTransient<ConsiderationsOrchestrator>();
+        services.AddTransient<VacanciesOrchestrator>();
+        services.AddTransient<EmployerOrchestrator>();
+        services.AddTransient<LegalEntityOrchestrator>();
+        services.AddTransient<LegalEntityAndEmployerOrchestrator>();
+        services.AddTransient<EmployerNameOrchestrator>();
+        services.AddTransient<LegalEntityAgreementOrchestrator>();
+        services.AddTransient<LocationOrchestrator>();
+        services.AddTransient<ProviderContactDetailsOrchestrator>();
+        services.AddTransient<QualificationsOrchestrator>();
+        services.AddTransient<ShortDescriptionOrchestrator>();
+        services.AddTransient<SkillsOrchestrator>();
+        services.AddTransient<SubmittedOrchestrator>();
+        services.AddTransient<ReviewedOrchestrator>();
+        services.AddTransient<TitleOrchestrator>();
+        services.AddTransient<NumberOfPositionsOrchestrator>();
+        services.AddTransient<TrainingOrchestrator>();
+        services.AddTransient<VacancyDescriptionOrchestrator>();
+        services.AddTransient<VacancyManageOrchestrator>();
+        services.AddTransient<VacancyPreviewOrchestrator>();
+        services.AddTransient<VacancyViewOrchestrator>();
+        services.AddTransient<CloseVacancyOrchestrator>();
+        services.AddTransient<EditVacancyDatesOrchestrator>();
+        services.AddTransient<CloneVacancyOrchestrator>();
+        services.AddTransient<DeleteVacancyOrchestrator>();
+        services.AddTransient<DashboardOrchestrator>();
+        services.AddTransient<VacanciesSearchSuggestionsOrchestrator>();
+        services.AddTransient<ManageNotificationsOrchestrator>();
+        services.AddTransient<DatesOrchestrator>();
+        services.AddTransient<AlertsOrchestrator>();
+        services.AddTransient<ProviderAgreementOrchestrator>();
+        services.AddTransient<DurationOrchestrator>();
+        services.AddTransient<VacancyTaskListOrchestrator>();
+        services.AddTransient<VacancyCheckYourAnswersOrchestrator>();
+        services.AddTransient<FutureProspectsOrchestrator>();
+        services.AddTransient<VacancyWorkDescriptionOrchestrator>();
+        services.AddTransient<VacancyHowWillTheApprenticeTrainOrchestrator>();
+        services.AddTransient<IAdditionalQuestionsOrchestrator, AdditionalQuestionsOrchestrator>();
+        services.AddTransient<IArchiveVacancyOrchestrator, ArchiveVacancyOrchestrator>();
+        services.AddTransient<IReportDashboardOrchestrator, ReportDashboardOrchestrator>();
+        services.AddTransient<IProviderApplicationsReportOrchestrator, ProviderApplicationsReportOrchestrator>();
+        services.AddTransient<IWageOrchestrator, WageOrchestrator>();
+        services.AddTransient<ICustomWageOrchestrator, CustomWageOrchestrator>();
+        services.AddTransient<IApplicationReviewOrchestrator, ApplicationReviewOrchestrator>();
+        services.AddTransient<IApplicationReviewsOrchestrator, ApplicationReviewsOrchestrator>();
+    }
 
-        private static void RegisterMapperDeps(IServiceCollection services)
-        {
-            services.AddTransient<DisplayVacancyViewModelMapper>();
-            services.AddTransient<ReviewFieldIndicatorMapper>();
-            services.AddScoped<IRuleMessageTemplateRunner, RuleMessageTemplateRunner>();
-        }
+    private static void RegisterMapperDeps(IServiceCollection services)
+    {
+        services.AddTransient<DisplayVacancyViewModelMapper>();
+        services.AddTransient<ReviewFieldIndicatorMapper>();
+        services.AddScoped<IRuleMessageTemplateRunner, RuleMessageTemplateRunner>();
+    }
 
-        private static void RegisterFilterDeps(IServiceCollection services)
-        {
-            services.AddScoped<GoogleAnalyticsFilter>();
-            services.AddScoped<ZendeskApiFilter>();
-        }
+    private static void RegisterFilterDeps(IServiceCollection services)
+    {
+        services.AddScoped<GoogleAnalyticsFilter>();
+        services.AddScoped<ZendeskApiFilter>();
     }
 }

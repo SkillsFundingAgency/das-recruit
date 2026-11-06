@@ -56,18 +56,9 @@ public class DurationOrchestratorTests
     public class DurationOrchestratorTestsFixture
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Duration | VacancyRuleSet.WorkingWeekDescription | VacancyRuleSet.WeeklyHours;
-        public VacancyUser User { get; }
-        public Vacancy Vacancy { get; }
+        public VacancyUser User { get; } = VacancyOrchestratorTestData.GetVacancyUser();
+        public Vacancy Vacancy { get; } = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
         public DurationOrchestrator Sut {get; private set;}
-
-        public DurationOrchestratorTestsFixture()
-        {
-            MockClient = new Mock<IEmployerVacancyClient>();
-            MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
-
-            User = VacancyOrchestratorTestData.GetVacancyUser();
-            Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
-        }
 
         public DurationOrchestratorTestsFixture WithDuration(int duration)
         {
@@ -130,7 +121,7 @@ public class DurationOrchestratorTests
                 .Match<EmployerReviewFieldIndicator>((x) => x.IsChangeRequested == value);
         }
 
-        public Mock<IEmployerVacancyClient> MockClient { get; set; }
-        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
+        public Mock<IEmployerVacancyClient> MockClient { get; set; } = new();
+        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; } = new();
     }
 }

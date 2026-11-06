@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Controllers.Part2;
@@ -13,111 +13,110 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part2
+namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part2;
+
+public class FutureProspectsControllerTests
 {
-    public class FutureProspectsControllerTests
+    [Test, MoqAutoData]
+    public async Task When_Calling_Get_Then_Returns_View_With_Model_From_Orchestrator(
+        VacancyRouteModel vacancyRouteModel,
+        FutureProspectsViewModel viewModel,
+        [Frozen] Mock<IFutureProspectsOrchestrator> mockOrchestrator,
+        [Greedy] FutureProspectsController controller)
     {
-        [Test, MoqAutoData]
-        public async Task When_Calling_Get_Then_Returns_View_With_Model_From_Orchestrator(
-            VacancyRouteModel vacancyRouteModel,
-            FutureProspectsViewModel viewModel,
-            [Frozen] Mock<IFutureProspectsOrchestrator> mockOrchestrator,
-            [Greedy] FutureProspectsController controller)
-        {
-            mockOrchestrator
-                .Setup(orchestrator => orchestrator.GetViewModel(vacancyRouteModel))
-                .ReturnsAsync(viewModel);
+        mockOrchestrator
+            .Setup(orchestrator => orchestrator.GetViewModel(vacancyRouteModel))
+            .ReturnsAsync(viewModel);
             
-            var response = await controller.FutureProspects(vacancyRouteModel) as ViewResult;
+        var response = await controller.FutureProspects(vacancyRouteModel) as ViewResult;
 
-            response.Should().NotBeNull();
-            response!.Model.Should().Be(viewModel);
-        }
+        response.Should().NotBeNull();
+        response!.Model.Should().Be(viewModel);
+    }
         
-        [Test, MoqAutoData]
-        public async Task When_Calling_Post_And_Not_Success_Then_Returns_FutureProspects_View_With_ModelState(
-            FutureProspectsEditModel editModel,
-            OrchestratorResponse orchestratorResponse,
-            FutureProspectsViewModel viewModel,
-            [Frozen] Mock<IFutureProspectsOrchestrator> mockOrchestrator,
-            [Greedy] FutureProspectsController controller)
-        {
-            ArrangeControllerContext(controller);
-            mockOrchestrator
-                .Setup(orchestrator => orchestrator.PostEditModel(editModel, It.IsAny<VacancyUser>()))
-                .ReturnsAsync(orchestratorResponse);
-            mockOrchestrator
-                .Setup(orchestrator => orchestrator.GetViewModel(editModel))
-                .ReturnsAsync(viewModel);
+    [Test, MoqAutoData]
+    public async Task When_Calling_Post_And_Not_Success_Then_Returns_FutureProspects_View_With_ModelState(
+        FutureProspectsEditModel editModel,
+        OrchestratorResponse orchestratorResponse,
+        FutureProspectsViewModel viewModel,
+        [Frozen] Mock<IFutureProspectsOrchestrator> mockOrchestrator,
+        [Greedy] FutureProspectsController controller)
+    {
+        ArrangeControllerContext(controller);
+        mockOrchestrator
+            .Setup(orchestrator => orchestrator.PostEditModel(editModel, It.IsAny<VacancyUser>()))
+            .ReturnsAsync(orchestratorResponse);
+        mockOrchestrator
+            .Setup(orchestrator => orchestrator.GetViewModel(editModel))
+            .ReturnsAsync(viewModel);
             
-            var response = await controller.FutureProspects(editModel) as ViewResult;
+        var response = await controller.FutureProspects(editModel) as ViewResult;
 
-            response.Should().NotBeNull();
-            response!.Model.Should().Be(viewModel);
-        }
+        response.Should().NotBeNull();
+        response!.Model.Should().Be(viewModel);
+    }
         
-        [Test, MoqAutoData]
-        public async Task When_Calling_Post_And_Is_Success_And_TaskList_Is_Completed_Then_Redirects_To_CheckYourAnswers(
-            FutureProspectsEditModel editModel,
-            OrchestratorResponse orchestratorResponse,
-            FutureProspectsViewModel viewModel,
-            [Frozen] Mock<IFutureProspectsOrchestrator> mockOrchestrator,
-            [Greedy] FutureProspectsController controller)
-        {
-            orchestratorResponse.Errors.Errors = new List<EntityValidationError>();
-            viewModel.IsTaskListCompleted = true;
-            ArrangeControllerContext(controller);
-            mockOrchestrator
-                .Setup(orchestrator => orchestrator.PostEditModel(editModel, It.IsAny<VacancyUser>()))
-                .ReturnsAsync(orchestratorResponse);
-            mockOrchestrator
-                .Setup(orchestrator => orchestrator.GetViewModel(editModel))
-                .ReturnsAsync(viewModel);
+    [Test, MoqAutoData]
+    public async Task When_Calling_Post_And_Is_Success_And_TaskList_Is_Completed_Then_Redirects_To_CheckYourAnswers(
+        FutureProspectsEditModel editModel,
+        OrchestratorResponse orchestratorResponse,
+        FutureProspectsViewModel viewModel,
+        [Frozen] Mock<IFutureProspectsOrchestrator> mockOrchestrator,
+        [Greedy] FutureProspectsController controller)
+    {
+        orchestratorResponse.Errors.Errors = new List<EntityValidationError>();
+        viewModel.IsTaskListCompleted = true;
+        ArrangeControllerContext(controller);
+        mockOrchestrator
+            .Setup(orchestrator => orchestrator.PostEditModel(editModel, It.IsAny<VacancyUser>()))
+            .ReturnsAsync(orchestratorResponse);
+        mockOrchestrator
+            .Setup(orchestrator => orchestrator.GetViewModel(editModel))
+            .ReturnsAsync(viewModel);
 
-            var response = await controller.FutureProspects(editModel) as RedirectToRouteResult;
+        var response = await controller.FutureProspects(editModel) as RedirectToRouteResult;
 
-            response.Should().NotBeNull();
-            response!.RouteName.Should().Be(RouteNames.EmployerCheckYourAnswersGet);
-        }
+        response.Should().NotBeNull();
+        response!.RouteName.Should().Be(RouteNames.EmployerCheckYourAnswersGet);
+    }
         
-        [Test, MoqAutoData]
-        public async Task When_Calling_Post_And_Is_Success_And_TaskList_Not_Completed_Then_Redirects_To_Considerations(
-            FutureProspectsEditModel editModel,
-            OrchestratorResponse orchestratorResponse,
-            FutureProspectsViewModel viewModel,
-            [Frozen] Mock<IFutureProspectsOrchestrator> mockOrchestrator,
-            [Greedy] FutureProspectsController controller)
-        {
-            orchestratorResponse.Errors.Errors = new List<EntityValidationError>();
-            viewModel.IsTaskListCompleted = false;
-            ArrangeControllerContext(controller);
-            mockOrchestrator
-                .Setup(orchestrator => orchestrator.PostEditModel(editModel, It.IsAny<VacancyUser>()))
-                .ReturnsAsync(orchestratorResponse);
-            mockOrchestrator
-                .Setup(orchestrator => orchestrator.GetViewModel(editModel))
-                .ReturnsAsync(viewModel);
+    [Test, MoqAutoData]
+    public async Task When_Calling_Post_And_Is_Success_And_TaskList_Not_Completed_Then_Redirects_To_Considerations(
+        FutureProspectsEditModel editModel,
+        OrchestratorResponse orchestratorResponse,
+        FutureProspectsViewModel viewModel,
+        [Frozen] Mock<IFutureProspectsOrchestrator> mockOrchestrator,
+        [Greedy] FutureProspectsController controller)
+    {
+        orchestratorResponse.Errors.Errors = new List<EntityValidationError>();
+        viewModel.IsTaskListCompleted = false;
+        ArrangeControllerContext(controller);
+        mockOrchestrator
+            .Setup(orchestrator => orchestrator.PostEditModel(editModel, It.IsAny<VacancyUser>()))
+            .ReturnsAsync(orchestratorResponse);
+        mockOrchestrator
+            .Setup(orchestrator => orchestrator.GetViewModel(editModel))
+            .ReturnsAsync(viewModel);
 
-            var response = await controller.FutureProspects(editModel) as RedirectToRouteResult;
+        var response = await controller.FutureProspects(editModel) as RedirectToRouteResult;
 
-            response.Should().NotBeNull();
-            response!.RouteName.Should().Be(RouteNames.Considerations_Get);
-        }
+        response.Should().NotBeNull();
+        response!.RouteName.Should().Be(RouteNames.Considerations_Get);
+    }
 
-        private void ArrangeControllerContext(Controller controller)
-        {
-            var user = new ClaimsPrincipal(new ClaimsIdentity(
-                new []
-                {
-                    new Claim(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier,"userid"),
-                    new Claim(EmployerRecruitClaims.IdamsUserDisplayNameClaimTypeIdentifier,"displayname"),
-                    new Claim(EmployerRecruitClaims.IdamsUserEmailClaimTypeIdentifier,"email")
-                }
-            ));
-            controller.ControllerContext = new ControllerContext
+    private void ArrangeControllerContext(Controller controller)
+    {
+        var user = new ClaimsPrincipal(new ClaimsIdentity(
+            new []
             {
-                HttpContext = new DefaultHttpContext {User = user}
-            };
-        }
+                new Claim(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier,"userid"),
+                new Claim(EmployerRecruitClaims.IdamsUserDisplayNameClaimTypeIdentifier,"displayname"),
+                new Claim(EmployerRecruitClaims.IdamsUserEmailClaimTypeIdentifier,"email")
+            }
+        ));
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext {User = user}
+        };
     }
 }

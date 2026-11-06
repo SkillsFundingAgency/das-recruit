@@ -1,7 +1,6 @@
-﻿namespace Esfa.Recruit.Employer.Web.Configuration
+﻿namespace Esfa.Recruit.Employer.Web.Configuration;
+
+public static class Constants
 {
-    public static class Constants
-    {
-        public const string VacancyTerm = "advert";
-    }
+    public const string VacancyTerm = "advert";
 }

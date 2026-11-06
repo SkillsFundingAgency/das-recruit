@@ -5,37 +5,36 @@ using Esfa.Recruit.Shared.Web.ViewModels.Validations;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ValidationMessages.WageValidationMessages;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage
+namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
+
+public class WageViewModel : VacancyRouteModel
 {
-    public class WageViewModel : VacancyRouteModel
+    public WageType? WageType { get; set; }
+
+    [TypeOfMoney(ErrorMessage = ErrMsg.TypeOfMoney.FixedWageYearlyAmount)]
+    public string FixedWageYearlyAmount { get; set; }
+
+    public string WageAdditionalInformation { get; set; }
+
+    public string MinimumWageStartFrom { get; set; }
+    public string NationalMinimumWageLowerBoundHourly { get; set; }
+    public string NationalMinimumWageUpperBoundHourly { get; set; }
+    public string NationalMinimumWageYearly { get; set; }
+    public string ApprenticeshipMinimumWageHourly { get; set; }
+    public string ApprenticeshipMinimumWageYearly { get; set; }
+    public decimal WeeklyHours { get; set; }
+    public string Title { get; set; }
+    public string CompanyBenefitsInformation { get; set; }
+
+    public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+
+    public IList<string> OrderedFieldNames => new List<string>
     {
-        public WageType? WageType { get; set; }
+        nameof(WageType),
+        nameof(FixedWageYearlyAmount),
+        nameof(WageAdditionalInformation),
+        nameof(CompanyBenefitsInformation)
+    };
 
-        [TypeOfMoney(ErrorMessage = ErrMsg.TypeOfMoney.FixedWageYearlyAmount)]
-        public string FixedWageYearlyAmount { get; set; }
-
-        public string WageAdditionalInformation { get; set; }
-
-        public string MinimumWageStartFrom { get; set; }
-        public string NationalMinimumWageLowerBoundHourly { get; set; }
-        public string NationalMinimumWageUpperBoundHourly { get; set; }
-        public string NationalMinimumWageYearly { get; set; }
-        public string ApprenticeshipMinimumWageHourly { get; set; }
-        public string ApprenticeshipMinimumWageYearly { get; set; }
-        public decimal WeeklyHours { get; set; }
-        public string Title { get; set; }
-        public string CompanyBenefitsInformation { get; set; }
-
-        public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
-
-        public IList<string> OrderedFieldNames => new List<string>
-        {
-            nameof(WageType),
-            nameof(FixedWageYearlyAmount),
-            nameof(WageAdditionalInformation),
-            nameof(CompanyBenefitsInformation)
-        };
-
-        public PartOnePageInfoViewModel PageInfo { get; set; }
-    }
+    public PartOnePageInfoViewModel PageInfo { get; set; }
 }

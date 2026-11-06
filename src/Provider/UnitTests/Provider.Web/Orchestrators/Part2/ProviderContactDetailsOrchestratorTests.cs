@@ -79,18 +79,9 @@ public class ProviderContactDetailsOrchestratorTests
     public class ProviderContactDetailsOrchestratorTestsFixture
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ProviderContactDetails;
-        public VacancyUser User { get; }
-        public Vacancy Vacancy { get; }
+        public VacancyUser User { get; } = VacancyOrchestratorTestData.GetVacancyUser();
+        public Vacancy Vacancy { get; } = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
         public ProviderContactDetailsOrchestrator Sut {get; private set;}
-
-        public ProviderContactDetailsOrchestratorTestsFixture()
-        {
-            MockClient = new Mock<IProviderVacancyClient>();
-            MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
-
-            User = VacancyOrchestratorTestData.GetVacancyUser();
-            Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
-        }
 
         public ProviderContactDetailsOrchestratorTestsFixture WithProviderContactName(string providerContactName)
         {
@@ -147,7 +138,7 @@ public class ProviderContactDetailsOrchestratorTests
             MockRecruitVacancyClient.Verify(x => x.UpdateDraftVacancyAsync(It.Is<Vacancy>(c=>c.HasChosenProviderContactDetails.Value), User), Times.Once);
         }
 
-        public Mock<IProviderVacancyClient> MockClient { get; set; }
-        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
+        public Mock<IProviderVacancyClient> MockClient { get; set; } = new();
+        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; } = new();
     }
 }

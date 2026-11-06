@@ -6,111 +6,110 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 
-namespace Esfa.Recruit.Shared.Web.Services
+namespace Esfa.Recruit.Shared.Web.Services;
+
+public class AlertViewModelService
 {
-    public class AlertViewModelService
+    public BlockedProviderAlertViewModel GetBlockedProviderVacanciesAlert(IEnumerable<VacancySummary> vacancies, DateTime? userLastDismissedDate)
     {
-        public BlockedProviderAlertViewModel GetBlockedProviderVacanciesAlert(IEnumerable<VacancySummary> vacancies, DateTime? userLastDismissedDate)
+        if (userLastDismissedDate.HasValue == false)
+            userLastDismissedDate = DateTime.MinValue;
+
+        var blockedProviderVacancies = GetClosedVacancies(vacancies, userLastDismissedDate, ClosureReason.BlockedByQa);
+
+        if (blockedProviderVacancies.Any() == false)
+            return null;
+
+        var blockedProviderNames = blockedProviderVacancies
+            .Select(v => v.TrainingProviderName)
+            .Distinct()
+            .OrderBy(v => v)
+            .ToList();
+
+        return new BlockedProviderAlertViewModel
         {
-            if (userLastDismissedDate.HasValue == false)
-                userLastDismissedDate = DateTime.MinValue;
+            ClosedVacancies = blockedProviderVacancies.Select(v => $"{v.Title} (VAC{v.VacancyReference})").ToList(),
+            BlockedProviderNames = blockedProviderNames
+        };
+    }
 
-            var blockedProviderVacancies = GetClosedVacancies(vacancies, userLastDismissedDate, ClosureReason.BlockedByQa);
+    public EmployerTransferredVacanciesAlertViewModel GetTransferredVacanciesAlert(IEnumerable<VacancySummary> vacancies, TransferReason reason, DateTime? userLastDismissedDate)
+    {
+        if (userLastDismissedDate.HasValue == false)
+            userLastDismissedDate = DateTime.MinValue;
 
-            if (blockedProviderVacancies.Any() == false)
-                return null;
+        var transferredVacancies = vacancies.Where(v =>
+                v.TransferInfoReason == reason &&
+                v.TransferInfoTransferredDate.HasValue &&
+                v.TransferInfoTransferredDate > userLastDismissedDate)
+            .ToList();
 
-            var blockedProviderNames = blockedProviderVacancies
-                .Select(v => v.TrainingProviderName)
-                .Distinct()
-                .OrderBy(v => v)
-                .ToList();
+        if (transferredVacancies.Any() == false)
+            return null;
 
-            return new BlockedProviderAlertViewModel
-            {
-                ClosedVacancies = blockedProviderVacancies.Select(v => $"{v.Title} (VAC{v.VacancyReference})").ToList(),
-                BlockedProviderNames = blockedProviderNames
-            };
-        }
+        var transferredVacanciesProviderNames = transferredVacancies
+            .Select(v => v.TransferInfoProviderName)
+            .Distinct()
+            .OrderBy(p => p)
+            .ToList();
 
-        public EmployerTransferredVacanciesAlertViewModel GetTransferredVacanciesAlert(IEnumerable<VacancySummary> vacancies, TransferReason reason, DateTime? userLastDismissedDate)
+        var transferredVacanciesCount = transferredVacancies
+            .Select(v => v.Id)
+            .Distinct()
+            .Count();
+
+        return new EmployerTransferredVacanciesAlertViewModel
         {
-            if (userLastDismissedDate.HasValue == false)
-                userLastDismissedDate = DateTime.MinValue;
+            TransferredVacanciesCount = transferredVacanciesCount,
+            TransferredVacanciesProviderNames = transferredVacanciesProviderNames
+        };
+    }
 
-            var transferredVacancies = vacancies.Where(v =>
-                    v.TransferInfoReason == reason &&
-                    v.TransferInfoTransferredDate.HasValue &&
-                    v.TransferInfoTransferredDate > userLastDismissedDate)
-                .ToList();
+    public WithdrawnVacanciesAlertViewModel GetWithdrawnByQaVacanciesAlert(IEnumerable<VacancySummary> vacancies, DateTime? userLastDismissedDate)
+    {
+        if (userLastDismissedDate.HasValue == false)
+            userLastDismissedDate = DateTime.MinValue;
 
-            if (transferredVacancies.Any() == false)
-                return null;
+        var withdrawnVacancies = GetClosedVacancies(vacancies, userLastDismissedDate, ClosureReason.WithdrawnByQa);
 
-            var transferredVacanciesProviderNames = transferredVacancies
-                .Select(v => v.TransferInfoProviderName)
-                .Distinct()
-                .OrderBy(p => p)
-                .ToList();
+        if (withdrawnVacancies.Any() == false)
+            return null;
 
-            var transferredVacanciesCount = transferredVacancies
-                .Select(v => v.Id)
-                .Distinct()
-                .Count();
-
-            return new EmployerTransferredVacanciesAlertViewModel
-            {
-                TransferredVacanciesCount = transferredVacanciesCount,
-                TransferredVacanciesProviderNames = transferredVacanciesProviderNames
-            };
-        }
-
-        public WithdrawnVacanciesAlertViewModel GetWithdrawnByQaVacanciesAlert(IEnumerable<VacancySummary> vacancies, DateTime? userLastDismissedDate)
+        return new WithdrawnVacanciesAlertViewModel
         {
-            if (userLastDismissedDate.HasValue == false)
-                userLastDismissedDate = DateTime.MinValue;
+            ClosedVacancies = withdrawnVacancies.Select(v => $"{v.Title} (VAC{v.VacancyReference})").ToList(),
+        };
+    }
 
-            var withdrawnVacancies = GetClosedVacancies(vacancies, userLastDismissedDate, ClosureReason.WithdrawnByQa);
+    public ProviderTransferredVacanciesAlertViewModel GetProviderTransferredVacanciesAlert(IEnumerable<ProviderDashboardTransferredVacancy> transferredVacancies, DateTime? userLastDismissedDate)
+    {
+        if (transferredVacancies == null)
+            return null;
 
-            if (withdrawnVacancies.Any() == false)
-                return null;
+        if (userLastDismissedDate.HasValue == false)
+            userLastDismissedDate = DateTime.MinValue;
 
-            return new WithdrawnVacanciesAlertViewModel
-            {
-                ClosedVacancies = withdrawnVacancies.Select(v => $"{v.Title} (VAC{v.VacancyReference})").ToList(),
-            };
-        }
+        var usersTransferredVacancies = transferredVacancies
+            .Where(t => t.TransferredDate > userLastDismissedDate)
+            .Select(t => t.LegalEntityName)
+            .ToList();
 
-        public ProviderTransferredVacanciesAlertViewModel GetProviderTransferredVacanciesAlert(IEnumerable<ProviderDashboardTransferredVacancy> transferredVacancies, DateTime? userLastDismissedDate)
+        if (usersTransferredVacancies.Any() == false)
+            return null;
+
+        return new ProviderTransferredVacanciesAlertViewModel
         {
-            if (transferredVacancies == null)
-                return null;
+            LegalEntityNames = usersTransferredVacancies.Distinct().ToList()
+        };
+    }
 
-            if (userLastDismissedDate.HasValue == false)
-                userLastDismissedDate = DateTime.MinValue;
-
-            var usersTransferredVacancies = transferredVacancies
-                .Where(t => t.TransferredDate > userLastDismissedDate)
-                .Select(t => t.LegalEntityName)
-                .ToList();
-
-            if (usersTransferredVacancies.Any() == false)
-                return null;
-
-            return new ProviderTransferredVacanciesAlertViewModel
-            {
-                LegalEntityNames = usersTransferredVacancies.Distinct().ToList()
-            };
-        }
-
-        private IList<VacancySummary> GetClosedVacancies(IEnumerable<VacancySummary> vacancies, DateTime? userLastDismissedDate, ClosureReason reason)
-        {
-            return vacancies.Where(v =>
-                    v.Status == VacancyStatus.Closed &&
-                    v.ClosureReason == reason &&
-                    v.ClosedDate > userLastDismissedDate)
-                .OrderBy(v => v.Title)
-                .ToList();
-        }
+    private IList<VacancySummary> GetClosedVacancies(IEnumerable<VacancySummary> vacancies, DateTime? userLastDismissedDate, ClosureReason reason)
+    {
+        return vacancies.Where(v =>
+                v.Status == VacancyStatus.Closed &&
+                v.ClosureReason == reason &&
+                v.ClosedDate > userLastDismissedDate)
+            .OrderBy(v => v.Title)
+            .ToList();
     }
 }

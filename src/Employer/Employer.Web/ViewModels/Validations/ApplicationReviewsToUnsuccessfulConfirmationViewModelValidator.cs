@@ -2,15 +2,14 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using FluentValidation;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.Validations
+namespace Esfa.Recruit.Employer.Web.ViewModels.Validations;
+
+public class ApplicationReviewsToUnsuccessfulConfirmationViewModelValidator : AbstractValidator<ApplicationReviewsToUnsuccessfulConfirmationViewModel>
 {
-    public class ApplicationReviewsToUnsuccessfulConfirmationViewModelValidator : AbstractValidator<ApplicationReviewsToUnsuccessfulConfirmationViewModel>
+    public ApplicationReviewsToUnsuccessfulConfirmationViewModelValidator()
     {
-        public ApplicationReviewsToUnsuccessfulConfirmationViewModelValidator()
-        {
-            RuleFor(x => x.ApplicationsUnsuccessfulConfirmed)
-                .NotNull()
-                .WithMessage(ApplicationReviewValidator.ApplicationsToUnsuccessfulConfirmationRequired);
-        }
+        RuleFor(x => x.ApplicationsUnsuccessfulConfirmed)
+            .NotNull()
+            .WithMessage(ApplicationReviewValidator.ApplicationsToUnsuccessfulConfirmationRequired);
     }
 }

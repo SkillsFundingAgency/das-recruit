@@ -2,15 +2,14 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using FluentValidation;
 
-namespace Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent
+namespace Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent;
+
+public class ApplicationReviewStatusConfirmationEditModelValidator : AbstractValidator<IApplicationStatusConfirmationEditViewModel>
 {
-    public class ApplicationReviewStatusConfirmationEditModelValidator : AbstractValidator<IApplicationStatusConfirmationEditViewModel>
+    public ApplicationReviewStatusConfirmationEditModelValidator()
     {
-        public ApplicationReviewStatusConfirmationEditModelValidator()
-        {
-            RuleFor(x => x.NotifyCandidate)
-                .NotNull()
-                .WithMessage(ApplicationReviewValidator.NotifyCandidateRequired);                             
-        }
+        RuleFor(x => x.NotifyCandidate)
+            .NotNull()
+            .WithMessage(ApplicationReviewValidator.NotifyCandidateRequired);                             
     }
 }
