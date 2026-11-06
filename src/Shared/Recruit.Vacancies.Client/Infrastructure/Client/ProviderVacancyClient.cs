@@ -69,24 +69,25 @@ public partial class VacancyClient : IProviderVacancyClient
             
         var dashboardStats = dashboardStatsTask.Result;
 
-        return new ProviderDashboardSummary
-        {
-            Closed = dashboardStats.ClosedVacanciesCount,
-            Draft = dashboardStats.DraftVacanciesCount,
-            Review = dashboardStats.ReviewVacanciesCount,
-            Referred = dashboardStats.ReferredVacanciesCount,
-            Live = dashboardStats.LiveVacanciesCount,
-            Submitted = dashboardStats.SubmittedVacanciesCount,
-            NumberOfNewApplications = dashboardStats.NewApplicationsCount,
-            NumberOfEmployerReviewedApplications = dashboardStats.EmployerReviewedApplicationsCount,
-            NumberOfSuccessfulApplications = dashboardStats.SuccessfulApplicationsCount,
-            NumberOfUnsuccessfulApplications = dashboardStats.UnsuccessfulApplicationsCount,
-            NumberClosingSoon = dashboardStats.ClosingSoonVacanciesCount,
-            NumberClosingSoonWithNoApplications = dashboardStats.ClosingSoonWithNoApplications,
-            ProviderTransferredVacanciesAlert = alerts.ProviderTransferredVacanciesAlert,
-            WithdrawnVacanciesAlert = alerts.WithdrawnVacanciesAlert,
-        };
-    }
+            return new ProviderDashboardSummary
+            {
+                Closed = dashboardStats.ClosedVacanciesCount,
+                Draft = dashboardStats.DraftVacanciesCount,
+                Review = dashboardStats.ReviewVacanciesCount,
+                Referred = dashboardStats.ReferredVacanciesCount,
+                Live = dashboardStats.LiveVacanciesCount,
+                Submitted = dashboardStats.SubmittedVacanciesCount,
+                Archived = dashboardStats.ArchivedVacanciesCount,
+                NumberOfNewApplications = dashboardStats.NewApplicationsCount,
+                NumberOfEmployerReviewedApplications = dashboardStats.EmployerReviewedApplicationsCount,
+                NumberOfSuccessfulApplications = dashboardStats.SuccessfulApplicationsCount,
+                NumberOfUnsuccessfulApplications = dashboardStats.UnsuccessfulApplicationsCount,
+                NumberClosingSoon = dashboardStats.ClosingSoonVacanciesCount,
+                NumberClosingSoonWithNoApplications = dashboardStats.ClosingSoonWithNoApplications,
+                ProviderTransferredVacanciesAlert = alerts.ProviderTransferredVacanciesAlert,
+                WithdrawnVacanciesAlert = alerts.WithdrawnVacanciesAlert,
+            };
+        }
 
     public async Task<ProviderDashboard> GetDashboardAsync(long ukprn, string userId, int page, int pageSize,
         string sortColumn, string sortOrder, FilteringOptions? status = null, string searchTerm = null)

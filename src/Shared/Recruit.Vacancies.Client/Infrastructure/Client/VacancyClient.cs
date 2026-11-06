@@ -152,27 +152,28 @@ public partial class VacancyClient(
         var dashboardStats = dashboardStatsTask.Result;
         var alerts = alertsTask.Result;
 
-        return new EmployerDashboardSummary
-        {
-            Closed = dashboardStats.ClosedVacanciesCount,
-            Draft = dashboardStats.DraftVacanciesCount,
-            Referred = dashboardStats.ReferredVacanciesCount,
-            Live = dashboardStats.LiveVacanciesCount,
-            Submitted = dashboardStats.SubmittedVacanciesCount,
-            Review = dashboardStats.ReviewVacanciesCount,
-            NumberOfNewApplications = dashboardStats.NewApplicationsCount,
-            NumberOfSuccessfulApplications = dashboardStats.SuccessfulApplicationsCount,
-            NumberOfUnsuccessfulApplications = dashboardStats.UnsuccessfulApplicationsCount,
-            NumberOfSharedApplications = dashboardStats.SharedApplicationsCount,
-            NumberOfAllSharedApplications = dashboardStats.AllSharedApplicationsCount,
-            NumberClosingSoon = dashboardStats.ClosingSoonVacanciesCount,
-            NumberClosingSoonWithNoApplications = dashboardStats.ClosingSoonWithNoApplications,
-            BlockedProviderAlert = alerts.BlockedProviderAlert,
-            BlockedProviderTransferredVacanciesAlert = alerts.BlockedProviderTransferredVacanciesAlert,
-            EmployerRevokedTransferredVacanciesAlert = alerts.EmployerRevokedTransferredVacanciesAlert,
-            WithDrawnByQaVacanciesAlert = alerts.WithDrawnByQaVacanciesAlert,
-        };
-    }
+            return new EmployerDashboardSummary
+            {
+                Closed = dashboardStats.ClosedVacanciesCount,
+                Draft = dashboardStats.DraftVacanciesCount,
+                Referred = dashboardStats.ReferredVacanciesCount,
+                Live = dashboardStats.LiveVacanciesCount,
+                Submitted = dashboardStats.SubmittedVacanciesCount,
+                Review = dashboardStats.ReviewVacanciesCount,
+                Archived = dashboardStats.ArchivedVacanciesCount,
+                NumberOfNewApplications = dashboardStats.NewApplicationsCount,
+                NumberOfSuccessfulApplications = dashboardStats.SuccessfulApplicationsCount,
+                NumberOfUnsuccessfulApplications = dashboardStats.UnsuccessfulApplicationsCount,
+                NumberOfSharedApplications = dashboardStats.SharedApplicationsCount,
+                NumberOfAllSharedApplications = dashboardStats.AllSharedApplicationsCount,
+                NumberClosingSoon = dashboardStats.ClosingSoonVacanciesCount,
+                NumberClosingSoonWithNoApplications = dashboardStats.ClosingSoonWithNoApplications,
+                BlockedProviderAlert = alerts.BlockedProviderAlert,
+                BlockedProviderTransferredVacanciesAlert = alerts.BlockedProviderTransferredVacanciesAlert,
+                EmployerRevokedTransferredVacanciesAlert = alerts.EmployerRevokedTransferredVacanciesAlert,
+                WithDrawnByQaVacanciesAlert = alerts.WithDrawnByQaVacanciesAlert,
+            };
+        }
 
     public async Task<EmployerDashboard> GetDashboardAsync(string employerAccountId, string userId, int page, int pageSize, string sortColumn, string sortOrder, FilteringOptions? status = null, string searchTerm = null)
     {

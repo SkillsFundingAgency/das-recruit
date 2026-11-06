@@ -15,6 +15,8 @@ public record GetEmployerDashboardApiResponse
     public int ReferredVacanciesCount { get; set; }
     public int LiveVacanciesCount { get; set; }
     public int SubmittedVacanciesCount { get; set; }
+    public int ArchivedVacanciesCount { get; set; }
     public int ClosingSoonVacanciesCount { get; set; }
-    public int ClosingSoonWithNoApplications { get; init; }
+    public int ClosingSoonWithNoApplications { get; init; 
+    }
 }

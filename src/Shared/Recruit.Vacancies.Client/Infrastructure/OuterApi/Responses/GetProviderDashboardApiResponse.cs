@@ -15,6 +15,7 @@ public record GetProviderDashboardApiResponse
     public int ReferredVacanciesCount { get; init; }
     public int LiveVacanciesCount { get; init; }
     public int SubmittedVacanciesCount { get; init; }
+    public int ArchivedVacanciesCount { get; init; }
     public int ClosingSoonVacanciesCount { get; init; }
     public int ClosingSoonWithNoApplications { get; init; }
 }
