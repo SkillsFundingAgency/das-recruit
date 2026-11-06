@@ -32,6 +32,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             actual.Review.Should().Be(apiResponse.ReviewVacanciesCount);
             actual.Referred.Should().Be(apiResponse.ReferredVacanciesCount);
             actual.Live.Should().Be(apiResponse.LiveVacanciesCount);
+            actual.Submitted.Should().Be(apiResponse.SubmittedVacanciesCount);
+            actual.Archived.Should().Be(apiResponse.ArchivedVacanciesCount);
             actual.NumberOfNewApplications.Should().Be(apiResponse.NewApplicationsCount);
             actual.NumberOfUnsuccessfulApplications.Should().Be(apiResponse.UnsuccessfulApplicationsCount);
             actual.NumberOfSuccessfulApplications.Should().Be(apiResponse.SuccessfulApplicationsCount);
@@ -71,6 +73,26 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             actual.HasVacancies.Should().BeFalse();
             actual.HasOneVacancy.Should().BeFalse();
             actual.HasApplications.Should().BeFalse();
+            actual.NumberOfVacancies.Should().Be(0);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_HasVacancies_Is_True_When_Only_Archived_Vacancies(
+            long ukprn,
+            string userId,
+            [Frozen] Mock<ITrainingProviderService> trainingProviderService,
+            VacancyClient vacancyClient)
+        {
+            trainingProviderService.Setup(x => x.GetProviderDashboardStats(ukprn, userId)).ReturnsAsync(new GetProviderDashboardApiResponse
+            {
+                ArchivedVacanciesCount = 2
+            });
+
+            var actual = await vacancyClient.GetDashboardSummary(ukprn, userId);
+
+            actual.Archived.Should().Be(2);
+            actual.HasVacancies.Should().BeTrue();
+            actual.HasOneVacancy.Should().BeFalse();
             actual.NumberOfVacancies.Should().Be(0);
         }
     }

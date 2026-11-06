@@ -77,6 +77,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 Referred = dashboardStats.ReferredVacanciesCount,
                 Live = dashboardStats.LiveVacanciesCount,
                 Submitted = dashboardStats.SubmittedVacanciesCount,
+                Archived = dashboardStats.ArchivedVacanciesCount,
                 NumberOfNewApplications = dashboardStats.NewApplicationsCount,
                 NumberOfEmployerReviewedApplications = dashboardStats.EmployerReviewedApplicationsCount,
                 NumberOfSuccessfulApplications = dashboardStats.SuccessfulApplicationsCount,
