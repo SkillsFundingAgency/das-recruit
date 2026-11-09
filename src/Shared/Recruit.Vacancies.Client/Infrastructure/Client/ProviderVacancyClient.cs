@@ -178,21 +178,6 @@ public partial class VacancyClient : IProviderVacancyClient
         return employerInfos;
     }
 
-    public async Task SetupProviderAsync(long ukprn)
-    {
-        var employerInfosTask = providerRelationshipsService.GetLegalEntitiesForProvider(ukprn, "", [OperationType.Recruitment]);
-        var providerStatus = providerStatusClient.GetProviderStatus(ukprn);
-
-        await Task.WhenAll(employerInfosTask, providerStatus);
-
-        var employerInfos = employerInfosTask.Result;
-
-        foreach (var employerInfo in employerInfos)
-        {
-            await SetupEmployerAsync(employerInfo.EmployerAccountId);
-        }
-    }
-
     public async Task<Guid> CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate,
         VacancyUser user, string reportName)
     {
