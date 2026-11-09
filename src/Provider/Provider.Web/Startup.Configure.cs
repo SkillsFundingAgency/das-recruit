@@ -85,6 +85,7 @@ public partial class Startup
         });
         app.UseRouting();
         app.UseAuthorization();
+        app.UseAntiforgery();
         app.UseEndpoints(builder =>
         {
             builder.MapControllerRoute("default", RoutePaths.AccountRoutePath);

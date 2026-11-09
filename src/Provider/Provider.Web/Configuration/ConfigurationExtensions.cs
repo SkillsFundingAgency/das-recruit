@@ -78,6 +78,7 @@ public static class ConfigurationExtensions
             options.Cookie.Name = CookieNames.AntiForgeryCookie;
             options.FormFieldName = "_csrfToken";
             options.HeaderName = "X-XSRF-TOKEN";
+            options.Cookie.HttpOnly = false;
         });
         services.Configure<FormOptions>(options =>
         {

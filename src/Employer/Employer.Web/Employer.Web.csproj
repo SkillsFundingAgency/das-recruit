@@ -6,7 +6,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyName>Esfa.Recruit.Employer.Web</AssemblyName>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Views\ApproveAdvert\**" />
