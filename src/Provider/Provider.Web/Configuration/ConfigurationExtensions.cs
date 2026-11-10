@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Configuration;
@@ -111,6 +112,7 @@ public static class ConfigurationExtensions
             .EnableCookieBanner()
             .EnableGoogleAnalytics()
             .SetDefaultNavigationSection(NavigationSection.Recruit);
+        services.AddFluentValidationAutoValidation();
         services.AddFeatureManagement(configuration.GetSection("Features"));
     }
 }

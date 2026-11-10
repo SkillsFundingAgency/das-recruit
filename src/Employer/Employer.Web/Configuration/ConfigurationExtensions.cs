@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using FluentValidation.AspNetCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
@@ -105,6 +106,7 @@ public static class ConfigurationExtensions
                 opts.AddTrimModelBinderProvider(loggerFactory);
             }).SetDefaultNavigationSection(NavigationSection.RecruitHome)
             .AddNewtonsoftJson();
+        services.AddFluentValidationAutoValidation();
         services.AddFeatureManagement(configuration.GetSection("Features"));
     }
 }
