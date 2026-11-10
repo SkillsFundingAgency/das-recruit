@@ -1,8 +1,6 @@
-﻿namespace Esfa.Recruit.Employer.Web.Configuration.Routing
+﻿namespace Esfa.Recruit.Employer.Web.Configuration.Routing;
+
+public static class RouteValues
 {
-    public static class RouteValues
-    {
-        public const string EmployerAccountId = "employerAccountId";
-        public const string VacancyId = "vacancyId";
-    }
+    public const string EmployerAccountId = "employerAccountId";
 }

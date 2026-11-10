@@ -13,28 +13,21 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
 [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-public class AdditionalQuestionsController : Controller
+public class AdditionalQuestionsController(IAdditionalQuestionsOrchestrator orchestrator) : Controller
 {
-    private readonly IAdditionalQuestionsOrchestrator _orchestrator;
-
-    public AdditionalQuestionsController(IAdditionalQuestionsOrchestrator orchestrator)
-    {
-        _orchestrator = orchestrator;
-    }
-
     [HttpGet("additional-questions", Name = RouteNames.AdditionalQuestions_Get)]
     public async Task<IActionResult> AdditionalQuestions(VacancyRouteModel vrm)
     {
-        var vm = await _orchestrator.GetViewModel(vrm);
+        var vm = await orchestrator.GetViewModel(vrm);
         return View(vm);
     }
     
     [HttpPost("additional-questions", Name = RouteNames.AdditionalQuestions_Post)]
     public async Task<IActionResult> AdditionalQuestions(AdditionalQuestionsEditModel m)
     {
-        var vm = await _orchestrator.GetViewModel(m);
+        var vm = await orchestrator.GetViewModel(m);
         
-        var response = await _orchestrator.PostEditModel(m, User.ToVacancyUser());
+        var response = await orchestrator.PostEditModel(m, User.ToVacancyUser());
 
         if (!response.Success)
         {

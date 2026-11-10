@@ -1,13 +1,12 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+/// <summary>
+/// overall decision for a rule set evaluation
+/// </summary>
+public enum RuleSetDecision
 {
-    /// <summary>
-    /// overall decision for a rule set evaluation
-    /// </summary>
-    public enum RuleSetDecision
-    {
-        Unknown = 0,
-        Refer,
-        Approve,
-        Indeterminate
-    }
+    Unknown = 0,
+    Refer,
+    Approve,
+    Indeterminate
 }

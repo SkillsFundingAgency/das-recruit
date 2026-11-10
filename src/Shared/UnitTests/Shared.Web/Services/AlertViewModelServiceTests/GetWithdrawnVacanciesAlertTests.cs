@@ -4,75 +4,74 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using FluentAssertions;
-using Xunit;
+using NUnit.Framework;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services.AlertViewModelServiceTests
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services.AlertViewModelServiceTests;
+
+public class GetWithdrawnVacanciesAlertTests : AlertViewModelServiceTestBase
 {
-    public class GetWithdrawnVacanciesAlertTests : AlertViewModelServiceTestBase
+    [Test]
+    [TestCase(null, 5)]
+    [TestCase("2019-07-16", 2)]
+    [TestCase("2019-07-18", null)]
+    public void ShouldReturnNonDismissedVacancies(string userLastDismissedDateString, int? expectedNumberOfVacanciesReturned)
     {
-        [Theory]
-        [InlineData(null, 5)]
-        [InlineData("2019-07-16", 2)]
-        [InlineData("2019-07-18", null)]
-        public void ShouldReturnNonDismissedVacancies(string userLastDismissedDateString, int? expectedNumberOfVacanciesReturned)
+        var vacancies = GetVacancies();
+
+        var userLastDismissedDate = GetUserDismissedDate(userLastDismissedDateString);
+
+        var sut = new AlertViewModelService();
+
+        var vm = sut.GetWithdrawnByQaVacanciesAlert(vacancies, userLastDismissedDate);
+
+        if (expectedNumberOfVacanciesReturned == null)
         {
-            var vacancies = GetVacancies();
-
-            var userLastDismissedDate = GetUserDismissedDate(userLastDismissedDateString);
-
-            var sut = new AlertViewModelService();
-
-            var vm = sut.GetWithdrawnByQaVacanciesAlert(vacancies, userLastDismissedDate);
-
-            if (expectedNumberOfVacanciesReturned == null)
-            {
-                vm.Should().BeNull();
-            }
-            else
-            {
-                vm.ClosedVacancies.Count.Should().Be(expectedNumberOfVacanciesReturned);
-            }
+            vm.Should().BeNull();
         }
-
-        [Fact]
-        public void ShouldReturnFormattedClosedVacancies()
+        else
         {
-            var vacancies = GetVacancies();
-
-            var sut = new AlertViewModelService();
-
-            var vm = sut.GetWithdrawnByQaVacanciesAlert(vacancies, null);
-
-            vm.ClosedVacancies.Count.Should().Be(5);
-            vm.ClosedVacancies[0].Should().Be("A vacancy (VAC55555555)");
-            vm.ClosedVacancies[1].Should().Be("B vacancy (VAC11111111)");
-            vm.ClosedVacancies[2].Should().Be("C vacancy (VAC44444444)");
-            vm.ClosedVacancies[3].Should().Be("D vacancy (VAC22222222)");
-            vm.ClosedVacancies[4].Should().Be("E vacancy (VAC33333333)");
+            vm.ClosedVacancies.Count.Should().Be(expectedNumberOfVacanciesReturned);
         }
+    }
 
-        private IEnumerable<VacancySummary> GetVacancies()
+    [Test]
+    public void ShouldReturnFormattedClosedVacancies()
+    {
+        var vacancies = GetVacancies();
+
+        var sut = new AlertViewModelService();
+
+        var vm = sut.GetWithdrawnByQaVacanciesAlert(vacancies, null);
+
+        vm.ClosedVacancies.Count.Should().Be(5);
+        vm.ClosedVacancies[0].Should().Be("A vacancy (VAC55555555)");
+        vm.ClosedVacancies[1].Should().Be("B vacancy (VAC11111111)");
+        vm.ClosedVacancies[2].Should().Be("C vacancy (VAC44444444)");
+        vm.ClosedVacancies[3].Should().Be("D vacancy (VAC22222222)");
+        vm.ClosedVacancies[4].Should().Be("E vacancy (VAC33333333)");
+    }
+
+    private IEnumerable<VacancySummary> GetVacancies()
+    {
+        return new List<VacancySummary>
         {
-            return new List<VacancySummary>
-            {
-                CreateVacancy(DateTime.Parse("2019-07-14"), "B vacancy", 11111111),
-                CreateVacancy(DateTime.Parse("2019-07-15"), "D vacancy", 22222222),
-                CreateVacancy(DateTime.Parse("2019-07-16"), "E vacancy", 33333333),
-                CreateVacancy(DateTime.Parse("2019-07-17"), "C vacancy", 44444444),
-                CreateVacancy(DateTime.Parse("2019-07-18"), "A vacancy", 55555555)
-            };
-        }
+            CreateVacancy(DateTime.Parse("2019-07-14"), "B vacancy", 11111111),
+            CreateVacancy(DateTime.Parse("2019-07-15"), "D vacancy", 22222222),
+            CreateVacancy(DateTime.Parse("2019-07-16"), "E vacancy", 33333333),
+            CreateVacancy(DateTime.Parse("2019-07-17"), "C vacancy", 44444444),
+            CreateVacancy(DateTime.Parse("2019-07-18"), "A vacancy", 55555555)
+        };
+    }
 
-        private VacancySummary CreateVacancy(DateTime closedDate, string title, long vacancyReference)
+    private VacancySummary CreateVacancy(DateTime closedDate, string title, long vacancyReference)
+    {
+        return new VacancySummary
         {
-            return new VacancySummary
-            {
-                Status = VacancyStatus.Closed,
-                ClosedDate = closedDate,
-                ClosureReason = ClosureReason.WithdrawnByQa,
-                Title = title,
-                VacancyReference = vacancyReference
-            };
-        }
+            Status = VacancyStatus.Closed,
+            ClosedDate = closedDate,
+            ClosureReason = ClosureReason.WithdrawnByQa,
+            Title = title,
+            VacancyReference = vacancyReference
+        };
     }
 }

@@ -1,18 +1,17 @@
-﻿namespace Esfa.Recruit.Shared.Web.ViewModels.Validations
+﻿namespace Esfa.Recruit.Shared.Web.ViewModels.Validations;
+
+using Esfa.Recruit.Shared.Web.Extensions;    
+using System.ComponentModel.DataAnnotations;
+
+public class TypeOfMoneyAttribute : ValidationAttribute
 {
-    using Esfa.Recruit.Shared.Web.Extensions;    
-    using System.ComponentModel.DataAnnotations;
-
-    public class TypeOfMoneyAttribute : ValidationAttribute
+    public override bool IsValid(object value)
     {
-        public override bool IsValid(object value)
+        if (value == null)
         {
-            if (value == null)
-            {
-                return true;
-            }
-
-            return (((string)value).AsMoney() != null);            
+            return true;
         }
+
+        return (((string)value).AsMoney() != null);            
     }
 }

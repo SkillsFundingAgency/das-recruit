@@ -21,7 +21,7 @@ public class AddLocationController(IUtility utility) : Controller
     {
         ModelState.ThrowIfBindingErrors();
         TempData[TempDataKeys.AddLocationReturnPath] = RouteNames.AddLocation_Get;
-        string postcode = TempData[TempDataKeys.Postcode] as string;
+        var postcode = TempData[TempDataKeys.Postcode] as string;
         var viewModel = await GetAddLocationViewModel(utility, model, postcode, model.Origin, model.Wizard);
         return View(viewModel);
     }

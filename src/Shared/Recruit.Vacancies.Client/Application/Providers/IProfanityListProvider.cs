@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Providers
+namespace Esfa.Recruit.Vacancies.Client.Application.Providers;
+
+public interface IProfanityListProvider
 {
-    public interface IProfanityListProvider
-    {
-        Task<IEnumerable<string>> GetProfanityListAsync();
-    }
+    Task<IEnumerable<string>> GetProfanityListAsync();
 }

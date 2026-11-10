@@ -172,17 +172,9 @@ public class ApplicationProcessOrchestratorTests
     public class ApplicationProcessOrchestratorTestsFixture
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ApplicationMethod;
-        public VacancyUser User { get; }
-        public Vacancy Vacancy { get; }
+        public VacancyUser User { get; } = VacancyOrchestratorTestData.GetVacancyUser();
+        public Vacancy Vacancy { get; } = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
         public ApplicationProcessOrchestrator Sut { get; private set; }
-
-        public ApplicationProcessOrchestratorTestsFixture()
-        {
-            MockClient = new Mock<IProviderVacancyClient>();
-            MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
-            User = VacancyOrchestratorTestData.GetVacancyUser();
-            Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
-        }
 
         public ApplicationProcessOrchestratorTestsFixture WithApplicationMethod(ApplicationMethod applicationMethod)
         {
@@ -246,7 +238,7 @@ public class ApplicationProcessOrchestratorTests
             MockRecruitVacancyClient.Verify(x => x.UpdateDraftVacancyAsync(Vacancy, User), Times.Once);
         }
 
-        public Mock<IProviderVacancyClient> MockClient { get; set; }
-        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
+        public Mock<IProviderVacancyClient> MockClient { get; set; } = new();
+        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; } = new();
     }
 }

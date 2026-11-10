@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Services.VacancyComparer
+namespace Esfa.Recruit.Vacancies.Client.Application.Services.VacancyComparer;
+
+public class VacancyComparerResult
 {
-    public class VacancyComparerResult
-    {
-        public IEnumerable<VacancyComparerField> Fields;
-    }
+    public IEnumerable<VacancyComparerField> Fields;
 }

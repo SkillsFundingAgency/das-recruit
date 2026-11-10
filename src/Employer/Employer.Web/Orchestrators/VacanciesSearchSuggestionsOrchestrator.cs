@@ -5,31 +5,30 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators
+namespace Esfa.Recruit.Employer.Web.Orchestrators;
+
+public class VacanciesSearchSuggestionsOrchestrator(IEmployerVacancyClient employerVacancyClient)
 {
-    public class VacanciesSearchSuggestionsOrchestrator(IEmployerVacancyClient employerVacancyClient)
+    private const int MaxRowsInResult = 50;
+
+    public async Task<IEnumerable<string>> GetSearchSuggestionsAsync(string searchTerm, string employerAccountId)
     {
-        private const int MaxRowsInResult = 50;
+        if (searchTerm == null || searchTerm.Trim().Length < 5) return [];
 
-        public async Task<IEnumerable<string>> GetSearchSuggestionsAsync(string searchTerm, string employerAccountId)
-        {
-            if (searchTerm == null || searchTerm.Trim().Length < 5) return [];
+        var vacancies = (await GetVacanciesAsync(employerAccountId, searchTerm)).ToList();
 
-            var vacancies = (await GetVacanciesAsync(employerAccountId, searchTerm)).ToList();
-
-            var data = vacancies.Select(c=>c.Title).
-                Concat(vacancies.Select(c=>c.LegalEntityName))
-                .Concat(vacancies.Select(c=>$"VAC{c.VacancyReference}"))
-                .Distinct(StringComparer.OrdinalIgnoreCase);
+        var data = vacancies.Select(c=>c.Title).
+            Concat(vacancies.Select(c=>c.LegalEntityName))
+            .Concat(vacancies.Select(c=>$"VAC{c.VacancyReference}"))
+            .Distinct(StringComparer.OrdinalIgnoreCase);
             
-            return data.Take(MaxRowsInResult).OrderBy(r => r);
-        }
+        return data.Take(MaxRowsInResult).OrderBy(r => r);
+    }
         
-        private async Task<IEnumerable<VacancySummary>> GetVacanciesAsync(string employerAccountId, string searchTerm)
-        {
-            var dashboard = await employerVacancyClient.GetDashboardAsync(employerAccountId, "", 1, 25, "", "", null, searchTerm);
+    private async Task<IEnumerable<VacancySummary>> GetVacanciesAsync(string employerAccountId, string searchTerm)
+    {
+        var dashboard = await employerVacancyClient.GetDashboardAsync(employerAccountId, "", 1, 25, "", "", null, searchTerm);
 
-            return dashboard?.Vacancies?.OrderByDescending(v => v.CreatedDate) ?? Enumerable.Empty<VacancySummary>();
-        }
+        return dashboard?.Vacancies?.OrderByDescending(v => v.CreatedDate) ?? Enumerable.Empty<VacancySummary>();
     }
 }

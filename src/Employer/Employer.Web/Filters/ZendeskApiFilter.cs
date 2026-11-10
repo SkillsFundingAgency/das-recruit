@@ -4,46 +4,38 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Employer.Web.Filters
+namespace Esfa.Recruit.Employer.Web.Filters;
+
+public class ZendeskApiFilter(ILogger<ZendeskApiFilter> logger) : ActionFilterAttribute
 {
-    public class ZendeskApiFilter : ActionFilterAttribute
+    public override void OnActionExecuting(ActionExecutingContext filterContext)
     {
-        private readonly ILogger<ZendeskApiFilter> _logger;
-
-        public ZendeskApiFilter(ILogger<ZendeskApiFilter> logger)
+        try
         {
-            _logger = logger;
-        }
-
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-            try
+            var controller = filterContext.Controller as Controller;
+            if (controller?.User != null)
             {
-                var controller = filterContext.Controller as Controller;
-                if (controller?.User != null)
+                var user = controller.User.ToVacancyUser();
+                controller.ViewBag.ZendeskApiData = new ZendeskApiData
                 {
-                    var user = controller.User.ToVacancyUser();
-                    controller.ViewBag.ZendeskApiData = new ZendeskApiData
-                    {
-                        Name = user.Name,
-                        Email = user.Email,
-                        Organization = user.Ukprn.HasValue ? user.Ukprn.Value.ToString() : string.Empty
-                    };
-                }
+                    Name = user.Name,
+                    Email = user.Email,
+                    Organization = user.Ukprn.HasValue ? user.Ukprn.Value.ToString() : string.Empty
+                };
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"ZendeskApiFilter Cannot set ZendeskApiData for Employer");
-            }
-            
-            base.OnActionExecuting(filterContext);
         }
-
-        public class ZendeskApiData
+        catch (Exception ex)
         {
-            public string Name { get; set; }
-            public string Email { get; set; }
-            public string Organization { get; set; }
+            logger.LogError(ex, $"ZendeskApiFilter Cannot set ZendeskApiData for Employer");
         }
+            
+        base.OnActionExecuting(filterContext);
+    }
+
+    public class ZendeskApiData
+    {
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Organization { get; set; }
     }
 }

@@ -1,19 +1,18 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation;
+
+public class ValidateAllTests : VacancyValidationTestsBase
 {
-    public class ValidateAllTests : VacancyValidationTestsBase
+    [Test]
+    public void ShouldNotCrashWhenValidatingAnEmptyVacancy()
     {
-        [Fact]
-        public void ShouldNotCrashWhenValidatingAnEmptyVacancy()
-        {
-            var vacancy = new Vacancy();
+        var vacancy = new Vacancy();
             
-            var result = Validator.Validate(vacancy, VacancyRuleSet.All);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.All);
 
-            result.HasErrors.Should().BeTrue();
-        }
+        result.HasErrors.Should().BeTrue();
     }
 }

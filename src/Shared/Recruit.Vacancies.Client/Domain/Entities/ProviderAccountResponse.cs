@@ -1,10 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public class ProviderAccountResponse
 {
-    public class ProviderAccountResponse
-    {
-        [JsonPropertyName("canAccessService")]
-        public bool CanAccessService { get; set; }
-    }
+    [JsonPropertyName("canAccessService")]
+    public bool CanAccessService { get; set; }
 }

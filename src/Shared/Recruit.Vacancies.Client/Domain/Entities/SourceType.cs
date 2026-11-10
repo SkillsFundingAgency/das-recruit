@@ -1,9 +1,8 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum SourceType
 {
-    public enum SourceType
-    {
-        Clone,
-        Extension,
-        New
-    }
+    Clone,
+    Extension,
+    New
 }

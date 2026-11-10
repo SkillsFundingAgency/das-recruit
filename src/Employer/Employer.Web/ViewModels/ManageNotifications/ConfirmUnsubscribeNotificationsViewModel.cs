@@ -1,7 +1,6 @@
-namespace Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications
+namespace Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications;
+
+public class ConfirmUnsubscribeNotificationsViewModel : ManageNotificationsRouteModel
 {
-    public class ConfirmUnsubscribeNotificationsViewModel : ManageNotificationsRouteModel
-    {
-        public bool? ConfirmUnsubscribe { get; set; }
-    }
+    public bool? ConfirmUnsubscribe { get; set; }
 }

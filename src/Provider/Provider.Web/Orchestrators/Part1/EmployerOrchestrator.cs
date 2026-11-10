@@ -5,27 +5,26 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
-namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
+namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1;
+
+public class EmployerOrchestrator(IProviderVacancyClient providerVacancyClient)
 {
-	public class EmployerOrchestrator(IProviderVacancyClient providerVacancyClient)
+    public async Task<EmployersViewModel> GetEmployersViewModelAsync(VacancyRouteModel vrm)
     {
-        public async Task<EmployersViewModel> GetEmployersViewModelAsync(VacancyRouteModel vrm)
+        var editVacancyInfo = await providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn, "");
+
+        if (editVacancyInfo?.Employers == null || !editVacancyInfo.Employers.Any())
         {
-            var editVacancyInfo = await providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn, "");
-
-            if (editVacancyInfo?.Employers == null || !editVacancyInfo.Employers.Any())
-            {
-                throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vrm.Ukprn));
-            }
-
-            var vm = new EmployersViewModel
-            {
-                Employers = editVacancyInfo.Employers.Select(e => new EmployerViewModel {Id = e.EmployerAccountId, Name = e.Name}),
-                VacancyId = vrm.VacancyId,
-                Ukprn = vrm.Ukprn
-            };
-
-            return vm;
+            throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vrm.Ukprn));
         }
+
+        var vm = new EmployersViewModel
+        {
+            Employers = editVacancyInfo.Employers.Select(e => new EmployerViewModel {Id = e.EmployerAccountId, Name = e.Name}),
+            VacancyId = vrm.VacancyId,
+            Ukprn = vrm.Ukprn
+        };
+
+        return vm;
     }
 }

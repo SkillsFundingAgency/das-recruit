@@ -9,49 +9,48 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+
+public class OuterApiGetProviderStatusClient(
+    IOuterApiClient outerApiClient,
+    ICache cache,
+    ITimeProvider timeProvider,
+    ILogger<OuterApiGetProviderStatusClient> logger)
+    : IGetProviderStatusClient
 {
-    public class OuterApiGetProviderStatusClient(
-        IOuterApiClient outerApiClient,
-        ICache cache,
-        ITimeProvider timeProvider,
-        ILogger<OuterApiGetProviderStatusClient> logger)
-        : IGetProviderStatusClient
+    public async Task<ProviderAccountResponse> GetProviderStatus(long ukprn)
     {
-        public async Task<ProviderAccountResponse> GetProviderStatus(long ukprn)
+        if (ukprn == EsfaTestTrainingProvider.Ukprn)
         {
-            if (ukprn == EsfaTestTrainingProvider.Ukprn)
+            return new ProviderAccountResponse
             {
-                return new ProviderAccountResponse
+                CanAccessService = true
+            };
+        }
+        try
+        {
+            return await cache.CacheAsideAsync($"{CacheKeys.ProviderAccountsPermissions}_{ukprn}",
+                timeProvider.NextDay,
+                async () =>
                 {
-                    CanAccessService = true
-                };
-            }
-            try
-            {
-                return await cache.CacheAsideAsync($"{CacheKeys.ProviderAccountsPermissions}_{ukprn}",
-                    timeProvider.NextDay,
-                    async () =>
-                    {
-                        var retryPolicy = PollyRetryPolicy.GetPolicy();
+                    var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-                        var response = await retryPolicy.Execute(_ => 
-                                outerApiClient.Get<ProviderAccountResponse>(new GetProviderStatusDetails(ukprn)),
-                            new Dictionary<string, object>
+                    var response = await retryPolicy.Execute(_ => 
+                            outerApiClient.Get<ProviderAccountResponse>(new GetProviderStatusDetails(ukprn)),
+                        new Dictionary<string, object>
+                        {
                             {
-                                {
-                                    "apiCall", "ProviderAccounts"
-                                }
-                            });
+                                "apiCall", "ProviderAccounts"
+                            }
+                        });
 
-                        return response;
-                    });
-            }
-            catch (Exception e)
-            {
-                logger.LogInformation("Get Provider Status failed for ukprn number: {Ukprn}. Exception: {Exception}", ukprn, e.Message);
-                throw new Exception();
-            }
+                    return response;
+                });
+        }
+        catch (Exception e)
+        {
+            logger.LogInformation("Get Provider Status failed for ukprn number: {Ukprn}. Exception: {Exception}", ukprn, e.Message);
+            throw new Exception();
         }
     }
 }

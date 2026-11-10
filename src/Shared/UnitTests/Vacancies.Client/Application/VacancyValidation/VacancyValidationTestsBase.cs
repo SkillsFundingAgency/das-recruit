@@ -14,87 +14,86 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Rules.VacancyRules;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation;
+
+public abstract class VacancyValidationTestsBase
 {
-    public abstract class VacancyValidationTestsBase
+    protected readonly Mock<IMinimumWageProvider> MockMinimumWageService;
+    protected readonly Mock<IApprenticeshipProgrammeProvider> MockApprenticeshipProgrammeProvider;
+    protected readonly Mock<IReferenceDataClient> MockReferenceDataClient;
+    protected readonly IHtmlSanitizerService SanitizerService;
+    protected readonly Mock<ITrainingProviderSummaryProvider> MockTrainingProviderSummaryProvider;
+    protected readonly TestProfanityListProvider MockProfanityListProvider;
+    protected readonly Mock<IProviderRelationshipsService> MockProviderRelationshipsService;
+    protected readonly Mock<ITrainingProviderService> MockTrainingProviderService;
+    protected readonly Mock<ILocationsService> MockLocationsService;
+    protected ITimeProvider TimeProvider;
+    protected readonly Mock<IFeature> Feature;
+
+
+    protected VacancyValidationTestsBase()
     {
-        protected readonly Mock<IMinimumWageProvider> MockMinimumWageService;
-        protected readonly Mock<IApprenticeshipProgrammeProvider> MockApprenticeshipProgrammeProvider;
-        protected readonly Mock<IReferenceDataClient> MockReferenceDataClient;
-        protected readonly IHtmlSanitizerService SanitizerService;
-        protected readonly Mock<ITrainingProviderSummaryProvider> MockTrainingProviderSummaryProvider;
-        protected readonly TestProfanityListProvider MockProfanityListProvider;
-        protected readonly Mock<IProviderRelationshipsService> MockProviderRelationshipsService;
-        protected readonly Mock<ITrainingProviderService> MockTrainingProviderService;
-        protected readonly Mock<ILocationsService> MockLocationsService;
-        protected ITimeProvider TimeProvider;
-        protected readonly Mock<IFeature> Feature;
-
-
-        protected VacancyValidationTestsBase()
-        {
             
-            MockMinimumWageService = new Mock<IMinimumWageProvider>();
-            MockApprenticeshipProgrammeProvider = new Mock<IApprenticeshipProgrammeProvider>();
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("123", null, true))
-                .ReturnsAsync(new ApprenticeshipProgramme
-                {
-                    IsActive = true,
-                    Id = "123",
-                });
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("123", 10000000, true))
-                .ReturnsAsync(new ApprenticeshipProgramme
-                {
-                    IsActive = true,
-                    Id = "123",
-                });
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("000", null, true))
-                .ReturnsAsync(new ApprenticeshipProgramme
-                {
-                    Id = "abc",
-                    IsActive = false
-                });
-            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null, true))
-                .ReturnsAsync(new List<ApprenticeshipProgramme>
-                {
-                    new()
-                    {
-                        Id = "123",
-                        IsActive = true
-                    }
-                });
-            MockReferenceDataClient = new Mock<IReferenceDataClient>();
-            SanitizerService = new HtmlSanitizerService(new Mock<ILogger<HtmlSanitizerService>>().Object);
-            MockTrainingProviderSummaryProvider = new Mock<ITrainingProviderSummaryProvider>();
-            MockTrainingProviderSummaryProvider.Setup(x => x.GetAsync(10000000))
-                .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
-            MockTrainingProviderSummaryProvider.Setup(x => x.GetAsync(10000000))
-                .ReturnsAsync(new TrainingProviderSummary());
-            MockProfanityListProvider = new TestProfanityListProvider();
-            MockProviderRelationshipsService = new Mock<IProviderRelationshipsService>();
-            MockTrainingProviderService = new Mock<ITrainingProviderService>();
-            MockLocationsService = new Mock<ILocationsService>();
-            MockTrainingProviderService.Setup(x => x.GetCourseProviders(123)).ReturnsAsync(new List<TrainingProviderSummary>
+        MockMinimumWageService = new Mock<IMinimumWageProvider>();
+        MockApprenticeshipProgrammeProvider = new Mock<IApprenticeshipProgrammeProvider>();
+        MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("123", null, true))
+            .ReturnsAsync(new ApprenticeshipProgramme
+            {
+                IsActive = true,
+                Id = "123",
+            });
+        MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("123", 10000000, true))
+            .ReturnsAsync(new ApprenticeshipProgramme
+            {
+                IsActive = true,
+                Id = "123",
+            });
+        MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammeAsync("000", null, true))
+            .ReturnsAsync(new ApprenticeshipProgramme
+            {
+                Id = "abc",
+                IsActive = false
+            });
+        MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false, null, true))
+            .ReturnsAsync(new List<ApprenticeshipProgramme>
             {
                 new()
                 {
-                    Ukprn = 10000000,
+                    Id = "123",
+                    IsActive = true
                 }
             });
-            TimeProvider = new CurrentUtcTimeProvider();
-            Feature = new Mock<IFeature>();
-        }
-
-        protected IEntityValidator<Vacancy, VacancyRuleSet> Validator
+        MockReferenceDataClient = new Mock<IReferenceDataClient>();
+        SanitizerService = new HtmlSanitizerService(new Mock<ILogger<HtmlSanitizerService>>().Object);
+        MockTrainingProviderSummaryProvider = new Mock<ITrainingProviderSummaryProvider>();
+        MockTrainingProviderSummaryProvider.Setup(x => x.GetAsync(10000000))
+            .ReturnsAsync(new TrainingProviderSummary{IsTrainingProviderMainOrEmployerProfile = true});
+        MockTrainingProviderSummaryProvider.Setup(x => x.GetAsync(10000000))
+            .ReturnsAsync(new TrainingProviderSummary());
+        MockProfanityListProvider = new TestProfanityListProvider();
+        MockProviderRelationshipsService = new Mock<IProviderRelationshipsService>();
+        MockTrainingProviderService = new Mock<ITrainingProviderService>();
+        MockLocationsService = new Mock<ILocationsService>();
+        MockTrainingProviderService.Setup(x => x.GetCourseProviders(123)).ReturnsAsync(new List<TrainingProviderSummary>
         {
-            get
+            new()
             {
-                var fluentValidator = new FluentVacancyValidator(TimeProvider, MockMinimumWageService.Object, 
-                    MockApprenticeshipProgrammeProvider.Object, MockReferenceDataClient.Object, SanitizerService, 
-                    MockTrainingProviderSummaryProvider.Object,
-                    MockProfanityListProvider, MockProviderRelationshipsService.Object, MockLocationsService.Object);
-                return new EntityValidator<Vacancy, VacancyRuleSet>(fluentValidator);
+                Ukprn = 10000000,
             }
+        });
+        TimeProvider = new CurrentUtcTimeProvider();
+        Feature = new Mock<IFeature>();
+    }
+
+    protected IEntityValidator<Vacancy, VacancyRuleSet> Validator
+    {
+        get
+        {
+            var fluentValidator = new FluentVacancyValidator(TimeProvider, MockMinimumWageService.Object, 
+                MockApprenticeshipProgrammeProvider.Object, MockReferenceDataClient.Object, SanitizerService, 
+                MockTrainingProviderSummaryProvider.Object,
+                MockProfanityListProvider, MockProviderRelationshipsService.Object, MockLocationsService.Object);
+            return new EntityValidator<Vacancy, VacancyRuleSet>(fluentValidator);
         }
     }
 }

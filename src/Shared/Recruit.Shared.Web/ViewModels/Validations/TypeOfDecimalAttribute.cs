@@ -1,26 +1,18 @@
 ﻿using Esfa.Recruit.Shared.Web.Extensions;
 
-namespace Esfa.Recruit.Shared.Web.ViewModels.Validations
+namespace Esfa.Recruit.Shared.Web.ViewModels.Validations;
+
+using System.ComponentModel.DataAnnotations;
+
+public class TypeOfDecimalAttribute(int numberOfDecimalPlaces) : ValidationAttribute
 {
-    using System.ComponentModel.DataAnnotations;
-
-    public class TypeOfDecimalAttribute : ValidationAttribute
+    public override bool IsValid(object value)
     {
-        private readonly int _numberOfDecimalPlaces;
-
-        public TypeOfDecimalAttribute(int numberOfDecimalPlaces)
+        if (value == null)
         {
-            _numberOfDecimalPlaces = numberOfDecimalPlaces;
+            return true;
         }
 
-        public override bool IsValid(object value)
-        {
-            if (value == null)
-            {
-                return true;
-            }
-
-            return (((string)value).AsDecimal(_numberOfDecimalPlaces) != null);
-        }
+        return (((string)value).AsDecimal(numberOfDecimalPlaces) != null);
     }
 }

@@ -303,19 +303,9 @@ public class QualificationsOrchestratorTests
 
     public class QualificationsOrchestratorTestsFixture
     {
-        public VacancyUser User { get; }
-        public Vacancy Vacancy { get; private set; }
+        public VacancyUser User { get; } = VacancyOrchestratorTestData.GetVacancyUser();
+        public Vacancy Vacancy { get; private set; } = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
         public QualificationsOrchestrator Sut {get; private set;}
-
-        public QualificationsOrchestratorTestsFixture()
-        {
-            MockClient = new Mock<IEmployerVacancyClient>();
-            MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
-            MockReferenceDataClient = new Mock<IReferenceDataClient>();
-
-            User = VacancyOrchestratorTestData.GetVacancyUser();
-            Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
-        }
 
         public QualificationsOrchestratorTestsFixture WithQualfication(string subject, string grade, string qualificationType, QualificationWeighting weighting)
         {
@@ -410,8 +400,8 @@ public class QualificationsOrchestratorTests
             return collection.Any(p => JsonConvert.SerializeObject(p).Equals(JsonConvert.SerializeObject(expected)));
         }
 
-        public Mock<IEmployerVacancyClient> MockClient { get; set; }
-        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
-        private Mock<IReferenceDataClient> MockReferenceDataClient { get; set; }
+        public Mock<IEmployerVacancyClient> MockClient { get; set; } = new();
+        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; } = new();
+        private Mock<IReferenceDataClient> MockReferenceDataClient { get; set; } = new();
     }
 }

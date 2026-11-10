@@ -1,8 +1,7 @@
-﻿namespace Esfa.Recruit.Employer.Web.Models
+﻿namespace Esfa.Recruit.Employer.Web.Models;
+
+public class SubmitVacancyResponse
 {
-    public class SubmitVacancyResponse
-    {
-        public bool HasLegalEntityAgreement { get; set; }
-        public bool IsSubmitted { get; set; }
-    }
+    public bool HasLegalEntityAgreement { get; set; }
+    public bool IsSubmitted { get; set; }
 }

@@ -1,10 +1,9 @@
-namespace Esfa.Recruit.Shared.Web.Models
+namespace Esfa.Recruit.Shared.Web.Models;
+
+public enum EmployerIdentityOption
 {
-    public enum EmployerIdentityOption
-    {
-        RegisteredName,
-        ExistingTradingName,
-        NewTradingName,
-        Anonymous
-    }
+    RegisteredName,
+    ExistingTradingName,
+    NewTradingName,
+    Anonymous
 }

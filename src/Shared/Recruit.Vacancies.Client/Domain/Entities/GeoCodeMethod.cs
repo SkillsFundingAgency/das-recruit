@@ -1,13 +1,12 @@
-namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum GeoCodeMethod
 {
-    public enum GeoCodeMethod
-    {
-        Unspecified,
-        ExistingVacancy,
-        PostcodesIo,
-        Loqate,
-        PostcodesIoOutcode,
-        OuterApi,
-        FailedToGeoCode
-    }
+    Unspecified,
+    ExistingVacancy,
+    PostcodesIo,
+    Loqate,
+    PostcodesIoOutcode,
+    OuterApi,
+    FailedToGeoCode
 }

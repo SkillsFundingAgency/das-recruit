@@ -4,94 +4,93 @@ using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
+namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions;
+
+public static class AddressExtensions
 {
-    public static class AddressExtensions
-    {
-        private const int PostcodeMinLength = 5;
-        private const int IncodeLength = 3;
+    private const int PostcodeMinLength = 5;
+    private const int IncodeLength = 3;
         
-        public static string PostcodeAsOutcode(this Address address)
+    public static string PostcodeAsOutcode(this Address address)
+    {
+        var postcode = address.Postcode.Replace(" ", "");
+
+        if (postcode.Length < PostcodeMinLength)
         {
-            var postcode = address.Postcode.Replace(" ", "");
-
-            if (postcode.Length < PostcodeMinLength)
-            {
-                return null;
-            }
-
-            return postcode.Substring(0, postcode.Length - IncodeLength);
+            return null;
         }
 
-        public static string Flatten(this Address address)
+        return postcode.Substring(0, postcode.Length - IncodeLength);
+    }
+
+    public static string Flatten(this Address address)
+    {
+        return new[]
         {
-            return new[]
-            {
-                address.AddressLine1,
-                address.AddressLine2,
-                address.AddressLine3,
-                address.AddressLine4,
-                address.Postcode
-            }.Where(x => !string.IsNullOrWhiteSpace(x)).ToDelimitedString(", ");
+            address.AddressLine1,
+            address.AddressLine2,
+            address.AddressLine3,
+            address.AddressLine4,
+            address.Postcode
+        }.Where(x => !string.IsNullOrWhiteSpace(x)).ToDelimitedString(", ");
+    }
+
+    public static string GetCity(this Address? address)
+    {
+        if (address is null)
+        {
+            return null;
         }
 
-        public static string GetCity(this Address? address)
+        // city should never be on first line
+        List<string> lines = [
+            address.AddressLine4,
+            address.AddressLine3,
+            address.AddressLine2
+        ];
+
+        return lines.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x))?.Trim();
+    }
+
+    public static List<string> GetCityDisplayList(this IEnumerable<Address> addresses)
+    {
+        if (addresses == null) return [];
+
+        var enumerable = addresses.ToList();
+        if (!enumerable.Any())
         {
-            if (address is null)
-            {
-                return null;
-            }
-
-            // city should never be on first line
-            List<string> lines = [
-                address.AddressLine4,
-                address.AddressLine3,
-                address.AddressLine2
-            ];
-
-            return lines.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x))?.Trim();
+            return [];
         }
 
-        public static List<string> GetCityDisplayList(this IEnumerable<Address> addresses)
+        // Group by city
+        var cityGroups = enumerable
+            .Where(a => !string.IsNullOrWhiteSpace(a.GetCity()))
+            .GroupBy(a => a.GetCity());
+
+        // Build display values
+        var displayValues = cityGroups.SelectMany(group =>
         {
-            if (addresses == null) return [];
+            bool isDuplicate = group.Count() > 1;
+            return group.Select(a =>
+                isDuplicate
+                    ? $"{a.GetCity()} ({a.AddressLine1?.Trim()})"
+                    : a.GetCity().Trim()
+            );
+        });
 
-            var enumerable = addresses.ToList();
-            if (!enumerable.Any())
-            {
-                return [];
-            }
+        return displayValues.ToList();
 
-            // Group by city
-            var cityGroups = enumerable
-                .Where(a => !string.IsNullOrWhiteSpace(a.GetCity()))
-                .GroupBy(a => a.GetCity());
+    }
 
-            // Build display values
-            var displayValues = cityGroups.SelectMany(group =>
-            {
-                bool isDuplicate = group.Count() > 1;
-                return group.Select(a =>
-                    isDuplicate
-                        ? $"{a.GetCity()} ({a.AddressLine1?.Trim()})"
-                        : a.GetCity().Trim()
-                );
-            });
+    public static List<string> SplitCitiesToList(this string cities)
+    {
+        if (string.IsNullOrWhiteSpace(cities))
+            return [];
 
-            return displayValues.ToList();
-
-        }
-
-        public static List<string> SplitCitiesToList(this string cities)
-        {
-            if (string.IsNullOrWhiteSpace(cities))
-                return [];
-
-            return cities
-                .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => s.Trim())
-                .Where(s => !string.IsNullOrEmpty(s))
-                .ToList();
-        }
+        return cities
+            .Split(',', StringSplitOptions.RemoveEmptyEntries)
+            .Select(s => s.Trim())
+            .Where(s => !string.IsNullOrEmpty(s))
+            .ToList();
     }
 }

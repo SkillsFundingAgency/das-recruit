@@ -4,11 +4,10 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part2.FutureProspects;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Employer.Web.Interfaces
+namespace Esfa.Recruit.Employer.Web.Interfaces;
+
+public interface IFutureProspectsOrchestrator
 {
-    public interface IFutureProspectsOrchestrator
-    {
-        Task<FutureProspectsViewModel> GetViewModel(VacancyRouteModel routeModel);
-        Task<OrchestratorResponse> PostEditModel(FutureProspectsEditModel editModel, VacancyUser user);
-    }
+    Task<FutureProspectsViewModel> GetViewModel(VacancyRouteModel routeModel);
+    Task<OrchestratorResponse> PostEditModel(FutureProspectsEditModel editModel, VacancyUser user);
 }

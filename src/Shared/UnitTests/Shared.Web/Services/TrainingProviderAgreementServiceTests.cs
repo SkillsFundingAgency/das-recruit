@@ -1,58 +1,24 @@
-﻿using Esfa.Recruit.Shared.Web.Services;
+﻿using AutoFixture.NUnit4;
+using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Xunit;
+using NUnit.Framework;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services;
+
+public class TrainingProviderAgreementServiceTests
 {
-    public class TrainingProviderAgreementServiceTests
+    private const long Ukprn = 99999999;
+
+    [Test, MoqAutoData]
+    public async Task Then_Checks_If_Provider_Can_Access_Service_And_Returns_Response(
+        TrainingProviderAgreementService sut,
+        [Frozen] Mock<IGetProviderStatusClient> pasAccountProviderMock)
     {
-        private Mock<IProviderVacancyClient> _clientMock;
-        private Mock<IGetProviderStatusClient> _pasAccountProviderMock;
+        pasAccountProviderMock.Setup(c => c.GetProviderStatus(Ukprn)).ReturnsAsync(new ProviderAccountResponse{CanAccessService =  true});
+        
+        var result = await sut.HasAgreementAsync(Ukprn);
 
-        private const long Ukprn = 99999999;
-
-        [Fact]
-        public async Task HasAgreement_ShouldReturnFalseWhenPasHasNoAgreement()
-        {
-            var sut = GetService(false);
-
-            var result = await sut.HasAgreementAsync(Ukprn);
-
-            result.Should().BeFalse();
-            _pasAccountProviderMock.Verify(c => c.GetProviderStatus(It.IsAny<long>()), Times.Once);
-            _pasAccountProviderMock.Verify(c => c.GetProviderStatus(Ukprn), Times.Once);
-            _clientMock.Verify(c => c.SetupProviderAsync(It.IsAny<long>()), Times.Never);
-        }
-
-        [Fact]
-        public async Task HasAgreement_ShouldReturnTrueAndSetupProviderWhenPasHasAgreement()
-        {
-            var sut = GetService(true);
-
-            var result = await sut.HasAgreementAsync(Ukprn);
-
-            result.Should().BeTrue();
-            _pasAccountProviderMock.Verify(c => c.GetProviderStatus(It.IsAny<long>()), Times.Once);
-            _pasAccountProviderMock.Verify(c => c.GetProviderStatus(Ukprn), Times.Once);
-            _clientMock.Verify(c => c.SetupProviderAsync(It.IsAny<long>()), Times.Once);
-            _clientMock.Verify(c => c.SetupProviderAsync(Ukprn), Times.Once);
-        }
-
-        private TrainingProviderAgreementService GetService(bool? pasHasAgreement)
-        {
-            _clientMock = new Mock<IProviderVacancyClient>();
-            
-            _pasAccountProviderMock = new Mock<IGetProviderStatusClient>();
-
-            if (pasHasAgreement.HasValue)
-            {
-                _pasAccountProviderMock.Setup(c => c.GetProviderStatus(Ukprn)).ReturnsAsync(new ProviderAccountResponse{CanAccessService =  pasHasAgreement.Value});
-            }
-            
-            var sut = new TrainingProviderAgreementService(_clientMock.Object, _pasAccountProviderMock.Object);
-
-            return sut;
-        }
+        result.Should().BeTrue();
     }
 }

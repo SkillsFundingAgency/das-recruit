@@ -1,8 +1,7 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum ReportOwnerType
 {
-    public enum ReportOwnerType
-    {
-        Qa,
-        Provider
-    }
+    Qa,
+    Provider
 }

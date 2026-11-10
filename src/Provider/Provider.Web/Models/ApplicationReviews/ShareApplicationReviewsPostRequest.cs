@@ -3,12 +3,11 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using System;
 using System.Collections.Generic;
 
-namespace Esfa.Recruit.Provider.Web.Models.ApplicationReviews
+namespace Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
+
+public class ShareApplicationReviewsPostRequest : VacancyRouteModel
 {
-    public class ShareApplicationReviewsPostRequest : VacancyRouteModel
-    {
-        public List<VacancyApplication> ApplicationReviewsToShare { get; set; }
-        public bool ShareApplicationsConfirmed { get; set; }
-        public bool SharingMultipleApplications { get; set; }
-    }
+    public List<VacancyApplication> ApplicationReviewsToShare { get; set; }
+    public bool ShareApplicationsConfirmed { get; set; }
+    public bool SharingMultipleApplications { get; set; }
 }

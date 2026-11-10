@@ -9,241 +9,240 @@ using FluentValidation.Results;
 using SFA.DAS.VacancyServices.Wage;
 using WageType = SFA.DAS.VacancyServices.Wage.WageType;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators
+namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
+
+internal static class VacancyFluentValidationExtensions
 {
-    internal static class VacancyFluentValidationExtensions
+    internal static IRuleBuilderInitial<Vacancy, Vacancy> ClosingDateMustBeLessThanStartDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder)
     {
-        internal static IRuleBuilderInitial<Vacancy, Vacancy> ClosingDateMustBeLessThanStartDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder)
+        return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.Custom((vacancy, context) =>
         {
-            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.Custom((vacancy, context) =>
+            if (vacancy.StartDate.Value.Date <= vacancy.ClosingDate.Value.Date)
             {
-                if (vacancy.StartDate.Value.Date <= vacancy.ClosingDate.Value.Date)
+                var failure = new ValidationFailure(string.Empty, "The possible start date should be after the closing date")
                 {
-                    var failure = new ValidationFailure(string.Empty, "The possible start date should be after the closing date")
-                    {
-                        ErrorCode = "24",
-                        CustomState = VacancyRuleSet.StartDateEndDate
-                    };
-                    context.AddFailure(failure);
-                }
-            });
-        }
+                    ErrorCode = "24",
+                    CustomState = VacancyRuleSet.StartDateEndDate
+                };
+                context.AddFailure(failure);
+            }
+        });
+    }
 
-        internal static IRuleBuilderInitial<Vacancy, Vacancy> FixedWageMustBeGreaterThanApprenticeshipMinimumWage(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IMinimumWageProvider minimumWageService)
+    internal static IRuleBuilderInitial<Vacancy, Vacancy> FixedWageMustBeGreaterThanApprenticeshipMinimumWage(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IMinimumWageProvider minimumWageService)
+    {
+        return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.Custom((vacancy, context) =>
         {
-            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.Custom((vacancy, context) =>
+            var wagePeriod = minimumWageService.GetWagePeriod(vacancy.StartDate.Value);
+
+            if (vacancy.Wage.FixedWageYearlyAmount == null || vacancy.Wage.FixedWageYearlyAmount / 52 / vacancy.Wage.WeeklyHours < wagePeriod.ApprenticeshipMinimumWage)
             {
-                var wagePeriod = minimumWageService.GetWagePeriod(vacancy.StartDate.Value);
-
-                if (vacancy.Wage.FixedWageYearlyAmount == null || vacancy.Wage.FixedWageYearlyAmount / 52 / vacancy.Wage.WeeklyHours < wagePeriod.ApprenticeshipMinimumWage)
+                var minimumYearlyWageForApprentices = WagePresenter.GetDisplayText(WageType.ApprenticeshipMinimum, WageUnit.Annually, new WageDetails
                 {
-                    var minimumYearlyWageForApprentices = WagePresenter.GetDisplayText(WageType.ApprenticeshipMinimum, WageUnit.Annually, new WageDetails
-                    {
-                        HoursPerWeek = vacancy.Wage.WeeklyHours,
-                        StartDate = vacancy.StartDate.Value
-                    }).AsWholeMoneyAmount();
+                    HoursPerWeek = vacancy.Wage.WeeklyHours,
+                    StartDate = vacancy.StartDate.Value
+                }).AsWholeMoneyAmount();
 
-                    var errorMessage = (vacancy.Status == VacancyStatus.Live) ?
-                        $"National Minimum Wage is changing from {wagePeriod.ValidFrom:d MMM yyyy}. So the fixed wage you entered before will no longer be valid. Change the date to before {wagePeriod.ValidFrom:d MMM yyyy} or to change the wage, create a new vacancy" :
-                        $"Yearly wage must be at least {minimumYearlyWageForApprentices}";
+                var errorMessage = (vacancy.Status == VacancyStatus.Live) ?
+                    $"National Minimum Wage is changing from {wagePeriod.ValidFrom:d MMM yyyy}. So the fixed wage you entered before will no longer be valid. Change the date to before {wagePeriod.ValidFrom:d MMM yyyy} or to change the wage, create a new vacancy" :
+                    $"Yearly wage must be at least {minimumYearlyWageForApprentices}";
 
-                    var failure = new ValidationFailure(string.Empty, errorMessage)
-                    {
-                        ErrorCode = "49",
-                        CustomState = VacancyRuleSet.MinimumWage,
-                        PropertyName = $"{nameof(Wage)}.{nameof(Wage.FixedWageYearlyAmount)}"  
-                    };
-                    context.AddFailure(failure);
-                }
-            });
-        }
+                var failure = new ValidationFailure(string.Empty, errorMessage)
+                {
+                    ErrorCode = "49",
+                    CustomState = VacancyRuleSet.MinimumWage,
+                    PropertyName = $"{nameof(Wage)}.{nameof(Wage.FixedWageYearlyAmount)}"  
+                };
+                context.AddFailure(failure);
+            }
+        });
+    }
 
-        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForCurrentDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider, ITimeProvider timeProvider)
+    internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForCurrentDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider, ITimeProvider timeProvider)
+    {
+        return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
         {
-            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
-            {
-                var matchingProgramme = await apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+            var matchingProgramme = await apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
-                if (matchingProgramme is null || matchingProgramme.IsActive is false)
+            if (matchingProgramme is null || matchingProgramme.IsActive is false)
+            {
+                var failure = new ValidationFailure("Training", "Enter a valid training course")
                 {
-                    var failure = new ValidationFailure("Training", "Enter a valid training course")
-                    {
-                        ErrorCode = ErrorCodes.TrainingNotExist,
-                        CustomState = VacancyRuleSet.TrainingProgramme,
-                        PropertyName = "Training",
-                    };
-                    context.AddFailure(failure);
-                }
+                    ErrorCode = ErrorCodes.TrainingNotExist,
+                    CustomState = VacancyRuleSet.TrainingProgramme,
+                    PropertyName = "Training",
+                };
+                context.AddFailure(failure);
+            }
                 
-                if (matchingProgramme == null || (matchingProgramme.LastDateStarts != null && matchingProgramme.LastDateStarts < timeProvider.Now.Date) ||
-                    (matchingProgramme.EffectiveTo != null && matchingProgramme.EffectiveTo < timeProvider.Now.Date))
+            if (matchingProgramme == null || (matchingProgramme.LastDateStarts != null && matchingProgramme.LastDateStarts < timeProvider.Now.Date) ||
+                (matchingProgramme.EffectiveTo != null && matchingProgramme.EffectiveTo < timeProvider.Now.Date))
+            {
+                var failure = new ValidationFailure("Training", "Enter a valid training course")
                 {
-                    var failure = new ValidationFailure("Training", "Enter a valid training course")
-                    {
-                        ErrorCode = ErrorCodes.TrainingNotExist,
-                        CustomState = VacancyRuleSet.TrainingProgramme,
-                        PropertyName = "Training",
-                    };
-                    context.AddFailure(failure);
-                }
-            });
-        }
+                    ErrorCode = ErrorCodes.TrainingNotExist,
+                    CustomState = VacancyRuleSet.TrainingProgramme,
+                    PropertyName = "Training",
+                };
+                context.AddFailure(failure);
+            }
+        });
+    }
         
-        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForStartDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider)
+    internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForStartDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider)
+    {
+        return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
         {
-            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
+            if (!vacancy.StartDate.HasValue)
             {
-                if (!vacancy.StartDate.HasValue)
+                var failure = new ValidationFailure(string.Empty, "The start date must have a value")
                 {
-                    var failure = new ValidationFailure(string.Empty, "The start date must have a value")
-                    {
-                        ErrorCode = ErrorCodes.TrainingExpiryDateMustExist,
-                        CustomState = VacancyRuleSet.TrainingExpiryDate,
-                        PropertyName = nameof(Vacancy.StartDate)
-                    };
-                    context.AddFailure(failure);
-                }
+                    ErrorCode = ErrorCodes.TrainingExpiryDateMustExist,
+                    CustomState = VacancyRuleSet.TrainingExpiryDate,
+                    PropertyName = nameof(Vacancy.StartDate)
+                };
+                context.AddFailure(failure);
+            }
                 
-                var matchingProgramme = await apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+            var matchingProgramme = await apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
-                if (matchingProgramme == null)
+            if (matchingProgramme == null)
+            {
+                var message = $"Training programme {vacancy.ProgrammeId} does not exist";
+                var failure = new ValidationFailure("Training", message)
                 {
-                    var message = $"Training programme {vacancy.ProgrammeId} does not exist";
-                    var failure = new ValidationFailure("Training", message)
-                    {
-                        ErrorCode = ErrorCodes.TrainingNotExist,
-                        CustomState = VacancyRuleSet.TrainingProgramme,
-                        PropertyName = "Training"
-                    };
-                    context.AddFailure(failure);
-                }
+                    ErrorCode = ErrorCodes.TrainingNotExist,
+                    CustomState = VacancyRuleSet.TrainingProgramme,
+                    PropertyName = "Training"
+                };
+                context.AddFailure(failure);
+            }
                 
-                if (matchingProgramme != null && ((matchingProgramme.LastDateStarts != null && matchingProgramme.LastDateStarts < vacancy.StartDate) ||
-                                                  (matchingProgramme.EffectiveTo !=null && matchingProgramme.EffectiveTo < vacancy.StartDate)))
-                {
-                    var dateToDisplay = matchingProgramme.LastDateStarts.HasValue 
-                        ? matchingProgramme.LastDateStarts.Value.AsGdsDate()
-                        : matchingProgramme.EffectiveTo.Value.AsGdsDate();
+            if (matchingProgramme != null && ((matchingProgramme.LastDateStarts != null && matchingProgramme.LastDateStarts < vacancy.StartDate) ||
+                                              (matchingProgramme.EffectiveTo !=null && matchingProgramme.EffectiveTo < vacancy.StartDate)))
+            {
+                var dateToDisplay = matchingProgramme.LastDateStarts.HasValue 
+                    ? matchingProgramme.LastDateStarts.Value.AsGdsDate()
+                    : matchingProgramme.EffectiveTo.Value.AsGdsDate();
                     
-                    var message = $"Start date must be on or before {dateToDisplay} as this is the last day for new starters for the training course you have selected. If you don't want to change the start date, you can change the training course";
-                    var failure = new ValidationFailure(string.Empty, message)
-                    {
-                        ErrorCode = ErrorCodes.TrainingExpiryDate,
-                        CustomState = VacancyRuleSet.TrainingExpiryDate,
-                        PropertyName = nameof(Vacancy.StartDate)
-                    };
-                    context.AddFailure(failure);
-                }
-            });
-        }
+                var message = $"Start date must be on or before {dateToDisplay} as this is the last day for new starters for the training course you have selected. If you don't want to change the start date, you can change the training course";
+                var failure = new ValidationFailure(string.Empty, message)
+                {
+                    ErrorCode = ErrorCodes.TrainingExpiryDate,
+                    CustomState = VacancyRuleSet.TrainingExpiryDate,
+                    PropertyName = nameof(Vacancy.StartDate)
+                };
+                context.AddFailure(failure);
+            }
+        });
+    }
 
-        internal static IRuleBuilderInitial<TrainingProvider, TrainingProvider> TrainingProviderMustExistInRoatp(this IRuleBuilder<TrainingProvider, TrainingProvider> ruleBuilder, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
+    internal static IRuleBuilderInitial<TrainingProvider, TrainingProvider> TrainingProviderMustExistInRoatp(this IRuleBuilder<TrainingProvider, TrainingProvider> ruleBuilder, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
+    {
+        return (IRuleBuilderInitial<TrainingProvider, TrainingProvider>)ruleBuilder.CustomAsync(async (trainingProvider, context, cancellationToken) =>
         {
-            return (IRuleBuilderInitial<TrainingProvider, TrainingProvider>)ruleBuilder.CustomAsync(async (trainingProvider, context, cancellationToken) =>
+            var trainingProviderSummary = await trainingProviderSummaryProvider.GetAsync(trainingProvider.Ukprn!.Value);
+            if (trainingProvider.Ukprn.HasValue && trainingProviderSummary == null)
             {
-                var trainingProviderSummary = await trainingProviderSummaryProvider.GetAsync(trainingProvider.Ukprn!.Value);
-                if (trainingProvider.Ukprn.HasValue && trainingProviderSummary == null)
+                context.AddFailure(new ValidationFailure(nameof(Vacancy.TrainingProvider), "The UKPRN is not valid or the associated provider is not active")
                 {
-                    context.AddFailure(new ValidationFailure(nameof(Vacancy.TrainingProvider), "The UKPRN is not valid or the associated provider is not active")
-                    {
-                        ErrorCode = ErrorCodes.TrainingProviderMustExist,
-                        CustomState = VacancyRuleSet.TrainingProvider
-                    });
-                }
+                    ErrorCode = ErrorCodes.TrainingProviderMustExist,
+                    CustomState = VacancyRuleSet.TrainingProvider
+                });
+            }
 
-                if (trainingProviderSummary is not { IsTrainingProviderMainOrEmployerProfile: true })
+            if (trainingProviderSummary is not { IsTrainingProviderMainOrEmployerProfile: true })
+            {
+                context.AddFailure(new ValidationFailure(nameof(Vacancy.TrainingProvider), "UKPRN of a training provider must be registered to deliver apprenticeship training")
                 {
-                    context.AddFailure(new ValidationFailure(nameof(Vacancy.TrainingProvider), "UKPRN of a training provider must be registered to deliver apprenticeship training")
-                    {
-                        ErrorCode = ErrorCodes.TrainingProviderMustBeMainOrEmployerProfile,
-                        CustomState = VacancyRuleSet.TrainingProvider
-                    });
-                }
+                    ErrorCode = ErrorCodes.TrainingProviderMustBeMainOrEmployerProfile,
+                    CustomState = VacancyRuleSet.TrainingProvider
+                });
+            }
                 
-            });
-        }
+        });
+    }
 
-        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingProviderVacancyMustHaveEmployerPermission(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder,
-            IProviderRelationshipsService providerRelationshipService)
+    internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingProviderVacancyMustHaveEmployerPermission(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder,
+        IProviderRelationshipsService providerRelationshipService)
+    {
+        return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
         {
-            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
+            if (vacancy.OwnerType != OwnerType.Provider)
+                return;
+
+            if (vacancy.TrainingProvider?.Ukprn is not { } ukprn)
             {
-                if (vacancy.OwnerType != OwnerType.Provider)
-                    return;
+                context.AddFailure(ProviderPermissionFailure());
+                return;
+            }
 
-                if (vacancy.TrainingProvider?.Ukprn is not { } ukprn)
-                {
-                    context.AddFailure(ProviderPermissionFailure());
-                    return;
-                }
+            var hasPermission = await providerRelationshipService
+                .HasProviderGotEmployersPermissionAsync(
+                    ukprn,
+                    vacancy.EmployerAccountId,
+                    vacancy.AccountLegalEntityPublicHashedId,
+                    OperationType.Recruitment);
 
-                var hasPermission = await providerRelationshipService
-                    .HasProviderGotEmployersPermissionAsync(
-                        ukprn,
-                        vacancy.EmployerAccountId,
-                        vacancy.AccountLegalEntityPublicHashedId,
-                        OperationType.Recruitment);
+            if (!hasPermission)
+                context.AddFailure(ProviderPermissionFailure());
+        });
+    }
 
-                if (!hasPermission)
-                    context.AddFailure(ProviderPermissionFailure());
-            });
-        }
+    private static ValidationFailure ProviderPermissionFailure() =>
+        new("Provider", "Training provider does not have permission to create vacancies for this employer")
+        {
+            ErrorCode = ErrorCodes.TrainingProviderMustHaveEmployerPermission,
+            CustomState = VacancyRuleSet.TrainingProvider
+        };
 
-        private static ValidationFailure ProviderPermissionFailure() =>
-            new("Provider", "Training provider does not have permission to create vacancies for this employer")
+    internal static IRuleBuilderInitial<Vacancy, Vacancy> EmployerLocationMustBeInEngland(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, ILocationsService locationsService) =>
+        (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
+        {
+            if (vacancy?.EmployerLocations == null || vacancy.EmployerLocations.Count == 0)
+                return;
+
+            var (message, errorCode) = vacancy.EmployerLocationOption switch
             {
-                ErrorCode = ErrorCodes.TrainingProviderMustHaveEmployerPermission,
-                CustomState = VacancyRuleSet.TrainingProvider
+                AvailableWhere.OneLocation => (
+                    "Location must be in England. Your apprenticeship must be in England to advertise it on this service",
+                    VacancyValidationErrorCodes.AddressCountryNotInEngland),
+
+                AvailableWhere.MultipleLocations => (
+                    "All locations must be in England. Your apprenticeship must be in England to advertise it on this service",
+                    $"Multiple-{VacancyValidationErrorCodes.AddressCountryNotInEngland}"),
+
+                _ => ("Location must be in England. Your apprenticeship must be in England to advertise it on this service",
+                    VacancyValidationErrorCodes.AddressCountryNotInEngland)
             };
 
-        internal static IRuleBuilderInitial<Vacancy, Vacancy> EmployerLocationMustBeInEngland(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, ILocationsService locationsService) =>
-            (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, _) =>
+            foreach (var address in vacancy.EmployerLocations)
             {
-                if (vacancy?.EmployerLocations == null || vacancy.EmployerLocations.Count == 0)
-                    return;
-
-                var (message, errorCode) = vacancy.EmployerLocationOption switch
+                if (await locationsService.IsPostcodeInEnglandAsync(address.Postcode) == false)
                 {
-                    AvailableWhere.OneLocation => (
-                        "Location must be in England. Your apprenticeship must be in England to advertise it on this service",
-                        VacancyValidationErrorCodes.AddressCountryNotInEngland),
-
-                    AvailableWhere.MultipleLocations => (
-                        "All locations must be in England. Your apprenticeship must be in England to advertise it on this service",
-                        $"Multiple-{VacancyValidationErrorCodes.AddressCountryNotInEngland}"),
-
-                    _ => ("Location must be in England. Your apprenticeship must be in England to advertise it on this service",
-                        VacancyValidationErrorCodes.AddressCountryNotInEngland)
-                };
-
-                foreach (var address in vacancy.EmployerLocations)
-                {
-                    if (await locationsService.IsPostcodeInEnglandAsync(address.Postcode) == false)
+                    context.AddFailure(new ValidationFailure(nameof(Vacancy.EmployerLocations), message)
                     {
-                        context.AddFailure(new ValidationFailure(nameof(Vacancy.EmployerLocations), message)
-                        {
-                            ErrorCode = errorCode,
-                            CustomState = VacancyRuleSet.EmployerLocationOutOfArea
-                        });
-                    }
+                        ErrorCode = errorCode,
+                        CustomState = VacancyRuleSet.EmployerLocationOutOfArea
+                    });
                 }
-            });
+            }
+        });
 
-        internal static IRuleBuilderOptions<Vacancy, T> RunCondition<T>(this IRuleBuilderOptions<Vacancy, T> context, VacancyRuleSet condition)
-        {
-            return context.Configure(c => c.ApplyCondition(x => x.CanRunValidator(condition)));
-        }
+    internal static IRuleBuilderOptions<Vacancy, T> RunCondition<T>(this IRuleBuilderOptions<Vacancy, T> context, VacancyRuleSet condition)
+    {
+        return context.Configure(c => c.ApplyCondition(x => x.CanRunValidator(condition)));
+    }
 
-        internal static IRuleBuilderInitial<Vacancy, T> RunCondition<T>(this IRuleBuilderInitial<Vacancy, T> context, VacancyRuleSet condition)
-        {
-            return context.Configure(c => c.ApplyCondition(x => x.CanRunValidator(condition)));
-        }
+    internal static IRuleBuilderInitial<Vacancy, T> RunCondition<T>(this IRuleBuilderInitial<Vacancy, T> context, VacancyRuleSet condition)
+    {
+        return context.Configure(c => c.ApplyCondition(x => x.CanRunValidator(condition)));
+    }
 
-        private static bool CanRunValidator<T>(this ValidationContext<T> context, VacancyRuleSet validationToCheck)
-        {
-            var validationsToRun = (VacancyRuleSet)context.RootContextData[ValidationConstants.ValidationsRulesKey];
+    private static bool CanRunValidator<T>(this ValidationContext<T> context, VacancyRuleSet validationToCheck)
+    {
+        var validationsToRun = (VacancyRuleSet)context.RootContextData[ValidationConstants.ValidationsRulesKey];
 
-            return (validationsToRun & validationToCheck) > 0;
-        }
+        return (validationsToRun & validationToCheck) > 0;
     }
 }

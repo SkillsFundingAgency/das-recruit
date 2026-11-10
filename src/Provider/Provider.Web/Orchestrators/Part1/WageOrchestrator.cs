@@ -17,270 +17,249 @@ using SFA.DAS.VacancyServices.Wage;
 using WageType = Esfa.Recruit.Vacancies.Client.Domain.Entities.WageType;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 
-namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
+namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1;
+
+public interface IWageOrchestrator
 {
-    public interface IWageOrchestrator
+    Task<WageViewModel> GetWageViewModelAsync(VacancyRouteModel vrm);
+    Task<OrchestratorResponse> PostExtraInformationEditModelAsync(WageExtraInformationViewModel m, VacancyUser user);
+    Task<WageExtraInformationViewModel> GetExtraInformationViewModelAsync(VacancyRouteModel vrm);
+    Task<OrchestratorResponse> PostWageEditModelAsync(WageEditModel m, VacancyUser user);
+    Task<CompetitiveWageViewModel> GetCompetitiveWageViewModelAsync(VacancyRouteModel vrm);
+    Task<OrchestratorResponse> PostCompetitiveWageEditModelAsync(CompetitiveWageEditModel m, VacancyUser user);
+}
+
+public class WageOrchestrator(
+    IRecruitVacancyClient vacancyClient,
+    ILogger<WageOrchestrator> logger,
+    IReviewSummaryService reviewSummaryService,
+    IMinimumWageProvider minimumWageProvider,
+    IUtility utility)
+    : VacancyValidatingOrchestrator<WageEditModel>(logger), IWageOrchestrator
+{
+    private const VacancyRuleSet CompetitiveValidationRules = VacancyRuleSet.CompetitiveWage;
+    private const VacancyRuleSet ValidationRules = VacancyRuleSet.Wage;
+
+
+    public async Task<OrchestratorResponse> PostExtraInformationEditModelAsync(WageExtraInformationViewModel m, VacancyUser user)
     {
-        Task<WageViewModel> GetWageViewModelAsync(VacancyRouteModel vrm);
-        Task<WageViewModel> GetWageViewModelAsync(WageEditModel m);
-        Task<OrchestratorResponse> PostExtraInformationEditModelAsync(WageExtraInformationViewModel m, VacancyUser user);
-        Task<WageExtraInformationViewModel> GetExtraInformationViewModelAsync(VacancyRouteModel vrm);
-        Task<OrchestratorResponse> PostWageEditModelAsync(WageEditModel m, VacancyUser user);
-        Task<CompetitiveWageViewModel> GetCompetitiveWageViewModelAsync(VacancyRouteModel vrm);
-        Task<OrchestratorResponse> PostCompetitiveWageEditModelAsync(CompetitiveWageEditModel m, VacancyUser user);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.AddExtraInformation_Post);
+
+        if (vacancy.Wage == null)
+            vacancy.Wage = new Wage();
+
+        SetVacancyWithProviderReviewFieldIndicators(
+            vacancy.Wage.WageAdditionalInformation,
+            FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation),
+            vacancy,
+            (v) =>
+            {
+                return v.Wage.WageAdditionalInformation = m.WageAdditionalInformation;
+            });
+        SetVacancyWithProviderReviewFieldIndicators(
+            vacancy.Wage.CompanyBenefitsInformation,
+            FieldIdResolver.ToFieldId(v => v.Wage.CompanyBenefitsInformation),
+            vacancy,
+            (v) =>
+            {
+                return v.Wage.CompanyBenefitsInformation = m.CompanyBenefitsInformation;
+            });
+        return await ValidateAndExecute(
+            vacancy,
+            v => vacancyClient.Validate(v, ValidationRules),
+            v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+        );
     }
 
-    public class WageOrchestrator : VacancyValidatingOrchestrator<WageEditModel>, IWageOrchestrator
+    public async Task<WageExtraInformationViewModel> GetExtraInformationViewModelAsync(VacancyRouteModel vrm)
     {
-        private const VacancyRuleSet CompetitiveValidationRules = VacancyRuleSet.CompetitiveWage;
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Wage;
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IMinimumWageProvider _minimumWageProvider;
-        private readonly IUtility _utility;
+        var vm = await GetWageViewModelAsync(vrm);
 
-        public WageOrchestrator(IRecruitVacancyClient vacancyClient,
-            ILogger<WageOrchestrator> logger, IReviewSummaryService reviewSummaryService, IMinimumWageProvider minimumWageProvider, IUtility utility)
-            : base(logger)
+        var wageExtraInformationViewModel = new WageExtraInformationViewModel
         {
-            _vacancyClient = vacancyClient;
-            _reviewSummaryService = reviewSummaryService;
-            _minimumWageProvider = minimumWageProvider;
-            _utility = utility;
-        }
+            VacancyId = vm.VacancyId,
+            PageInfo = vm.PageInfo,
+            WageType = vm.WageType,
+            WageAdditionalInformation = vm.WageAdditionalInformation,
+            Ukprn = vm.Ukprn,
+            CompanyBenefitsInformation = vm.CompanyBenefitsInformation,
+            Title = vm.Title,
+            Review = vm.Review,
+            IsTaskListCompleted = vm.IsTaskListCompleted
+        };
 
+        return wageExtraInformationViewModel;
+    }
 
-        public async Task<OrchestratorResponse> PostExtraInformationEditModelAsync(WageExtraInformationViewModel m, VacancyUser user)
+    public async Task<CompetitiveWageViewModel> GetCompetitiveWageViewModelAsync(VacancyRouteModel vrm)
+    {
+        var vm = await GetWageViewModelAsync(vrm);
+
+        var competitiveWageViewModel = new CompetitiveWageViewModel
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.AddExtraInformation_Post);
+            VacancyId = vm.VacancyId,
+            WageType = vm.WageType,
+            FixedWageYearlyAmount = vm.FixedWageYearlyAmount,
+            WageAdditionalInformation = vm.WageAdditionalInformation,
+            MinimumWageStartFrom = vm.MinimumWageStartFrom,
+            NationalMinimumWageLowerBoundHourly = vm.NationalMinimumWageLowerBoundHourly,
+            NationalMinimumWageUpperBoundHourly = vm.NationalMinimumWageUpperBoundHourly,
+            NationalMinimumWageYearly = vm.NationalMinimumWageYearly,
+            ApprenticeshipMinimumWageHourly = vm.ApprenticeshipMinimumWageHourly,
+            ApprenticeshipMinimumWageYearly = vm.ApprenticeshipMinimumWageYearly,
+            WeeklyHours = vm.WeeklyHours,
+            PageInfo = vm.PageInfo,
+            Review = vm.Review,
+            Ukprn = vrm.Ukprn,
+            IsSalaryAboveNationalMinimumWage = (vm.WageType == WageType.CompetitiveSalary) ? true : null,
+            Title = vm.Title,
+        };
 
-            if (vacancy.Wage == null)
-                vacancy.Wage = new Wage();
+        return competitiveWageViewModel;
+    }
 
-            SetVacancyWithProviderReviewFieldIndicators(
-                vacancy.Wage.WageAdditionalInformation,
-                FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation),
-                vacancy,
-                (v) =>
-                {
-                    return v.Wage.WageAdditionalInformation = m.WageAdditionalInformation;
-                });
-            SetVacancyWithProviderReviewFieldIndicators(
-                vacancy.Wage.CompanyBenefitsInformation,
-                FieldIdResolver.ToFieldId(v => v.Wage.CompanyBenefitsInformation),
-                vacancy,
-                (v) =>
-                {
-                    return v.Wage.CompanyBenefitsInformation = m.CompanyBenefitsInformation;
-                });
-            return await ValidateAndExecute(
-                vacancy,
-                v => _vacancyClient.Validate(v, ValidationRules),
-                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
-            );
-        }
+    public async Task<OrchestratorResponse> PostCompetitiveWageEditModelAsync(CompetitiveWageEditModel m, VacancyUser user)
+    {
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.SetCompetitivePayRate_Post);
 
-        public async Task<WageExtraInformationViewModel> GetExtraInformationViewModelAsync(VacancyRouteModel vrm)
-        {
-            var vm = await GetWageViewModelAsync(vrm);
+        if (vacancy.Wage == null)
+            vacancy.Wage = new Wage();
 
-            var wageExtraInformationViewModel = new WageExtraInformationViewModel
+        SetVacancyWithProviderReviewFieldIndicators(
+            vacancy.Wage.WageType,
+            FieldIdResolver.ToFieldId(v => v.Wage.WageType),
+            vacancy,
+            (v) =>
             {
-                VacancyId = vm.VacancyId,
-                PageInfo = vm.PageInfo,
-                WageType = vm.WageType,
-                WageAdditionalInformation = vm.WageAdditionalInformation,
-                Ukprn = vm.Ukprn,
-                CompanyBenefitsInformation = vm.CompanyBenefitsInformation,
-                Title = vm.Title,
-                Review = vm.Review,
-                IsTaskListCompleted = vm.IsTaskListCompleted
-            };
+                return v.Wage.WageType = m.WageType;
+            });
 
-            return wageExtraInformationViewModel;
-        }
-
-        public async Task<CompetitiveWageViewModel> GetCompetitiveWageViewModelAsync(VacancyRouteModel vrm)
-        {
-            var vm = await GetWageViewModelAsync(vrm);
-
-            var competitiveWageViewModel = new CompetitiveWageViewModel
+        SetVacancyWithProviderReviewFieldIndicators(
+            vacancy.Wage.FixedWageYearlyAmount,
+            FieldIdResolver.ToFieldId(v => v.Wage.FixedWageYearlyAmount),
+            vacancy,
+            (v) =>
             {
-                VacancyId = vm.VacancyId,
-                WageType = vm.WageType,
-                FixedWageYearlyAmount = vm.FixedWageYearlyAmount,
-                WageAdditionalInformation = vm.WageAdditionalInformation,
-                MinimumWageStartFrom = vm.MinimumWageStartFrom,
-                NationalMinimumWageLowerBoundHourly = vm.NationalMinimumWageLowerBoundHourly,
-                NationalMinimumWageUpperBoundHourly = vm.NationalMinimumWageUpperBoundHourly,
-                NationalMinimumWageYearly = vm.NationalMinimumWageYearly,
-                ApprenticeshipMinimumWageHourly = vm.ApprenticeshipMinimumWageHourly,
-                ApprenticeshipMinimumWageYearly = vm.ApprenticeshipMinimumWageYearly,
-                WeeklyHours = vm.WeeklyHours,
-                PageInfo = vm.PageInfo,
-                Review = vm.Review,
-                Ukprn = vrm.Ukprn,
-                IsSalaryAboveNationalMinimumWage = (vm.WageType == WageType.CompetitiveSalary) ? true : null,
-                Title = vm.Title,
-            };
+                return v.Wage.FixedWageYearlyAmount = (m.WageType == WageType.FixedWage) ? m.FixedWageYearlyAmount?.AsMoney() : null;
+            });
 
-            return competitiveWageViewModel;
-        }
-
-        public async Task<OrchestratorResponse> PostCompetitiveWageEditModelAsync(CompetitiveWageEditModel m, VacancyUser user)
-        {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.SetCompetitivePayRate_Post);
-
-            if (vacancy.Wage == null)
-                vacancy.Wage = new Wage();
-
-            SetVacancyWithProviderReviewFieldIndicators(
-                vacancy.Wage.WageType,
-                FieldIdResolver.ToFieldId(v => v.Wage.WageType),
-                vacancy,
-                (v) =>
-                {
-                    return v.Wage.WageType = m.WageType;
-                });
-
-            SetVacancyWithProviderReviewFieldIndicators(
-                vacancy.Wage.FixedWageYearlyAmount,
-                FieldIdResolver.ToFieldId(v => v.Wage.FixedWageYearlyAmount),
-                vacancy,
-                (v) =>
-                {
-                    return v.Wage.FixedWageYearlyAmount = (m.WageType == WageType.FixedWage) ? m.FixedWageYearlyAmount?.AsMoney() : null;
-                });
-
-            SetVacancyWithProviderReviewFieldIndicators(
-                vacancy.Wage.WageAdditionalInformation,
-                FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation),
-                vacancy,
-                (v) =>
-                {
-                    return v.Wage.WageAdditionalInformation = m.WageAdditionalInformation;
-                });
-            return await ValidateAndExecute(
-                vacancy,
-                v => _vacancyClient.Validate(v, CompetitiveValidationRules),
-                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
-            );
-        }
-
-        public async Task<WageViewModel> GetWageViewModelAsync(VacancyRouteModel vrm)
-        {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Wage_Get);
-
-            var wagePeriod = _minimumWageProvider.GetWagePeriod(vacancy.StartDate.Value);
-
-            var vm = new WageViewModel
+        SetVacancyWithProviderReviewFieldIndicators(
+            vacancy.Wage.WageAdditionalInformation,
+            FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation),
+            vacancy,
+            (v) =>
             {
-                Title = vacancy.Title,
-                WageType = vacancy.Wage?.WageType,
-                FixedWageYearlyAmount = vacancy.Wage?.FixedWageYearlyAmount?.AsMoney(),
-                WageAdditionalInformation = vacancy.Wage?.WageAdditionalInformation,
-                MinimumWageStartFrom = wagePeriod.ValidFrom.ToDayMonthYearString(),
-                NationalMinimumWageLowerBoundHourly = wagePeriod.NationalMinimumWageLowerBound.ToString("C"),
-                NationalMinimumWageUpperBoundHourly = wagePeriod.NationalMinimumWageUpperBound.ToString("C"),
-                NationalMinimumWageYearly = GetMinimumWageYearlyText(SFA.DAS.VacancyServices.Wage.WageType.NationalMinimum, vacancy.Wage?.WeeklyHours, vacancy.StartDate.Value),
-                ApprenticeshipMinimumWageHourly = wagePeriod.ApprenticeshipMinimumWage.ToString("C"),
-                ApprenticeshipMinimumWageYearly = GetMinimumWageYearlyText(SFA.DAS.VacancyServices.Wage.WageType.ApprenticeshipMinimum, vacancy.Wage?.WeeklyHours, vacancy.StartDate.Value),
-                WeeklyHours = vacancy.Wage.WeeklyHours.Value,
-                PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                Ukprn = vrm.Ukprn,
-                VacancyId = vrm.VacancyId,
-                CompanyBenefitsInformation = vacancy.Wage?.CompanyBenefitsInformation,
-                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
-            };
+                return v.Wage.WageAdditionalInformation = m.WageAdditionalInformation;
+            });
+        return await ValidateAndExecute(
+            vacancy,
+            v => vacancyClient.Validate(v, CompetitiveValidationRules),
+            v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+        );
+    }
 
-            if (vacancy.Status == VacancyStatus.Referred)
+    public async Task<WageViewModel> GetWageViewModelAsync(VacancyRouteModel vrm)
+    {
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Wage_Get);
+
+        var wagePeriod = minimumWageProvider.GetWagePeriod(vacancy.StartDate.Value);
+
+        var vm = new WageViewModel
+        {
+            Title = vacancy.Title,
+            WageType = vacancy.Wage?.WageType,
+            FixedWageYearlyAmount = vacancy.Wage?.FixedWageYearlyAmount?.AsMoney(),
+            WageAdditionalInformation = vacancy.Wage?.WageAdditionalInformation,
+            MinimumWageStartFrom = wagePeriod.ValidFrom.ToDayMonthYearString(),
+            NationalMinimumWageLowerBoundHourly = wagePeriod.NationalMinimumWageLowerBound.ToString("C"),
+            NationalMinimumWageUpperBoundHourly = wagePeriod.NationalMinimumWageUpperBound.ToString("C"),
+            NationalMinimumWageYearly = GetMinimumWageYearlyText(SFA.DAS.VacancyServices.Wage.WageType.NationalMinimum, vacancy.Wage?.WeeklyHours, vacancy.StartDate.Value),
+            ApprenticeshipMinimumWageHourly = wagePeriod.ApprenticeshipMinimumWage.ToString("C"),
+            ApprenticeshipMinimumWageYearly = GetMinimumWageYearlyText(SFA.DAS.VacancyServices.Wage.WageType.ApprenticeshipMinimum, vacancy.Wage?.WeeklyHours, vacancy.StartDate.Value),
+            WeeklyHours = vacancy.Wage.WeeklyHours.Value,
+            PageInfo = utility.GetPartOnePageInfo(vacancy),
+            Ukprn = vrm.Ukprn,
+            VacancyId = vrm.VacancyId,
+            CompanyBenefitsInformation = vacancy.Wage?.CompanyBenefitsInformation,
+            IsTaskListCompleted = utility.IsTaskListCompleted(vacancy)
+        };
+
+        if (vacancy.Status == VacancyStatus.Referred)
+        {
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+                ReviewFieldMappingLookups.GetAdditionalWageInformationFieldIndicators());
+        }
+
+        return vm;
+    }
+
+    public async Task<OrchestratorResponse> PostWageEditModelAsync(WageEditModel m, VacancyUser user)
+    {
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Wage_Post);
+
+        if (vacancy.Wage == null)
+            vacancy.Wage = new Wage();
+
+        SetVacancyWithProviderReviewFieldIndicators(
+            vacancy.Wage.WageType,
+            FieldIdResolver.ToFieldId(v => v.Wage.WageType),
+            vacancy,
+            (v) =>
             {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
-                    ReviewFieldMappingLookups.GetAdditionalWageInformationFieldIndicators());
-            }
+                return v.Wage.WageType = m.WageType;
+            });
 
-            return vm;
-        }
-
-        public async Task<WageViewModel> GetWageViewModelAsync(WageEditModel m)
-        {
-            var vm = await GetWageViewModelAsync((VacancyRouteModel)m);
-
-            vm.WageType = m.WageType;
-            vm.FixedWageYearlyAmount = m.FixedWageYearlyAmount;
-            vm.WageAdditionalInformation = m.WageAdditionalInformation;
-
-            return vm;
-        }
-
-        public async Task<OrchestratorResponse> PostWageEditModelAsync(WageEditModel m, VacancyUser user)
-        {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Wage_Post);
-
-            if (vacancy.Wage == null)
-                vacancy.Wage = new Wage();
-
-            SetVacancyWithProviderReviewFieldIndicators(
-                vacancy.Wage.WageType,
-                FieldIdResolver.ToFieldId(v => v.Wage.WageType),
-                vacancy,
-                (v) =>
-                {
-                    return v.Wage.WageType = m.WageType;
-                });
-
-            SetVacancyWithProviderReviewFieldIndicators(
-                vacancy.Wage.FixedWageYearlyAmount,
-                FieldIdResolver.ToFieldId(v => v.Wage.FixedWageYearlyAmount),
-                vacancy,
-                (v) =>
-                {
-                    return v.Wage.FixedWageYearlyAmount = (m.WageType == WageType.FixedWage) ? m.FixedWageYearlyAmount?.AsMoney() : null;
-                });
-
-            SetVacancyWithProviderReviewFieldIndicators(
-                vacancy.Wage.WageAdditionalInformation,
-                FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation),
-                vacancy,
-                (v) =>
-                {
-                    return v.Wage.WageAdditionalInformation = m.WageAdditionalInformation;
-                });
-            SetVacancyWithProviderReviewFieldIndicators(
-                vacancy.Wage.CompanyBenefitsInformation,
-                FieldIdResolver.ToFieldId(v => v.Wage.CompanyBenefitsInformation),
-                vacancy,
-                (v) =>
-                {
-                    return v.Wage.CompanyBenefitsInformation = m.CompanyBenefitsInformation;
-                });
-
-            return await ValidateAndExecute(
-                vacancy,
-                v => _vacancyClient.Validate(v, ValidationRules),
-                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
-            );
-        }
-
-        private string GetMinimumWageYearlyText(SFA.DAS.VacancyServices.Wage.WageType wageType, decimal? weeklyHours, DateTime startDate)
-        {
-            return WagePresenter.GetDisplayText(wageType, WageUnit.Annually, new WageDetails
+        SetVacancyWithProviderReviewFieldIndicators(
+            vacancy.Wage.FixedWageYearlyAmount,
+            FieldIdResolver.ToFieldId(v => v.Wage.FixedWageYearlyAmount),
+            vacancy,
+            (v) =>
             {
-                HoursPerWeek = weeklyHours,
-                StartDate = startDate
-            }).AsWholeMoneyAmount();
-        }
+                return v.Wage.FixedWageYearlyAmount = (m.WageType == WageType.FixedWage) ? m.FixedWageYearlyAmount?.AsMoney() : null;
+            });
 
-        protected override EntityToViewModelPropertyMappings<Vacancy, WageEditModel> DefineMappings()
+        SetVacancyWithProviderReviewFieldIndicators(
+            vacancy.Wage.WageAdditionalInformation,
+            FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation),
+            vacancy,
+            (v) =>
+            {
+                return v.Wage.WageAdditionalInformation = m.WageAdditionalInformation;
+            });
+        SetVacancyWithProviderReviewFieldIndicators(
+            vacancy.Wage.CompanyBenefitsInformation,
+            FieldIdResolver.ToFieldId(v => v.Wage.CompanyBenefitsInformation),
+            vacancy,
+            (v) =>
+            {
+                return v.Wage.CompanyBenefitsInformation = m.CompanyBenefitsInformation;
+            });
+
+        return await ValidateAndExecute(
+            vacancy,
+            v => vacancyClient.Validate(v, ValidationRules),
+            v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+        );
+    }
+
+    private string GetMinimumWageYearlyText(SFA.DAS.VacancyServices.Wage.WageType wageType, decimal? weeklyHours, DateTime startDate)
+    {
+        return WagePresenter.GetDisplayText(wageType, WageUnit.Annually, new WageDetails
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, WageEditModel>();
+            HoursPerWeek = weeklyHours,
+            StartDate = startDate
+        }).AsWholeMoneyAmount();
+    }
 
-            mappings.Add(e => e.Wage.WageType, vm => vm.WageType);
-            mappings.Add(e => e.Wage.FixedWageYearlyAmount, vm => vm.FixedWageYearlyAmount);
-            mappings.Add(e => e.Wage.WageAdditionalInformation, vm => vm.WageAdditionalInformation);
-            mappings.Add(e => e.Wage.CompanyBenefitsInformation, vm => vm.CompanyBenefitsInformation);
+    protected override EntityToViewModelPropertyMappings<Vacancy, WageEditModel> DefineMappings()
+    {
+        var mappings = new EntityToViewModelPropertyMappings<Vacancy, WageEditModel>();
 
-            return mappings;
-        }
+        mappings.Add(e => e.Wage.WageType, vm => vm.WageType);
+        mappings.Add(e => e.Wage.FixedWageYearlyAmount, vm => vm.FixedWageYearlyAmount);
+        mappings.Add(e => e.Wage.WageAdditionalInformation, vm => vm.WageAdditionalInformation);
+        mappings.Add(e => e.Wage.CompanyBenefitsInformation, vm => vm.CompanyBenefitsInformation);
+
+        return mappings;
     }
 }

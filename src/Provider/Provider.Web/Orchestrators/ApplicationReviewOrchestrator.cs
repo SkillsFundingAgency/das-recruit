@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Esfa.Recruit.Proivder.Web.Exceptions;
+using Esfa.Recruit.Provider.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.Mappings.Extensions;
 using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.RouteModel;
@@ -13,146 +13,145 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using ApplicationReviewViewModel = Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel;
 
-namespace Esfa.Recruit.Provider.Web.Orchestrators
+namespace Esfa.Recruit.Provider.Web.Orchestrators;
+
+public interface IApplicationReviewOrchestrator
 {
-    public interface IApplicationReviewOrchestrator
+    Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm);
+    Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewEditModel m);
+    Task<ApplicationReviewStatusChangeInfo> PostApplicationReviewStatusChangeModelAsync(ApplicationReviewStatusChangeModel m, VacancyUser user);
+    Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel);
+    Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewEditModel rm);
+    Task<Dictionary<string, string>> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewFeedbackViewModel applicationReviewFeedbackViewModel);
+    Task<ApplicationReviewFeedbackViewModel> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewEditModel rm);
+    Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid? vacancyId);
+}
+
+public class ApplicationReviewOrchestrator(
+    IEmployerVacancyClient client,
+    IRecruitVacancyClient vacancyClient,
+    IUtility utility)
+    : IApplicationReviewOrchestrator
+{
+    public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm)
     {
-        Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm);
-        Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewEditModel m);
-        Task<ApplicationReviewStatusChangeInfo> PostApplicationReviewStatusChangeModelAsync(ApplicationReviewStatusChangeModel m, VacancyUser user);
-        Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel);
-        Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewEditModel rm);
-        Task<Dictionary<string, string>> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewFeedbackViewModel applicationReviewFeedbackViewModel);
-        Task<ApplicationReviewFeedbackViewModel> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewEditModel rm);
-        Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid? vacancyId);
+        var applicationReview = await utility.GetAuthorisedApplicationReviewAsync(rm);
+
+        var vacancy = await vacancyClient.GetVacancyAsync(rm.VacancyId.GetValueOrDefault());
+
+        if (applicationReview.IsWithdrawn)
+            throw new ApplicationWithdrawnException($"Application has been withdrawn. ApplicationReviewId:{applicationReview.Id}", rm.VacancyId.GetValueOrDefault());
+        var viewModel = applicationReview.ToViewModel();
+        viewModel.Ukprn = rm.Ukprn;
+        viewModel.VacancyId = rm.VacancyId;
+        viewModel.ApplicationReviewId = rm.ApplicationReviewId;
+        viewModel.CandidateFeedback = applicationReview.CandidateFeedback;
+        viewModel.EmployerFeedback = applicationReview.EmployerFeedback;
+        viewModel.VacancyTitle = vacancy.Title;
+        viewModel.IsFoundation = vacancy.ApprenticeshipType == ApprenticeshipTypes.Foundation;
+        viewModel.CandidateAppliedLocations = applicationReview.Application is not null
+            ? applicationReview.Application.CandidateAppliedLocations
+            : [];
+        viewModel.Name = applicationReview.Application.FullName;
+
+        return viewModel;
     }
 
-    public class ApplicationReviewOrchestrator(
-        IEmployerVacancyClient client,
-        IRecruitVacancyClient vacancyClient,
-        IUtility utility)
-        : IApplicationReviewOrchestrator
+    public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewEditModel m)
     {
-        public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm)
+        var vm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel)m);
+
+        vm.Outcome = m.Outcome;
+        vm.CandidateFeedback = m.CandidateFeedback;
+
+        return vm;
+    }
+
+    public async Task<ApplicationReviewStatusChangeInfo> PostApplicationReviewStatusChangeModelAsync(ApplicationReviewStatusChangeModel m, VacancyUser user)
+    {
+        var applicationReview = await utility.GetAuthorisedApplicationReviewAsync(m);
+
+        var shouldMakeOthersUnsuccessful = await client.SetApplicationReviewStatus(applicationReview.Id, m.Outcome, m.CandidateFeedback, user);
+
+        var applicationReviewStatusChangeInfo = new ApplicationReviewStatusChangeInfo
         {
-            var applicationReview = await utility.GetAuthorisedApplicationReviewAsync(rm);
+            ShouldMakeOthersUnsuccessful = shouldMakeOthersUnsuccessful,
+            CandidateName = applicationReview.Application.FullName
+        };
 
-            var vacancy = await vacancyClient.GetVacancyAsync(rm.VacancyId.GetValueOrDefault());
+        return applicationReviewStatusChangeInfo;
+    }
 
-            if (applicationReview.IsWithdrawn)
-                throw new ApplicationWithdrawnException($"Application has been withdrawn. ApplicationReviewId:{applicationReview.Id}", rm.VacancyId.GetValueOrDefault());
-            var viewModel = applicationReview.ToViewModel();
-            viewModel.Ukprn = rm.Ukprn;
-            viewModel.VacancyId = rm.VacancyId;
-            viewModel.ApplicationReviewId = rm.ApplicationReviewId;
-            viewModel.CandidateFeedback = applicationReview.CandidateFeedback;
-            viewModel.EmployerFeedback = applicationReview.EmployerFeedback;
-            viewModel.VacancyTitle = vacancy.Title;
-            viewModel.IsFoundation = vacancy.ApprenticeshipType == ApprenticeshipTypes.Foundation;
-            viewModel.CandidateAppliedLocations = applicationReview.Application is not null
-                ? applicationReview.Application.CandidateAppliedLocations
-                : [];
-            viewModel.Name = applicationReview.Application.FullName;
+    public async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel)
+    {
+        var applicationReview = await utility.GetAuthorisedApplicationReviewAsync(applicationReviewStatusConfirmationEditModel);
 
-            return viewModel;
-        }
-
-        public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewEditModel m)
+        return new ApplicationStatusConfirmationViewModel
         {
-            var vm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel)m);
+            CandidateFeedback = string.IsNullOrWhiteSpace(applicationReviewStatusConfirmationEditModel.CandidateFeedback) 
+                ? applicationReviewStatusConfirmationEditModel.Outcome?.GetDefaultCandidateFeedback() 
+                : applicationReviewStatusConfirmationEditModel.CandidateFeedback,
+            Outcome = applicationReviewStatusConfirmationEditModel.Outcome,
+            ApplicationReviewId = applicationReviewStatusConfirmationEditModel.ApplicationReviewId,
+            Name = applicationReview.Application.FullName,
+            FriendlyId = applicationReview.GetFriendlyId(),
+            Ukprn = applicationReviewStatusConfirmationEditModel.Ukprn,
+            VacancyId = applicationReviewStatusConfirmationEditModel.VacancyId
+        };
+    }
+    public async Task<Dictionary<string, string>> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewFeedbackViewModel applicationReviewFeedbackViewModel)
+    {
+        var applicationReview = await utility.GetAuthorisedApplicationReviewAsync(applicationReviewFeedbackViewModel);
 
-            vm.Outcome = m.Outcome;
-            vm.CandidateFeedback = m.CandidateFeedback;
-
-            return vm;
-        }
-
-        public async Task<ApplicationReviewStatusChangeInfo> PostApplicationReviewStatusChangeModelAsync(ApplicationReviewStatusChangeModel m, VacancyUser user)
+        return new Dictionary<string, string>
         {
-            var applicationReview = await utility.GetAuthorisedApplicationReviewAsync(m);
+            {"Name", applicationReview.Application.FullName},
+            {"FriendlyId", applicationReview.GetFriendlyId()}
+        };
+    }
 
-            var shouldMakeOthersUnsuccessful = await client.SetApplicationReviewStatus(applicationReview.Id, m.Outcome, m.CandidateFeedback, user);
+    public async Task<ApplicationReviewFeedbackViewModel> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewEditModel rm)
+    {
+        var applicationReviewVm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel)rm);
 
-            var applicationReviewStatusChangeInfo = new ApplicationReviewStatusChangeInfo
-            {
-                ShouldMakeOthersUnsuccessful = shouldMakeOthersUnsuccessful,
-                CandidateName = applicationReview.Application.FullName
-            };
-
-            return applicationReviewStatusChangeInfo;
-        }
-
-        public async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel)
+        return new ApplicationReviewFeedbackViewModel
         {
-            var applicationReview = await utility.GetAuthorisedApplicationReviewAsync(applicationReviewStatusConfirmationEditModel);
+            CandidateFeedback = string.IsNullOrWhiteSpace(rm.CandidateFeedback) 
+                ? rm.Outcome?.GetDefaultCandidateFeedback()
+                : rm.CandidateFeedback,
+            Outcome = rm.Outcome,
+            ApplicationReviewId = rm.ApplicationReviewId,
+            Name = applicationReviewVm.Name,
+            FriendlyId = applicationReviewVm.FriendlyId,
+            Ukprn = rm.Ukprn,
+            VacancyId = rm.VacancyId
+        };
+    }
 
-            return new ApplicationStatusConfirmationViewModel
-            {
-                CandidateFeedback = string.IsNullOrWhiteSpace(applicationReviewStatusConfirmationEditModel.CandidateFeedback) 
-                    ? applicationReviewStatusConfirmationEditModel.Outcome?.GetDefaultCandidateFeedback() 
-                    : applicationReviewStatusConfirmationEditModel.CandidateFeedback,
-                Outcome = applicationReviewStatusConfirmationEditModel.Outcome,
-                ApplicationReviewId = applicationReviewStatusConfirmationEditModel.ApplicationReviewId,
-                Name = applicationReview.Application.FullName,
-                FriendlyId = applicationReview.GetFriendlyId(),
-                Ukprn = applicationReviewStatusConfirmationEditModel.Ukprn,
-                VacancyId = applicationReviewStatusConfirmationEditModel.VacancyId
-            };
-        }
-        public async Task<Dictionary<string, string>> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewFeedbackViewModel applicationReviewFeedbackViewModel)
+    public async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewEditModel rm)
+    {
+        var applicationReviewVm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel)rm);
+
+        return new ApplicationStatusConfirmationViewModel
         {
-            var applicationReview = await utility.GetAuthorisedApplicationReviewAsync(applicationReviewFeedbackViewModel);
+            CandidateFeedback = string.IsNullOrWhiteSpace(rm.CandidateFeedback) 
+                ? rm.Outcome?.GetDefaultCandidateFeedback()
+                : rm.CandidateFeedback,
+            FriendlyId = applicationReviewVm.FriendlyId,
+            Status = applicationReviewVm.Status,
+            Outcome = rm.Outcome,
+            ApplicationReviewId = rm.ApplicationReviewId,
+            Name = applicationReviewVm.Name,
+            Ukprn = rm.Ukprn,
+            VacancyId = rm.VacancyId
+        };
+    }
 
-            return new Dictionary<string, string>
-            {
-                {"Name", applicationReview.Application.FullName},
-                {"FriendlyId", applicationReview.GetFriendlyId()}
-            };
-        }
+    public async Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid? vacancyId)
+    {
+        if (!vacancyId.HasValue)
+            return false;
 
-        public async Task<ApplicationReviewFeedbackViewModel> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewEditModel rm)
-        {
-            var applicationReviewVm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel)rm);
-
-            return new ApplicationReviewFeedbackViewModel
-            {
-                CandidateFeedback = string.IsNullOrWhiteSpace(rm.CandidateFeedback) 
-                    ? rm.Outcome?.GetDefaultCandidateFeedback()
-                    : rm.CandidateFeedback,
-                Outcome = rm.Outcome,
-                ApplicationReviewId = rm.ApplicationReviewId,
-                Name = applicationReviewVm.Name,
-                FriendlyId = applicationReviewVm.FriendlyId,
-                Ukprn = rm.Ukprn,
-                VacancyId = rm.VacancyId
-            };
-        }
-
-        public async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewEditModel rm)
-        {
-            var applicationReviewVm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel)rm);
-
-            return new ApplicationStatusConfirmationViewModel
-            {
-                CandidateFeedback = string.IsNullOrWhiteSpace(rm.CandidateFeedback) 
-                    ? rm.Outcome?.GetDefaultCandidateFeedback()
-                    : rm.CandidateFeedback,
-                FriendlyId = applicationReviewVm.FriendlyId,
-                Status = applicationReviewVm.Status,
-                Outcome = rm.Outcome,
-                ApplicationReviewId = rm.ApplicationReviewId,
-                Name = applicationReviewVm.Name,
-                Ukprn = rm.Ukprn,
-                VacancyId = rm.VacancyId
-            };
-        }
-
-        public async Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid? vacancyId)
-        {
-            if (!vacancyId.HasValue)
-                return false;
-
-            return await vacancyClient.IsAllApplicationReviewsHasOutcomeAsync(vacancyId.Value);
-        }
+        return await vacancyClient.IsAllApplicationReviewsHasOutcomeAsync(vacancyId.Value);
     }
 }

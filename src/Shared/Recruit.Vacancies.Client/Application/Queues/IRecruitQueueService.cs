@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Queues
+namespace Esfa.Recruit.Vacancies.Client.Application.Queues;
+
+public interface IRecruitQueueService
 {
-    public interface IRecruitQueueService
-    {
-        Task AddMessageAsync<T>(T message);
-    }
+    Task AddMessageAsync<T>(T message);
 }

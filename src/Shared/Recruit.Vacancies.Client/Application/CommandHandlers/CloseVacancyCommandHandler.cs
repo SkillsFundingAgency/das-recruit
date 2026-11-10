@@ -9,49 +9,37 @@ using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
+namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
+
+public class CloseVacancyCommandHandler(
+    IVacancyRepository vacancyRepository,
+    ITimeProvider timeProvider,
+    IMessaging messaging,
+    ILogger<CloseVacancyCommandHandler> logger)
+    : IRequestHandler<CloseVacancyCommand, Unit>
 {
-    public class CloseVacancyCommandHandler : IRequestHandler<CloseVacancyCommand, Unit>
+    public async Task<Unit> Handle(CloseVacancyCommand message, CancellationToken cancellationToken)
     {
-        private readonly IVacancyRepository _vacancyRepository;
-        private readonly ILogger<CloseVacancyCommandHandler> _logger;
-        private readonly ITimeProvider _timeProvider;
-        private readonly IMessaging _messaging;
-        public CloseVacancyCommandHandler(
-            IVacancyRepository vacancyRepository,
-            ITimeProvider timeProvider,
-            IMessaging messaging,
-            ILogger<CloseVacancyCommandHandler> logger)
+        var vacancy = await vacancyRepository.GetVacancyAsync(message.VacancyId);
+
+        if (vacancy is not {Status: VacancyStatus.Live})
         {
-            _vacancyRepository = vacancyRepository;
-            _timeProvider = timeProvider;
-            _messaging = messaging;
-            _logger = logger;
+            logger.LogInformation("Cannot close vacancy {VacancyId} as it was not found or is not in status live.", message.VacancyId);
         }
 
-        public async Task<Unit> Handle(CloseVacancyCommand message, CancellationToken cancellationToken)
+        logger.LogInformation("Closing vacancy {vacancyId} by user {userEmail}.", vacancy.Id, message.User.Email);
+        vacancy.ClosureReason = message.ClosureReason;
+        vacancy.ClosedDate = timeProvider.Now;
+        vacancy.Status = VacancyStatus.Closed;
+
+        await vacancyRepository.UpdateAsync(vacancy);
+
+        await messaging.PublishEvent(new VacancyClosedEvent
         {
-            var vacancy = await _vacancyRepository.GetVacancyAsync(message.VacancyId);
-
-            if (vacancy == null || vacancy.Status != VacancyStatus.Live)
-            {
-                _logger.LogInformation($"Cannot close vacancy {message.VacancyId} as it was not found or is not in status live.");
-            }
-
-            _logger.LogInformation("Closing vacancy {vacancyId} by user {userEmail}.", vacancy.Id, message.User.Email);
-            vacancy.ClosureReason = message.ClosureReason;
-            vacancy.ClosedDate = _timeProvider.Now;
-            vacancy.Status = VacancyStatus.Closed;
-
-            await _vacancyRepository.UpdateAsync(vacancy);
-
-            await _messaging.PublishEvent(new VacancyClosedEvent
-            {
-                VacancyReference = vacancy.VacancyReference.GetValueOrDefault(),
-                VacancyId = vacancy.Id
-            });
-            return Unit.Value;
-        }
-
+            VacancyReference = vacancy.VacancyReference.GetValueOrDefault(),
+            VacancyId = vacancy.Id
+        });
+        return Unit.Value;
     }
+
 }

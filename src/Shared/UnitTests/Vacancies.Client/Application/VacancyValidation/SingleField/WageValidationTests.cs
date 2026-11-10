@@ -1,232 +1,231 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
+
+public class WageValidationTests : VacancyValidationTestsBase
 {
-    public class WageValidationTests : VacancyValidationTestsBase
+    [Test]
+    [TestCase(WageType.FixedWage, 30000, null)]
+    [TestCase(WageType.NationalMinimumWage, null, null)]
+    [TestCase(WageType.NationalMinimumWageForApprentices, null, null)]
+    public void NoErrorsWhenWageFieldsAreValid(WageType wageTypeValue, int? yearlyFixedWageAmountValue, string wageAdditionalInfoValue)
     {
-        [Theory]
-        [InlineData(WageType.FixedWage, 30000, null)]
-        [InlineData(WageType.NationalMinimumWage, null, null)]
-        [InlineData(WageType.NationalMinimumWageForApprentices, null, null)]
-        public void NoErrorsWhenWageFieldsAreValid(WageType wageTypeValue, int? yearlyFixedWageAmountValue, string wageAdditionalInfoValue)
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
+            Wage = new Wage
             {
-                Wage = new Wage
-                {
-                    WageType = wageTypeValue,
-                    FixedWageYearlyAmount = Convert.ToDecimal(yearlyFixedWageAmountValue),
-                    WageAdditionalInformation = wageAdditionalInfoValue
-                }
-            };
+                WageType = wageTypeValue,
+                FixedWageYearlyAmount = Convert.ToDecimal(yearlyFixedWageAmountValue),
+                WageAdditionalInformation = wageAdditionalInfoValue
+            }
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
 
+        result.HasErrors.Should().BeFalse();
+        result.Errors.Should().HaveCount(0);
+    }
+
+    [Test]
+    public void WageMustNotBeNull()
+    {
+        var vacancy = new Vacancy
+        {
+            Wage = null
+        };
+
+        var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
+
+        result.HasErrors.Should().BeTrue();
+        result.Errors.Should().HaveCount(1);
+        result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}");
+        result.Errors[0].ErrorCode.Should().Be("46");
+        result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
+    }
+
+    [Test]
+    public void WageTypeMustHaveAValue()
+    {
+        var vacancy = new Vacancy
+        {
+            Wage = new Wage
+            {
+                WageType = null
+            }
+        };
+
+        var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
+
+        result.HasErrors.Should().BeTrue();
+        result.Errors.Should().HaveCount(1);
+        result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WageType)}");
+        result.Errors[0].ErrorCode.Should().Be("46");
+        result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
+    }
+
+    [Test]
+    public void WageTypeMustHaveAValidValue()
+    {
+        var vacancy = new Vacancy
+        {
+            Wage = new Wage
+            {
+                WageType = (WageType)1000
+            }
+        };
+
+        var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
+
+        result.HasErrors.Should().BeTrue();
+        result.Errors.Should().HaveCount(1);
+        result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WageType)}");
+        result.Errors[0].ErrorCode.Should().Be("46");
+        result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
+    }
+
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
+    public void WageAdditionalInfoIsOptional(string descriptionValue)
+    {
+        var vacancy = new Vacancy
+        {
+            Wage = new Wage
+            {
+                WageType = WageType.NationalMinimumWage,
+                WageAdditionalInformation = descriptionValue
+            }
+        };
+
+        var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
+
+        result.HasErrors.Should().BeFalse();
+        result.Errors.Should().HaveCount(0);
+    }
+
+    [Test]
+    [TestCase("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
+    [TestCase("<script>alert('not allowed')</script>", false)]
+    [TestCase("<p>`</p>", false)]
+    public void WageAdditionalInfoMustContainValidCharacters(string invalidCharacter, bool expectedResult)
+    {
+        var vacancy = new Vacancy
+        {
+            Wage = new Wage
+            {
+                WageType = WageType.NationalMinimumWage,
+                WageAdditionalInformation = new String('a', 50) + invalidCharacter + new String('a', 50)
+            }
+        };
+
+        var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
+        if (expectedResult)
+        {
             result.HasErrors.Should().BeFalse();
-            result.Errors.Should().HaveCount(0);
         }
-
-        [Fact]
-        public void WageMustNotBeNull()
+        else
         {
-            var vacancy = new Vacancy
-            {
-                Wage = null
-            };
-
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
-
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}");
-            result.Errors[0].ErrorCode.Should().Be("46");
+            result.Errors[0].PropertyName.Should()
+                .Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WageAdditionalInformation)}");
+            result.Errors[0].ErrorCode.Should().Be("45");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
         }
+    }
 
-        [Fact]
-        public void WageTypeMustHaveAValue()
+    [Test]
+    public void WageAdditionalInfoMustBeLessThan501Characters()
+    {
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
+            Wage = new Wage
             {
-                Wage = new Wage
-                {
-                    WageType = null
-                }
-            };
+                WageType = WageType.NationalMinimumWage,
+                WageAdditionalInformation = new string('a', 501)
+            }
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WageType)}");
-            result.Errors[0].ErrorCode.Should().Be("46");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
-        }
-
-        [Fact]
-        public void WageTypeMustHaveAValidValue()
+        result.HasErrors.Should().BeTrue();
+        result.Errors.Should().HaveCount(1);
+        result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WageAdditionalInformation)}");
+        result.Errors[0].ErrorCode.Should().Be("44");
+        result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
+    }
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
+    public void WageCompanyBenefitsInfoIsOptional(string descriptionValue)
+    {
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
+            Wage = new Wage
             {
-                Wage = new Wage
-                {
-                    WageType = (WageType)1000
-                }
-            };
+                WageType = WageType.NationalMinimumWage,
+                CompanyBenefitsInformation = descriptionValue
+            }
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WageType)}");
-            result.Errors[0].ErrorCode.Should().Be("46");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
-        }
+        result.HasErrors.Should().BeFalse();
+        result.Errors.Should().HaveCount(0);
+    }
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public void WageAdditionalInfoIsOptional(string descriptionValue)
+    [Test]
+    [TestCase("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
+    [TestCase("<script>alert('not allowed')</script>", false)]
+    [TestCase("<p>`</p>", false)]
+    public void WageCompanyBenefitsInfoMustContainValidCharacters(string invalidCharacter,  bool expectedResult)
+    {
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
+            Wage = new Wage
             {
-                Wage = new Wage
-                {
-                    WageType = WageType.NationalMinimumWage,
-                    WageAdditionalInformation = descriptionValue
-                }
-            };
+                WageType = WageType.NationalMinimumWage,
+                CompanyBenefitsInformation = new String('a', 200) + invalidCharacter + new String('a', 200)
+            }
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
 
+        if (expectedResult)
+        {
             result.HasErrors.Should().BeFalse();
-            result.Errors.Should().HaveCount(0);
         }
-
-        [Theory]
-        [InlineData("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
-        [InlineData("<script>alert('not allowed')</script>", false)]
-        [InlineData("<p>`</p>", false)]
-        public void WageAdditionalInfoMustContainValidCharacters(string invalidCharacter, bool expectedResult)
+        else
         {
-            var vacancy = new Vacancy
-            {
-                Wage = new Wage
-                {
-                    WageType = WageType.NationalMinimumWage,
-                    WageAdditionalInformation = new String('a', 50) + invalidCharacter + new String('a', 50)
-                }
-            };
-
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
-            if (expectedResult)
-            {
-                result.HasErrors.Should().BeFalse();
-            }
-            else
-            {
-                result.HasErrors.Should().BeTrue();
-                result.Errors.Should().HaveCount(1);
-                result.Errors[0].PropertyName.Should()
-                    .Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WageAdditionalInformation)}");
-                result.Errors[0].ErrorCode.Should().Be("45");
-                result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
-            }
-        }
-
-        [Fact]
-        public void WageAdditionalInfoMustBeLessThan501Characters()
-        {
-            var vacancy = new Vacancy
-            {
-                Wage = new Wage
-                {
-                    WageType = WageType.NationalMinimumWage,
-                    WageAdditionalInformation = new string('a', 501)
-                }
-            };
-
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
-
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WageAdditionalInformation)}");
-            result.Errors[0].ErrorCode.Should().Be("44");
+            result.Errors[0].PropertyName.Should()
+                .Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.CompanyBenefitsInformation)}");
+            result.Errors[0].ErrorCode.Should().Be("45");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
         }
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public void WageCompanyBenefitsInfoIsOptional(string descriptionValue)
+    }
+
+    [Test]
+    public void WageCompanyBenefitsInfoMustBeLessThan251Characters()
+    {
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
+            Wage = new Wage
             {
-                Wage = new Wage
-                {
-                    WageType = WageType.NationalMinimumWage,
-                    CompanyBenefitsInformation = descriptionValue
-                }
-            };
-
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
-
-            result.HasErrors.Should().BeFalse();
-            result.Errors.Should().HaveCount(0);
-        }
-
-        [Theory]
-        [InlineData("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
-        [InlineData("<script>alert('not allowed')</script>", false)]
-        [InlineData("<p>`</p>", false)]
-        public void WageCompanyBenefitsInfoMustContainValidCharacters(string invalidCharacter,  bool expectedResult)
-        {
-            var vacancy = new Vacancy
-            {
-                Wage = new Wage
-                {
-                    WageType = WageType.NationalMinimumWage,
-                    CompanyBenefitsInformation = new String('a', 200) + invalidCharacter + new String('a', 200)
-                }
-            };
-
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
-
-            if (expectedResult)
-            {
-                result.HasErrors.Should().BeFalse();
+                WageType = WageType.NationalMinimumWage,
+                CompanyBenefitsInformation = new string('a', 502)
             }
-            else
-            {
-                result.HasErrors.Should().BeTrue();
-                result.Errors.Should().HaveCount(1);
-                result.Errors[0].PropertyName.Should()
-                    .Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.CompanyBenefitsInformation)}");
-                result.Errors[0].ErrorCode.Should().Be("45");
-                result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
-            }
-        }
+        };
 
-        [Fact]
-        public void WageCompanyBenefitsInfoMustBeLessThan251Characters()
-        {
-            var vacancy = new Vacancy
-            {
-                Wage = new Wage
-                {
-                    WageType = WageType.NationalMinimumWage,
-                    CompanyBenefitsInformation = new string('a', 502)
-                }
-            };
+        var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
-
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.CompanyBenefitsInformation)}");
-            result.Errors[0].ErrorCode.Should().Be("44");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
-        }
+        result.HasErrors.Should().BeTrue();
+        result.Errors.Should().HaveCount(1);
+        result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.CompanyBenefitsInformation)}");
+        result.Errors[0].ErrorCode.Should().Be("44");
+        result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
     }
 }

@@ -7,30 +7,22 @@ using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Esfa.Recruit.Employer.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers;
+
+[Route(RoutePaths.AccountRoutePath)]
+public class AlertsController(AlertsOrchestrator orchestrator) : Controller
 {
-    [Route(RoutePaths.AccountRoutePath)]
-    public class AlertsController : Controller
+    [HttpPost("dismiss-alert", Name = RouteNames.Alerts_Dismiss_Post)]
+    public async Task<IActionResult> DismissAlert(AlertDismissalEditModel model)
     {
-        private readonly AlertsOrchestrator _orchestrator;
-
-        public AlertsController(AlertsOrchestrator orchestrator)
+        if (Enum.TryParse<AlertType>(model.AlertType, out var alertTypeEnum))
         {
-            _orchestrator = orchestrator;
+            await orchestrator.DismissAlert(User.ToVacancyUser(), alertTypeEnum);
         }
 
-        [HttpPost("dismiss-alert", Name = RouteNames.Alerts_Dismiss_Post)]
-        public async Task<IActionResult> DismissAlert(AlertDismissalEditModel model)
-        {
-            if (Enum.TryParse<AlertType>(model.AlertType, out var alertTypeEnum))
-            {
-                await _orchestrator.DismissAlert(User.ToVacancyUser(), alertTypeEnum);
-            }
+        if (!string.IsNullOrWhiteSpace(model.ReturnUrl))
+            return Redirect(model.ReturnUrl);
 
-            if (!string.IsNullOrWhiteSpace(model.ReturnUrl))
-                return Redirect(model.ReturnUrl);
-
-            return RedirectToRoute(RouteNames.Dashboard_Get, new {model.EmployerAccountId});
-        }
+        return RedirectToRoute(RouteNames.Dashboard_Get, new {model.EmployerAccountId});
     }
 }

@@ -13,155 +13,148 @@ using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using ErrorMessages = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
 
-namespace Esfa.Recruit.Provider.Web.Orchestrators
+namespace Esfa.Recruit.Provider.Web.Orchestrators;
+
+public class CloneVacancyOrchestrator(
+    IRecruitVacancyClient vacancyClient,
+    ITimeProvider timeProvider,
+    ILogger<CloneVacancyOrchestrator> logger,
+    IUtility utility)
+    : EntityValidatingOrchestrator<Vacancy, CloneVacancyWithNewDatesEditModel>(logger)
 {
-	public class CloneVacancyOrchestrator : EntityValidatingOrchestrator<Vacancy, CloneVacancyWithNewDatesEditModel>
+    private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.StartDateEndDate ;
+    public const string ChangeBothDatesTitle = "Change the closing date and start date";
+    public const string ChangeEitherDatesTitle = "Change the closing date or start date";
+
+    public async Task<CloneVacancyDatesQuestionViewModel> GetCloneVacancyDatesQuestionViewModelAsync(VacancyRouteModel vrm)
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.StartDateEndDate ;
-        public const string ChangeBothDatesTitle = "Change the closing date and start date";
-        public const string ChangeEitherDatesTitle = "Change the closing date or start date";
-        private readonly IRecruitVacancyClient _vacancyClient;
-		private readonly ITimeProvider _timeProvider;
-        private readonly IUtility _utility;
+        var vacancy = await GetCloneableAuthorisedVacancyAsync(vrm);
 
-        public CloneVacancyOrchestrator(IRecruitVacancyClient vacancyClient, 
-            ITimeProvider timeProvider, ILogger<CloneVacancyOrchestrator> logger, IUtility utility) : base(logger)
+        if (IsNewDatesRequired(vacancy))
+            throw new InvalidStateException(string.Format(ErrorMessages.CannotCloneVacancyWithSameDates, vacancy.Title));
+
+        var vm = new CloneVacancyDatesQuestionViewModel 
         {
-            _vacancyClient = vacancyClient;
-            _timeProvider = timeProvider;
-            _utility = utility;
-        }
+            StartDate = vacancy.StartDate?.AsGdsDate(),
+            ClosingDate = vacancy.ClosingDate?.AsGdsDate(),
+            Ukprn = vrm.Ukprn,
+            VacancyId = vrm.VacancyId
+        };
 
-        public async Task<CloneVacancyDatesQuestionViewModel> GetCloneVacancyDatesQuestionViewModelAsync(VacancyRouteModel vrm)
+        return vm;
+    }
+
+    public async Task<CloneVacancyWithNewDatesViewModel> GetCloneVacancyWithNewDatesViewModelAsync(VacancyRouteModel vrm)
+    {
+        var vacancy = await GetCloneableAuthorisedVacancyAsync(vrm);
+
+        var isNewDatesForced = IsNewDatesRequired(vacancy);
+        if(isNewDatesForced)
         {
-            var vacancy = await GetCloneableAuthorisedVacancyAsync(vrm);
-
-            if (IsNewDatesRequired(vacancy))
-                throw new InvalidStateException(string.Format(ErrorMessages.CannotCloneVacancyWithSameDates, vacancy.Title));
-
-            var vm = new CloneVacancyDatesQuestionViewModel 
+            return new CloneVacancyWithNewDatesViewModel 
             {
-                StartDate = vacancy.StartDate?.AsGdsDate(),
-                ClosingDate = vacancy.ClosingDate?.AsGdsDate(),
+                IsNewDatesForced = isNewDatesForced,
+                Title = ChangeBothDatesTitle,
                 Ukprn = vrm.Ukprn,
                 VacancyId = vrm.VacancyId
             };
-
-            return vm;
         }
-
-        public async Task<CloneVacancyWithNewDatesViewModel> GetCloneVacancyWithNewDatesViewModelAsync(VacancyRouteModel vrm)
+        else
         {
-            var vacancy = await GetCloneableAuthorisedVacancyAsync(vrm);
-
-            var isNewDatesForced = IsNewDatesRequired(vacancy);
-            if(isNewDatesForced)
+            return new CloneVacancyWithNewDatesViewModel
             {
-                return new CloneVacancyWithNewDatesViewModel 
-                {
-                    IsNewDatesForced = isNewDatesForced,
-                    Title = ChangeBothDatesTitle,
-                    Ukprn = vrm.Ukprn,
-                    VacancyId = vrm.VacancyId
-                };
-            }
-            else
-            {
-                return new CloneVacancyWithNewDatesViewModel
-                {
-                    IsNewDatesForced = isNewDatesForced,
-                    Title = ChangeEitherDatesTitle,
-                    ClosingDay = $"{vacancy.ClosingDate.Value.Day:00}",
-                    ClosingMonth = $"{vacancy.ClosingDate.Value.Month:00}",
-                    ClosingYear = $"{vacancy.ClosingDate.Value.Year}",
-                    StartDay = $"{vacancy.StartDate.Value.Day:00}",
-                    StartMonth = $"{vacancy.StartDate.Value.Month:00}",
-                    StartYear = $"{vacancy.StartDate.Value.Year}",
-                    CurrentYear = _timeProvider.Now.Year,
-                    Ukprn = vrm.Ukprn,
-                    VacancyId = vrm.VacancyId
-                };
-            }
-        }
-
-        public async Task<CloneVacancyWithNewDatesViewModel> GetDirtyCloneVacancyWithNewDatesViewModelAsync(CloneVacancyWithNewDatesEditModel dirtyModel)
-        {
-            var model = await GetCloneVacancyWithNewDatesViewModelAsync(dirtyModel);
-
-            model.ClosingDay = dirtyModel.ClosingDay;
-            model.ClosingMonth = dirtyModel.ClosingMonth;
-            model.ClosingYear = dirtyModel.ClosingYear;
-
-            model.StartDay = dirtyModel.StartDay;
-            model.StartMonth = dirtyModel.StartMonth;
-            model.StartYear = dirtyModel.StartYear;
-            model.CurrentYear = _timeProvider.Now.Year;
-
-            return model;
-        }
-
-        public bool IsNewDatesRequired(Vacancy vacancy)
-            => vacancy.ClosingDate < _timeProvider.Now.Date.AddDays(7);
-
-        public async Task<OrchestratorResponse<Guid>> PostCloneVacancyWithSameDates(CloneVacancyDatesQuestionEditModel model, VacancyUser user)
-        {
-            var vacancy = await GetCloneableAuthorisedVacancyAsync(model);
-
-            var newVacancyId = await _vacancyClient.CloneVacancyAsync(
-                model.VacancyId.GetValueOrDefault(), 
-                user, 
-                SourceOrigin.ProviderWeb, 
-                vacancy.StartDate.GetValueOrDefault(), 
-                vacancy.ClosingDate.GetValueOrDefault());
-            
-            return new OrchestratorResponse<Guid>(newVacancyId);
-        }
-
-        public async Task<OrchestratorResponse<Guid>> PostCloneVacancyWithNewDates(CloneVacancyWithNewDatesEditModel model, VacancyUser user)
-        {
-            var vacancy = await GetCloneableAuthorisedVacancyAsync(model);
-
-            vacancy.Status = VacancyStatus.Draft;
-            var startDate = model.StartDate.AsDateTimeUk()?.ToUniversalTime();
-            var closingDate = model.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
-            vacancy.StartDate = startDate;
-            vacancy.ClosingDate = closingDate;
-
-            return await ValidateAndExecute(
-                vacancy, 
-                v => _vacancyClient.Validate(v, ValidationRules),
-                v => 
-                    _vacancyClient.CloneVacancyAsync(
-                        model.VacancyId.GetValueOrDefault(),
-                        user,
-                        SourceOrigin.ProviderWeb,
-                        startDate.Value,
-                        closingDate.Value)
-                );
-        }
-
-        public async Task<Vacancy> GetCloneableAuthorisedVacancyAsync(VacancyRouteModel vrm)
-        {
-            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
-
-            _utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
-
-            if (!vacancy.CanClone)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForCloning, vacancy.Title));
-
-            return vacancy;
-        }
-
-        protected override EntityToViewModelPropertyMappings<Vacancy, CloneVacancyWithNewDatesEditModel> DefineMappings()
-        {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, CloneVacancyWithNewDatesEditModel>
-            {
-                { e => e.StartDate, vm => vm.StartDate },
-                { e => e.ClosingDate, vm => vm.ClosingDate }
+                IsNewDatesForced = isNewDatesForced,
+                Title = ChangeEitherDatesTitle,
+                ClosingDay = $"{vacancy.ClosingDate.Value.Day:00}",
+                ClosingMonth = $"{vacancy.ClosingDate.Value.Month:00}",
+                ClosingYear = $"{vacancy.ClosingDate.Value.Year}",
+                StartDay = $"{vacancy.StartDate.Value.Day:00}",
+                StartMonth = $"{vacancy.StartDate.Value.Month:00}",
+                StartYear = $"{vacancy.StartDate.Value.Year}",
+                CurrentYear = timeProvider.Now.Year,
+                Ukprn = vrm.Ukprn,
+                VacancyId = vrm.VacancyId
             };
-
-            return mappings;
         }
-
     }
+
+    public async Task<CloneVacancyWithNewDatesViewModel> GetDirtyCloneVacancyWithNewDatesViewModelAsync(CloneVacancyWithNewDatesEditModel dirtyModel)
+    {
+        var model = await GetCloneVacancyWithNewDatesViewModelAsync(dirtyModel);
+
+        model.ClosingDay = dirtyModel.ClosingDay;
+        model.ClosingMonth = dirtyModel.ClosingMonth;
+        model.ClosingYear = dirtyModel.ClosingYear;
+
+        model.StartDay = dirtyModel.StartDay;
+        model.StartMonth = dirtyModel.StartMonth;
+        model.StartYear = dirtyModel.StartYear;
+        model.CurrentYear = timeProvider.Now.Year;
+
+        return model;
+    }
+
+    public bool IsNewDatesRequired(Vacancy vacancy)
+        => vacancy.ClosingDate < timeProvider.Now.Date.AddDays(7);
+
+    public async Task<OrchestratorResponse<Guid>> PostCloneVacancyWithSameDates(CloneVacancyDatesQuestionEditModel model, VacancyUser user)
+    {
+        var vacancy = await GetCloneableAuthorisedVacancyAsync(model);
+
+        var newVacancyId = await vacancyClient.CloneVacancyAsync(
+            model.VacancyId.GetValueOrDefault(), 
+            user, 
+            SourceOrigin.ProviderWeb, 
+            vacancy.StartDate.GetValueOrDefault(), 
+            vacancy.ClosingDate.GetValueOrDefault());
+            
+        return new OrchestratorResponse<Guid>(newVacancyId);
+    }
+
+    public async Task<OrchestratorResponse<Guid>> PostCloneVacancyWithNewDates(CloneVacancyWithNewDatesEditModel model, VacancyUser user)
+    {
+        var vacancy = await GetCloneableAuthorisedVacancyAsync(model);
+
+        vacancy.Status = VacancyStatus.Draft;
+        var startDate = model.StartDate.AsDateTimeUk()?.ToUniversalTime();
+        var closingDate = model.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
+        vacancy.StartDate = startDate;
+        vacancy.ClosingDate = closingDate;
+
+        return await ValidateAndExecute(
+            vacancy, 
+            v => vacancyClient.Validate(v, ValidationRules),
+            v => 
+                vacancyClient.CloneVacancyAsync(
+                    model.VacancyId.GetValueOrDefault(),
+                    user,
+                    SourceOrigin.ProviderWeb,
+                    startDate.Value,
+                    closingDate.Value)
+        );
+    }
+
+    public async Task<Vacancy> GetCloneableAuthorisedVacancyAsync(VacancyRouteModel vrm)
+    {
+        var vacancy = await vacancyClient.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
+
+        utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
+
+        if (!vacancy.CanClone)
+            throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForCloning, vacancy.Title));
+
+        return vacancy;
+    }
+
+    protected override EntityToViewModelPropertyMappings<Vacancy, CloneVacancyWithNewDatesEditModel> DefineMappings()
+    {
+        var mappings = new EntityToViewModelPropertyMappings<Vacancy, CloneVacancyWithNewDatesEditModel>
+        {
+            { e => e.StartDate, vm => vm.StartDate },
+            { e => e.ClosingDate, vm => vm.ClosingDate }
+        };
+
+        return mappings;
+    }
+
 }
