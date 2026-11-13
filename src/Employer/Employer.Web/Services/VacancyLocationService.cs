@@ -52,6 +52,9 @@ public class VacancyLocationService(
         reviewFieldIndicatorService.SetVacancyWithEmployerReviewFieldIndicators(vacancy.EmployerLocations, FieldIdResolver.ToFieldId(v => v.EmployerLocations), vacancy, locations);
         reviewFieldIndicatorService.SetVacancyWithEmployerReviewFieldIndicators(vacancy.EmployerLocationInformation, FieldIdResolver.ToFieldId(v => v.EmployerLocationInformation), vacancy, locationInformation);
 
+        if (locations is not null)
+            locations = [.. (await Task.WhenAll(locations.Select(EnrichAddressWithGeoData)))];
+
         await UpdateAddressCountriesAsync(locations, vacancy);
         
         vacancy.EmployerLocation = null; // null it for records created before this feature that are edited
@@ -68,44 +71,40 @@ public class VacancyLocationService(
         await recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
         return new UpdateVacancyLocationsResult(null);
     }
-    
+
     private async Task UpdateAddressCountriesAsync(List<Address> locations, Vacancy vacancy)
     {
         if (locations is null || locations.Count == 0)
-        {
             return;
-        }
-        
-        var nonEnglishAddresses = locations.Where(x => x.Country is not (Constants.EnglandCountryCode or null)).ToArray();
-        if (nonEnglishAddresses.Length is not 0)
-        {
-            // fail fast since we know this will fail validation anyway
+
+        if (locations.Any(x => x.Country is not (Constants.EnglandCountryCode or null)))
             return;
-        }
-        
-        var addressesToQuery = locations
+
+        var postcodesToQuery = locations
             .Where(x => x.Country is null)
             .Select(x => x.Postcode)
             .Distinct()
             .ToList();
-        var results = await locationsService.GetBulkPostcodeDataAsync(addressesToQuery);
- 
+
+        if (postcodesToQuery.Count == 0)
+            return;
+
+        var results = await locationsService.GetBulkPostcodeDataAsync(postcodesToQuery);
+
         var isDirty = false;
-        locations.ForEach(x =>
+        foreach (var location in locations.Where(x => x.Country is null))
         {
-            if (x.Country is null && results.TryGetValue(x.Postcode, out var postcodeData) && postcodeData is not null)
+            if (results.TryGetValue(location.Postcode, out var postcodeData) && postcodeData is not null)
             {
-                x.Country = postcodeData.Country;
+                location.Country = postcodeData.Country;
                 isDirty = true;
             }
-        });
-        
-        if (isDirty)
-        {
-            await PatchExistingEmployerAddresses(vacancy, locations);
         }
+
+        if (isDirty)
+            await PatchExistingEmployerAddresses(vacancy, locations);
     }
-    
+
     private async Task PatchExistingEmployerAddresses(Vacancy vacancy, List<Address> addresses)
     {
         var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
@@ -134,5 +133,22 @@ public class VacancyLocationService(
         var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
         employerProfile.OtherLocations.Add(address);
         await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile);
+    }
+
+    private async Task<Address> EnrichAddressWithGeoData(Address address)
+    {
+        if (address is null || string.IsNullOrEmpty(address.Postcode) || address.HasGeocode)
+            return address;
+
+        var postcodeData = await locationsService.GetPostcodeDataAsync(address.Postcode);
+
+        if (postcodeData is null)
+            return address;
+
+        address.Latitude = postcodeData.Latitude;
+        address.Longitude = postcodeData.Longitude;
+        address.Country = postcodeData.Country;
+
+        return address;
     }
 }
