@@ -10,6 +10,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.RecruitNationally;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1;
@@ -17,14 +18,14 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1;
 public class RecruitNationallyControllerTests
 {
     private RecruitNationallyController _sut;
-    private Mock<IVacancyLocationService> _vacancyLocationService;
+    private Mock<IEmployerVacancyLocationService    > _vacancyLocationService;
 
     [SetUp]
     public void SetUp()
     {
         _sut = new RecruitNationallyController();
         _sut.AddControllerContext().WithUser(Guid.NewGuid());
-        _vacancyLocationService = new Mock<IVacancyLocationService>();
+        _vacancyLocationService = new Mock<IEmployerVacancyLocationService>();
     }
 
 

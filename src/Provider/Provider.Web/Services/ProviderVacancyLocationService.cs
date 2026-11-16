@@ -13,26 +13,28 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Services;
 
-public interface IVacancyLocationService
+public interface IProviderVacancyLocationService : IVacancyLocationService
 {
     public Task<List<Address>> GetVacancyLocations(Vacancy vacancy, long ukprn);
-    public Task<UpdateVacancyLocationsResult> UpdateDraftVacancyLocations(Vacancy vacancy, VacancyUser user, AvailableWhere availableWhere, List<Address> locations = null, string locationInformation = null);
     public Task SaveEmployerAddress(VacancyUser user, Vacancy vacancy, long ukprn, Address address);
 }
 
-public record UpdateVacancyLocationsResult(EntityValidationResult ValidationResult);
-
-public class VacancyLocationService(
+public class ProviderVacancyLocationService(
     IRecruitVacancyClient recruitVacancyClient,
     IProviderVacancyClient providerVacancyClient,
     IReviewFieldIndicatorService reviewFieldIndicatorService,
-    ILocationsService locationsService): IVacancyLocationService
+    ILocationsService locationsService) : VacancyLocationServiceBase(locationsService), IProviderVacancyLocationService
 {
+    private readonly IRecruitVacancyClient _recruitVacancyClient = recruitVacancyClient;
+    private readonly IProviderVacancyClient _providerVacancyClient = providerVacancyClient;
+    private readonly IReviewFieldIndicatorService _reviewFieldIndicatorService = reviewFieldIndicatorService;
+    private readonly ILocationsService _locationsService = locationsService;
+
     public async Task<List<Address>> GetVacancyLocations(Vacancy vacancy, long ukprn)
     {
         ArgumentNullException.ThrowIfNull(vacancy);
-        var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
-        var providerData = await providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn, vacancy.EmployerAccountId);
+        var employerProfile = await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
+        var providerData = await _providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn, vacancy.EmployerAccountId);
         var employerInfo = providerData.Employers.Single(e => e.EmployerAccountId == vacancy.EmployerAccountId);
         var legalEntity = employerInfo.LegalEntities.FirstOrDefault(l => l.AccountLegalEntityPublicHashedId == employerProfile.AccountLegalEntityPublicHashedId);
         
@@ -56,11 +58,11 @@ public class VacancyLocationService(
         ArgumentNullException.ThrowIfNull(vacancy);
         ArgumentNullException.ThrowIfNull(user);
         
-        reviewFieldIndicatorService.SetVacancyWithProviderReviewFieldIndicators(vacancy.EmployerLocations, FieldIdResolver.ToFieldId(v => v.EmployerLocations), vacancy, locations);
-        reviewFieldIndicatorService.SetVacancyWithProviderReviewFieldIndicators(vacancy.EmployerLocationInformation, FieldIdResolver.ToFieldId(v => v.EmployerLocationInformation), vacancy, locationInformation);
+        _reviewFieldIndicatorService.SetVacancyWithProviderReviewFieldIndicators(vacancy.EmployerLocations, FieldIdResolver.ToFieldId(v => v.EmployerLocations), vacancy, locations);
+        _reviewFieldIndicatorService.SetVacancyWithProviderReviewFieldIndicators(vacancy.EmployerLocationInformation, FieldIdResolver.ToFieldId(v => v.EmployerLocationInformation), vacancy, locationInformation);
 
         if (locations is not null)
-            locations = [.. (await Task.WhenAll(locations.Select(EnrichAddressWithGeoData)))];
+            locations = [.. await Task.WhenAll(locations.Select(EnrichAddressWithGeoData))];
 
         await UpdateAddressCountriesAsync(locations, vacancy);
         
@@ -69,13 +71,13 @@ public class VacancyLocationService(
         vacancy.EmployerLocations = locations;
         vacancy.EmployerLocationInformation = locationInformation;
         
-        var validationResult = recruitVacancyClient.Validate(vacancy, VacancyRuleSet.EmployerAddress);
+        var validationResult = _recruitVacancyClient.Validate(vacancy, VacancyRuleSet.EmployerAddress);
         if (validationResult.HasErrors)
         {
             return new UpdateVacancyLocationsResult(validationResult);
         }
 
-        await recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+        await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
         return new UpdateVacancyLocationsResult(null);
     }
 
@@ -96,7 +98,7 @@ public class VacancyLocationService(
         if (postcodesToQuery.Count == 0)
             return;
 
-        var results = await locationsService.GetBulkPostcodeDataAsync(postcodesToQuery);
+        var results = await _locationsService.GetBulkPostcodeDataAsync(postcodesToQuery);
 
         var isDirty = false;
         foreach (var location in locations.Where(x => x.Country is null))
@@ -114,7 +116,7 @@ public class VacancyLocationService(
 
     private async Task PatchExistingEmployerAddresses(Vacancy vacancy, List<Address> addresses)
     {
-        var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
+        var employerProfile = await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
         var existingLocations = employerProfile.OtherLocations;
 
         foreach (var address in addresses)
@@ -132,7 +134,7 @@ public class VacancyLocationService(
             existingLocation.Country = address.Country;
         }
 
-        await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile);
+        await _recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile);
     }
 
     public async Task SaveEmployerAddress(VacancyUser user, Vacancy vacancy, long ukprn, Address address)
@@ -145,27 +147,10 @@ public class VacancyLocationService(
             return;
         }
 
-        address = await EnrichAddressWithGeoData(address);
+        address = await base.EnrichAddressWithGeoData(address);
 
-        var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
+        var employerProfile = await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
         employerProfile.OtherLocations.Add(address);
-        await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile);
-    }
-
-    private async Task<Address> EnrichAddressWithGeoData(Address address)
-    {
-        if (address is null || string.IsNullOrEmpty(address.Postcode) || address.HasGeocode)
-            return address;
-
-        var postcodeData = await locationsService.GetPostcodeDataAsync(address.Postcode);
-
-        if (postcodeData is null)
-            return address;
-
-        address.Latitude = postcodeData.Latitude;
-        address.Longitude = postcodeData.Longitude;
-        address.Country = postcodeData.Country;
-
-        return address;
-    }
+        await _recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile);
+    }    
 }

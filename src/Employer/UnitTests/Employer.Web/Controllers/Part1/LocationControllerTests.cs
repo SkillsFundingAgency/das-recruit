@@ -12,6 +12,7 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -21,7 +22,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1;
 public class LocationControllerTests
 {
     private LocationController _sut;
-    private Mock<IVacancyLocationService> _vacancyLocationService;
+    private Mock<IEmployerVacancyLocationService> _vacancyLocationService;
 
     [SetUp]
     public void SetUp()
@@ -31,7 +32,7 @@ public class LocationControllerTests
         var tempData = new TempDataDictionary(_sut.ControllerContext.HttpContext, Mock.Of<ITempDataProvider>());
         _sut.TempData = tempData;
 
-        _vacancyLocationService = new Mock<IVacancyLocationService>();
+        _vacancyLocationService = new Mock<IEmployerVacancyLocationService>();
     }
 
     [Test, MoqAutoData]

@@ -47,7 +47,7 @@ public class RecruitNationallyController: Controller
     
     [HttpPost("location-information", Name = RouteNames.RecruitNationally_Post)]
     public async Task<IActionResult> RecruitNationally(
-        [FromServices] IVacancyLocationService vacancyLocationService,
+        [FromServices] IEmployerVacancyLocationService vacancyLocationService,
         [FromServices] IUtility utility,
         [FromServices] IReviewSummaryService reviewSummaryService,
         RecruitNationallyEditModel model,
