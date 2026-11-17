@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;

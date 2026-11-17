@@ -1,24 +1,23 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum FilteringOptions
 {
-    public enum FilteringOptions
-    {
-        All,
-        Draft,
-        Review,
-        Submitted,
-        Referred,
-        Live,
-        Closed,
-        Approved,
-        NewApplications,
-        AllApplications,
-        ClosingSoon,
-        ClosingSoonWithNoApplications,
-        Transferred,
-        EmployerReviewedApplications,
-        NewSharedApplications,
-        AllSharedApplications,
-        Dashboard,
-        Archived,
-    }
+    All,
+    Draft,
+    Review,
+    Submitted,
+    Referred,
+    Live,
+    Closed,
+    Approved,
+    NewApplications,
+    AllApplications,
+    ClosingSoon,
+    ClosingSoonWithNoApplications,
+    Transferred,
+    EmployerReviewedApplications,
+    NewSharedApplications,
+    AllSharedApplications,
+    Dashboard,
+    Archived,
 }

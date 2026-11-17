@@ -65,18 +65,9 @@ public class ConsiderationsOrchestratorTests
     public class ConsiderationsOrchestratorTestsFixture
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ThingsToConsider;
-        public VacancyUser User { get; }
-        public Vacancy Vacancy { get; }
+        public VacancyUser User { get; } = VacancyOrchestratorTestData.GetVacancyUser();
+        public Vacancy Vacancy { get; } = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
         public ConsiderationsOrchestrator Sut {get; private set;}
-
-        public ConsiderationsOrchestratorTestsFixture()
-        {
-            MockClient = new Mock<IProviderVacancyClient>();
-            MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
-
-            User = VacancyOrchestratorTestData.GetVacancyUser();
-            Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
-        }
 
         public ConsiderationsOrchestratorTestsFixture WithThingsToConsider(string thingsToConsider)
         {
@@ -111,7 +102,7 @@ public class ConsiderationsOrchestratorTests
             MockRecruitVacancyClient.Verify(x => x.UpdateDraftVacancyAsync(Vacancy, User), Times.Once);
         }
 
-        public Mock<IProviderVacancyClient> MockClient { get; set; }
-        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
+        public Mock<IProviderVacancyClient> MockClient { get; set; } = new();
+        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; } = new();
     }
 }

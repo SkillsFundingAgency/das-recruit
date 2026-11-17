@@ -15,128 +15,128 @@ using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
+namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
+
+public class ApplicationReviewCommandHandler(
+    ILogger<ApplicationReviewCommandHandler> logger,
+    IApplicationReadRepository applicationReadRepository,
+    IVacancyRepository vacancyRepository,
+    ITimeProvider timeProvider,
+    IMessaging messaging,
+    IOuterApiClient outerApiClient,
+    IApplicationReviewRepositoryRunner applicationReviewRepositoryRunner,
+    AbstractValidator<ApplicationReview> applicationReviewValidator)
+    : IRequestHandler<ApplicationReviewStatusEditCommand, bool>
 {
-    public class ApplicationReviewCommandHandler(
-        ILogger<ApplicationReviewCommandHandler> logger,
-        IApplicationReadRepository applicationReadRepository,
-        IVacancyRepository vacancyRepository,
-        ITimeProvider timeProvider,
-        IMessaging messaging,
-        IOuterApiClient outerApiClient,
-        IApplicationReviewRepositoryRunner applicationReviewRepositoryRunner,
-        AbstractValidator<ApplicationReview> applicationReviewValidator)
-        : IRequestHandler<ApplicationReviewStatusEditCommand, bool>
+    public async Task<bool> Handle(ApplicationReviewStatusEditCommand message, CancellationToken cancellationToke)
     {
-        public async Task<bool> Handle(ApplicationReviewStatusEditCommand message, CancellationToken cancellationToke)
+        var applicationReview = await applicationReadRepository.GetAsync(message.ApplicationReviewId);
+
+        if (applicationReview.CanReview == false)
         {
-            var applicationReview = await applicationReadRepository.GetAsync(message.ApplicationReviewId);
-
-            if (applicationReview.CanReview == false)
-            {
-                logger.LogWarning("Cannot review ApplicationReviewId:{applicationReviewId} as not in correct state", applicationReview.Id);
-                return false;
-            }
-
-            applicationReview.Status = message.Outcome.Value;
-            applicationReview.CandidateFeedback = message.CandidateFeedback;
-            applicationReview.StatusUpdatedDate = timeProvider.Now;
-            applicationReview.StatusUpdatedBy = message.User;
-
-            if (applicationReview.Status is ApplicationReviewStatus.EmployerInterviewing or ApplicationReviewStatus.EmployerUnsuccessful)
-            {
-                applicationReview.ReviewedDate = timeProvider.Now;
-            }
-
-            switch (applicationReview.Status)
-            {
-                case ApplicationReviewStatus.EmployerInterviewing:
-                    applicationReview.HasEverBeenEmployerInterviewing = true;
-                    break;
-                case ApplicationReviewStatus.EmployerUnsuccessful:
-                    applicationReview.EmployerFeedback = message.CandidateFeedback;
-                    break;
-                default:
-                    break;
-            }
-
-            Validate(applicationReview);
-            logger.LogInformation("Setting application review:{applicationReviewId} to {status}", message.ApplicationReviewId, message.Outcome.Value);
-
-            await applicationReviewRepositoryRunner.UpdateAsync(applicationReview);
-
-            var vacancy = await vacancyRepository.GetVacancyAsync(applicationReview.VacancyReference);
-
-            // Notify the provider that the shared application has been reviewed by the employer.
-            if (applicationReview.Status is ApplicationReviewStatus.EmployerInterviewing or ApplicationReviewStatus.EmployerUnsuccessful)
-            {
-                await outerApiClient.Post(new PostSharedApplicationReviewedEventApiRequest(
-                    new PostSharedApplicationReviewedEventApiRequest.
-                        PostSharedApplicationReviewedEventApiRequestData(applicationReview.Id)));
-            }
-
-            if (applicationReview.Status is not (ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful))
-            {
-                return false;
-            }
-
-            if (!applicationReview.Application.IsFaaV2Application)
-            {
-                await messaging.PublishEvent(new ApplicationReviewedEvent
-                {
-                    Status = applicationReview.Status,
-                    VacancyReference = applicationReview.VacancyReference,
-                    CandidateFeedback = applicationReview.CandidateFeedback,
-                    CandidateId = applicationReview.CandidateId
-                });
-            }
-
-            await outerApiClient.Post(new PostApplicationStatusRequest(applicationReview.Application.CandidateId,
-                applicationReview.Application.ApplicationId, new PostApplicationStatus
-                {
-                    VacancyReference = applicationReview.VacancyReference,
-                    Status = applicationReview.Status.ToString(),
-                    CandidateFeedback = applicationReview.CandidateFeedback,
-                    VacancyTitle = vacancy.Title,
-                    VacancyEmployerName = vacancy.EmployerName,
-                    VacancyLocation = vacancy.GetVacancyLocation()
-                }));
-
-            return await CheckForPositionsFilledAsync(message.Outcome, vacancy, applicationReview.VacancyReference);
+            logger.LogWarning("Cannot review ApplicationReviewId:{applicationReviewId} as not in correct state", applicationReview.Id);
+            return false;
         }
 
-        private void Validate(ApplicationReview applicationReview)
+        applicationReview.Status = message.Outcome.Value;
+        applicationReview.CandidateFeedback = message.CandidateFeedback;
+        applicationReview.StatusUpdatedDate = timeProvider.Now;
+        applicationReview.StatusUpdatedBy = message.User;
+
+        if (applicationReview.Status is ApplicationReviewStatus.EmployerInterviewing or ApplicationReviewStatus.EmployerUnsuccessful)
         {
-            var validationResult = applicationReviewValidator.Validate(applicationReview);
-            if (!validationResult.IsValid)
+            applicationReview.ReviewedDate = timeProvider.Now;
+        }
+
+        switch (applicationReview.Status)
+        {
+            case ApplicationReviewStatus.EmployerInterviewing:
+                applicationReview.HasEverBeenEmployerInterviewing = true;
+                break;
+            case ApplicationReviewStatus.EmployerUnsuccessful:
+                applicationReview.EmployerFeedback = message.CandidateFeedback;
+                break;
+            default:
+                break;
+        }
+
+        Validate(applicationReview);
+        
+        logger.LogInformation("Setting application review:{applicationReviewId} to {status}", message.ApplicationReviewId, message.Outcome.Value);
+
+        await applicationReviewRepositoryRunner.UpdateAsync(applicationReview);
+
+        var vacancy = await vacancyRepository.GetVacancyAsync(applicationReview.VacancyReference);
+
+        // Notify the provider that the shared application has been reviewed by the employer.
+        if (applicationReview.Status is ApplicationReviewStatus.EmployerInterviewing or ApplicationReviewStatus.EmployerUnsuccessful)
+        {
+            await outerApiClient.Post(new PostSharedApplicationReviewedEventApiRequest(
+                new PostSharedApplicationReviewedEventApiRequest.
+                    PostSharedApplicationReviewedEventApiRequestData(applicationReview.Id)));
+        }
+
+        if (applicationReview.Status is not (ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful))
+        {
+            return false;
+        }
+
+        if (!applicationReview.Application.IsFaaV2Application)
+        {
+            await messaging.PublishEvent(new ApplicationReviewedEvent
             {
-                throw new ValidationException(validationResult.Errors);
-            }
+                Status = applicationReview.Status,
+                VacancyReference = applicationReview.VacancyReference,
+                CandidateFeedback = applicationReview.CandidateFeedback,
+                CandidateId = applicationReview.CandidateId
+            });
         }
 
-        private async Task<bool> CheckForPositionsFilledAsync(
-            ApplicationReviewStatus? status,
-            Vacancy vacancy,
-            long vacancyReference)
+        await outerApiClient.Post(new PostApplicationStatusRequest(applicationReview.Application.CandidateId,
+            applicationReview.Application.ApplicationId, new PostApplicationStatus
+            {
+                VacancyReference = applicationReview.VacancyReference,
+                Status = applicationReview.Status.ToString(),
+                CandidateFeedback = applicationReview.CandidateFeedback,
+                VacancyTitle = vacancy.Title,
+                VacancyEmployerName = vacancy.EmployerName,
+                VacancyLocation = vacancy.GetVacancyLocation()
+            }));
+
+        return await CheckForPositionsFilledAsync(message.Outcome, vacancy, applicationReview.VacancyReference);
+    }
+
+    private void Validate(ApplicationReview applicationReview)
+    {
+        var validationResult = applicationReviewValidator.Validate(applicationReview);
+        if (!validationResult.IsValid)
         {
-            // Only check if a new successful application was added
-            if (status != ApplicationReviewStatus.Successful)
-                return false;
-
-            var counts = await applicationReadRepository.GetApplicationReviewsCountByVacancyReferenceAsync(vacancyReference);
-
-            // If all positions are filled
-            if (!(counts.SuccessfulApplications >= vacancy.NumberOfPositions)) return false;
-
-            // Count any remaining applications that aren't successful
-            var remainingApplications =
-                counts.NewApplications +
-                counts.InterviewingApplications +
-                counts.InReviewApplications +
-                counts.EmployerInterviewingApplications +
-                counts.UnsuccessfulApplications;
-
-            return remainingApplications > 0;
+            throw new ValidationException(validationResult.Errors);
         }
+    }
+
+    private async Task<bool> CheckForPositionsFilledAsync(
+        ApplicationReviewStatus? status,
+        Vacancy vacancy,
+        long vacancyReference)
+    {
+        // Only check if a new successful application was added
+        if (status != ApplicationReviewStatus.Successful)
+            return false;
+
+        var counts = await applicationReadRepository.GetApplicationReviewsCountByVacancyReferenceAsync(vacancyReference);
+
+        // If all positions are filled
+        if (!(counts.SuccessfulApplications >= vacancy.NumberOfPositions)) return false;
+
+        // Count any remaining applications that aren't successful
+        var remainingApplications =
+            counts.NewApplications +
+            counts.InterviewingApplications +
+            counts.InReviewApplications +
+            counts.EmployerInterviewingApplications +
+            counts.UnsuccessfulApplications;
+
+        return remainingApplications > 0;
     }
 }

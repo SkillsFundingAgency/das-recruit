@@ -1,9 +1,8 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum SortOrder
 {
-    public enum SortOrder
-    {
-        Default,
-        Ascending,
-        Descending
-    }
+    Default,
+    Ascending,
+    Descending
 }

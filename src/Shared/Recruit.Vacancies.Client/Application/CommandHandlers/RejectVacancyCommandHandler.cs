@@ -2,53 +2,38 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
+namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
+
+public class RejectVacancyCommandHandler(
+    ILogger<RejectVacancyCommandHandler> logger,
+    IVacancyRepository repository,
+    IOuterApiClient outerApiClient)
+    : IRequestHandler<RejectVacancyCommand, Unit>
 {
-    public class RejectVacancyCommandHandler : IRequestHandler<RejectVacancyCommand, Unit>
+    public async Task<Unit> Handle(RejectVacancyCommand message, CancellationToken cancellationToken)
     {
-        private readonly ILogger<RejectVacancyCommandHandler> _logger;
-        private readonly IVacancyRepository _repository;
-        private readonly IMessaging _messaging;
-        private readonly IOuterApiClient _outerApiClient;
+        logger.LogInformation("Rejecting vacancy {vacancyReference}.", message.VacancyReference);
 
-        public RejectVacancyCommandHandler(
-            ILogger<RejectVacancyCommandHandler> logger,
-            IVacancyRepository repository,
-            IMessaging messaging,
-            IOuterApiClient outerApiClient)
+        var vacancy = await repository.GetVacancyAsync(message.VacancyReference);
+
+        if (!vacancy.CanReview)
         {
-            _logger = logger;
-            _repository = repository;
-            _messaging = messaging;
-            _outerApiClient = outerApiClient;
-        }
-
-        public async Task<Unit> Handle(RejectVacancyCommand message, CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Rejecting vacancy {vacancyReference}.", message.VacancyReference);
-
-            var vacancy = await _repository.GetVacancyAsync(message.VacancyReference);
-
-            if (!vacancy.CanReview)
-            {
-                _logger.LogWarning($"Unable to refer vacancy {{vacancyReference}} due to vacancy having a status of {vacancy.Status}.", vacancy.VacancyReference);
-                return Unit.Value;
-            }
-
-            vacancy.Status = VacancyStatus.Rejected;
-
-            await _repository.UpdateAsync(vacancy);
-
-            await _outerApiClient.Post(new PostEmployerRejectedVacancyEventRequest(new PostEmployerRejectedVacancyEventData(vacancy.Id)));
-            
+            logger.LogWarning($"Unable to refer vacancy {{vacancyReference}} due to vacancy having a status of {vacancy.Status}.", vacancy.VacancyReference);
             return Unit.Value;
         }
+
+        vacancy.Status = VacancyStatus.Rejected;
+
+        await repository.UpdateAsync(vacancy);
+
+        await outerApiClient.Post(new PostEmployerRejectedVacancyEventRequest(new PostEmployerRejectedVacancyEventData(vacancy.Id)));
+            
+        return Unit.Value;
     }
 }

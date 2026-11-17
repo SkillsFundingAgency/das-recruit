@@ -9,50 +9,42 @@ using Esfa.Recruit.Shared.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Esfa.Recruit.Provider.Web.Controllers
+namespace Esfa.Recruit.Provider.Web.Controllers;
+
+[Route(RoutePaths.AccountVacancyRoutePath)]
+[Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+public class CloseVacancyController(CloseVacancyOrchestrator orchestrator) : Controller
 {
-    [Route(RoutePaths.AccountVacancyRoutePath)]
-    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public class CloseVacancyController : Controller
+    [HttpGet("close", Name = RouteNames.CloseVacancy_Get)]
+    public Task<IActionResult> Close(VacancyRouteModel vrm)
     {
-        private readonly CloseVacancyOrchestrator _orchestrator;
+        return GetCloseVacancyConfirmationView(vrm);
+    }
 
-        public CloseVacancyController(CloseVacancyOrchestrator orchestrator)
+    [HttpPost("close", Name = RouteNames.CloseVacancy_Post)]
+    public async Task<IActionResult> Close(CloseEditModel m)
+    {
+        if (!ModelState.IsValid)
         {
-            _orchestrator = orchestrator;
+            var vrm = new VacancyRouteModel { VacancyId = m.VacancyId, Ukprn = m.Ukprn };
+            return await GetCloseVacancyConfirmationView(vrm);
         }
 
-        [HttpGet("close", Name = RouteNames.CloseVacancy_Get)]
-        public Task<IActionResult> Close(VacancyRouteModel vrm)
+        if (m.ConfirmClose != null && !m.ConfirmClose.Value)
         {
-            return GetCloseVacancyConfirmationView(vrm);
-        }
-
-        [HttpPost("close", Name = RouteNames.CloseVacancy_Post)]
-        public async Task<IActionResult> Close(CloseEditModel m)
-        {
-            if (!ModelState.IsValid)
-            {
-                var vrm = new VacancyRouteModel { VacancyId = m.VacancyId, Ukprn = m.Ukprn };
-                return await GetCloseVacancyConfirmationView(vrm);
-            }
-
-            if (m.ConfirmClose != null && !m.ConfirmClose.Value)
-            {
-                return RedirectToRoute(RouteNames.VacancyManage_Get, new {m.Ukprn, m.VacancyId});
-            }
-
-            var response = await _orchestrator.CloseVacancyAsync(m, User.ToVacancyUser());
-
-            TempData.Add(TempDataKeys.VacancyClosedMessage, string.Format(InfoMessages.VacancyClosed, response.Data.VacancyReference, response.Data.Title));
-
             return RedirectToRoute(RouteNames.VacancyManage_Get, new {m.Ukprn, m.VacancyId});
         }
 
-        private async Task<IActionResult> GetCloseVacancyConfirmationView(VacancyRouteModel vrm)
-        {
-            var vm = await _orchestrator.GetCloseViewModelAsync(vrm);
-            return View(ViewNames.CloseVacancyView, vm);
-        }
+        var response = await orchestrator.CloseVacancyAsync(m, User.ToVacancyUser());
+
+        TempData.Add(TempDataKeys.VacancyClosedMessage, string.Format(InfoMessages.VacancyClosed, response.Data.VacancyReference, response.Data.Title));
+
+        return RedirectToRoute(RouteNames.VacancyManage_Get, new {m.Ukprn, m.VacancyId});
+    }
+
+    private async Task<IActionResult> GetCloseVacancyConfirmationView(VacancyRouteModel vrm)
+    {
+        var vm = await orchestrator.GetCloseViewModelAsync(vrm);
+        return View(ViewNames.CloseVacancyView, vm);
     }
 }

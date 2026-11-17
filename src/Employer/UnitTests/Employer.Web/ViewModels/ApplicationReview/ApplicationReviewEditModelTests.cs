@@ -5,117 +5,116 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationReview
+namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationReview;
+
+public class ApplicationReviewEditModelTests
 {
-    public class ApplicationReviewEditModelTests
+    private Mock<IProfanityListProvider> _mockProfanityListProvider;
+
+    [SetUp]
+    public void Setup()
     {
-        private Mock<IProfanityListProvider> _mockProfanityListProvider;
-
-        [SetUp]
-        public void Setup()
-        {
-            _mockProfanityListProvider = new Mock<IProfanityListProvider>();
-            _mockProfanityListProvider.Setup(x => x.GetProfanityListAsync()).Returns(ProfanityListAsync);
-        }
-
-
-        [Test]
-        public void ShouldRequireOutcome()
-        {
-            var m = new ApplicationReviewEditModel
-            {
-                Outcome = null
-            };
-
-            var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
-
-            var result = validator.Validate(m);
-
-            result.IsValid.Should().BeFalse();
-            result.Errors.Count.Should().Be(1);
-            result.Errors[0].ErrorMessage.Should().Be(ApplicationReviewValidator.OutcomeRequired);
-        }
-
-        private static IEnumerable<object[]> _testCases = [
-            [null, ApplicationReviewValidator.CandidateFeedbackRequired], 
-            ["", ApplicationReviewValidator.CandidateFeedbackRequired],
-            [">", ApplicationReviewValidator.CandidateFeedbackFreeTextCharacters],
-            [null, ApplicationReviewValidator.CandidateFeedbackRequired],
-            [new string('a', ApplicationReviewValidator.CandidateFeedbackMaxLength + 1), string.Format(ApplicationReviewValidator.CandidateFeedbackLength, ApplicationReviewValidator.CandidateFeedbackMaxLength)] 
-        ];
-
-        [TestCaseSource(nameof(_testCases))]
-        public void ShouldRequireCandidateFeedbackIfUnsuccessful(string candidateFeedback, string expectedErrorMessage)
-        {
-            var m = new ApplicationReviewEditModel
-            {
-                Outcome = ApplicationReviewStatus.EmployerUnsuccessful,
-                CandidateFeedback = candidateFeedback,
-                IsApplicationSharedByProvider = true
-            };
-
-            var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
-
-            var result = validator.Validate(m);
-
-            result.IsValid.Should().BeFalse();
-            result.Errors.Count.Should().Be(1);
-            result.Errors[0].ErrorMessage.Should().Be(expectedErrorMessage);
-        }
-
-        [TestCase(ApplicationReviewStatus.Successful, null)]
-        [TestCase(ApplicationReviewStatus.Unsuccessful, "Some candidate feedback")]        
-        public void ShouldBeValid(ApplicationReviewStatus outcome, string feedback)
-        {
-            var m = new ApplicationReviewEditModel
-            {
-                Outcome = outcome,
-                CandidateFeedback = feedback
-            };
-
-            var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
-
-            var result = validator.Validate(m);
-
-            result.IsValid.Should().BeTrue();
-        }
-        
-        [Test]
-        public void ShouldBeInvalid()
-        {
-            var m = new ApplicationReviewEditModel {
-                Outcome = ApplicationReviewStatus.EmployerUnsuccessful,
-                CandidateFeedback = "?$@#()\"\'\\!,+-=_:;.&€£*%/[] \\A-Z \a-z \0-9 your comments will be sent to the candidate.",
-                IsApplicationSharedByProvider = true
-            };
-
-            var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
-
-            var result = validator.Validate(m);
-
-            result.IsValid.Should().BeFalse();
-        }
-
-        [TestCase(ApplicationReviewStatus.EmployerUnsuccessful, "Some candidate feedback bother")]
-        [TestCase(ApplicationReviewStatus.EmployerUnsuccessful, "dang Some candidate feedback")]
-        [TestCase(ApplicationReviewStatus.EmployerUnsuccessful, "Some candidate balderdash bother")]
-        [TestCase(ApplicationReviewStatus.EmployerUnsuccessful, "Some drat feedback bother")]
-        public void ShouldBeInvalid_ForProfanityWordsInFeedback(ApplicationReviewStatus outcome, string feedback)
-        {
-            var m = new ApplicationReviewEditModel
-            {
-                Outcome = outcome,
-                CandidateFeedback = feedback,
-                IsApplicationSharedByProvider = true
-            };
-
-            var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
-            var result = validator.Validate(m);
-            result.IsValid.Should().BeFalse();
-            result.Errors.Count.Should().Be(1);
-            result.Errors[0].ErrorCode.Should().Be("617");
-        }
-
-        private static Task<IEnumerable<string>> ProfanityListAsync => Task.FromResult<IEnumerable<string>>(["bother", "dang", "balderdash", "drat"]);
+        _mockProfanityListProvider = new Mock<IProfanityListProvider>();
+        _mockProfanityListProvider.Setup(x => x.GetProfanityListAsync()).Returns(ProfanityListAsync);
     }
+
+
+    [Test]
+    public void ShouldRequireOutcome()
+    {
+        var m = new ApplicationReviewEditModel
+        {
+            Outcome = null
+        };
+
+        var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
+
+        var result = validator.Validate(m);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Count.Should().Be(1);
+        result.Errors[0].ErrorMessage.Should().Be(ApplicationReviewValidator.OutcomeRequired);
+    }
+
+    private static IEnumerable<object[]> _testCases = [
+        [null, ApplicationReviewValidator.CandidateFeedbackRequired], 
+        ["", ApplicationReviewValidator.CandidateFeedbackRequired],
+        [">", ApplicationReviewValidator.CandidateFeedbackFreeTextCharacters],
+        [null, ApplicationReviewValidator.CandidateFeedbackRequired],
+        [new string('a', ApplicationReviewValidator.CandidateFeedbackMaxLength + 1), string.Format(ApplicationReviewValidator.CandidateFeedbackLength, ApplicationReviewValidator.CandidateFeedbackMaxLength)] 
+    ];
+
+    [TestCaseSource(nameof(_testCases))]
+    public void ShouldRequireCandidateFeedbackIfUnsuccessful(string candidateFeedback, string expectedErrorMessage)
+    {
+        var m = new ApplicationReviewEditModel
+        {
+            Outcome = ApplicationReviewStatus.EmployerUnsuccessful,
+            CandidateFeedback = candidateFeedback,
+            IsApplicationSharedByProvider = true
+        };
+
+        var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
+
+        var result = validator.Validate(m);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Count.Should().Be(1);
+        result.Errors[0].ErrorMessage.Should().Be(expectedErrorMessage);
+    }
+
+    [TestCase(ApplicationReviewStatus.Successful, null)]
+    [TestCase(ApplicationReviewStatus.Unsuccessful, "Some candidate feedback")]        
+    public void ShouldBeValid(ApplicationReviewStatus outcome, string feedback)
+    {
+        var m = new ApplicationReviewEditModel
+        {
+            Outcome = outcome,
+            CandidateFeedback = feedback
+        };
+
+        var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
+
+        var result = validator.Validate(m);
+
+        result.IsValid.Should().BeTrue();
+    }
+        
+    [Test]
+    public void ShouldBeInvalid()
+    {
+        var m = new ApplicationReviewEditModel {
+            Outcome = ApplicationReviewStatus.EmployerUnsuccessful,
+            CandidateFeedback = "?$@#()\"\'\\!,+-=_:;.&€£*%/[] \\A-Z \a-z \0-9 your comments will be sent to the candidate.",
+            IsApplicationSharedByProvider = true
+        };
+
+        var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
+
+        var result = validator.Validate(m);
+
+        result.IsValid.Should().BeFalse();
+    }
+
+    [TestCase(ApplicationReviewStatus.EmployerUnsuccessful, "Some candidate feedback bother")]
+    [TestCase(ApplicationReviewStatus.EmployerUnsuccessful, "dang Some candidate feedback")]
+    [TestCase(ApplicationReviewStatus.EmployerUnsuccessful, "Some candidate balderdash bother")]
+    [TestCase(ApplicationReviewStatus.EmployerUnsuccessful, "Some drat feedback bother")]
+    public void ShouldBeInvalid_ForProfanityWordsInFeedback(ApplicationReviewStatus outcome, string feedback)
+    {
+        var m = new ApplicationReviewEditModel
+        {
+            Outcome = outcome,
+            CandidateFeedback = feedback,
+            IsApplicationSharedByProvider = true
+        };
+
+        var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
+        var result = validator.Validate(m);
+        result.IsValid.Should().BeFalse();
+        result.Errors.Count.Should().Be(1);
+        result.Errors[0].ErrorCode.Should().Be("617");
+    }
+
+    private static Task<IEnumerable<string>> ProfanityListAsync => Task.FromResult<IEnumerable<string>>(["bother", "dang", "balderdash", "drat"]);
 }

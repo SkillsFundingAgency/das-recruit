@@ -3,13 +3,12 @@ using System.Linq.Expressions;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Services
+namespace Esfa.Recruit.Vacancies.Client.Application.Services;
+
+public static class FieldIdResolver
 {
-    public static class FieldIdResolver
+    public static string ToFieldId<P>(Expression<Func<Vacancy, P>> fieldName)
     {
-        public static string ToFieldId<P>(Expression<Func<Vacancy, P>> fieldName)
-        {
-            return fieldName.GetQualifiedFieldId();
-        }
+        return fieldName.GetQualifiedFieldId();
     }
 }

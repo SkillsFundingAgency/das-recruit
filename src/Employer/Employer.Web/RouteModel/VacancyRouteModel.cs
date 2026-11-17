@@ -2,36 +2,33 @@
 using System;
 using System.Collections.Generic;
 
-namespace Esfa.Recruit.Employer.Web.RouteModel
+namespace Esfa.Recruit.Employer.Web.RouteModel;
+
+public class VacancyRouteModel
 {
-    public class VacancyRouteModel
+    [FromRoute]
+    public string EmployerAccountId
     {
-        private string _employerAccountId;
+        get;
+        set => field = value.ToUpper();
+    }
 
-        [FromRoute]
-        public string EmployerAccountId
-        {
-            get => _employerAccountId;
-            set => _employerAccountId = value.ToUpper();
-        }
-
-        [FromRoute]
-        public Guid VacancyId { get; set; }
+    [FromRoute]
+    public Guid VacancyId { get; set; }
         
-        public Dictionary<string, string> RouteDictionary
+    public Dictionary<string, string> RouteDictionary
+    {
+        get
         {
-            get
+            var routeDictionary = new Dictionary<string, string>
             {
-                var routeDictionary = new Dictionary<string, string>
-                {
-                    {"EmployerAccountId", EmployerAccountId}
-                };
-                if(VacancyId != Guid.Empty)
-                {
-                    routeDictionary.Add("VacancyId", VacancyId.ToString());
-                }
-                return routeDictionary;
+                {"EmployerAccountId", EmployerAccountId}
+            };
+            if(VacancyId != Guid.Empty)
+            {
+                routeDictionary.Add("VacancyId", VacancyId.ToString());
             }
+            return routeDictionary;
         }
     }
 }

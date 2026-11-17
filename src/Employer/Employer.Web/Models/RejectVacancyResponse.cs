@@ -1,7 +1,6 @@
-﻿namespace Esfa.Recruit.Employer.Web.Models
+﻿namespace Esfa.Recruit.Employer.Web.Models;
+
+public class RejectVacancyResponse
 {
-    public class RejectVacancyResponse
-    {
-        public bool IsRejected { get; set; }
-    }
+    public bool IsRejected { get; set; }
 }

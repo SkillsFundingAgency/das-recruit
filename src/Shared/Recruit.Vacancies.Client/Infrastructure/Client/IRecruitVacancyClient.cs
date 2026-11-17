@@ -8,37 +8,36 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+
+public interface IRecruitVacancyClient
 {
-    public interface IRecruitVacancyClient
-    {
-        Task UserSignedInAsync(VacancyUser user, UserType userType);
-        Task<Vacancy> GetVacancyAsync(Guid vacancyId);
-        Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference);
-        Task<Domain.Entities.ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId);
-        Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid vacancyId);
-        EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules);
-        Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user);
-        Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync(bool includePlaceholderProgramme = false);
-        Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId, bool includePlaceholderProgramme = false);
-        Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider = false);
-        Task<List<VacancyApplication>> GetVacancyApplicationsForSelectedIdsAsync(List<Guid> applicationReviewIds);
-        Task<List<VacancyApplication>> GetVacancyApplicationsForReferenceAndStatus(Guid vacancyId, ApplicationReviewStatus status);
-        Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user, LiveUpdateKind updateKind);
-        Task<Guid> CloneVacancyAsync(Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin, DateTime startDate, DateTime closingDate);
-        Task<string> GetEmployerNameAsync(Vacancy vacancy);
-        Task<string> GetEmployerDescriptionAsync(Vacancy vacancy);
-        Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, string accountLegalEntityPublicHashedId);
-        Task UpdateEmployerProfileAsync(EmployerProfile employerProfile);
-        Task SetupEmployerAsync(string employerAccountId, string accountLegalEntityPublicHashedId);
-        Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference);
-        Task<Domain.Entities.User> GetUsersDetailsAsync(string userId);
-        Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email);
-        EntityValidationResult ValidateQualification(Qualification qualification);
-        Task CloseVacancyAsync(Guid vacancyId, VacancyUser user, ClosureReason reason);
-        Task SetApplicationReviewsStatus(long vacancyReference, IEnumerable<Guid> applicationReviewIds, VacancyUser user, ApplicationReviewStatus? status, Guid vacancyId, ApplicationReviewStatus? applicationReviewTemporaryStatus);
-        Task SetApplicationReviewsPendingUnsuccessfulFeedback(VacancyUser user, ApplicationReviewStatus status, Guid vacancyId, string feedback);
-        Task SetApplicationReviewsToUnsuccessful(IEnumerable<Guid> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user, Guid vacancyId);
-        Task<Domain.Entities.User> GetUsersDetailsByDfEUserId(string dfeUserId);
-    }
+    Task UserSignedInAsync(VacancyUser user, UserType userType);
+    Task<Vacancy> GetVacancyAsync(Guid vacancyId);
+    Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference);
+    Task<Domain.Entities.ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId);
+    Task<bool> IsAllApplicationReviewsHasOutcomeAsync(Guid vacancyId);
+    EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules);
+    Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user);
+    Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync(bool includePlaceholderProgramme = false);
+    Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId, bool includePlaceholderProgramme = false);
+    Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider = false);
+    Task<List<VacancyApplication>> GetVacancyApplicationsForSelectedIdsAsync(List<Guid> applicationReviewIds);
+    Task<List<VacancyApplication>> GetVacancyApplicationsForReferenceAndStatus(Guid vacancyId, ApplicationReviewStatus status);
+    Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user, LiveUpdateKind updateKind);
+    Task<Guid> CloneVacancyAsync(Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin, DateTime startDate, DateTime closingDate);
+    Task<string> GetEmployerNameAsync(Vacancy vacancy);
+    Task<string> GetEmployerDescriptionAsync(Vacancy vacancy);
+    Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, string accountLegalEntityPublicHashedId);
+    Task UpdateEmployerProfileAsync(EmployerProfile employerProfile);
+    Task SetupEmployerAsync(string employerAccountId, string accountLegalEntityPublicHashedId);
+    Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference);
+    Task<Domain.Entities.User> GetUsersDetailsAsync(string userId);
+    Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email);
+    EntityValidationResult ValidateQualification(Qualification qualification);
+    Task CloseVacancyAsync(Guid vacancyId, VacancyUser user, ClosureReason reason);
+    Task SetApplicationReviewsStatus(long vacancyReference, IEnumerable<Guid> applicationReviewIds, VacancyUser user, ApplicationReviewStatus? status, Guid vacancyId, ApplicationReviewStatus? applicationReviewTemporaryStatus);
+    Task SetApplicationReviewsPendingUnsuccessfulFeedback(VacancyUser user, ApplicationReviewStatus status, Guid vacancyId, string feedback);
+    Task SetApplicationReviewsToUnsuccessful(IEnumerable<Guid> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user, Guid vacancyId);
+    Task<Domain.Entities.User> GetUsersDetailsByDfEUserId(string dfeUserId);
 }

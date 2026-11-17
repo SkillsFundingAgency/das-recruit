@@ -14,80 +14,79 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using NUnit.Framework;
 
-namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.LegalEntityAndEmployer
+namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.LegalEntityAndEmployer;
+
+public class LegalEntityAndEmployerOrchestratorTests
 {
-    public class LegalEntityAndEmployerOrchestratorTests
+    [Test, MoqAutoData]
+    public void Then_If_There_Are_No_Permissions_Returned_Exception_Thrown(
+        VacancyRouteModel vacancyRouteModel,
+        [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
+        LegalEntityAndEmployerOrchestrator orchestrator)
     {
-        [Test, MoqAutoData]
-        public void Then_If_There_Are_No_Permissions_Returned_Exception_Thrown(
-            VacancyRouteModel vacancyRouteModel,
-            [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
-            LegalEntityAndEmployerOrchestrator orchestrator)
-        {
-            List<OperationType>? captureOperationTypes = null;
-            providerRelationshipsService
-                .Setup(x => x.GetProviderPermissionsByUkprn(vacancyRouteModel.Ukprn, It.IsAny<List<OperationType>>()))
-                .Callback<long, List<OperationType>>((_, operationTypes) => captureOperationTypes = operationTypes)
-                .ReturnsAsync(new ProviderPermissions { AccountProviderLegalEntities = []});
+        List<OperationType>? captureOperationTypes = null;
+        providerRelationshipsService
+            .Setup(x => x.GetProviderPermissionsByUkprn(vacancyRouteModel.Ukprn, It.IsAny<List<OperationType>>()))
+            .Callback<long, List<OperationType>>((_, operationTypes) => captureOperationTypes = operationTypes)
+            .ReturnsAsync(new ProviderPermissions { AccountProviderLegalEntities = []});
             
-            Assert.ThrowsAsync<MissingPermissionsException>(() =>
-                orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel,
-                    "", 1, SortOrder.Ascending, SortByType.EmployerName));
+        Assert.ThrowsAsync<MissingPermissionsException>(() =>
+            orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel,
+                "", 1, SortOrder.Ascending, SortByType.EmployerName));
 
-            captureOperationTypes.Should().BeEquivalentTo([OperationType.Recruitment, OperationType.RecruitmentRequiresReview]);
-        }
+        captureOperationTypes.Should().BeEquivalentTo([OperationType.Recruitment, OperationType.RecruitmentRequiresReview]);
+    }
 
 
-        [Test, MoqAutoData]
-        public async Task Then_If_There_Are_Permissions_Then_The_ViewModel_Is_Returned(
-            VacancyRouteModel vacancyRouteModel,
-            ProviderEditVacancyInfo providerEditVacancyInfo,
-            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
-            [Frozen] Mock<IFeature> feature,
-            LegalEntityAndEmployerOrchestrator orchestrator)
-        {
-            providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn, ""))
-                .ReturnsAsync(providerEditVacancyInfo);
+    [Test, MoqAutoData]
+    public async Task Then_If_There_Are_Permissions_Then_The_ViewModel_Is_Returned(
+        VacancyRouteModel vacancyRouteModel,
+        ProviderEditVacancyInfo providerEditVacancyInfo,
+        [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
+        [Frozen] Mock<IFeature> feature,
+        LegalEntityAndEmployerOrchestrator orchestrator)
+    {
+        providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn, ""))
+            .ReturnsAsync(providerEditVacancyInfo);
 
-            var actual = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel,
-                "", 1);
+        var actual = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel,
+            "", 1);
 
-            actual.Employers.Count().Should().Be(providerEditVacancyInfo.Employers
-                .Select(e => new EmployerViewModel { Id = e.EmployerAccountId, Name = e.Name }).Count());
-            actual.VacancyId.Should().Be(vacancyRouteModel.VacancyId);
-            actual.Ukprn.Should().Be(vacancyRouteModel.Ukprn);
-        }
+        actual.Employers.Count().Should().Be(providerEditVacancyInfo.Employers
+            .Select(e => new EmployerViewModel { Id = e.EmployerAccountId, Name = e.Name }).Count());
+        actual.VacancyId.Should().Be(vacancyRouteModel.VacancyId);
+        actual.Ukprn.Should().Be(vacancyRouteModel.Ukprn);
+    }
 
-        [Test, MoqAutoData]
-        public async Task Then_Feature_Enabled_Then_There_Are_Permissions_Then_The_ViewModel_Is_Returned(
-            VacancyRouteModel vacancyRouteModel,
-            GetAllAccountLegalEntitiesApiResponse response,
-            IEnumerable<EmployerInfo> mockEmployerInfos,
-            [Frozen] Mock<IEmployerAccountProvider> employerAccountProvider,
-            [Frozen] Mock<IProviderRelationshipsService> providerRelationshipService,
-            [Frozen] Mock<IFeature> feature,
-            LegalEntityAndEmployerOrchestrator orchestrator)
-        {
-            employerAccountProvider.Setup(x => x.GetAllLegalEntitiesConnectedToAccountAsync(It.IsAny<List<string>>(),
-                    It.IsAny<string>(),
-                    It.IsAny<int>(),
-                    It.IsAny<int>(),
-                    It.IsAny<string>(),
-                    It.IsAny<bool>()))
-                .ReturnsAsync(response);
+    [Test, MoqAutoData]
+    public async Task Then_Feature_Enabled_Then_There_Are_Permissions_Then_The_ViewModel_Is_Returned(
+        VacancyRouteModel vacancyRouteModel,
+        GetAllAccountLegalEntitiesApiResponse response,
+        IEnumerable<EmployerInfo> mockEmployerInfos,
+        [Frozen] Mock<IEmployerAccountProvider> employerAccountProvider,
+        [Frozen] Mock<IProviderRelationshipsService> providerRelationshipService,
+        [Frozen] Mock<IFeature> feature,
+        LegalEntityAndEmployerOrchestrator orchestrator)
+    {
+        employerAccountProvider.Setup(x => x.GetAllLegalEntitiesConnectedToAccountAsync(It.IsAny<List<string>>(),
+                It.IsAny<string>(),
+                It.IsAny<int>(),
+                It.IsAny<int>(),
+                It.IsAny<string>(),
+                It.IsAny<bool>()))
+            .ReturnsAsync(response);
 
-            providerRelationshipService
-                .Setup(x => x.GetLegalEntitiesForProvider(vacancyRouteModel.Ukprn, "",
-                    new List<OperationType> { OperationType.Recruitment, OperationType.RecruitmentRequiresReview }))
-                .ReturnsAsync(mockEmployerInfos);
+        providerRelationshipService
+            .Setup(x => x.GetLegalEntitiesForProvider(vacancyRouteModel.Ukprn, "",
+                new List<OperationType> { OperationType.Recruitment, OperationType.RecruitmentRequiresReview }))
+            .ReturnsAsync(mockEmployerInfos);
 
-            var actual = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel,
-                "", 1);
+        var actual = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel,
+            "", 1);
 
-            actual.Employers.Count().Should().Be(response.LegalEntities.Select(e => new EmployerViewModel
-                { Id = e.AccountLegalEntityPublicHashedId, Name = e.Name }).Count());
-            actual.VacancyId.Should().Be(vacancyRouteModel.VacancyId);
-            actual.Ukprn.Should().Be(vacancyRouteModel.Ukprn);
-        }
+        actual.Employers.Count().Should().Be(response.LegalEntities.Select(e => new EmployerViewModel
+            { Id = e.AccountLegalEntityPublicHashedId, Name = e.Name }).Count());
+        actual.VacancyId.Should().Be(vacancyRouteModel.VacancyId);
+        actual.Ukprn.Should().Be(vacancyRouteModel.Ukprn);
     }
 }

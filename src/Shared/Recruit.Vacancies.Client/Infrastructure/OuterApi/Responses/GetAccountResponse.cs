@@ -1,7 +1,6 @@
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
+
+public class GetAccountResponse
 {
-    public class GetAccountResponse
-    {
-        public string HashedAccountId { get; set; }
-    }
+    public string HashedAccountId { get; set; }
 }

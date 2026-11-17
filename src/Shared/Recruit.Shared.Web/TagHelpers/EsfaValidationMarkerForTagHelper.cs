@@ -4,38 +4,37 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace Esfa.Recruit.Shared.Web.TagHelpers
+namespace Esfa.Recruit.Shared.Web.TagHelpers;
+
+[HtmlTargetElement("div", Attributes = ValidationForAttributeName)]
+public class EsfaValidationMarkerForTagHelper : TagHelper
 {
-    [HtmlTargetElement("div", Attributes = ValidationForAttributeName)]
-    public class EsfaValidationMarkerForTagHelper : TagHelper
+    private const string ValidationForAttributeName = "esfa-validation-marker-for";
+    private const string ClassAttributeIdentifier = "class";
+    private const string ErrorClassSpecifier = "govuk-form-group--error";
+        
+    [HtmlAttributeNotBound]
+    [ViewContext]
+    public ViewContext ViewContext { get; set; }
+
+    [HtmlAttributeName(ValidationForAttributeName)]
+    public ModelExpression For { get; set; }
+        
+    public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
-        private const string ValidationForAttributeName = "esfa-validation-marker-for";
-        private const string ClassAttributeIdentifier = "class";
-        private const string ErrorClassSpecifier = "govuk-form-group--error";
-        
-        [HtmlAttributeNotBound]
-        [ViewContext]
-        public ViewContext ViewContext { get; set; }
-
-        [HtmlAttributeName(ValidationForAttributeName)]
-        public ModelExpression For { get; set; }
-        
-        public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+        if (ViewContext.ModelState.TryGetValue(For.Name, out var modelStateEntry) && modelStateEntry.ValidationState == ModelValidationState.Invalid)
         {
-            if (ViewContext.ModelState.TryGetValue(For.Name, out var modelStateEntry) && modelStateEntry.ValidationState == ModelValidationState.Invalid)
+            if (output.Attributes.ContainsName(ClassAttributeIdentifier))
             {
-                if (output.Attributes.ContainsName(ClassAttributeIdentifier))
-                {
-                    output.Attributes.TryGetAttribute(ClassAttributeIdentifier, out var classAttr);
-                    output.Attributes.SetAttribute(ClassAttributeIdentifier, $"{classAttr.Value} {ErrorClassSpecifier}");
-                }
-                else
-                {
-                    output.Attributes.SetAttribute(ClassAttributeIdentifier, ErrorClassSpecifier);
-                }
+                output.Attributes.TryGetAttribute(ClassAttributeIdentifier, out var classAttr);
+                output.Attributes.SetAttribute(ClassAttributeIdentifier, $"{classAttr.Value} {ErrorClassSpecifier}");
             }
-
-            return Task.CompletedTask;
+            else
+            {
+                output.Attributes.SetAttribute(ClassAttributeIdentifier, ErrorClassSpecifier);
+            }
         }
+
+        return Task.CompletedTask;
     }
 }

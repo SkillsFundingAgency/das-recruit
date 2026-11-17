@@ -1,9 +1,8 @@
-namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum TrainingType
 {
-    public enum TrainingType
-    {
-        Standard = 0,
-        Framework = 1,
-        Foundation = 2,
-    }
+    Standard = 0,
+    Framework = 1,
+    Foundation = 2,
 }

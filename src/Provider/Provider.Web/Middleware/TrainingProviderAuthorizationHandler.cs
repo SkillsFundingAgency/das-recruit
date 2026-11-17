@@ -5,44 +5,43 @@ using System.Security.Claims;
 using System;
 using Esfa.Recruit.Provider.Web.Configuration;
 
-namespace Esfa.Recruit.Provider.Web.Middleware
+namespace Esfa.Recruit.Provider.Web.Middleware;
+
+/// <summary>
+/// Interface to define contracts related to Training Provider Authorization Handlers.
+/// </summary>
+public interface ITrainingProviderAuthorizationHandler
 {
     /// <summary>
-    /// Interface to define contracts related to Training Provider Authorization Handlers.
+    /// Contract to check is the logged in Provider is a valid Training Provider. 
     /// </summary>
-    public interface ITrainingProviderAuthorizationHandler
+    /// <param name="context">AuthorizationHandlerContext.</param>
+    /// <returns>boolean.</returns>
+    Task<bool> IsProviderAuthorized(AuthorizationHandlerContext context);
+}
+
+///<inheritdoc cref="ITrainingProviderAuthorizationHandler"/>
+public class TrainingProviderAuthorizationHandler(IGetProviderStatusClient getProviderStatusClient)
+    : ITrainingProviderAuthorizationHandler
+{
+    private readonly Predicate<Claim> _ukprnClaimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier)
+                                                                        || c.Type.Equals(ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier);
+
+    public async Task<bool> IsProviderAuthorized(AuthorizationHandlerContext context)
     {
-        /// <summary>
-        /// Contract to check is the logged in Provider is a valid Training Provider. 
-        /// </summary>
-        /// <param name="context">AuthorizationHandlerContext.</param>
-        /// <returns>boolean.</returns>
-        Task<bool> IsProviderAuthorized(AuthorizationHandlerContext context);
+        var ukprn = GetProviderId(context);
+
+        //if the ukprn is invalid return false.
+        if (ukprn <= 0) return false;
+
+        var providerStatusDetails = await getProviderStatusClient.GetProviderStatus(ukprn);
+
+        // Condition to check if the Provider Details has permission to access Apprenticeship Services based on the property value "CanAccessApprenticeshipService" set to True.
+        return providerStatusDetails is { CanAccessService: true };
     }
 
-    ///<inheritdoc cref="ITrainingProviderAuthorizationHandler"/>
-    public class TrainingProviderAuthorizationHandler(IGetProviderStatusClient getProviderStatusClient)
-        : ITrainingProviderAuthorizationHandler
-    {
-        private readonly Predicate<Claim> _ukprnClaimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier)
-                                                                            || c.Type.Equals(ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier);
-
-        public async Task<bool> IsProviderAuthorized(AuthorizationHandlerContext context)
-        {
-            var ukprn = GetProviderId(context);
-
-            //if the ukprn is invalid return false.
-            if (ukprn <= 0) return false;
-
-            var providerStatusDetails = await getProviderStatusClient.GetProviderStatus(ukprn);
-
-            // Condition to check if the Provider Details has permission to access Apprenticeship Services based on the property value "CanAccessApprenticeshipService" set to True.
-            return providerStatusDetails is { CanAccessService: true };
-        }
-
-        private long GetProviderId(AuthorizationHandlerContext context) =>
-            long.TryParse(context.User.FindFirst(_ukprnClaimFinderPredicate)?.Value, out var providerId)
-                ? providerId
-                : 0;
-    }
+    private long GetProviderId(AuthorizationHandlerContext context) =>
+        long.TryParse(context.User.FindFirst(_ukprnClaimFinderPredicate)?.Value, out var providerId)
+            ? providerId
+            : 0;
 }

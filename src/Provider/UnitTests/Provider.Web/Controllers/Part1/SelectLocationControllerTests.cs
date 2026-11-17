@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Controllers.Part1;

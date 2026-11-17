@@ -1,17 +1,13 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses.Users;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.User.Requests;
-using SFA.DAS.Encoding;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.User;
 
-public class UserService(IOuterApiClient outerApiClient,
-    IEncodingService encodingService) :
+public class UserService(IOuterApiClient outerApiClient) :
     IUserRepository, IUserWriteRepository
 {
     public async Task UpsertUserAsync(Domain.Entities.User user)
@@ -37,30 +33,6 @@ public class UserService(IOuterApiClient outerApiClient,
         var response = await outerApiClient.Get<GetUserByDfEUserIdResponse>(request);
 
         return response.User == null ? null : MapUser(response.User);
-    }
-
-    public async Task<List<Domain.Entities.User>> GetEmployerUsersAsync(string accountId)
-    {
-        var employerAccountId = encodingService.Decode(accountId, EncodingType.AccountId);
-
-        var request = new GetUserByEmployerAccountIdRequest(employerAccountId);
-
-        var response = await outerApiClient.Get<GetUserByEmployerAccountIdResponse>(request);
-
-        return response.Users == null || response.Users.Count == 0 
-            ? [] 
-            : response.Users.Select(MapUser).ToList();
-    }
-
-    public async Task<List<Domain.Entities.User>> GetProviderUsersAsync(long ukprn)
-    {
-        var request = new GetUserByProviderUkprnRequest(ukprn);
-
-        var response = await outerApiClient.Get<GetUserByProviderUkprnResponse>(request);
-
-        return response.Users == null || response.Users.Count == 0
-            ? []
-            : response.Users.Select(MapUser).ToList();
     }
 
     public async Task<Domain.Entities.User> GetUserByEmail(string email, UserType userType)

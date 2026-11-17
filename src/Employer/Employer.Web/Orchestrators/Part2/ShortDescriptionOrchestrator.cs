@@ -10,70 +10,69 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
+namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2;
+
+public class ShortDescriptionOrchestrator(
+    IRecruitVacancyClient vacancyClient,
+    ILogger<ShortDescriptionOrchestrator> logger,
+    IReviewSummaryService reviewSummaryService,
+    IUtility utility)
+    : VacancyValidatingOrchestrator<ShortDescriptionEditModel>(logger)
 {
-    public class ShortDescriptionOrchestrator(
-        IRecruitVacancyClient vacancyClient,
-        ILogger<ShortDescriptionOrchestrator> logger,
-        IReviewSummaryService reviewSummaryService,
-        IUtility utility)
-        : VacancyValidatingOrchestrator<ShortDescriptionEditModel>(logger)
+    private const VacancyRuleSet ValidationRules = VacancyRuleSet.ShortDescription;
+
+    public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(VacancyRouteModel vrm)
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ShortDescription;
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm);
 
-        public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(VacancyRouteModel vrm)
+        var vm = new ShortDescriptionViewModel
         {
-            var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm);
+            VacancyId = vacancy.Id,
+            EmployerAccountId = vacancy.EmployerAccountId,
+            ShortDescription = vacancy.ShortDescription,
+            Title = vacancy.Title
+        };
 
-            var vm = new ShortDescriptionViewModel
-            {
-                VacancyId = vacancy.Id,
-                EmployerAccountId = vacancy.EmployerAccountId,
-                ShortDescription = vacancy.ShortDescription,
-                Title = vacancy.Title
-            };
-
-            if (vacancy.Status == VacancyStatus.Referred)
-            {
-                vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.GetValueOrDefault(), 
-                    ReviewFieldMappingLookups.GetShortDescriptionReviewFieldIndicators());
-            }
+        if (vacancy.Status == VacancyStatus.Referred)
+        {
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.GetValueOrDefault(), 
+                ReviewFieldMappingLookups.GetShortDescriptionReviewFieldIndicators());
+        }
             
-            vm.IsTaskListCompleted = utility.IsTaskListCompleted(vacancy);
+        vm.IsTaskListCompleted = utility.IsTaskListCompleted(vacancy);
 
-            return vm;
-        }
-
-        public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(ShortDescriptionEditModel m)
-        {
-            var vm = await GetShortDescriptionViewModelAsync((VacancyRouteModel)m);
-            
-            vm.ShortDescription = m.ShortDescription;
-
-            return vm;
-        }
-
-        public async Task<OrchestratorResponse> PostShortDescriptionEditModelAsync(ShortDescriptionEditModel m, VacancyUser user)
-        {
-            var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m);
-
-            SetVacancyWithEmployerReviewFieldIndicators(
-                vacancy.ShortDescription,
-                FieldIdResolver.ToFieldId(v => v.ShortDescription),
-                vacancy,
-                v => v.ShortDescription = m.ShortDescription);
-
-            return await ValidateAndExecute(
-                vacancy, 
-                v => vacancyClient.Validate(v, ValidationRules),
-                v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
-            );
-        }
-
-        protected override EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionEditModel> DefineMappings() =>
-            new()
-            {
-                { e => e.ShortDescription, vm => vm.ShortDescription }
-            };
+        return vm;
     }
+
+    public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(ShortDescriptionEditModel m)
+    {
+        var vm = await GetShortDescriptionViewModelAsync((VacancyRouteModel)m);
+            
+        vm.ShortDescription = m.ShortDescription;
+
+        return vm;
+    }
+
+    public async Task<OrchestratorResponse> PostShortDescriptionEditModelAsync(ShortDescriptionEditModel m, VacancyUser user)
+    {
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m);
+
+        SetVacancyWithEmployerReviewFieldIndicators(
+            vacancy.ShortDescription,
+            FieldIdResolver.ToFieldId(v => v.ShortDescription),
+            vacancy,
+            v => v.ShortDescription = m.ShortDescription);
+
+        return await ValidateAndExecute(
+            vacancy, 
+            v => vacancyClient.Validate(v, ValidationRules),
+            v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+        );
+    }
+
+    protected override EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionEditModel> DefineMappings() =>
+        new()
+        {
+            { e => e.ShortDescription, vm => vm.ShortDescription }
+        };
 }

@@ -4,4 +4,4 @@ global using Moq;
 global using SFA.DAS.Testing.AutoFixture;
 global using FluentAssertions;
 global using AutoFixture;
-global using AutoFixture.NUnit3;
+global using AutoFixture.NUnit4;

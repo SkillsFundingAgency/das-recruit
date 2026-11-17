@@ -5,23 +5,15 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Provider.Web.Controllers
+namespace Esfa.Recruit.Provider.Web.Controllers;
+
+[Route(RoutePaths.AccountVacancyRoutePath)]
+public class ReviewedController(ReviewedOrchestrator orchestrator) : Controller
 {
-    [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class ReviewedController : Controller
+    [HttpGet("reviewed", Name = RouteNames.Reviewed_Index_Get)]
+    public async Task<IActionResult> Confirmation(VacancyRouteModel vrm)
     {
-        private readonly ReviewedOrchestrator _orchestrator;
-
-        public ReviewedController(ReviewedOrchestrator orchestrator)
-        {
-            _orchestrator = orchestrator;
-        }
-
-        [HttpGet("reviewed", Name = RouteNames.Reviewed_Index_Get)]
-        public async Task<IActionResult> Confirmation(VacancyRouteModel vrm)
-        {
-            var vm = await _orchestrator.GetVacancyReviewedOrchestratorConfirmationViewModelAsync(vrm, User.ToVacancyUser());
-            return View(vm);
-        }
+        var vm = await orchestrator.GetVacancyReviewedOrchestratorConfirmationViewModelAsync(vrm, User.ToVacancyUser());
+        return View(vm);
     }
 }

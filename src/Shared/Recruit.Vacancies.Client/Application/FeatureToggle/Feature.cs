@@ -1,13 +1,12 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.FeatureToggle
+namespace Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
+
+public class Feature(IConfiguration configuration) : IFeature
 {
-    public class Feature(IConfiguration configuration) : IFeature
+    public bool IsFeatureEnabled(string feature)
     {
-        public bool IsFeatureEnabled(string feature)
-        {
-            string featureValue = configuration[$"Features:{feature}"];
-            return !string.IsNullOrWhiteSpace(featureValue) && bool.Parse(featureValue);
-        }
+        string featureValue = configuration[$"Features:{feature}"];
+        return !string.IsNullOrWhiteSpace(featureValue) && bool.Parse(featureValue);
     }
 }

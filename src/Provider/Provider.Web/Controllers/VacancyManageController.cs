@@ -9,87 +9,86 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using InfoMsg = Esfa.Recruit.Shared.Web.ViewModels.InfoMessages;
 
-namespace Esfa.Recruit.Provider.Web.Controllers
+namespace Esfa.Recruit.Provider.Web.Controllers;
+
+[Route(RoutePaths.AccountVacancyRoutePath)]
+public class VacancyManageController(VacancyManageOrchestrator orchestrator,
+    IUtility utility) : Controller
 {
-    [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class VacancyManageController(VacancyManageOrchestrator orchestrator,
-        IUtility utility) : Controller
+    private const int PageSize = 20;
+
+    [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
+    public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm,
+        [FromQuery] string sortColumn,
+        [FromQuery] string sortOrder,
+        [FromQuery] string locationFilter = "All",
+        [FromQuery] string applicantFilter = "",
+        [FromQuery] int page = 1,
+        [FromQuery] FilteringOptions filteringOptions = FilteringOptions.All)
     {
-        private const int PageSize = 20;
+        Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
+        Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
 
-        [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
-        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm,
-            [FromQuery] string sortColumn,
-            [FromQuery] string sortOrder,
-            [FromQuery] string locationFilter = "All",
-            [FromQuery] string applicantFilter = "",
-            [FromQuery] int page = 1,
-            [FromQuery] FilteringOptions filteringOptions = FilteringOptions.All)
+        var vacancy = await orchestrator.GetVacancy(vrm);
+
+        if (vacancy.CanEdit)
         {
-            Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
-            Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
-
-            var vacancy = await orchestrator.GetVacancy(vrm);
-
-            if (vacancy.CanEdit)
-            {
-                return HandleRedirectOfEditableVacancy(vacancy);
-            }
-
-            var options = new VacancyQueryOptions(
-                PageNumber: page, 
-                PageSize: PageSize,
-                SortColumn: outputSortColumn,
-                SortOrder: outputSortOrder,
-                LocationFilter: locationFilter,
-                ApplicantFilter: applicantFilter);
-
-            var viewModel = await orchestrator.GetManageVacancyViewModel(vacancy, vrm, options);
-
-            if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
-                viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();
-
-            if (TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage))
-                viewModel.ApplicationReviewStatusHeaderInfoMessage = TempData[TempDataKeys.ApplicationReviewStatusInfoMessage].ToString();
-
-            if (TempData.ContainsKey(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage))
-            {
-                viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.ApplicationReviewSuccessStatusInfoMessage].ToString();
-            }
-
-            if (TempData.ContainsKey(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage))
-                viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage].ToString();
-
-            if (TempData.ContainsKey(TempDataKeys.SharedMultipleApplicationsHeader))
-            {
-                viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.SharedMultipleApplicationsHeader].ToString();
-                viewModel.ApplicationReviewStatusChangeBannerMessage = InfoMsg.SharedMultipleApplicationsBannerMessage;
-            }
-
-            if (TempData.ContainsKey(TempDataKeys.ApplicationsToUnsuccessfulHeader))
-            {
-                viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.ApplicationsToUnsuccessfulHeader].ToString();
-            }
-
-            if (TempData.ContainsKey(TempDataKeys.SharedSingleApplicationsHeader))
-            {
-                viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.SharedSingleApplicationsHeader].ToString();
-                viewModel.ApplicationReviewStatusChangeBannerMessage = InfoMsg.SharedSingleApplicationsBannerMessage;
-            }
-
-            if (TempData.ContainsKey(TempDataKeys.ApplicationStatusChangedHeader))
-            {
-                viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.ApplicationStatusChangedHeader].ToString();
-            }
-
-            viewModel.FilteringOptions = filteringOptions;
-            return View(viewModel);
+            return HandleRedirectOfEditableVacancy(vacancy);
         }
 
+        var options = new VacancyQueryOptions(
+            PageNumber: page, 
+            PageSize: PageSize,
+            SortColumn: outputSortColumn,
+            SortOrder: outputSortOrder,
+            LocationFilter: locationFilter,
+            ApplicantFilter: applicantFilter);
 
-        private RedirectToRouteResult HandleRedirectOfEditableVacancy(Vacancy vacancy) =>
-            RedirectToRoute(utility.IsTaskListCompleted(vacancy) 
-                ? RouteNames.ProviderCheckYourAnswersGet 
-                : RouteNames.ProviderTaskListGet, new { vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id });
+        var viewModel = await orchestrator.GetManageVacancyViewModel(vacancy, vrm, options);
+
+        if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
+            viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();
+
+        if (TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage))
+            viewModel.ApplicationReviewStatusHeaderInfoMessage = TempData[TempDataKeys.ApplicationReviewStatusInfoMessage].ToString();
+
+        if (TempData.ContainsKey(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage))
+        {
+            viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.ApplicationReviewSuccessStatusInfoMessage].ToString();
+        }
+
+        if (TempData.ContainsKey(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage))
+            viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage].ToString();
+
+        if (TempData.ContainsKey(TempDataKeys.SharedMultipleApplicationsHeader))
+        {
+            viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.SharedMultipleApplicationsHeader].ToString();
+            viewModel.ApplicationReviewStatusChangeBannerMessage = InfoMsg.SharedMultipleApplicationsBannerMessage;
+        }
+
+        if (TempData.ContainsKey(TempDataKeys.ApplicationsToUnsuccessfulHeader))
+        {
+            viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.ApplicationsToUnsuccessfulHeader].ToString();
+        }
+
+        if (TempData.ContainsKey(TempDataKeys.SharedSingleApplicationsHeader))
+        {
+            viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.SharedSingleApplicationsHeader].ToString();
+            viewModel.ApplicationReviewStatusChangeBannerMessage = InfoMsg.SharedSingleApplicationsBannerMessage;
+        }
+
+        if (TempData.ContainsKey(TempDataKeys.ApplicationStatusChangedHeader))
+        {
+            viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.ApplicationStatusChangedHeader].ToString();
+        }
+
+        viewModel.FilteringOptions = filteringOptions;
+        return View(viewModel);
     }
+
+
+    private RedirectToRouteResult HandleRedirectOfEditableVacancy(Vacancy vacancy) =>
+        RedirectToRoute(utility.IsTaskListCompleted(vacancy) 
+            ? RouteNames.ProviderCheckYourAnswersGet 
+            : RouteNames.ProviderTaskListGet, new { vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id });
 }

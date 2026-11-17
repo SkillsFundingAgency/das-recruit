@@ -1,57 +1,44 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace Esfa.Recruit.Shared.Web.TagHelpers
+namespace Esfa.Recruit.Shared.Web.TagHelpers;
+
+[HtmlTargetElement(TagName)]
+public class EsfaFeatureEnabledTagHelper(IFeature feature) : TagHelper
 {
-    [HtmlTargetElement(TagName)]
-    public class EsfaFeatureEnabledTagHelper : TagHelper
+    private const string TagName = "esfaFeatureEnabled";
+
+    [HtmlAttributeName("name")]
+    public string Name { get; set; }
+
+    public override void Process(TagHelperContext context, TagHelperOutput output)
     {
-        private const string TagName = "esfaFeatureEnabled";
-        private readonly IFeature _feature;
-
-        [HtmlAttributeName("name")]
-        public string Name { get; set; }
-
-        public EsfaFeatureEnabledTagHelper(IFeature feature)
+        if (feature.IsFeatureEnabled(Name))
         {
-            _feature = feature;
+            output.TagName = null;
+            return;
         }
-
-        public override void Process(TagHelperContext context, TagHelperOutput output)
-        {
-            if (_feature.IsFeatureEnabled(Name))
-            {
-                output.TagName = null;
-                return;
-            }
             
-            output.SuppressOutput();
-        }
+        output.SuppressOutput();
     }
+}
 
-    [HtmlTargetElement(TagName)]
-    public class EsfaFeatureDisabledTagHelper : TagHelper
+[HtmlTargetElement(TagName)]
+public class EsfaFeatureDisabledTagHelper(IFeature feature) : TagHelper
+{
+    private const string TagName = "esfaFeatureDisabled";
+
+    [HtmlAttributeName("name")]
+    public string Name { get; set; }
+
+    public override void Process(TagHelperContext context, TagHelperOutput output)
     {
-        private const string TagName = "esfaFeatureDisabled";
-        private readonly IFeature _feature;
-
-        [HtmlAttributeName("name")]
-        public string Name { get; set; }
-
-        public EsfaFeatureDisabledTagHelper(IFeature feature)
+        if (!feature.IsFeatureEnabled(Name))
         {
-            _feature = feature;
+            output.TagName = null;
+            return;
         }
-
-        public override void Process(TagHelperContext context, TagHelperOutput output)
-        {
-            if (_feature.IsFeatureEnabled(Name) == false)
-            {
-                output.TagName = null;
-                return;
-            }
             
-            output.SuppressOutput();
-        }
+        output.SuppressOutput();
     }
 }

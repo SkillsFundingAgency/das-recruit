@@ -1,10 +1,9 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum ReportStatus
 {
-    public enum ReportStatus
-    {
-        New,
-        InProgress,
-        Generated,
-        Failed
-    }
+    New,
+    InProgress,
+    Generated,
+    Failed
 }

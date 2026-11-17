@@ -46,38 +46,6 @@ public class VacancyReviewService(IOuterApiClient outerApiClient,
         return result.VacancyReviews.Select(c=>(Domain.Entities.VacancyReview)c).ToList();
     }
 
-    public async Task<Domain.Entities.VacancyReview> GetLatestReviewByReferenceAsync(long vacancyReference)
-    {
-        var result = await outerApiClient.Get<GetVacancyReviewListResponse>(new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference));
-        
-        if (result == null)
-        {
-            return null;
-        }
-
-        var filtered = result.VacancyReviews
-            .Where(r =>
-                r.VacancyReference == vacancyReference &&
-                (
-                    r.ManualOutcome == null ||
-                    (
-                        r.ManualOutcome != ManualQaOutcome.Transferred.ToString() &&
-                        r.ManualOutcome != ManualQaOutcome.Blocked.ToString()
-                    )
-                )
-            )
-            .OrderByDescending(r => r.CreatedDate)
-            .FirstOrDefault();
-
-        return (Domain.Entities.VacancyReview)filtered;
-    }
-
-    public async Task<List<Domain.Entities.VacancyReview>> GetByStatusAsync(ReviewStatus status)
-    {
-        var result = await outerApiClient.Get<GetVacancyReviewListResponse>(new GetVacancyReviewByFilterRequest([status]));
-        return result.VacancyReviews.Select(c=>(Domain.Entities.VacancyReview)c).ToList();
-    }
-
     public async Task<Domain.Entities.VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
     {
         var result = await outerApiClient.Get<GetVacancyReviewListResponse>(new GetVacancyReviewByVacancyReferenceAndReviewStatusRequest(vacancyReference, ReviewStatus.Closed));

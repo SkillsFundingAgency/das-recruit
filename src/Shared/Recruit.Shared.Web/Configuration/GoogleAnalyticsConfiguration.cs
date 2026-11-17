@@ -1,7 +1,6 @@
-﻿namespace Esfa.Recruit.Shared.Web.Configuration
+﻿namespace Esfa.Recruit.Shared.Web.Configuration;
+
+public sealed class GoogleAnalyticsConfiguration
 {
-    public sealed class GoogleAnalyticsConfiguration
-    {
-        public string TrackingManagerCode { get; set; }
-    }
+    public string TrackingManagerCode { get; set; }
 }

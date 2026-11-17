@@ -1,8 +1,7 @@
-﻿namespace Esfa.Recruit.Shared.Web.ViewModels
+﻿namespace Esfa.Recruit.Shared.Web.ViewModels;
+
+public class ApprenticeshipProgrammeViewModel
 {
-    public class ApprenticeshipProgrammeViewModel
-    {
-        public string Id { get; set; }
-        public string Name { get; set; }
-    }
+    public string Id { get; set; }
+    public string Name { get; set; }
 }

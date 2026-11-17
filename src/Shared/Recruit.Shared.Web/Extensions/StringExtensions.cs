@@ -1,72 +1,70 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Esfa.Recruit.Shared.Web.Extensions
+namespace Esfa.Recruit.Shared.Web.Extensions;
+
+public static class StringExtensions
 {
-
-    public static class StringExtensions
-    {
-        private static readonly IFormatProvider _ukCulture = new CultureInfo("en-GB");
-        private const int IncodeLength = 3;
+    private static readonly IFormatProvider _ukCulture = new CultureInfo("en-GB");
+    private const int IncodeLength = 3;
         
-        public static string AsPostcode(this string postcode)
+    public static string AsPostcode(this string postcode)
+    {
+        if (postcode?.Length > IncodeLength)
         {
-            if (postcode?.Length > IncodeLength)
-            {
-                postcode = postcode.ToUpper().Replace(" ", "");
-                postcode = postcode.Insert(postcode.Length - IncodeLength, " ");
-            }
-
-            return postcode;
+            postcode = postcode.ToUpper().Replace(" ", "");
+            postcode = postcode.Insert(postcode.Length - IncodeLength, " ");
         }
 
-        public static DateTime? AsDateTimeUk(this string date)
+        return postcode;
+    }
+
+    public static DateTime? AsDateTimeUk(this string date)
+    {
+        if(DateTime.TryParseExact(date, "d/M/yyyy", _ukCulture, DateTimeStyles.AssumeUniversal, out var d))
         {
-            if(DateTime.TryParseExact(date, "d/M/yyyy", _ukCulture, DateTimeStyles.AssumeUniversal, out var d))
+            return d;
+        }
+
+        return null;
+    }
+
+    public static decimal? AsMoney(this string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return null;
+        }
+            
+        if (decimal.TryParse(text, out var d))
+        {
+            if (decimal.Round(d, 2, MidpointRounding.AwayFromZero) == d)
             {
                 return d;
             }
-
             return null;
         }
 
-        public static decimal? AsMoney(this string text)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                return null;
-            }
-            
-            if (decimal.TryParse(text, out var d))
-            {
-                if (decimal.Round(d, 2, MidpointRounding.AwayFromZero) == d)
-                {
-                    return d;
-                }
-                return null;
-            }
+        return null;
+    }
 
+    public static decimal? AsDecimal(this string text, int decimals)
+    {
+        if (decimal.TryParse(text, out var d))
+        {
+            var roundedDecimal = decimal.Round(d, decimals, MidpointRounding.AwayFromZero);
+            if (roundedDecimal == d)
+            {
+                return roundedDecimal;
+            }
             return null;
         }
 
-        public static decimal? AsDecimal(this string text, int decimals)
-        {
-            if (decimal.TryParse(text, out var d))
-            {
-                var roundedDecimal = decimal.Round(d, decimals, MidpointRounding.AwayFromZero);
-                if (roundedDecimal == d)
-                {
-                    return roundedDecimal;
-                }
-                return null;
-            }
+        return null;
+    }
 
-            return null;
-        }
-
-        public static string RemoveOxfordComma(this string text)
-        {
-            return text.Replace(", and ", " and ");
-        }
+    public static string RemoveOxfordComma(this string text)
+    {
+        return text.Replace(", and ", " and ");
     }
 }

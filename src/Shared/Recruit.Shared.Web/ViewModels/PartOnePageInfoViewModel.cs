@@ -1,40 +1,39 @@
-﻿namespace Esfa.Recruit.Shared.Web.ViewModels
+﻿namespace Esfa.Recruit.Shared.Web.ViewModels;
+
+public class PartOnePageInfoViewModel
 {
-    public class PartOnePageInfoViewModel
-    {
-        public const string SubmitButtonCaptionForWizard = "Save and continue";
+    public const string SubmitButtonCaptionForWizard = "Save and continue";
         
-        public bool HasCompletedPartOne { get; set; }
-        public bool HasStartedPartTwo { get; set; }
-        public bool IsWizard { get; private set; }
-        public bool IsNotWizard => !IsWizard;
-        public string SubmitButtonText => SubmitButtonCaptionForWizard;        
+    public bool HasCompletedPartOne { get; set; }
+    public bool HasStartedPartTwo { get; set; }
+    public bool IsWizard { get; private set; }
+    public bool IsNotWizard => !IsWizard;
+    public string SubmitButtonText => SubmitButtonCaptionForWizard;        
 
-        public void SetWizard(string requestedWizardParam = null)
+    public void SetWizard(string requestedWizardParam = null)
+    {
+        if (!bool.TryParse(requestedWizardParam, out var wizard))
         {
-            if (!bool.TryParse(requestedWizardParam, out var wizard))
-            {
-                wizard = true;
-            }
-
-            SetWizard(wizard);
+            wizard = true;
         }
 
-        public void SetWizard(bool requestedWizardParam)
+        SetWizard(wizard);
+    }
+
+    public void SetWizard(bool requestedWizardParam)
+    {
+        if (HasCompletedPartOne == false)
         {
-            if (HasCompletedPartOne == false)
-            {
-                IsWizard = true;
-                return;
-            }
-
-            if(HasCompletedPartOne && HasStartedPartTwo)
-            {
-                IsWizard = false;
-                return;
-            }
-
-            IsWizard = requestedWizardParam;            
+            IsWizard = true;
+            return;
         }
+
+        if(HasCompletedPartOne && HasStartedPartTwo)
+        {
+            IsWizard = false;
+            return;
+        }
+
+        IsWizard = requestedWizardParam;            
     }
 }

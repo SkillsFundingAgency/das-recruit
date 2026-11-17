@@ -1,9 +1,8 @@
-﻿namespace Esfa.Recruit.Provider.Web.ViewModels.LegalEntityAgreement
+﻿namespace Esfa.Recruit.Provider.Web.ViewModels.LegalEntityAgreement;
+
+public class LegalEntityAgreementHardStopViewModel
 {
-    public class LegalEntityAgreementHardStopViewModel
-    {
-        public bool HasLegalEntityAgreement { get; set; }
-        public string LegalEntityName { get; set; }
-        public long Ukprn { get; set; }
-    }
+    public bool HasLegalEntityAgreement { get; set; }
+    public string LegalEntityName { get; set; }
+    public long Ukprn { get; set; }
 }

@@ -1,15 +1,14 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum SortColumn
 {
-    public enum SortColumn
-    {
-        Default,
-        Name,
-        ApplicationID,
-        Status,
-        DateApplied,
-        Applicant,
-        Response,
-        DateReviewed,
-        DateShared
-    }
+    Default,
+    Name,
+    ApplicationID,
+    Status,
+    DateApplied,
+    Applicant,
+    Response,
+    DateReviewed,
+    DateShared
 }

@@ -1,32 +1,31 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace Esfa.Recruit.Shared.Web.TagHelpers
-{    
-    [HtmlTargetElement(Attributes = "asp-hide")]
-    public class HideTagHelper : TagHelper
-    {
-        public bool AspHide { get; set; }
+namespace Esfa.Recruit.Shared.Web.TagHelpers;
 
-        public override void Process(TagHelperContext context, TagHelperOutput output)
+[HtmlTargetElement(Attributes = "asp-hide")]
+public class HideTagHelper : TagHelper
+{
+    public bool AspHide { get; set; }
+
+    public override void Process(TagHelperContext context, TagHelperOutput output)
+    {
+        if (AspHide)
         {
-            if (AspHide)
-            {
-                output.SuppressOutput();
-            }
+            output.SuppressOutput();
         }
     }
+}
 
-    [HtmlTargetElement(Attributes = "asp-show")]
-    public class ShowTagHelper : TagHelper
+[HtmlTargetElement(Attributes = "asp-show")]
+public class ShowTagHelper : TagHelper
+{
+    public bool? AspShow { get; set; }
+
+    public override void Process(TagHelperContext context, TagHelperOutput output)
     {
-        public bool? AspShow { get; set; }
-
-        public override void Process(TagHelperContext context, TagHelperOutput output)
+        if (AspShow.HasValue == false || !AspShow.Value)
         {
-            if (AspShow.HasValue == false || !AspShow.Value)
-            {
-                output.SuppressOutput();
-            }
+            output.SuppressOutput();
         }
     }
 }

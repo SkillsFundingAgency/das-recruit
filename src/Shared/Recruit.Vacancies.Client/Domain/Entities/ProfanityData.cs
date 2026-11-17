@@ -1,8 +1,7 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public class ProfanityData
 {
-    public class ProfanityData
-    {
-        public string Profanity { get; set; }
-        public int Occurrences { get; set; }
-    }
+    public string Profanity { get; set; }
+    public int Occurrences { get; set; }
 }

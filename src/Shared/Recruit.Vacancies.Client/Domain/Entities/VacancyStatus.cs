@@ -1,15 +1,14 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum VacancyStatus
 {
-    public enum VacancyStatus
-    {
-        Draft,
-        Review,
-        Rejected,
-        Submitted,
-        Referred,
-        Live,
-        Closed,
-        Approved,
-        Archived
-    }
+    Draft,
+    Review,
+    Rejected,
+    Submitted,
+    Referred,
+    Live,
+    Closed,
+    Approved,
+    Archived
 }

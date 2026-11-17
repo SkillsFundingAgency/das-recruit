@@ -8,14 +8,14 @@ using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers;
 
-[Trait("Category", "Unit")]
+[Category("Unit")]
 public class SubmitVacancyCommandHandlerTests
 {
-    [Fact]
+    [Test]
     public async Task GivenEmployerDescription_ThenShouldUpdateVacancyWithThatDescripion()
     {
         var expectedDescription = "updated description";
@@ -42,7 +42,7 @@ public class SubmitVacancyCommandHandlerTests
         vacancy.EmployerDescription.Should().Be(expectedDescription);
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldNotChangeEmployerDescriptionIfNotSpecifiedInCommand()
     {
         var expectedDescription = "initial description";
@@ -69,7 +69,7 @@ public class SubmitVacancyCommandHandlerTests
         vacancy.EmployerDescription.Should().Be(expectedDescription);
     }
 
-    [Fact]
+    [Test]
     public async Task WhenVacancyNotFound_ShouldRaiseException()
     {
         var id = Guid.NewGuid();
@@ -79,12 +79,12 @@ public class SubmitVacancyCommandHandlerTests
         var message = new SubmitVacancyCommand(id, user, OwnerType.Provider);
 
         var sut = GetSut(id, null, now);
-        var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await sut.Handle(message, new CancellationToken()));
+        var exception = Assert.ThrowsAsync<ArgumentException>(async () => await sut.Handle(message, new CancellationToken()));
 
         exception.Message.Should().Be(expectedExceptionMessage);
     }
 
-    [Fact]
+    [Test]
     public async Task WhenStatusIsIncorrect_ShouldRaiseException()
     {
         var vacancy = new Vacancy
@@ -102,12 +102,12 @@ public class SubmitVacancyCommandHandlerTests
         var expectedExceptionMessage = string.Format(SubmitVacancyCommandHandler.InvalidStateExceptionMessageFormat, vacancy.Id, vacancy.Status);
 
         var sut = GetSut(vacancy.Id, vacancy, now);
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.Handle(message, new CancellationToken()));
+        var exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.Handle(message, new CancellationToken()));
 
         exception.Message.Should().Be(expectedExceptionMessage);
     }
 
-    [Fact]
+    [Test]
     public async Task WhenReferenceNumberIsNotGenerated_ShouldRaiseException()
     {
         var vacancy = new Vacancy
@@ -125,13 +125,13 @@ public class SubmitVacancyCommandHandlerTests
         var expectedExceptionMessage = string.Format(SubmitVacancyCommandHandler.MissingReferenceNumberExceptionMessageFormat, vacancy.Id);
 
         var sut = GetSut(vacancy.Id, vacancy, now);
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.Handle(message, new CancellationToken()));
+        var exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.Handle(message, new CancellationToken()));
 
         exception.Message.Should().Be(expectedExceptionMessage);
     }
 
 
-    [Fact]
+    [Test]
     public async Task WhenOwnerHasChanged_ShouldRaiseException()
     {
         var vacancy = new Vacancy
@@ -149,7 +149,7 @@ public class SubmitVacancyCommandHandlerTests
         var expectedExceptionMessage = string.Format(SubmitVacancyCommandHandler.InvalidOwnerExceptionMessageFormat, vacancy.Id, message.SubmissionOwner, vacancy.OwnerType);
 
         var sut = GetSut(vacancy.Id, vacancy, now);
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.Handle(message, new CancellationToken()));
+        var exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.Handle(message, new CancellationToken()));
 
         exception.Message.Should().Be(expectedExceptionMessage);
     }

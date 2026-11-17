@@ -1,7 +1,6 @@
-﻿namespace Esfa.Recruit.Employer.Web.Authorization
+﻿namespace Esfa.Recruit.Employer.Web.Authorization;
+
+public static class RouteValueKeys
 {
-    public static class RouteValueKeys
-    {
-        public const string EmployerAccountHashedId = "employerAccountId";
-    }
+    public const string EmployerAccountHashedId = "employerAccountId";
 }

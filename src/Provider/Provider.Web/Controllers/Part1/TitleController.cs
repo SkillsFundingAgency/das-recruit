@@ -8,67 +8,57 @@ using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Esfa.Recruit.Provider.Web.Orchestrators;
 
-namespace Esfa.Recruit.Provider.Web.Controllers.Part1
+namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
+
+[Route(RoutePaths.AccountRoutePath)]
+[Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+public class TitleController(TitleOrchestrator orchestrator, IProviderVacancyClient providerVacancyClient)
+    : Controller
 {
-    [Route(RoutePaths.AccountRoutePath)]
-    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public class TitleController : Controller
+    private const string NewVacancyTitleRoute = "create-vacancy";
+    private const string ExistingVacancyTitleRoute = "vacancies/{vacancyId:guid}/title";
+
+    public IProviderVacancyClient ProviderVacancyClient { get; } = providerVacancyClient;
+
+    [HttpGet(NewVacancyTitleRoute, Name = RouteNames.CreateVacancy_Get)]
+    public async Task<IActionResult> Title([FromQuery] string employerAccountId)
     {
-        private const string NewVacancyTitleRoute = "create-vacancy";
-        private const string ExistingVacancyTitleRoute = "vacancies/{vacancyId:guid}/title";
-        private readonly TitleOrchestrator _orchestrator;
+        var vm = await orchestrator.GetTitleViewModelForNewVacancyAsync(employerAccountId, User.GetUkprn());
+        vm.PageInfo.SetWizard();
+        return View(vm);
+    }
 
-        public IProviderVacancyClient ProviderVacancyClient { get; }
+    [HttpGet(ExistingVacancyTitleRoute, Name = RouteNames.Title_Get)]
+    public async Task<IActionResult> Title(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
+    {            
+        var vm = await orchestrator.GetTitleViewModelForExistingVacancyAsync(vrm);
+        vm.PageInfo.SetWizard(wizard);
+        return View(vm);
+    }
 
-        public TitleController(TitleOrchestrator orchestrator, IProviderVacancyClient providerVacancyClient)
+    [HttpPost(NewVacancyTitleRoute, Name = RouteNames.CreateVacancy_Post)]
+    [HttpPost(ExistingVacancyTitleRoute, Name = RouteNames.Title_Post)]
+    public async Task<IActionResult> Title(VacancyRouteModel vrm, TitleEditModel model, [FromQuery] bool wizard)
+    {
+        var ukprn = User.GetUkprn();
+        var response = await orchestrator.PostTitleEditModelAsync(vrm, model, User.ToVacancyUser(), ukprn);
+            
+        if (!response.Success)
         {
-            this.ProviderVacancyClient = providerVacancyClient;
-            _orchestrator = orchestrator;
+            response.AddErrorsToModelState(ModelState);
         }
 
-        [HttpGet(NewVacancyTitleRoute, Name = RouteNames.CreateVacancy_Get)]
-        public async Task<IActionResult> Title([FromQuery] string employerAccountId)
+        if(!ModelState.IsValid)
         {
-            var vm = await _orchestrator.GetTitleViewModelForNewVacancyAsync(employerAccountId, User.GetUkprn());
-            vm.PageInfo.SetWizard();
-            return View(vm);
-        }
-
-        [HttpGet(ExistingVacancyTitleRoute, Name = RouteNames.Title_Get)]
-        public async Task<IActionResult> Title(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
-        {            
-            var vm = await _orchestrator.GetTitleViewModelForExistingVacancyAsync(vrm);
+            var vm = await orchestrator.GetTitleViewModelFromEditModelAsync(vrm, model, ukprn);
             vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
 
-        [HttpPost(NewVacancyTitleRoute, Name = RouteNames.CreateVacancy_Post)]
-        [HttpPost(ExistingVacancyTitleRoute, Name = RouteNames.Title_Post)]
-        public async Task<IActionResult> Title(VacancyRouteModel vrm, TitleEditModel model, [FromQuery] bool wizard)
-        {
-            var ukprn = User.GetUkprn();
-            var response = await _orchestrator.PostTitleEditModelAsync(vrm, model, User.ToVacancyUser(), ukprn);
-            
-            if (!response.Success)
-            {
-                response.AddErrorsToModelState(ModelState);
-            }
-
-            if(!ModelState.IsValid)
-            {
-                var vm = await _orchestrator.GetTitleViewModelFromEditModelAsync(vrm, model, ukprn);
-                vm.PageInfo.SetWizard(wizard);
-                return View(vm);
-            }
-
-            return wizard
-                ? RedirectToRoute(RouteNames.Training_Get, new {vrm.Ukprn, vacancyId = response.Data})
-                : RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vrm.Ukprn, vacancyId = response.Data});
-        }    
-    }
+        return wizard
+            ? RedirectToRoute(RouteNames.Training_Get, new {vrm.Ukprn, vacancyId = response.Data})
+            : RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vrm.Ukprn, vacancyId = response.Data});
+    }    
 }

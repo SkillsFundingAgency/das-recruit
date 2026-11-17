@@ -2,30 +2,29 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Esfa.Recruit.Provider.Web.RouteModel
+namespace Esfa.Recruit.Provider.Web.RouteModel;
+
+public class VacancyRouteModel
 {
-    public class VacancyRouteModel
+    [FromRoute]
+    public long Ukprn { get; set; }
+
+    [FromRoute]
+    public Guid? VacancyId { get; set; }
+
+    public Dictionary<string, string> RouteDictionary
     {
-        [FromRoute]
-        public long Ukprn { get; set; }
-
-        [FromRoute]
-        public Guid? VacancyId { get; set; }
-
-        public Dictionary<string, string> RouteDictionary
+        get
         {
-            get
+            var routeDictionary = new Dictionary<string, string>
             {
-                var routeDictionary = new Dictionary<string, string>
-                {
-                    {"Ukprn", Ukprn.ToString()}
-                };  
-                if(VacancyId != null)
-                {
-                    routeDictionary.Add("VacancyId", VacancyId.ToString());
-                }
-                return routeDictionary;
+                {"Ukprn", Ukprn.ToString()}
+            };  
+            if(VacancyId != null)
+            {
+                routeDictionary.Add("VacancyId", VacancyId.ToString());
             }
+            return routeDictionary;
         }
     }
 }

@@ -113,6 +113,17 @@ stages:
       ServiceConnection: SFA-DIG-Prod-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
+- stage: TriggerSmokeTest
+  dependsOn: Deploy_PROD
+  displayName: Trigger Live Smoke Test
+  condition: and(succeeded(), eq(variables.Deploy, 'true'))
+  variables:
+  - group: LIVE Shared Resources
+  jobs:
+    - template: azure-pipelines-templates/deploy/job/trigger-live-smoke-test.yml@das-platform-building-blocks
+      parameters:
+        ServiceConnection: SFA-DIG-Prod-ARM
+
 - stage: Deploy_MO
   dependsOn: Build
   displayName: Deploy to MO

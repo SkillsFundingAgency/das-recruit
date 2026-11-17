@@ -73,18 +73,9 @@ public class VacancyDescriptionOrchestratorTests
     public class VacancyDescriptionOrchestratorTestsFixture
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription;
-        public VacancyUser User { get; }
-        public Vacancy Vacancy { get; }
+        public VacancyUser User { get; } = VacancyOrchestratorTestData.GetVacancyUser();
+        public Vacancy Vacancy { get; } = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
         public VacancyDescriptionOrchestrator Sut {get; private set;}
-
-        public VacancyDescriptionOrchestratorTestsFixture()
-        {
-            MockClient = new Mock<IEmployerVacancyClient>();
-            MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
-
-            User = VacancyOrchestratorTestData.GetVacancyUser();
-            Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
-        }
 
         public VacancyDescriptionOrchestratorTestsFixture WithDescription(string description)
         {
@@ -139,7 +130,7 @@ public class VacancyDescriptionOrchestratorTests
             MockRecruitVacancyClient.Verify(x => x.UpdateDraftVacancyAsync(Vacancy, User), Times.Once);
         }
 
-        public Mock<IEmployerVacancyClient> MockClient { get; set; }
-        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
+        public Mock<IEmployerVacancyClient> MockClient { get; set; } = new();
+        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; } = new();
     }
 }

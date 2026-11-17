@@ -6,44 +6,34 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Esfa.Recruit.Provider.Web.Controllers
+namespace Esfa.Recruit.Provider.Web.Controllers;
+
+[Route(RoutePaths.AccountVacancyRoutePath)]
+public class VacancyViewController(VacancyViewOrchestrator orchestrator, IUtility utility) : Controller
 {
-    [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class VacancyViewController : Controller
+    [HttpGet("view", Name = RouteNames.DisplayFullVacancy_Get)]
+    public async Task<IActionResult> DisplayFullVacancy(VacancyRouteModel vrm)
     {
-        private readonly VacancyViewOrchestrator _orchestrator;
-        private readonly IUtility _utility;
+        var vacancy = await orchestrator.GetVacancy(vrm);
 
-        public VacancyViewController(VacancyViewOrchestrator orchestrator, IUtility utility)
+        if (vacancy.CanEdit)
         {
-            _orchestrator = orchestrator;
-            _utility = utility;
+            return HandleRedirectOfEditableVacancy(vacancy);
         }
 
-        [HttpGet("view", Name = RouteNames.DisplayFullVacancy_Get)]
-        public async Task<IActionResult> DisplayFullVacancy(VacancyRouteModel vrm)
+        var vm = await orchestrator.GetFullVacancyDisplayViewModelAsync(vacancy);
+        vm.Ukprn = vrm.Ukprn;
+        vm.VacancyId = vrm.VacancyId;
+        return View(ViewNames.FullVacancyView, vm);
+    }
+
+    private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
+    {
+        if (utility.IsTaskListCompleted(vacancy))
         {
-            var vacancy = await _orchestrator.GetVacancy(vrm);
-
-            if (vacancy.CanEdit)
-            {
-                return HandleRedirectOfEditableVacancy(vacancy);
-            }
-
-            var vm = await _orchestrator.GetFullVacancyDisplayViewModelAsync(vacancy);
-            vm.Ukprn = vrm.Ukprn;
-            vm.VacancyId = vrm.VacancyId;
-            return View(ViewNames.FullVacancyView, vm);
+            return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
         }
-
-        private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
-        {
-            if (_utility.IsTaskListCompleted(vacancy))
-            {
-                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
-            }
-            return RedirectToRoute(RouteNames.ProviderTaskListGet, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
+        return RedirectToRoute(RouteNames.ProviderTaskListGet, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
             
-        }
     }
 }

@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Esfa.Recruit.Employer.Web.RouteModel;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
+namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
+
+public class EmployerEditModel : VacancyRouteModel
 {
-    public class EmployerEditModel : VacancyRouteModel
-    {
-        [Required(ErrorMessage = ValidationMessages.EmployerSelectionValidationMessages.EmployerSelectionRequired)]
-        public string SelectedOrganisationId { get; set; }
-        public string SearchTerm { get; set; }
-        public int Page { get; set; }
-    }
+    [Required(ErrorMessage = ValidationMessages.EmployerSelectionValidationMessages.EmployerSelectionRequired)]
+    public string SelectedOrganisationId { get; set; }
+    public string SearchTerm { get; set; }
+    public int Page { get; set; }
 }

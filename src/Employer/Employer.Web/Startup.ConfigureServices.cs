@@ -5,7 +5,6 @@ using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,14 +18,12 @@ namespace Esfa.Recruit.Employer.Web
 {
     public partial class Startup
     {
-        private readonly bool _isAuthEnabled = true;
+        private const bool IsAuthEnabled = true;
         private IConfiguration Configuration { get; }
         private IWebHostEnvironment HostingEnvironment { get; }
-
         private readonly ILoggerFactory _loggerFactory;
-        private readonly ILogger<Startup> _logger;
 
-        public Startup(IConfiguration config, IWebHostEnvironment env, ILoggerFactory loggerFactory, ILogger<Startup> logger)
+        public Startup(IConfiguration config, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             var configBuilder = new ConfigurationBuilder()
                 .AddConfiguration(config)
@@ -52,7 +49,6 @@ namespace Esfa.Recruit.Employer.Web
             Configuration =  configBuilder.Build();
             HostingEnvironment = env;
             _loggerFactory = loggerFactory;
-            _logger = logger;
         }
         
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -75,7 +71,7 @@ namespace Esfa.Recruit.Employer.Web
 
             services.AddHealthChecks();
             
-            services.AddMvcService(HostingEnvironment, _isAuthEnabled, _loggerFactory, Configuration);
+            services.AddMvcService(HostingEnvironment, IsAuthEnabled, _loggerFactory, Configuration);
 
 #if DEBUG
             services.AddControllersWithViews().AddRazorRuntimeCompilation();

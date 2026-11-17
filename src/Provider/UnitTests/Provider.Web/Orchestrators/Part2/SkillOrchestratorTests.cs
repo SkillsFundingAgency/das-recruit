@@ -266,19 +266,9 @@ public class SkillOrchestratorTests
     public class SkillsOrchestratorTestsFixture
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Skills;
-        public VacancyUser User { get; }
-        public Vacancy Vacancy { get; }
+        public VacancyUser User { get; } = VacancyOrchestratorTestData.GetVacancyUser();
+        public Vacancy Vacancy { get; } = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
         public SkillsOrchestrator Sut { get; private set; }
-
-        public SkillsOrchestratorTestsFixture()
-        {
-            MockClient = new Mock<IProviderVacancyClient>();
-            MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
-            MockReferenceDataClient = new Mock<IReferenceDataClient>();
-
-            User = VacancyOrchestratorTestData.GetVacancyUser();
-            Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
-        }
 
         public SkillsOrchestratorTestsFixture WithSelectedSkills(string[] selectedSkills)
         {
@@ -376,8 +366,8 @@ public class SkillOrchestratorTests
             };
         }
 
-        public Mock<IProviderVacancyClient> MockClient { get; set; }
-        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
-        public Mock<IReferenceDataClient> MockReferenceDataClient { get; set; }
+        public Mock<IProviderVacancyClient> MockClient { get; set; } = new();
+        public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; } = new();
+        public Mock<IReferenceDataClient> MockReferenceDataClient { get; set; } = new();
     }
 }

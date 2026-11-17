@@ -9,38 +9,37 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Esfa.Recruit.Provider.Web.Controllers.Part2
+namespace Esfa.Recruit.Provider.Web.Controllers.Part2;
+
+[Route(RoutePaths.AccountVacancyRoutePath)]
+[Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+public class ShortDescriptionController(ShortDescriptionOrchestrator orchestrator) : Controller
 {
-    [Route(RoutePaths.AccountVacancyRoutePath)]
-    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public class ShortDescriptionController(ShortDescriptionOrchestrator orchestrator) : Controller
+    [HttpGet("description", Name = RouteNames.ShortDescription_Get)]
+    public async Task<IActionResult> ShortDescription(VacancyRouteModel vrm)
     {
-        [HttpGet("description", Name = RouteNames.ShortDescription_Get)]
-        public async Task<IActionResult> ShortDescription(VacancyRouteModel vrm)
+        var vm = await orchestrator.GetShortDescriptionViewModelAsync(vrm);
+        return View(vm);
+    }
+
+    [HttpPost("description", Name = RouteNames.ShortDescription_Post)]
+    public async Task<IActionResult> ShortDescription(ShortDescriptionEditModel m)
+    {
+        var response = await orchestrator.PostShortDescriptionEditModelAsync(m, User.ToVacancyUser());
+
+        if (!response.Success)
         {
-            var vm = await orchestrator.GetShortDescriptionViewModelAsync(vrm);
+            response.AddErrorsToModelState(ModelState);
+        }
+
+        var vm = await orchestrator.GetShortDescriptionViewModelAsync(m);
+        if (!ModelState.IsValid)
+        {
             return View(vm);
         }
 
-        [HttpPost("description", Name = RouteNames.ShortDescription_Post)]
-        public async Task<IActionResult> ShortDescription(ShortDescriptionEditModel m)
-        {
-            var response = await orchestrator.PostShortDescriptionEditModelAsync(m, User.ToVacancyUser());
-
-            if (!response.Success)
-            {
-                response.AddErrorsToModelState(ModelState);
-            }
-
-            var vm = await orchestrator.GetShortDescriptionViewModelAsync(m);
-            if (!ModelState.IsValid)
-            {
-                return View(vm);
-            }
-
-            return vm.IsTaskListCompleted
-                ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { m.Ukprn, m.VacancyId })
-                : RedirectToRoute(RouteNames.VacancyWorkDescription_Index_Get, new { m.Ukprn, m.VacancyId });
-        }
+        return vm.IsTaskListCompleted
+            ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { m.Ukprn, m.VacancyId })
+            : RedirectToRoute(RouteNames.VacancyWorkDescription_Index_Get, new { m.Ukprn, m.VacancyId });
     }
 }

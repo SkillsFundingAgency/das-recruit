@@ -1,10 +1,9 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Application.Rules
+﻿namespace Esfa.Recruit.Vacancies.Client.Application.Rules;
+
+public enum RuleId
 {
-    public enum RuleId
-    {
-        ProfanityChecks,
-        BannedPhraseChecks,
-        TitlePopularity,
-        VacancyAnonymous
-    }
+    ProfanityChecks,
+    BannedPhraseChecks,
+    TitlePopularity,
+    VacancyAnonymous
 }

@@ -1,15 +1,15 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
 
 public class AdditionalQuestion2Tests : VacancyValidationTestsBase
 {
-    [Theory]
-    [InlineData("a valid AdditionalQuestion1?")]
-    [InlineData("a valid? AdditionalQuestion1?")]
-    [InlineData("")]
+    [Test]
+    [TestCase("a valid AdditionalQuestion1?")]
+    [TestCase("a valid? AdditionalQuestion1?")]
+    [TestCase("")]
     public void NoErrorsWhenAdditionalQuestion2FieldIsValid(string text)
     {
         var vacancy = new Vacancy 
@@ -23,7 +23,7 @@ public class AdditionalQuestion2Tests : VacancyValidationTestsBase
         result.Errors.Should().HaveCount(0);
     }
     
-    [Fact]
+    [Test]
     public void AdditionalQuestion2MustNotBeLongerThanMaxLength()
     {
         var vacancy = new Vacancy 
@@ -40,11 +40,11 @@ public class AdditionalQuestion2Tests : VacancyValidationTestsBase
         result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.AdditionalQuestion2);
     }
     
-    [Theory]
-    [InlineData("some text bother?")]
-    [InlineData("some text dang?")]
-    [InlineData("some text? drat")]
-    [InlineData("some text? balderdash")]
+    [Test]
+    [TestCase("some text bother?")]
+    [TestCase("some text dang?")]
+    [TestCase("some text? drat")]
+    [TestCase("some text? balderdash")]
     public void AdditionalQuestion2ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
     {
         var vacancy = new Vacancy()
@@ -59,11 +59,11 @@ public class AdditionalQuestion2Tests : VacancyValidationTestsBase
         result.Errors[0].ErrorCode.Should().Be("332");
     }
 
-    [Theory]
-    [InlineData("some textbother?")]
-    [InlineData("some textdang?")]
-    [InlineData("some textdrat?")]
-    [InlineData("some textbalderdash?")]
+    [Test]
+    [TestCase("some textbother?")]
+    [TestCase("some textdang?")]
+    [TestCase("some textdrat?")]
+    [TestCase("some textbalderdash?")]
     public void AdditionalQuestion2_Should_Not_FailIfContainsWordsFromTheProfanityList(string freeText)
     {
         var vacancy = new Vacancy()
@@ -75,7 +75,7 @@ public class AdditionalQuestion2Tests : VacancyValidationTestsBase
         result.HasErrors.Should().BeFalse();
     }
 
-    [Fact]
+    [Test]
     public void AdditionalQuestion2_MustContainQuestionMark()
     {
         var vacancy = new Vacancy()
@@ -87,7 +87,7 @@ public class AdditionalQuestion2Tests : VacancyValidationTestsBase
         result.HasErrors.Should().BeFalse();
     }
 
-    [Fact]
+    [Test]
     public void AdditionalQuestion2_ShouldHaveErrorsIfDoesNotHaveQuestionMark()
     {
         var vacancy = new Vacancy()

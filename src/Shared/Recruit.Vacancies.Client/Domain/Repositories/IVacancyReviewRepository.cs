@@ -2,11 +2,10 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
+namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+
+public interface IVacancyReviewRepository
 {
-    public interface IVacancyReviewRepository
-    {
-        Task CreateAsync(VacancyReview vacancyReview);
-        Task UpdateAsync(VacancyReview review);
-    }
+    Task CreateAsync(VacancyReview vacancyReview);
+    Task UpdateAsync(VacancyReview review);
 }

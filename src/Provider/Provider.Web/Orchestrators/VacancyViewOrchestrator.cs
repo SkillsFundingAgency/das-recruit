@@ -9,60 +9,59 @@ using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
-namespace Esfa.Recruit.Provider.Web.Orchestrators
+namespace Esfa.Recruit.Provider.Web.Orchestrators;
+
+public class VacancyViewOrchestrator(
+    DisplayVacancyViewModelMapper vacancyDisplayMapper,
+    IRecruitVacancyClient client,
+    IUtility utility)
 {
-    public class VacancyViewOrchestrator(
-        DisplayVacancyViewModelMapper vacancyDisplayMapper,
-        IRecruitVacancyClient client,
-        IUtility utility)
+    public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
     {
-        public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
+        var vacancy = await client.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
+
+        utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
+
+        return vacancy;
+    }
+
+    /// <summary>
+    /// Gets vacancy for display without applications.
+    /// </summary>
+    /// <param name="vacancy"></param>
+    /// <returns></returns>
+    public async Task<DisplayVacancyViewModel> GetFullVacancyDisplayViewModelAsync(Vacancy vacancy)
+    {
+        switch (vacancy.Status)
         {
-            var vacancy = await client.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
-
-            utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
-
-            return vacancy;
-        }
-
-        /// <summary>
-        /// Gets vacancy for display without applications.
-        /// </summary>
-        /// <param name="vacancy"></param>
-        /// <returns></returns>
-        public async Task<DisplayVacancyViewModel> GetFullVacancyDisplayViewModelAsync(Vacancy vacancy)
-        {
-            switch (vacancy.Status)
-            {
-                case VacancyStatus.Approved:
-                    var approvedViewModel = new ApprovedVacancyViewModel();
-                    await vacancyDisplayMapper.MapFromVacancyAsync(approvedViewModel, vacancy);
-                    approvedViewModel.ApprovedDate = vacancy.ApprovedDate.Value.AsGdsDate();
-                    return approvedViewModel;
-                case VacancyStatus.Live:
-                    var liveViewModel = new LiveVacancyViewModel();
-                    await vacancyDisplayMapper.MapFromVacancyAsync(liveViewModel, vacancy);
-                    return liveViewModel;
-                case VacancyStatus.Closed:
-                    var closedViewModel = new ClosedVacancyViewModel();
-                    await vacancyDisplayMapper.MapFromVacancyAsync(closedViewModel, vacancy);
-                    return closedViewModel;
-                case VacancyStatus.Archived:
-                    var archivedViewModel = new ArchivedVacancyViewModel();
-                    await vacancyDisplayMapper.MapFromVacancyAsync(archivedViewModel, vacancy);
-                    return archivedViewModel;
-                case VacancyStatus.Review:
-                    var reviewViewModel = new ReviewVacancyViewModel();
-                    await vacancyDisplayMapper.MapFromVacancyAsync(reviewViewModel, vacancy);
-                    return reviewViewModel;
-                case VacancyStatus.Submitted:
-                    var submittedViewModel = new SubmittedVacancyViewModel();
-                    await vacancyDisplayMapper.MapFromVacancyAsync(submittedViewModel, vacancy);
-                    submittedViewModel.SubmittedDate = vacancy.SubmittedDate.Value.AsGdsDate();
-                    return submittedViewModel;
-                default:
-                    throw new InvalidStateException(string.Format(ErrorMessages.VacancyCannotBeViewed, vacancy.Title));
-            }
+            case VacancyStatus.Approved:
+                var approvedViewModel = new ApprovedVacancyViewModel();
+                await vacancyDisplayMapper.MapFromVacancyAsync(approvedViewModel, vacancy);
+                approvedViewModel.ApprovedDate = vacancy.ApprovedDate.Value.AsGdsDate();
+                return approvedViewModel;
+            case VacancyStatus.Live:
+                var liveViewModel = new LiveVacancyViewModel();
+                await vacancyDisplayMapper.MapFromVacancyAsync(liveViewModel, vacancy);
+                return liveViewModel;
+            case VacancyStatus.Closed:
+                var closedViewModel = new ClosedVacancyViewModel();
+                await vacancyDisplayMapper.MapFromVacancyAsync(closedViewModel, vacancy);
+                return closedViewModel;
+            case VacancyStatus.Archived:
+                var archivedViewModel = new ArchivedVacancyViewModel();
+                await vacancyDisplayMapper.MapFromVacancyAsync(archivedViewModel, vacancy);
+                return archivedViewModel;
+            case VacancyStatus.Review:
+                var reviewViewModel = new ReviewVacancyViewModel();
+                await vacancyDisplayMapper.MapFromVacancyAsync(reviewViewModel, vacancy);
+                return reviewViewModel;
+            case VacancyStatus.Submitted:
+                var submittedViewModel = new SubmittedVacancyViewModel();
+                await vacancyDisplayMapper.MapFromVacancyAsync(submittedViewModel, vacancy);
+                submittedViewModel.SubmittedDate = vacancy.SubmittedDate.Value.AsGdsDate();
+                return submittedViewModel;
+            default:
+                throw new InvalidStateException(string.Format(ErrorMessages.VacancyCannotBeViewed, vacancy.Title));
         }
     }
 }

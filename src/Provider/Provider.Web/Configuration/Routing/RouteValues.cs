@@ -1,7 +1,6 @@
-﻿namespace Esfa.Recruit.Provider.Web.Configuration.Routing
+﻿namespace Esfa.Recruit.Provider.Web.Configuration.Routing;
+
+public static class RouteValues
 {
-    public static class RouteValues
-    {
-        public const string Ukprn = "ukprn";
-    }
+    public const string Ukprn = "ukprn";
 }

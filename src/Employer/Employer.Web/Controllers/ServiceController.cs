@@ -13,34 +13,26 @@ namespace Esfa.Recruit.Employer.Web.Controllers;
 
 [AllowAnonymous]
 [Route(RoutePaths.Services, Name = "Service", Order = 0)]
-public class ServiceController : Controller
+public class ServiceController(IConfiguration config, IStubAuthenticationService stubAuthenticationService)
+    : Controller
 {
-    private readonly IConfiguration _config;
-    private readonly IStubAuthenticationService _stubAuthenticationService;
-
-    public ServiceController(IConfiguration config, IStubAuthenticationService stubAuthenticationService)
-    {
-        _config = config;
-        _stubAuthenticationService = stubAuthenticationService;
-    }
-    
 #if DEBUG
     [HttpGet]
     [Route("SignIn-Stub")]
     [AllowAnonymous]
     public IActionResult SigninStub()
     {
-        return View("SigninStub", new List<string>{_config["StubId"],_config["StubEmail"]});
+        return View("SigninStub", new List<string>{config["StubId"],config["StubEmail"]});
     }
     [HttpPost]
     [Route("SignIn-Stub")]
     [AllowAnonymous]
     public async Task<IActionResult> SigninStubPost()
     {
-        var claims = await _stubAuthenticationService.GetStubSignInClaims(new StubAuthUserDetails
+        var claims = await stubAuthenticationService.GetStubSignInClaims(new StubAuthUserDetails
         {
-            Email = _config["StubEmail"],
-            Id = _config["StubId"]
+            Email = config["StubEmail"],
+            Id = config["StubId"]
         });
 
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claims,

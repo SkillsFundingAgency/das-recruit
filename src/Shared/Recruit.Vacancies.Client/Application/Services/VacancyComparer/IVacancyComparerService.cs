@@ -1,9 +1,8 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Services.VacancyComparer
+namespace Esfa.Recruit.Vacancies.Client.Application.Services.VacancyComparer;
+
+public interface IVacancyComparerService
 {
-    public interface IVacancyComparerService
-    {
-        VacancyComparerResult Compare(Vacancy a, Vacancy b);
-    }
+    VacancyComparerResult Compare(Vacancy a, Vacancy b);
 }

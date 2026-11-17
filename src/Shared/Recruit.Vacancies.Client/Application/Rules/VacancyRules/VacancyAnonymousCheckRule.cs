@@ -2,31 +2,25 @@
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
+namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules;
+
+public sealed class VacancyAnonymousCheckRule() : Rule(RuleId.VacancyAnonymous), IRule<Vacancy>
 {
-    public sealed class VacancyAnonymousCheckRule : Rule, IRule<Vacancy>
+    public Task<RuleOutcome> EvaluateAsync(Vacancy subject)
     {
-        public VacancyAnonymousCheckRule() : base(RuleId.VacancyAnonymous)
-        {
-            
-        }
+        var outcomeBuilder = RuleOutcomeDetailsBuilder.Create(RuleId);
 
-        public Task<RuleOutcome> EvaluateAsync(Vacancy subject)
-        {
-            var outcomeBuilder = RuleOutcomeDetailsBuilder.Create(RuleId);
+        var score = subject.IsAnonymous ? 100 : 0;
 
-            var score = subject.IsAnonymous ? 100 : 0;
+        var outcomeResult = new RuleOutcome(
+            RuleId, 
+            score, 
+            "Anonymous employer",
+            nameof(Vacancy.EmployerName));
 
-            var outcomeResult = new RuleOutcome(
-                RuleId, 
-                score, 
-                "Anonymous employer",
-                nameof(Vacancy.EmployerName));
+        var outcome = outcomeBuilder.Add(new [] { outcomeResult })
+            .ComputeSum();
 
-            var outcome = outcomeBuilder.Add(new [] { outcomeResult })
-                .ComputeSum();
-
-            return Task.FromResult(outcome);
-        }
+        return Task.FromResult(outcome);
     }
 }

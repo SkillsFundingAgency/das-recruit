@@ -1,14 +1,7 @@
-﻿namespace Esfa.Recruit.Shared.Web.ViewModels
-{
-    public class ErrorListItemViewModel
-    {
-        public ErrorListItemViewModel(string elementId, string message)
-        {
-            ElementId = elementId;
-            Message = message;
-        }
+﻿namespace Esfa.Recruit.Shared.Web.ViewModels;
 
-        public string ElementId { get; }
-        public string Message {get; }
-    }
+public class ErrorListItemViewModel(string elementId, string message)
+{
+    public string ElementId { get; } = elementId;
+    public string Message {get; } = message;
 }

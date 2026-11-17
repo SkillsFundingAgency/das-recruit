@@ -8,54 +8,43 @@ using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
-namespace Esfa.Recruit.Provider.Web.Orchestrators
+namespace Esfa.Recruit.Provider.Web.Orchestrators;
+
+public class CloseVacancyOrchestrator(IRecruitVacancyClient vacancyClient,
+    IUtility utility)
 {
-    public class CloseVacancyOrchestrator
+    public async Task<CloseViewModel> GetCloseViewModelAsync(VacancyRouteModel vrm)
     {
-        private readonly IProviderVacancyClient _client;
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IUtility _utility;
+        var vacancy = await vacancyClient.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
 
-        public CloseVacancyOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, IUtility utility)
-        {
-            _client = client;
-            _vacancyClient = vacancyClient;
-            _utility = utility;
-        }
+        utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
 
-        public async Task<CloseViewModel> GetCloseViewModelAsync(VacancyRouteModel vrm)
-        {
-            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
+        if (!vacancy.CanClose)
+            throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForClosing, vacancy.Title));
 
-            _utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
+        var vm = new CloseViewModel {
+            Title = vacancy.Title,
+            VacancyReference = vacancy.VacancyReference.Value.ToString()
+        };
 
-            if (!vacancy.CanClose)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForClosing, vacancy.Title));
+        return vm;
+    }
 
-            var vm = new CloseViewModel {
-                Title = vacancy.Title,
-                VacancyReference = vacancy.VacancyReference.Value.ToString()
-            };
+    public async Task<OrchestratorResponse<VacancyInfo>> CloseVacancyAsync(CloseEditModel m, VacancyUser user)
+    {
+        var vacancy = await vacancyClient.GetVacancyAsync(m.VacancyId.GetValueOrDefault());
 
-            return vm;
-        }
+        utility.CheckAuthorisedAccess(vacancy, m.Ukprn);
 
-        public async Task<OrchestratorResponse<VacancyInfo>> CloseVacancyAsync(CloseEditModel m, VacancyUser user)
-        {
-            var vacancy = await _vacancyClient.GetVacancyAsync(m.VacancyId.GetValueOrDefault());
+        if (!vacancy.CanClose)
+            throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForClosing, vacancy.Title));
 
-            _utility.CheckAuthorisedAccess(vacancy, m.Ukprn);
+        await vacancyClient.CloseVacancyAsync(vacancy.Id, user, ClosureReason.Manual);
 
-            if (!vacancy.CanClose)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForClosing, vacancy.Title));
-
-            await _vacancyClient.CloseVacancyAsync(vacancy.Id, user, ClosureReason.Manual);
-
-            return new OrchestratorResponse<VacancyInfo>(new VacancyInfo {
-                Id = vacancy.Id,
-                VacancyReference = vacancy.VacancyReference.Value.ToString(),
-                Title = vacancy.Title
-            });
-        }
+        return new OrchestratorResponse<VacancyInfo>(new VacancyInfo {
+            Id = vacancy.Id,
+            VacancyReference = vacancy.VacancyReference.Value.ToString(),
+            Title = vacancy.Title
+        });
     }
 }

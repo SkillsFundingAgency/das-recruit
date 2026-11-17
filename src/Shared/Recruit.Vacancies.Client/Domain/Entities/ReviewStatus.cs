@@ -1,10 +1,9 @@
-namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum ReviewStatus : byte
 {
-    public enum ReviewStatus : byte
-    {
-        New,
-        PendingReview,
-        UnderReview,
-        Closed
-    }
+    New,
+    PendingReview,
+    UnderReview,
+    Closed
 }

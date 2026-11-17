@@ -1,122 +1,121 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
+
+public class DescriptionValidationTests : VacancyValidationTestsBase
 {
-    public class DescriptionValidationTests : VacancyValidationTestsBase
+    [Test]
+    public void NoErrorsWhenDescriptionFieldIsValid()
     {
-        [Fact]
-        public void NoErrorsWhenDescriptionFieldIsValid()
+        var vacancy = new Vacancy 
         {
-            var vacancy = new Vacancy 
-            {
-                Description = "a valid description"
-            };
+            Description = "a valid description"
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Description);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.Description);
 
-            result.HasErrors.Should().BeFalse();
-            result.Errors.Should().HaveCount(0);
-        }
+        result.HasErrors.Should().BeFalse();
+        result.Errors.Should().HaveCount(0);
+    }
         
-        [Theory]
-        [InlineData(null, "will do at work")]
-        [InlineData("", "will do at work")]
-        public void DescriptionMustNotBeEmpty(string description, string errorMessage)
+    [Test]
+    [TestCase(null, "will do at work")]
+    [TestCase("", "will do at work")]
+    public void DescriptionMustNotBeEmpty(string description, string errorMessage)
+    {
+        var vacancy = new Vacancy 
         {
-            var vacancy = new Vacancy 
-            {
-                Description = description
-            };
+            Description = description
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Description);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.Description);
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.Description));
-            result.Errors[0].ErrorCode.Should().Be("53");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Description);
-            result.Errors[0].ErrorMessage.Should().Contain(errorMessage);
-        }
+        result.HasErrors.Should().BeTrue();
+        result.Errors.Should().HaveCount(1);
+        result.Errors[0].PropertyName.Should().Be(nameof(vacancy.Description));
+        result.Errors[0].ErrorCode.Should().Be("53");
+        result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Description);
+        result.Errors[0].ErrorMessage.Should().Contain(errorMessage);
+    }
 
-        [Fact]
-        public void DescriptionMustNotBeLongerThanMaxLength()
+    [Test]
+    public void DescriptionMustNotBeLongerThanMaxLength()
+    {
+        var vacancy = new Vacancy 
         {
-            var vacancy = new Vacancy 
-            {
-                Description = new String('a', 4001)
-            };
+            Description = new String('a', 4001)
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Description);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.Description);
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.Description));
-            result.Errors[0].ErrorCode.Should().Be("7");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Description);
-        }
+        result.HasErrors.Should().BeTrue();
+        result.Errors.Should().HaveCount(1);
+        result.Errors[0].PropertyName.Should().Be(nameof(vacancy.Description));
+        result.Errors[0].ErrorCode.Should().Be("7");
+        result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Description);
+    }
 
-        [Theory]
-        [InlineData("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
-        [InlineData("<script>alert('not allowed')</script>", false)]
-        [InlineData("<p>`</p>", false)]
-        public void DescriptionMustContainValidHtml(string actual, bool expectedResult)
+    [Test]
+    [TestCase("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
+    [TestCase("<script>alert('not allowed')</script>", false)]
+    [TestCase("<p>`</p>", false)]
+    public void DescriptionMustContainValidHtml(string actual, bool expectedResult)
+    {
+        var vacancy = new Vacancy 
         {
-            var vacancy = new Vacancy 
-            {
-                Description = actual
-            };
+            Description = actual
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Description);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.Description);
 
-            if (expectedResult)
-            {
-                result.HasErrors.Should().BeFalse();
-            }
-            else
-            {
-                result.HasErrors.Should().BeTrue();
-                result.Errors.Should().HaveCount(1);
-                result.Errors[0].PropertyName.Should().Be(nameof(vacancy.Description));
-                result.Errors[0].ErrorCode.Should().Be("6");
-                result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Description);
-            }
-        }
-
-        [Theory]
-        [InlineData("some text bother")]
-        [InlineData("some text dang")]
-        [InlineData("some text drat")]
-        [InlineData("some text balderdash")]
-        public void Description_Should_Fail_IfContainsWordsFromTheProfanityList(string freeText)
+        if (expectedResult)
         {
-            var vacancy = new Vacancy()
-            {
-                Description = freeText
-            };
-
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Description);
-            result.HasErrors.Should().BeTrue();
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.Description));
-            result.Errors.Count.Should().Be(1);
-            result.Errors[0].ErrorCode.Should().Be("609");
-        }
-
-        [Theory]
-        [InlineData("some textbother")]
-        [InlineData("some textdang")]
-        [InlineData("some textdrat")]
-        [InlineData("some textbalderdash")]
-        public void Description_Should_Not_Fail_IfContainsWordsFromTheProfanityList(string freeText)
-        {
-            var vacancy = new Vacancy()
-            {
-                Description = freeText
-            };
-
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Description);
             result.HasErrors.Should().BeFalse();
         }
+        else
+        {
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.Description));
+            result.Errors[0].ErrorCode.Should().Be("6");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Description);
+        }
+    }
+
+    [Test]
+    [TestCase("some text bother")]
+    [TestCase("some text dang")]
+    [TestCase("some text drat")]
+    [TestCase("some text balderdash")]
+    public void Description_Should_Fail_IfContainsWordsFromTheProfanityList(string freeText)
+    {
+        var vacancy = new Vacancy()
+        {
+            Description = freeText
+        };
+
+        var result = Validator.Validate(vacancy, VacancyRuleSet.Description);
+        result.HasErrors.Should().BeTrue();
+        result.Errors[0].PropertyName.Should().Be(nameof(vacancy.Description));
+        result.Errors.Count.Should().Be(1);
+        result.Errors[0].ErrorCode.Should().Be("609");
+    }
+
+    [Test]
+    [TestCase("some textbother")]
+    [TestCase("some textdang")]
+    [TestCase("some textdrat")]
+    [TestCase("some textbalderdash")]
+    public void Description_Should_Not_Fail_IfContainsWordsFromTheProfanityList(string freeText)
+    {
+        var vacancy = new Vacancy()
+        {
+            Description = freeText
+        };
+
+        var result = Validator.Validate(vacancy, VacancyRuleSet.Description);
+        result.HasErrors.Should().BeFalse();
     }
 }

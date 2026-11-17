@@ -1,9 +1,8 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum ApplicationMethod
 {
-    public enum ApplicationMethod
-    {
-        ThroughFindAnApprenticeship,
-        ThroughExternalApplicationSite,
-        ThroughFindATraineeship
-    }
+    ThroughFindAnApprenticeship,
+    ThroughExternalApplicationSite,
+    ThroughFindATraineeship
 }

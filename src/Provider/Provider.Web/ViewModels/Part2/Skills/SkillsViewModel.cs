@@ -4,47 +4,46 @@ using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.ViewModels.Skills;
 
-namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.Skills
+namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.Skills;
+
+public class SkillsViewModel : ISkillsViewModel
 {
-    public class SkillsViewModel : ISkillsViewModel
+    public string Title { get; set; }
+    public string AddCustomSkillName { get; set; }
+    public List<string> Skills { get; set; }
+    public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+    public long Ukprn { get; set; }
+
+    public Guid? VacancyId { get; set; }
+
+    public Dictionary<string, string> RouteDictionary
     {
-        public string Title { get; set; }
-        public string AddCustomSkillName { get; set; }
-        public List<string> Skills { get; set; }
-        public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
-        public long Ukprn { get; set; }
-
-        public Guid? VacancyId { get; set; }
-
-        public Dictionary<string, string> RouteDictionary
+        get
         {
-            get
+            var routeDictionary = new Dictionary<string, string>
             {
-                var routeDictionary = new Dictionary<string, string>
-                {
-                    {"Ukprn", Ukprn.ToString()}
-                };  
-                if(VacancyId != null)
-                {
-                    routeDictionary.Add("VacancyId", VacancyId.ToString());
-                }
-                return routeDictionary;
+                {"Ukprn", Ukprn.ToString()}
+            };  
+            if(VacancyId != null)
+            {
+                routeDictionary.Add("VacancyId", VacancyId.ToString());
             }
+            return routeDictionary;
         }
+    }
 
-        public bool IsTaskListCompleted { get; set; }
+    public bool IsTaskListCompleted { get; set; }
         
-        public List<SkillViewModel> Column1Checkboxes { get; set; }
-        public List<SkillViewModel> Column2Checkboxes { get; set; }
+    public List<SkillViewModel> Column1Checkboxes { get; set; }
+    public List<SkillViewModel> Column2Checkboxes { get; set; }
 
-        public string PageBackLink
+    public string PageBackLink
+    {
+        get
         {
-            get
-            {
-                return IsTaskListCompleted
-                    ? RouteNames.ProviderCheckYourAnswersGet
-                    : RouteNames.ProviderTaskListGet;
-            }
+            return IsTaskListCompleted
+                ? RouteNames.ProviderCheckYourAnswersGet
+                : RouteNames.ProviderTaskListGet;
         }
     }
 }

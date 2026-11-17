@@ -1,20 +1,19 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public class Wage
 {
-    public class Wage
-    {
-        public int? Duration { get; set; }
+    public int? Duration { get; set; }
 
-        public DurationUnit? DurationUnit { get; set; }
+    public DurationUnit? DurationUnit { get; set; }
 
-        public string WorkingWeekDescription { get; set; }
+    public string WorkingWeekDescription { get; set; }
 
-        public decimal? WeeklyHours { get; set; }
+    public decimal? WeeklyHours { get; set; }
 
-        public WageType? WageType { get; set; }
+    public WageType? WageType { get; set; }
 
-        public decimal? FixedWageYearlyAmount { get; set; }
+    public decimal? FixedWageYearlyAmount { get; set; }
 
-        public string WageAdditionalInformation { get; set; }
-        public string CompanyBenefitsInformation { get; set; }
-    }
+    public string WageAdditionalInformation { get; set; }
+    public string CompanyBenefitsInformation { get; set; }
 }

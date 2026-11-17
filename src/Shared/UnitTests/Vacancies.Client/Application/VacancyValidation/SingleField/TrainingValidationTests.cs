@@ -1,100 +1,99 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField;
+
+public class TrainingValidationTests : VacancyValidationTestsBase
 {
-    public class TrainingValidationTests : VacancyValidationTestsBase
+    [Test]
+    public void ErrorWhenProgrammeIsNull()
     {
-        [Fact]
-        public void ErrorWhenProgrammeIsNull()
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
-            {
-                ProgrammeId = null
-            };
+            ProgrammeId = null
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProgramme);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProgramme);
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.ProgrammeId)}");
-            result.Errors[0].ErrorCode.Should().Be("25");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProgramme);
-        }
+        result.HasErrors.Should().BeTrue();
+        result.Errors.Should().HaveCount(1);
+        result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.ProgrammeId)}");
+        result.Errors[0].ErrorCode.Should().Be("25");
+        result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProgramme);
+    }
 
-        [Fact]
-        public void NoErrorsWhenClosingDateIsValid()
+    [Test]
+    public void NoErrorsWhenClosingDateIsValid()
+    {
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
+            ProgrammeId = "123",
+            TrainingProvider = new TrainingProvider
             {
-                ProgrammeId = "123",
-                TrainingProvider = new TrainingProvider
-                {
-                    Ukprn = 10000000
-                }
-            };
+                Ukprn = 10000000
+            }
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProgramme);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProgramme);
 
-            result.HasErrors.Should().BeFalse();
-            result.Errors.Should().HaveCount(0);
-        }
+        result.HasErrors.Should().BeFalse();
+        result.Errors.Should().HaveCount(0);
+    }
 
-        [Fact]
-        public void ErrorWhenDoesNotExist()
+    [Test]
+    public void ErrorWhenDoesNotExist()
+    {
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
+            ProgrammeId = "000",
+            TrainingProvider = new TrainingProvider
             {
-                ProgrammeId = "000",
-                TrainingProvider = new TrainingProvider
-                {
-                    Ukprn = 10000000
-                }
-            };
+                Ukprn = 10000000
+            }
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(2);
-            result.Errors[0].ErrorCode.Should().Be("27");
-        }
+        result.HasErrors.Should().BeTrue();
+        result.Errors.Should().HaveCount(2);
+        result.Errors[0].ErrorCode.Should().Be("27");
+    }
 
-        [Theory]
-        [InlineData("")]
-        [InlineData(null)]
-        public void IdMustHaveAValue(string idValue)
+    [Test]
+    [TestCase("")]
+    [TestCase(null)]
+    public void IdMustHaveAValue(string idValue)
+    {
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
-            {
-                ProgrammeId = idValue
-            };
+            ProgrammeId = idValue
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProgramme);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProgramme);
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.ProgrammeId)}");
-            result.Errors[0].ErrorCode.Should().Be("25");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProgramme);
-        }
+        result.HasErrors.Should().BeTrue();
+        result.Errors.Should().HaveCount(1);
+        result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.ProgrammeId)}");
+        result.Errors[0].ErrorCode.Should().Be("25");
+        result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProgramme);
+    }
 
-        [Fact]
-        public void ErrorWhenProgrammeIdIsWhitespace()
+    [Test]
+    public void ErrorWhenProgrammeIdIsWhitespace()
+    {
+        var vacancy = new Vacancy
         {
-            var vacancy = new Vacancy
+            ProgrammeId = "   ",
+            TrainingProvider = new TrainingProvider
             {
-                ProgrammeId = "   ",
-                TrainingProvider = new TrainingProvider
-                {
-                    Ukprn = 10000002
-                }
-            };
+                Ukprn = 10000002
+            }
+        };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProgramme);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProgramme);
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().Contain(e => e.PropertyName == nameof(vacancy.ProgrammeId) && e.ErrorCode == "25");
-        }
+        result.HasErrors.Should().BeTrue();
+        result.Errors.Should().Contain(e => e.PropertyName == nameof(vacancy.ProgrammeId) && e.ErrorCode == "25");
     }
 }

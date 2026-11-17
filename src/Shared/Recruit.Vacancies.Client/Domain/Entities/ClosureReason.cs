@@ -1,12 +1,11 @@
-namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum ClosureReason
 {
-    public enum ClosureReason
-    {
-        Auto,
-        Manual,
-        TransferredByQa,
-        BlockedByQa,
-        TransferredByEmployer,
-        WithdrawnByQa
-    }
+    Auto,
+    Manual,
+    TransferredByQa,
+    BlockedByQa,
+    TransferredByEmployer,
+    WithdrawnByQa
 }

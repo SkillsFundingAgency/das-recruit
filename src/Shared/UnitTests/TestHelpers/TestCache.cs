@@ -1,12 +1,11 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Cache;
 
-namespace Esfa.Recruit.UnitTests.TestHelpers
+namespace Esfa.Recruit.UnitTests.TestHelpers;
+
+public class TestCache : ICache
 {
-    public class TestCache : ICache
+    public Task<T> CacheAsideAsync<T>(string key, DateTime absoluteExpiration, Func<Task<T>> objectToCache)
     {
-        public Task<T> CacheAsideAsync<T>(string key, DateTime absoluteExpiration, Func<Task<T>> objectToCache)
-        {
-            return objectToCache();
-        }
+        return objectToCache();
     }
 }

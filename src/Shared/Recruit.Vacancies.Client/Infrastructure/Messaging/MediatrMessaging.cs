@@ -2,36 +2,28 @@
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using MediatR;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Messaging
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Messaging;
+
+internal sealed class MediatrMessaging(IMediator mediator) : IMessaging
 {
-    internal sealed class MediatrMessaging : IMessaging
+    public async Task<bool> SendStatusCommandAsync(ICommand command)
     {
-        private readonly IMediator _mediator;
+        var request = command as IRequest<bool>;
 
-        public MediatrMessaging(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        return await mediator.Send(request);
+    }
 
-        public async Task<bool> SendStatusCommandAsync(ICommand command)
-        {
-            var request = command as IRequest<bool>;
+    public async Task SendCommandAsync(ICommand command)
+    {
+        var request = command as IRequest<Unit>;
 
-            return await _mediator.Send(request);
-        }
+        await mediator.Send(request);
+    }
 
-        public async Task SendCommandAsync(ICommand command)
-        {
-            var request = command as IRequest<Unit>;
+    public async Task PublishEvent(IEvent @event)
+    {
+        var notification = @event as INotification;
 
-            await _mediator.Send(request);
-        }
-
-        public async Task PublishEvent(IEvent @event)
-        {
-            var notification = @event as INotification;
-
-            await _mediator.Publish(notification);
-        }
+        await mediator.Publish(notification);
     }
 }

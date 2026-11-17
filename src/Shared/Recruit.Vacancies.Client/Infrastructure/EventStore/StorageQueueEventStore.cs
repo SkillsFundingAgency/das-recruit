@@ -4,27 +4,20 @@ using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Newtonsoft.Json;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore;
+
+internal sealed class StorageQueueEventStore(IRecruitQueueService queue) : IEventStore
 {
-    internal sealed class StorageQueueEventStore : IEventStore
+    public Task Add(IEvent @event)
     {
-        private readonly IRecruitQueueService _queue;
-        public StorageQueueEventStore(IRecruitQueueService queue)
+        var json = JsonConvert.SerializeObject(@event, Formatting.Indented);
+
+        var item = new EventItem
         {
-            _queue = queue;
-        }
+            EventType = @event.GetType().Name,
+            Data = json
+        };
 
-        public Task Add(IEvent @event)
-        {
-            var json = JsonConvert.SerializeObject(@event, Formatting.Indented);
-
-            var item = new EventItem
-            {
-                EventType = @event.GetType().Name,
-                Data = json
-            };
-
-            return _queue.AddMessageAsync(item);
-        }
+        return queue.AddMessageAsync(item);
     }
 }

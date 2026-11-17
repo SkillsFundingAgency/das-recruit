@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Services
+namespace Esfa.Recruit.Vacancies.Client.Application.Services;
+
+public interface ISlaService
 {
-    public interface ISlaService
-    {
-        Task<DateTime> GetSlaDeadlineAsync(DateTime date);
-    }
+    Task<DateTime> GetSlaDeadlineAsync(DateTime date);
 }

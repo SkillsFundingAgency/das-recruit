@@ -1,10 +1,9 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum ApplicationReviewDisabilityStatus
 {
-    public enum ApplicationReviewDisabilityStatus
-    {
-        Unknown = 0,
-        No,
-        PreferNotToSay,
-        Yes
-    }
+    Unknown = 0,
+    No,
+    PreferNotToSay,
+    Yes
 }

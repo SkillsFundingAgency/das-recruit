@@ -1,17 +1,16 @@
-﻿namespace Esfa.Recruit.Shared.Web.ViewModels.Validations
+﻿namespace Esfa.Recruit.Shared.Web.ViewModels.Validations;
+
+using System.ComponentModel.DataAnnotations;
+
+public class TypeOfIntegerAttribute : ValidationAttribute
 {
-    using System.ComponentModel.DataAnnotations;
-
-    public class TypeOfIntegerAttribute : ValidationAttribute
+    public override bool IsValid(object value)
     {
-        public override bool IsValid(object value)
+        if (value == null)
         {
-            if (value == null)
-            {
-                return true;
-            }
-
-            return (int.TryParse((string)value, out var i));
+            return true;
         }
+
+        return (int.TryParse((string)value, out var i));
     }
 }

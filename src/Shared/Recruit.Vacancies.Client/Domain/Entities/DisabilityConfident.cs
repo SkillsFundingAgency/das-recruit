@@ -1,8 +1,7 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum DisabilityConfident
 {
-    public enum DisabilityConfident
-    {
-        No = 0,
-        Yes
-    }
+    No = 0,
+    Yes
 }

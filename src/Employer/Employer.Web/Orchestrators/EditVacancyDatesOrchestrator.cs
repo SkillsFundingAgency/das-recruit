@@ -14,126 +14,120 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Helpers;
 using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators
+namespace Esfa.Recruit.Employer.Web.Orchestrators;
+
+public class EditVacancyDatesOrchestrator(
+    IRecruitVacancyClient vacancyClient,
+    ILogger<EditVacancyDatesOrchestrator> logger,
+    ITimeProvider timeProvider,
+    IUtility utility)
+    : EntityValidatingOrchestrator<Vacancy, EditVacancyDatesEditModel>(logger)
 {
-    public class EditVacancyDatesOrchestrator : EntityValidatingOrchestrator<Vacancy, EditVacancyDatesEditModel>
+    private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate | VacancyRuleSet.MinimumWage;
+
+    public async Task<Vacancy> GetVacancyAsync(VacancyRouteModel vrm)
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate | VacancyRuleSet.MinimumWage;
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly ITimeProvider _timeProvider;
-        private readonly IUtility _utility;
+        var vacancy = await vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
-        public EditVacancyDatesOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<EditVacancyDatesOrchestrator> logger, ITimeProvider timeProvider, IUtility utility) : base(logger)
+        utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
+
+        if (vacancy.CanExtendStartAndClosingDates == false)
+            throw new InvalidStateException(string.Format(ErrMsg.VacancyDatesCannotBeEdited, vacancy.Title));
+
+        return vacancy;
+    }
+
+    public async Task<OrchestratorResponse<EditVacancyDatesViewModel>> GetEditVacancyDatesViewModelAsync(VacancyRouteModel vrm, DateTime? proposedClosingDate, DateTime? proposedStartDate)
+    {
+        var vacancyTask = GetVacancyAsync(vrm);
+        var programmesTask = vacancyClient.GetActiveApprenticeshipProgrammesAsync(includePlaceholderProgramme: true);
+
+        await Task.WhenAll(vacancyTask, programmesTask);
+
+        var vacancy = vacancyTask.Result;
+        var programmes = programmesTask.Result;
+
+        var vm = new EditVacancyDatesViewModel
         {
-            _vacancyClient = vacancyClient;
-            _timeProvider = timeProvider;
-            _utility = utility;
-        }
+            VacancyId = vacancy.Id,
+            EmployerAccountId = vacancy.EmployerAccountId,
+            ClosingDay = $"{vacancy.ClosingDate.Value.Day:00}",
+            ClosingMonth = $"{vacancy.ClosingDate.Value.Month:00}",
+            ClosingYear = $"{vacancy.ClosingDate.Value.Year}",
 
-        public async Task<Vacancy> GetVacancyAsync(VacancyRouteModel vrm)
-        {
-            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
+            StartDay = $"{vacancy.StartDate.Value.Day:00}",
+            StartMonth = $"{vacancy.StartDate.Value.Month:00}",
+            StartYear = $"{vacancy.StartDate.Value.Year}",
 
-            _utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
+            CurrentYear = timeProvider.Now.Year,
 
-            if (vacancy.CanExtendStartAndClosingDates == false)
-                throw new InvalidStateException(string.Format(ErrMsg.VacancyDatesCannotBeEdited, vacancy.Title));
-
-            return vacancy;
-        }
-
-        public async Task<OrchestratorResponse<EditVacancyDatesViewModel>> GetEditVacancyDatesViewModelAsync(VacancyRouteModel vrm, DateTime? proposedClosingDate, DateTime? proposedStartDate)
-        {
-            var vacancyTask = GetVacancyAsync(vrm);
-            var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync(includePlaceholderProgramme: true);
-
-            await Task.WhenAll(vacancyTask, programmesTask);
-
-            var vacancy = vacancyTask.Result;
-            var programmes = programmesTask.Result;
-
-            var vm = new EditVacancyDatesViewModel
-            {
-                VacancyId = vacancy.Id,
-                EmployerAccountId = vacancy.EmployerAccountId,
-                ClosingDay = $"{vacancy.ClosingDate.Value.Day:00}",
-                ClosingMonth = $"{vacancy.ClosingDate.Value.Month:00}",
-                ClosingYear = $"{vacancy.ClosingDate.Value.Year}",
-
-                StartDay = $"{vacancy.StartDate.Value.Day:00}",
-                StartMonth = $"{vacancy.StartDate.Value.Month:00}",
-                StartYear = $"{vacancy.StartDate.Value.Year}",
-
-                CurrentYear = _timeProvider.Now.Year,
-
-                ProgrammeName = programmes.FirstOrDefault(p => p.Id == vacancy.ProgrammeId)?.Title ?? "",
+            ProgrammeName = programmes.FirstOrDefault(p => p.Id == vacancy.ProgrammeId)?.Title ?? "",
                 
-                Title = vacancy.Title
-            };
+            Title = vacancy.Title
+        };
 
-            var resp = new OrchestratorResponse<EditVacancyDatesViewModel>(vm);
-            ApplyProposedDateChanges(proposedClosingDate, proposedStartDate, resp);
+        var resp = new OrchestratorResponse<EditVacancyDatesViewModel>(vm);
+        ApplyProposedDateChanges(proposedClosingDate, proposedStartDate, resp);
 
-            return resp;
-        }
+        return resp;
+    }
 
-        private void ApplyProposedDateChanges(DateTime? proposedClosingDate, DateTime? proposedStartDate, OrchestratorResponse<EditVacancyDatesViewModel> resp)
-        {
-            if (proposedClosingDate.HasValue == false || proposedStartDate.HasValue == false)
-                return;
+    private void ApplyProposedDateChanges(DateTime? proposedClosingDate, DateTime? proposedStartDate, OrchestratorResponse<EditVacancyDatesViewModel> resp)
+    {
+        if (proposedClosingDate.HasValue == false || proposedStartDate.HasValue == false)
+            return;
 
-            resp.Data.ClosingDay = proposedClosingDate.Value.Day.ToString("00");
-            resp.Data.ClosingMonth = proposedClosingDate.Value.Month.ToString("00");
-            resp.Data.ClosingYear = proposedClosingDate.Value.Year.ToString();
+        resp.Data.ClosingDay = proposedClosingDate.Value.Day.ToString("00");
+        resp.Data.ClosingMonth = proposedClosingDate.Value.Month.ToString("00");
+        resp.Data.ClosingYear = proposedClosingDate.Value.Year.ToString();
 
-            resp.Data.StartDay = proposedStartDate.Value.Day.ToString("00");
-            resp.Data.StartMonth = proposedStartDate.Value.Month.ToString("00");
-            resp.Data.StartYear = proposedStartDate.Value.Year.ToString();
-        }
+        resp.Data.StartDay = proposedStartDate.Value.Day.ToString("00");
+        resp.Data.StartMonth = proposedStartDate.Value.Month.ToString("00");
+        resp.Data.StartYear = proposedStartDate.Value.Year.ToString();
+    }
 
-        public async Task<EditVacancyDatesViewModel> GetEditVacancyDatesViewModelAsync(EditVacancyDatesEditModel m)
-        {
-            var resp = await GetEditVacancyDatesViewModelAsync(m, null, null);
+    public async Task<EditVacancyDatesViewModel> GetEditVacancyDatesViewModelAsync(EditVacancyDatesEditModel m)
+    {
+        var resp = await GetEditVacancyDatesViewModelAsync(m, null, null);
 
-            resp.Data.ClosingDay = m.ClosingDay;
-            resp.Data.ClosingMonth = m.ClosingMonth;
-            resp.Data.ClosingYear = m.ClosingYear;
+        resp.Data.ClosingDay = m.ClosingDay;
+        resp.Data.ClosingMonth = m.ClosingMonth;
+        resp.Data.ClosingYear = m.ClosingYear;
 
-            resp.Data.StartDay = m.StartDay;
-            resp.Data.StartMonth = m.StartMonth;
-            resp.Data.StartYear = m.StartYear;
-            resp.Data.CurrentYear = _timeProvider.Now.Year;
+        resp.Data.StartDay = m.StartDay;
+        resp.Data.StartMonth = m.StartMonth;
+        resp.Data.StartYear = m.StartYear;
+        resp.Data.CurrentYear = timeProvider.Now.Year;
 
-            return resp.Data;
-        }
+        return resp.Data;
+    }
 
-        public async Task<OrchestratorResponse> PostEditVacancyDatesEditModelAsync(EditVacancyDatesEditModel m, VacancyUser user)
-        {
-            var vacancy = await GetVacancyAsync(m);
+    public async Task<OrchestratorResponse> PostEditVacancyDatesEditModelAsync(EditVacancyDatesEditModel m, VacancyUser user)
+    {
+        var vacancy = await GetVacancyAsync(m);
 
-            var proposedClosingDate = m.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
-            var proposedVacancyStartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();
+        var proposedClosingDate = m.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
+        var proposedVacancyStartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();
             
-            vacancy.ClosingDate = proposedClosingDate;
-            vacancy.StartDate = proposedVacancyStartDate;
-            var updateKind = VacancyHelper.DetermineLiveUpdateKind(vacancy, proposedClosingDate, proposedVacancyStartDate);
+        vacancy.ClosingDate = proposedClosingDate;
+        vacancy.StartDate = proposedVacancyStartDate;
+        var updateKind = VacancyHelper.DetermineLiveUpdateKind(vacancy, proposedClosingDate, proposedVacancyStartDate);
 
-            return await ValidateAndExecute(
-                vacancy, 
-                v => _vacancyClient.Validate(v, ValidationRules),
-                v => _vacancyClient.UpdatePublishedVacancyAsync(vacancy, user, updateKind)
-            );
-        }
+        return await ValidateAndExecute(
+            vacancy, 
+            v => vacancyClient.Validate(v, ValidationRules),
+            v => vacancyClient.UpdatePublishedVacancyAsync(vacancy, user, updateKind)
+        );
+    }
 
-        protected override EntityToViewModelPropertyMappings<Vacancy, EditVacancyDatesEditModel> DefineMappings()
+    protected override EntityToViewModelPropertyMappings<Vacancy, EditVacancyDatesEditModel> DefineMappings()
+    {
+        var mappings = new EntityToViewModelPropertyMappings<Vacancy, EditVacancyDatesEditModel>
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, EditVacancyDatesEditModel>
-            {
-                { e => e.StartDate, vm => vm.StartDate },
-                { e => e.ClosingDate, vm => vm.ClosingDate }
-            };
+            { e => e.StartDate, vm => vm.StartDate },
+            { e => e.ClosingDate, vm => vm.ClosingDate }
+        };
 
-            return mappings;
-        }
+        return mappings;
     }
 }

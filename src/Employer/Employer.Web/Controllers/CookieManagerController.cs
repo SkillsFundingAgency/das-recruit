@@ -6,50 +6,41 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Esfa.Recruit.Employer.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers;
+
+[Route(RoutePaths.AccountRoutePath)]
+public class CookieManagerController(IWebHostEnvironment hostingEnvironment, ITimeProvider timeProvider)
+    : Controller
 {
-    [Route(RoutePaths.AccountRoutePath)]
-    public class CookieManagerController : Controller
+    [HttpPost("dismiss-outage-message", Name = RouteNames.DismissOutageMessage_Post)]
+    public IActionResult DismissOutageMessage([FromForm]string returnUrl) => 
+        DismissMessage(
+            returnUrl: returnUrl,
+            cookieName: CookieNames.SeenOutageMessage,
+            cookieOptions: EsfaCookieOptions.GetSingleDayLifetimeHttpCookieOption(hostingEnvironment, timeProvider));
+
+    [HttpPost("dismiss-cloning-method-changing-message", Name = RouteNames.DismissCloningMethodChangingMessage_Post)]
+    public IActionResult DismissCloningMethodChangingMessage([FromForm]string returnUrl) =>
+        DismissMessage(
+            returnUrl: returnUrl,
+            cookieName: CookieNames.HasSeenCloningMethodIsChangingMessage,
+            cookieOptions: EsfaCookieOptions.GetTenYearHttpCookieOption(hostingEnvironment));
+
+    private IActionResult DismissMessage(string returnUrl, string cookieName, CookieOptions cookieOptions)
     {
-        private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly ITimeProvider _timeProvider;
+        const string SeenCookieValue = "1";
 
-        public CookieManagerController(IWebHostEnvironment hostingEnvironment, ITimeProvider timeProvider)
-        {
-            _hostingEnvironment = hostingEnvironment;
-            _timeProvider = timeProvider;
-        }
+        if (!Request.Cookies.ContainsKey(cookieName))
+            Response.Cookies.Append(cookieName, SeenCookieValue, cookieOptions);
 
-        [HttpPost("dismiss-outage-message", Name = RouteNames.DismissOutageMessage_Post)]
-        public IActionResult DismissOutageMessage([FromForm]string returnUrl) => 
-            DismissMessage(
-                returnUrl: returnUrl,
-                cookieName: CookieNames.SeenOutageMessage,
-                cookieOptions: EsfaCookieOptions.GetSingleDayLifetimeHttpCookieOption(_hostingEnvironment, _timeProvider));
+        if (IsValidReturnUrl(returnUrl))
+            return Redirect(returnUrl);
 
-        [HttpPost("dismiss-cloning-method-changing-message", Name = RouteNames.DismissCloningMethodChangingMessage_Post)]
-        public IActionResult DismissCloningMethodChangingMessage([FromForm]string returnUrl) =>
-            DismissMessage(
-                returnUrl: returnUrl,
-                cookieName: CookieNames.HasSeenCloningMethodIsChangingMessage,
-                cookieOptions: EsfaCookieOptions.GetTenYearHttpCookieOption(_hostingEnvironment));
+        return RedirectToRoute(RouteNames.VacanciesGetAll);
+    }
 
-        private IActionResult DismissMessage(string returnUrl, string cookieName, CookieOptions cookieOptions)
-        {
-            const string SeenCookieValue = "1";
-
-            if (!Request.Cookies.ContainsKey(cookieName))
-                Response.Cookies.Append(cookieName, SeenCookieValue, cookieOptions);
-
-            if (IsValidReturnUrl(returnUrl))
-                return Redirect(returnUrl);
-
-            return RedirectToRoute(RouteNames.VacanciesGetAll);
-        }
-
-        private bool IsValidReturnUrl(string returnUrl)
-        {
-            return Regex.IsMatch(returnUrl, @"^/accounts/[A-Z0-9]{6}/.*");
-        }
+    private bool IsValidReturnUrl(string returnUrl)
+    {
+        return Regex.IsMatch(returnUrl, @"^/accounts/[A-Z0-9]{6}/.*");
     }
 }

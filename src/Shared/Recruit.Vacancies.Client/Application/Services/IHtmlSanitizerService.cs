@@ -1,8 +1,7 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Application.Services
+﻿namespace Esfa.Recruit.Vacancies.Client.Application.Services;
+
+public interface IHtmlSanitizerService
 {
-    public interface IHtmlSanitizerService
-    {
-        bool IsValid(string html);
-        string Sanitize(string html);
-    }
+    bool IsValid(string html);
+    string Sanitize(string html);
 }

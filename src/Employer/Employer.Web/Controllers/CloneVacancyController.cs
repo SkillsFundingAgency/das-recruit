@@ -10,76 +10,45 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
-namespace Esfa.Recruit.Employer.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers;
+
+[Route(RoutePaths.AccountVacancyRoutePath)]
+public class CloneVacancyController(CloneVacancyOrchestrator orchestrator) : Controller
 {
-    [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class CloneVacancyController(CloneVacancyOrchestrator orchestrator) : Controller
+    [HttpGet("clone", Name = RouteNames.CloneVacancy_Get)]
+    public async Task<IActionResult> Clone(VacancyRouteModel vrm)
     {
-        [HttpGet("clone", Name = RouteNames.CloneVacancy_Get)]
-        public async Task<IActionResult> Clone(VacancyRouteModel vrm)
-        {
-            var vacancy = await orchestrator.GetCloneableAuthorisedVacancyAsync(vrm);
+        var vacancy = await orchestrator.GetCloneableAuthorisedVacancyAsync(vrm);
 
-            return orchestrator.IsNewDatesRequired(vacancy) 
-                ? RedirectToRoute(RouteNames.CloneVacancyWithNewDates_Get, new {vrm.VacancyId, vrm.EmployerAccountId}) 
-                : RedirectToRoute(RouteNames.CloneVacancyDatesQuestion_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
-        }
+        return orchestrator.IsNewDatesRequired(vacancy) 
+            ? RedirectToRoute(RouteNames.CloneVacancyWithNewDates_Get, new {vrm.VacancyId, vrm.EmployerAccountId}) 
+            : RedirectToRoute(RouteNames.CloneVacancyDatesQuestion_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
+    }
 
-        [HttpGet("clone-dates-question", Name = RouteNames.CloneVacancyDatesQuestion_Get)]
-        public async Task<IActionResult> CloneVacancyDatesQuestion(VacancyRouteModel vrm)
+    [HttpGet("clone-dates-question", Name = RouteNames.CloneVacancyDatesQuestion_Get)]
+    public async Task<IActionResult> CloneVacancyDatesQuestion(VacancyRouteModel vrm)
+    {
+        var vm = await orchestrator.GetCloneVacancyDatesQuestionViewModelAsync(vrm);
+        return View(vm);
+    }
+
+    [HttpPost("clone-dates-question", Name = RouteNames.CloneVacancyDatesQuestion_Post)]
+    public async Task<IActionResult> CloneVacancyDatesQuestion(CloneVacancyDatesQuestionEditModel model)
+    {
+        if (!ModelState.IsValid)
         {
-            var vm = await orchestrator.GetCloneVacancyDatesQuestionViewModelAsync(vrm);
+            var vm = await orchestrator.GetCloneVacancyDatesQuestionViewModelAsync(model);
             return View(vm);
         }
 
-        [HttpPost("clone-dates-question", Name = RouteNames.CloneVacancyDatesQuestion_Post)]
-        public async Task<IActionResult> CloneVacancyDatesQuestion(CloneVacancyDatesQuestionEditModel model)
+        if (model.HasConfirmedClone == true)
         {
-            if (!ModelState.IsValid)
-            {
-                var vm = await orchestrator.GetCloneVacancyDatesQuestionViewModelAsync(model);
-                return View(vm);
-            }
+            var response = await orchestrator.PostCloneVacancyWithSameDates(model, User.ToVacancyUser());
 
-            if (model.HasConfirmedClone == true)
-            {
-                var response = await orchestrator.PostCloneVacancyWithSameDates(model, User.ToVacancyUser());
-
-                if (!response.Success)
-                {
-                    response.AddErrorsToModelState(ModelState);
-                    var vm = await orchestrator.GetCloneVacancyDatesQuestionViewModelAsync(model);
-                    return View(vm);
-                }
-
-                var newVacancyId = response.Data;
-                TempData.TryAdd(TempDataKeys.VacancyClonedInfoMessage, InfoMessages.AdvertCloned);
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { VacancyId = newVacancyId, model.EmployerAccountId });
-            }
-
-            return RedirectToRoute(RouteNames.CloneVacancyWithNewDates_Get, new {model.VacancyId, model.EmployerAccountId});
-        }
-
-        [HttpGet("clone-with-dates", Name = RouteNames.CloneVacancyWithNewDates_Get)]
-        public async Task<IActionResult> CloneVacancyWithNewDates(VacancyRouteModel vrm)
-        {
-            var vm = await orchestrator.GetCloneVacancyWithNewDatesViewModelAsync(vrm);
-            return View(vm);
-        }
-
-        [HttpPost("clone-with-dates", Name = RouteNames.CloneVacancyWithNewDates_Post)]
-        public async Task<IActionResult> CloneVacancyWithNewDates(CloneVacancyWithNewDatesEditModel model)
-        {
-            var response = await orchestrator.PostCloneVacancyWithNewDates(model, User.ToVacancyUser());
-
-            if(!response.Success)
+            if (!response.Success)
             {
                 response.AddErrorsToModelState(ModelState);
-            }
-
-            if (!ModelState.IsValid)
-            {
-                var vm = await orchestrator.GetDirtyCloneVacancyWithNewDatesViewModelAsync(model);
+                var vm = await orchestrator.GetCloneVacancyDatesQuestionViewModelAsync(model);
                 return View(vm);
             }
 
@@ -87,5 +56,35 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             TempData.TryAdd(TempDataKeys.VacancyClonedInfoMessage, InfoMessages.AdvertCloned);
             return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { VacancyId = newVacancyId, model.EmployerAccountId });
         }
+
+        return RedirectToRoute(RouteNames.CloneVacancyWithNewDates_Get, new {model.VacancyId, model.EmployerAccountId});
+    }
+
+    [HttpGet("clone-with-dates", Name = RouteNames.CloneVacancyWithNewDates_Get)]
+    public async Task<IActionResult> CloneVacancyWithNewDates(VacancyRouteModel vrm)
+    {
+        var vm = await orchestrator.GetCloneVacancyWithNewDatesViewModelAsync(vrm);
+        return View(vm);
+    }
+
+    [HttpPost("clone-with-dates", Name = RouteNames.CloneVacancyWithNewDates_Post)]
+    public async Task<IActionResult> CloneVacancyWithNewDates(CloneVacancyWithNewDatesEditModel model)
+    {
+        var response = await orchestrator.PostCloneVacancyWithNewDates(model, User.ToVacancyUser());
+
+        if(!response.Success)
+        {
+            response.AddErrorsToModelState(ModelState);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            var vm = await orchestrator.GetDirtyCloneVacancyWithNewDatesViewModelAsync(model);
+            return View(vm);
+        }
+
+        var newVacancyId = response.Data;
+        TempData.TryAdd(TempDataKeys.VacancyClonedInfoMessage, InfoMessages.AdvertCloned);
+        return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { VacancyId = newVacancyId, model.EmployerAccountId });
     }
 }

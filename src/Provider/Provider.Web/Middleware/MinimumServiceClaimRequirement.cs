@@ -1,15 +1,9 @@
 ﻿using Esfa.Recruit.Provider.Web.Configuration;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Esfa.Recruit.Provider.Web.Middleware
-{
-    public class MinimumServiceClaimRequirement : IAuthorizationRequirement
-    {
-        public ServiceClaim MinimumServiceClaim { get; set; }
+namespace Esfa.Recruit.Provider.Web.Middleware;
 
-        public MinimumServiceClaimRequirement(ServiceClaim minimumServiceClaim)
-        {
-            MinimumServiceClaim = minimumServiceClaim;
-        }
-    }
+public class MinimumServiceClaimRequirement(ServiceClaim minimumServiceClaim) : IAuthorizationRequirement
+{
+    public ServiceClaim MinimumServiceClaim { get; set; } = minimumServiceClaim;
 }

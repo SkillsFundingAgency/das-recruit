@@ -1,10 +1,9 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum WageType
 {
-    public enum WageType
-    {
-        FixedWage,
-        NationalMinimumWageForApprentices,
-        NationalMinimumWage,
-        CompetitiveSalary
-    }
+    FixedWage,
+    NationalMinimumWageForApprentices,
+    NationalMinimumWage,
+    CompetitiveSalary
 }

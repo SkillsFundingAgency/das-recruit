@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Providers
+namespace Esfa.Recruit.Vacancies.Client.Application.Providers;
+
+public interface IBannedPhrasesProvider
 {
-    public interface IBannedPhrasesProvider
-    {
-        Task<IEnumerable<string>> GetBannedPhrasesAsync();
-    }
+    Task<IEnumerable<string>> GetBannedPhrasesAsync();
 }

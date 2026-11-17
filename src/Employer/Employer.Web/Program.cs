@@ -1,19 +1,33 @@
-﻿using Esfa.Recruit.Vacancies.Client.Ioc;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
+﻿using Esfa.Recruit.Employer.Web.Configuration;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
-namespace Esfa.Recruit.Employer.Web
+namespace Esfa.Recruit.Employer.Web;
+
+public static class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
-        {
-            CreateWebHostBuilder(args).Build().Run();
-        }
+        var builder = WebApplication.CreateBuilder(args);
+        using var loggerFactory = LoggerFactory.Create(_ => { });
 
-        private static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .ConfigureLogging(b => b.ConfigureRecruitLogging());
+        var startup = new Startup(
+            builder.Configuration,
+            builder.Environment,
+            loggerFactory);
+
+        startup.ConfigureServices(builder.Services);
+
+        var app = builder.Build();
+
+        startup.Configure(
+            app,
+            app.Environment,
+            app.Services.GetRequiredService<IOptions<ExternalLinksConfiguration>>(),
+            app.Services.GetRequiredService<ILogger<Startup>>(),
+            app.Configuration);
+        app.Run();
     }
 }

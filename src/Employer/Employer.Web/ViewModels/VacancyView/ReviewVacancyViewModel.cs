@@ -1,7 +1,6 @@
-﻿namespace Esfa.Recruit.Employer.Web.ViewModels
-{
-    public class ReviewVacancyViewModel : DisplayVacancyApplicationViewModel
-    {
+﻿namespace Esfa.Recruit.Employer.Web.ViewModels;
 
-    }
+public class ReviewVacancyViewModel : DisplayVacancyApplicationViewModel
+{
+
 }

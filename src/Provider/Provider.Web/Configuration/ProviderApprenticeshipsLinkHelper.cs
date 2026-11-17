@@ -1,17 +1,12 @@
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Microsoft.Extensions.Options;
 
-namespace Esfa.Recruit.Provider.Web.Configuration
-{
-    public class ProviderApprenticeshipsLinkHelper
-    {
-        private readonly ExternalLinksConfiguration _externalLinks;
+namespace Esfa.Recruit.Provider.Web.Configuration;
 
-        public ProviderApprenticeshipsLinkHelper(IOptions<ExternalLinksConfiguration> externalLinks)
-        {
-            _externalLinks = externalLinks.Value;
-        }
-        public string AccountHome => $"{_externalLinks.ProviderApprenticeshipSiteUrl}{ProviderApprenticeshipsRoutes.ProviderApprenticeshipSiteAccountsHomeRoute}";
-        public string ProviderRecruitmentApi => $"{_externalLinks.ProviderRecruitmentApiUrl}{ProviderApprenticeshipsRoutes.ProviderRecruitmentApi}";
-    }
+public class ProviderApprenticeshipsLinkHelper(IOptions<ExternalLinksConfiguration> externalLinks)
+{
+    private readonly ExternalLinksConfiguration _externalLinks = externalLinks.Value;
+
+    public string AccountHome => $"{_externalLinks.ProviderApprenticeshipSiteUrl}{ProviderApprenticeshipsRoutes.ProviderApprenticeshipSiteAccountsHomeRoute}";
+    public string ProviderRecruitmentApi => $"{_externalLinks.ProviderRecruitmentApiUrl}{ProviderApprenticeshipsRoutes.ProviderRecruitmentApi}";
 }

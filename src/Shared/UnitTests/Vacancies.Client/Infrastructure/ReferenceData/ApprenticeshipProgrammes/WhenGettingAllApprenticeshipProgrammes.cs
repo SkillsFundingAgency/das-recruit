@@ -1,5 +1,5 @@
 using System.Linq;
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using Esfa.Recruit.UnitTests.TestHelpers;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;

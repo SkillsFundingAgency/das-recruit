@@ -1,7 +1,6 @@
-namespace Esfa.Recruit.Vacancies.Client.Domain.Events.Interfaces
+namespace Esfa.Recruit.Vacancies.Client.Domain.Events.Interfaces;
+
+public interface IEmployerEvent
 {
-    public interface IEmployerEvent
-    {
-        string EmployerAccountId { get; }
-    }
+    string EmployerAccountId { get; }
 }

@@ -132,7 +132,7 @@ public class TrainingProviderController(TrainingProviderOrchestrator orchestrato
 
     public void AddTrainingProviderErrorsToModelState(TrainingProviderSelectionType selectionType, string ukprn, OrchestratorResponse response, ModelStateDictionary modelState)
     {
-        string[] providerNotFoundErrorCodes = { ErrorCodes.TrainingProviderUkprnNotEmpty, ErrorCodes.TrainingProviderMustExist };
+        string[] providerNotFoundErrorCodes = [ErrorCodes.TrainingProviderUkprnNotEmpty, ErrorCodes.TrainingProviderMustExist];
 
         if (!response.Success && response.Errors?.Errors != null)
         {

@@ -2,47 +2,46 @@ using System;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 
-namespace Esfa.Recruit.Shared.Web.Mappers
+namespace Esfa.Recruit.Shared.Web.Mappers;
+
+public static class VacancyAnalyticsSummaryMapper
 {
-    public static class VacancyAnalyticsSummaryMapper
-    {
-        public static VacancyAnalyticsSummaryViewModel MapToVacancyAnalyticsSummaryViewModel(VacancyAnalyticsSummary vacancyAnalyticsSummary, DateTime liveDate) =>
-            new()
-            {
-                LiveDate = liveDate,
-                LastUpdatedDate = vacancyAnalyticsSummary.LastUpdated == DateTime.MinValue ? DateTime.UtcNow : vacancyAnalyticsSummary.LastUpdated,
-                NoOfTimesAppearedInSearch = vacancyAnalyticsSummary.NoOfApprenticeshipSearches,
-                NoOfTimesAppearedInSearchOverLastSevenDays = vacancyAnalyticsSummary.NoOfApprenticeshipSearchesSevenDaysAgo
-                                                             + vacancyAnalyticsSummary.NoOfApprenticeshipSearchesSixDaysAgo
-                                                             + vacancyAnalyticsSummary.NoOfApprenticeshipSearchesFiveDaysAgo
-                                                             + vacancyAnalyticsSummary.NoOfApprenticeshipSearchesFourDaysAgo
-                                                             + vacancyAnalyticsSummary.NoOfApprenticeshipSearchesThreeDaysAgo
-                                                             + vacancyAnalyticsSummary.NoOfApprenticeshipSearchesTwoDaysAgo
-                                                             + vacancyAnalyticsSummary.NoOfApprenticeshipSearchesOneDayAgo,
-                NoOfApplicationsStarted = vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreated,
-                NoOfApplicationsStartedOverLastSevenDays = vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedSevenDaysAgo
-                                                           + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedSixDaysAgo
-                                                           + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedFiveDaysAgo
-                                                           + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedFourDaysAgo
-                                                           + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedThreeDaysAgo
-                                                           + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedTwoDaysAgo
-                                                           + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedOneDayAgo,
-                NoOfApplicationsSaved = vacancyAnalyticsSummary.NoOfApprenticeshipSaved,
-                NoOfApplicationsSavedOverLastSevenDays = vacancyAnalyticsSummary.NoOfApprenticeshipSavedSevenDaysAgo
-                                                        + vacancyAnalyticsSummary.NoOfApprenticeshipSavedSixDaysAgo
-                                                        + vacancyAnalyticsSummary.NoOfApprenticeshipSavedFiveDaysAgo
-                                                        + vacancyAnalyticsSummary.NoOfApprenticeshipSavedFourDaysAgo
-                                                        + vacancyAnalyticsSummary.NoOfApprenticeshipSavedThreeDaysAgo
-                                                        + vacancyAnalyticsSummary.NoOfApprenticeshipSavedTwoDaysAgo
-                                                             + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsSubmittedOneDayAgo,
-                NoOfTimesViewed = vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViews,
-                NoOfTimesViewedOverLastSevenDays = vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsSevenDaysAgo
-                                                   + vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsSixDaysAgo
-                                                   + vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsFiveDaysAgo
-                                                   + vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsFourDaysAgo
-                                                   + vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsThreeDaysAgo
-                                                   + vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsTwoDaysAgo
-                                                   + vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsOneDayAgo,
-            };
-    }
+    public static VacancyAnalyticsSummaryViewModel MapToVacancyAnalyticsSummaryViewModel(VacancyAnalyticsSummary vacancyAnalyticsSummary, DateTime liveDate) =>
+        new()
+        {
+            LiveDate = liveDate,
+            LastUpdatedDate = vacancyAnalyticsSummary.LastUpdated == DateTime.MinValue ? DateTime.UtcNow : vacancyAnalyticsSummary.LastUpdated,
+            NoOfTimesAppearedInSearch = vacancyAnalyticsSummary.NoOfApprenticeshipSearches,
+            NoOfTimesAppearedInSearchOverLastSevenDays = vacancyAnalyticsSummary.NoOfApprenticeshipSearchesSevenDaysAgo
+                                                         + vacancyAnalyticsSummary.NoOfApprenticeshipSearchesSixDaysAgo
+                                                         + vacancyAnalyticsSummary.NoOfApprenticeshipSearchesFiveDaysAgo
+                                                         + vacancyAnalyticsSummary.NoOfApprenticeshipSearchesFourDaysAgo
+                                                         + vacancyAnalyticsSummary.NoOfApprenticeshipSearchesThreeDaysAgo
+                                                         + vacancyAnalyticsSummary.NoOfApprenticeshipSearchesTwoDaysAgo
+                                                         + vacancyAnalyticsSummary.NoOfApprenticeshipSearchesOneDayAgo,
+            NoOfApplicationsStarted = vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreated,
+            NoOfApplicationsStartedOverLastSevenDays = vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedSevenDaysAgo
+                                                       + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedSixDaysAgo
+                                                       + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedFiveDaysAgo
+                                                       + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedFourDaysAgo
+                                                       + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedThreeDaysAgo
+                                                       + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedTwoDaysAgo
+                                                       + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedOneDayAgo,
+            NoOfApplicationsSaved = vacancyAnalyticsSummary.NoOfApprenticeshipSaved,
+            NoOfApplicationsSavedOverLastSevenDays = vacancyAnalyticsSummary.NoOfApprenticeshipSavedSevenDaysAgo
+                                                     + vacancyAnalyticsSummary.NoOfApprenticeshipSavedSixDaysAgo
+                                                     + vacancyAnalyticsSummary.NoOfApprenticeshipSavedFiveDaysAgo
+                                                     + vacancyAnalyticsSummary.NoOfApprenticeshipSavedFourDaysAgo
+                                                     + vacancyAnalyticsSummary.NoOfApprenticeshipSavedThreeDaysAgo
+                                                     + vacancyAnalyticsSummary.NoOfApprenticeshipSavedTwoDaysAgo
+                                                     + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsSubmittedOneDayAgo,
+            NoOfTimesViewed = vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViews,
+            NoOfTimesViewedOverLastSevenDays = vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsSevenDaysAgo
+                                               + vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsSixDaysAgo
+                                               + vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsFiveDaysAgo
+                                               + vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsFourDaysAgo
+                                               + vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsThreeDaysAgo
+                                               + vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsTwoDaysAgo
+                                               + vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsOneDayAgo,
+        };
 }

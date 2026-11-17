@@ -3,21 +3,20 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Shared.Web.ModelBinders
+namespace Esfa.Recruit.Shared.Web.ModelBinders;
+
+public class TrimModelBinderProvider(ILoggerFactory loggerFactory) : IModelBinderProvider
 {
-    public class TrimModelBinderProvider(ILoggerFactory loggerFactory) : IModelBinderProvider
+    public IModelBinder GetBinder(ModelBinderProviderContext context)
     {
-        public IModelBinder GetBinder(ModelBinderProviderContext context)
+        if (context == null)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-            if (!context.Metadata.IsComplexType && context.Metadata.ModelType == typeof(string))
-            {
-                return new TrimModelBinder(new SimpleTypeModelBinder(context.Metadata.ModelType, loggerFactory));
-            }
-            return null;
+            throw new ArgumentNullException(nameof(context));
         }
+        if (!context.Metadata.IsComplexType && context.Metadata.ModelType == typeof(string))
+        {
+            return new TrimModelBinder(new SimpleTypeModelBinder(context.Metadata.ModelType, loggerFactory));
+        }
+        return null;
     }
 }

@@ -3,30 +3,29 @@ using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
-namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.ShortDescription
+namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.ShortDescription;
+
+public class ShortDescriptionViewModel : VacancyRouteModel
 {
-    public class ShortDescriptionViewModel : VacancyRouteModel
-    {
-        public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+    public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
 
-        public string ShortDescription { get; set; }
+    public string ShortDescription { get; set; }
         
-        public IList<string> OrderedFieldNames => new List<string>
-        {
-            nameof(ShortDescription)
-        };
+    public IList<string> OrderedFieldNames => new List<string>
+    {
+        nameof(ShortDescription)
+    };
 
-        public string Title { get; set; }
-        public bool IsTaskListCompleted { get; set; }
+    public string Title { get; set; }
+    public bool IsTaskListCompleted { get; set; }
 
-        public string PageBackLink
+    public string PageBackLink
+    {
+        get
         {
-            get
-            {
-                return IsTaskListCompleted
-                    ? RouteNames.ProviderCheckYourAnswersGet
-                    : RouteNames.Training_Get;
-            }
+            return IsTaskListCompleted
+                ? RouteNames.ProviderCheckYourAnswersGet
+                : RouteNames.Training_Get;
         }
     }
 }

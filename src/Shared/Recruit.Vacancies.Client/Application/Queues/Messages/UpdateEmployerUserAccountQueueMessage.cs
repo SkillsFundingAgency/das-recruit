@@ -1,7 +1,6 @@
-namespace Esfa.Recruit.Vacancies.Client.Application.Queues.Messages
+namespace Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
+
+public class UpdateEmployerUserAccountQueueMessage
 {
-    public class UpdateEmployerUserAccountQueueMessage
-    {
-        public string IdamsUserId { get; set; }
-    }
+    public string IdamsUserId { get; set; }
 }

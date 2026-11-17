@@ -2,11 +2,10 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Providers
+namespace Esfa.Recruit.Vacancies.Client.Application.Providers;
+
+public interface ITrainingProviderSummaryProvider
 {
-    public interface ITrainingProviderSummaryProvider
-    {
-        Task<IEnumerable<TrainingProviderSummary>> FindAllAsync();
-        Task<TrainingProviderSummary> GetAsync(long ukprn);
-    }
+    Task<IEnumerable<TrainingProviderSummary>> FindAllAsync();
+    Task<TrainingProviderSummary> GetAsync(long ukprn);
 }

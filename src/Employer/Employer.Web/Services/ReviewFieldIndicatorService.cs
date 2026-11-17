@@ -21,13 +21,10 @@ public class ReviewFieldIndicatorService: IReviewFieldIndicatorService
             return;
         }
         
-        foreach (string fieldIdentifier in ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators().VacancyPropertyMappingsLookup[fieldId])
+        foreach (var fieldIdentifier in ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators().VacancyPropertyMappingsLookup[fieldId])
         {
             var changedIndicator = vacancy.EmployerReviewFieldIndicators.FirstOrDefault(p => p.FieldIdentifier == fieldIdentifier);
-            if (changedIndicator != null)
-            {
-                changedIndicator.IsChangeRequested = true;
-            }
+            changedIndicator?.IsChangeRequested = true;
         }
     }
 

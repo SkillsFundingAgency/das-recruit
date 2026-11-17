@@ -1,10 +1,9 @@
-﻿namespace Esfa.Recruit.Provider.Web.ViewModels.Reports
+﻿namespace Esfa.Recruit.Provider.Web.ViewModels.Reports;
+
+public enum DateRangeType
 {
-    public enum DateRangeType
-    {
-        Last7Days,
-        Last14Days,
-        Last30Days,
-        Custom
-    }
+    Last7Days,
+    Last14Days,
+    Last30Days,
+    Custom
 }

@@ -1,7 +1,6 @@
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
+
+public class GetProvidersRequest : IGetApiRequest
 {
-    public class GetProvidersRequest : IGetApiRequest
-    {
-        public string GetUrl => "providers";
-    }
+    public string GetUrl => "providers";
 }

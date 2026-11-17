@@ -6,157 +6,148 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Esfa.Recruit.Provider.Web.Controllers.Part1
+namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
+
+[Route(RoutePaths.AccountVacancyRoutePath)]
+[Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+public class WageController(IWageOrchestrator orchestrator) : Controller
 {
-    [Route(RoutePaths.AccountVacancyRoutePath)]
-    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public class WageController : Controller
+    [HttpGet("wage", Name = RouteNames.Wage_Get)]
+    public async Task<IActionResult> Wage(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
     {
-        private readonly IWageOrchestrator _orchestrator;
+        var vm = await orchestrator.GetWageViewModelAsync(vrm);
+        vm.PageInfo.SetWizard(wizard);
+        return View(vm);
+    }
 
-        public WageController(IWageOrchestrator orchestrator)
+    [HttpPost("wage", Name = RouteNames.Wage_Post)]
+    public async Task<IActionResult> Wage(WageEditModel m, [FromQuery] bool wizard)
+    {
+        var vm = await orchestrator.GetWageViewModelAsync((VacancyRouteModel)m);
+
+        if (!ModelState.IsValid)
         {
-            _orchestrator = orchestrator;
+            return HandleDefaultView(vm, wizard, m.WageType);
         }
 
-        [HttpGet("wage", Name = RouteNames.Wage_Get)]
-        public async Task<IActionResult> Wage(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
+        switch (m.WageType)
         {
-            var vm = await _orchestrator.GetWageViewModelAsync(vrm);
-            vm.PageInfo.SetWizard(wizard);
-            return View(vm);
-        }
-
-        [HttpPost("wage", Name = RouteNames.Wage_Post)]
-        public async Task<IActionResult> Wage(WageEditModel m, [FromQuery] bool wizard)
-        {
-            var vm = await _orchestrator.GetWageViewModelAsync((VacancyRouteModel)m);
-
-            if (!ModelState.IsValid)
-            {
-                return HandleDefaultView(vm, wizard, m.WageType);
-            }
-
-            switch (m.WageType)
-            {
-                case WageType.FixedWage:
-                    return RedirectToRoute(RouteNames.CustomWage_Get, new { m.VacancyId, m.Ukprn, wizard });
-                case WageType.NationalMinimumWage or WageType.NationalMinimumWageForApprentices:
-
-                    if (vm.WageType != m.WageType)
-                    {
-                        var response = await _orchestrator.PostWageEditModelAsync(m, User.ToVacancyUser());
-
-                        if (!response.Success)
-                        {
-                            response.AddErrorsToModelState(ModelState);
-                        }
-
-                        if (!ModelState.IsValid)
-                        {
-                            return HandleDefaultView(vm, wizard, m.WageType);
-                        }
-                    }
-
-                    return RedirectToRoute(RouteNames.AddExtraInformation_Get, new { m.VacancyId, m.Ukprn, wizard });
-
-                case WageType.CompetitiveSalary:
-                    return RedirectToRoute(RouteNames.SetCompetitivePayRate_Get, new { m.VacancyId, m.Ukprn, wizard });
-                default:
-                    return HandleDefaultView(vm, wizard, m.WageType);
-            }
-        }
-
-        [HttpGet("competitive-wage", Name = RouteNames.SetCompetitivePayRate_Get)]
-        public async Task<IActionResult> CompetitiveSalary(VacancyRouteModel vrm, [FromQuery] bool wizard)
-        {
-            var vm = await _orchestrator.GetCompetitiveWageViewModelAsync(vrm);
-            vm.PageInfo.SetWizard(wizard);
-            return View(vm);
-        }
-
-        [HttpPost("competitive-wage", Name = RouteNames.SetCompetitivePayRate_Post)]
-        public async Task<IActionResult> CompetitiveSalary(CompetitiveWageEditModel m, [FromQuery] bool wizard)
-        {
-            var vm = await _orchestrator.GetCompetitiveWageViewModelAsync(m);
-
-            if (!ModelState.IsValid)
-            {
-                return View(vm);
-            }
-
-            if (m.IsSalaryAboveNationalMinimumWage.HasValue && m.IsSalaryAboveNationalMinimumWage.Value)
-            {
-                m.WageType = WageType.CompetitiveSalary;
+            case WageType.FixedWage:
+                return RedirectToRoute(RouteNames.CustomWage_Get, new { m.VacancyId, m.Ukprn, wizard });
+            case WageType.NationalMinimumWage or WageType.NationalMinimumWageForApprentices:
 
                 if (vm.WageType != m.WageType)
                 {
-                    var response = await _orchestrator.PostCompetitiveWageEditModelAsync(m, User.ToVacancyUser());
+                    var response = await orchestrator.PostWageEditModelAsync(m, User.ToVacancyUser());
 
                     if (!response.Success)
                     {
                         response.AddErrorsToModelState(ModelState);
                     }
+
+                    if (!ModelState.IsValid)
+                    {
+                        return HandleDefaultView(vm, wizard, m.WageType);
+                    }
                 }
 
                 return RedirectToRoute(RouteNames.AddExtraInformation_Get, new { m.VacancyId, m.Ukprn, wizard });
-            }
 
-            return RedirectToRoute(RouteNames.Wage_Get, new { m.VacancyId, m.Ukprn, wizard });
+            case WageType.CompetitiveSalary:
+                return RedirectToRoute(RouteNames.SetCompetitivePayRate_Get, new { m.VacancyId, m.Ukprn, wizard });
+            default:
+                return HandleDefaultView(vm, wizard, m.WageType);
         }
+    }
 
-        [HttpGet("extra-information-wage", Name = RouteNames.AddExtraInformation_Get)]
-        public async Task<IActionResult> AdditionalInformation(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
+    [HttpGet("competitive-wage", Name = RouteNames.SetCompetitivePayRate_Get)]
+    public async Task<IActionResult> CompetitiveSalary(VacancyRouteModel vrm, [FromQuery] bool wizard)
+    {
+        var vm = await orchestrator.GetCompetitiveWageViewModelAsync(vrm);
+        vm.PageInfo.SetWizard(wizard);
+        return View(vm);
+    }
+
+    [HttpPost("competitive-wage", Name = RouteNames.SetCompetitivePayRate_Post)]
+    public async Task<IActionResult> CompetitiveSalary(CompetitiveWageEditModel m, [FromQuery] bool wizard)
+    {
+        var vm = await orchestrator.GetCompetitiveWageViewModelAsync(m);
+
+        if (!ModelState.IsValid)
         {
-            var vm = await _orchestrator.GetExtraInformationViewModelAsync(vrm);
-            vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
 
-        [HttpPost("extra-information-wage", Name = RouteNames.AddExtraInformation_Post)]
-        public async Task<IActionResult> AdditionalInformation(WageExtraInformationViewModel vrm, [FromQuery] bool wizard)
+        if (m.IsSalaryAboveNationalMinimumWage.HasValue && m.IsSalaryAboveNationalMinimumWage.Value)
         {
-            if (!ModelState.IsValid)
+            m.WageType = WageType.CompetitiveSalary;
+
+            if (vm.WageType != m.WageType)
             {
-                return await HandleAdditionalInformationDefaultView(vrm, wizard);
+                var response = await orchestrator.PostCompetitiveWageEditModelAsync(m, User.ToVacancyUser());
+
+                if (!response.Success)
+                {
+                    response.AddErrorsToModelState(ModelState);
+                }
             }
 
-            var response = await _orchestrator.PostExtraInformationEditModelAsync(vrm, User.ToVacancyUser());
-
-            if (!response.Success)
-            {
-                response.AddErrorsToModelState(ModelState);
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return await HandleAdditionalInformationDefaultView(vrm, wizard);
-            }
-
-            return wizard
-                ? RedirectToRoute(RouteNames.NumberOfPositions_Get, new { Wizard = true, vrm.VacancyId, vrm.Ukprn })
-                : RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { vrm.VacancyId, vrm.Ukprn });
+            return RedirectToRoute(RouteNames.AddExtraInformation_Get, new { m.VacancyId, m.Ukprn, wizard });
         }
 
-        async Task<IActionResult> HandleAdditionalInformationDefaultView(WageExtraInformationViewModel vrm, bool wizard)
+        return RedirectToRoute(RouteNames.Wage_Get, new { m.VacancyId, m.Ukprn, wizard });
+    }
+
+    [HttpGet("extra-information-wage", Name = RouteNames.AddExtraInformation_Get)]
+    public async Task<IActionResult> AdditionalInformation(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
+    {
+        var vm = await orchestrator.GetExtraInformationViewModelAsync(vrm);
+        vm.PageInfo.SetWizard(wizard);
+        return View(vm);
+    }
+
+    [HttpPost("extra-information-wage", Name = RouteNames.AddExtraInformation_Post)]
+    public async Task<IActionResult> AdditionalInformation(WageExtraInformationViewModel vrm, [FromQuery] bool wizard)
+    {
+        if (!ModelState.IsValid)
         {
-            var vm = await _orchestrator.GetExtraInformationViewModelAsync(vrm);
-            vm.WageAdditionalInformation = vrm.WageAdditionalInformation;
-            vm.CompanyBenefitsInformation = vrm.CompanyBenefitsInformation;
-            vm.PageInfo.SetWizard(wizard);
-            return View(vm);
+            return await HandleAdditionalInformationDefaultView(vrm, wizard);
         }
 
-        IActionResult HandleDefaultView(WageViewModel vm, bool wizard, WageType? wageType)
+        var response = await orchestrator.PostExtraInformationEditModelAsync(vrm, User.ToVacancyUser());
+
+        if (!response.Success)
         {
-            vm.WageType = wageType;
-            vm.PageInfo.SetWizard(wizard);
-            return View(vm);
+            response.AddErrorsToModelState(ModelState);
         }
+
+        if (!ModelState.IsValid)
+        {
+            return await HandleAdditionalInformationDefaultView(vrm, wizard);
+        }
+
+        return wizard
+            ? RedirectToRoute(RouteNames.NumberOfPositions_Get, new { Wizard = true, vrm.VacancyId, vrm.Ukprn })
+            : RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { vrm.VacancyId, vrm.Ukprn });
+    }
+
+    async Task<IActionResult> HandleAdditionalInformationDefaultView(WageExtraInformationViewModel vrm, bool wizard)
+    {
+        var vm = await orchestrator.GetExtraInformationViewModelAsync(vrm);
+        vm.WageAdditionalInformation = vrm.WageAdditionalInformation;
+        vm.CompanyBenefitsInformation = vrm.CompanyBenefitsInformation;
+        vm.PageInfo.SetWizard(wizard);
+        return View(vm);
+    }
+
+    IActionResult HandleDefaultView(WageViewModel vm, bool wizard, WageType? wageType)
+    {
+        vm.WageType = wageType;
+        vm.PageInfo.SetWizard(wizard);
+        return View(vm);
     }
 }

@@ -1,5 +1,4 @@
-﻿using Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Filters;
+﻿using Esfa.Recruit.Employer.Web.Filters;
 using Esfa.Recruit.Employer.Web.Interfaces;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models.AddLocation;

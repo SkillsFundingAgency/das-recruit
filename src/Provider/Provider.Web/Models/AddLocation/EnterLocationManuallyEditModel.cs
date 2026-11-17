@@ -10,14 +10,12 @@ public class EnterLocationManuallyEditModel: AddLocationJourneyModel
     public string City { get; init; }
     public string Postcode { get; init; }
 
-    public Address ToDomain()
-    {
-        return new Address
+    public Address ToDomain() =>
+        new()
         {
             AddressLine1 = AddressLine1?.Humanize(LetterCasing.Title),
             AddressLine2 = AddressLine2?.Humanize(LetterCasing.Title),
             AddressLine3 = City?.Humanize(LetterCasing.Title),
             Postcode = Postcode?.ToUpper()
         };
-    }
 }

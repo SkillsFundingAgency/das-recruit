@@ -3,62 +3,61 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Esfa.Recruit.Shared.Web.Services
+namespace Esfa.Recruit.Shared.Web.Services;
+
+public class GoogleMapsGeocodeImageService(string privateKey) : IGeocodeImageService
 {
-    public class GoogleMapsGeocodeImageService(string privateKey) : IGeocodeImageService
+    private const string MapTypeMarkers = "markers";
+    private const string MapTypeCenter = "center";
+
+    private string PrivateKey { get; set; } = privateKey;
+
+    public string GetMapImageUrl(string postcode, int imageWidth, int imageHeight, bool showMarker)
     {
-        private const string MapTypeMarkers = "markers";
-        private const string MapTypeCenter = "center";
-
-        private string PrivateKey { get; set; } = privateKey;
-
-        public string GetMapImageUrl(string postcode, int imageWidth, int imageHeight, bool showMarker)
+        if (string.IsNullOrWhiteSpace(postcode))
         {
-            if (string.IsNullOrWhiteSpace(postcode))
-            {
-                return null;
-            }
+            return null;
+        }
 
-            var mapType = showMarker ? MapTypeMarkers : MapTypeCenter;
+        var mapType = showMarker ? MapTypeMarkers : MapTypeCenter;
             
-            var staticMapsUrl = $"https://maps.googleapis.com/maps/api/staticmap?{mapType}={WebUtility.UrlEncode(postcode)},UK&size={imageWidth}x{imageHeight}&zoom=12";
-            var url = SignUrl(staticMapsUrl);
-            return url;
-        }
+        var staticMapsUrl = $"https://maps.googleapis.com/maps/api/staticmap?{mapType}={WebUtility.UrlEncode(postcode)},UK&size={imageWidth}x{imageHeight}&zoom=12";
+        var url = SignUrl(staticMapsUrl);
+        return url;
+    }
 
-        public string GetMapImageUrl(string latitude, string longitude, int imageWidth, int imageHeight, bool showMarker)
+    public string GetMapImageUrl(string latitude, string longitude, int imageWidth, int imageHeight, bool showMarker)
+    {
+        if (string.IsNullOrWhiteSpace(latitude) || string.IsNullOrWhiteSpace(longitude))
         {
-            if (string.IsNullOrWhiteSpace(latitude) || string.IsNullOrWhiteSpace(longitude))
-            {
-                return null;
-            }
-
-            var mapType = showMarker ? MapTypeMarkers : MapTypeCenter;
-
-            var staticMapsUrl = $"https://maps.googleapis.com/maps/api/staticmap?{mapType}={latitude},{longitude}&size={imageWidth}x{imageHeight}&zoom=12";
-            var url = SignUrl(staticMapsUrl);
-            return url;
+            return null;
         }
 
-        private string SignUrl(string url)
-        {
-            var privateKeyBytes = Convert.FromBase64String(PrivateKey);
+        var mapType = showMarker ? MapTypeMarkers : MapTypeCenter;
 
-            url += "&client=gme-skillsfundingagency";
-            var uri = new Uri(url);
+        var staticMapsUrl = $"https://maps.googleapis.com/maps/api/staticmap?{mapType}={latitude},{longitude}&size={imageWidth}x{imageHeight}&zoom=12";
+        var url = SignUrl(staticMapsUrl);
+        return url;
+    }
 
-            var encoding = new ASCIIEncoding();
-            var encodedPathAndQueryBytes = encoding.GetBytes(uri.LocalPath + uri.Query);
+    private string SignUrl(string url)
+    {
+        var privateKeyBytes = Convert.FromBase64String(PrivateKey);
 
-            // compute the hash
-            var algorithm = new HMACSHA1(privateKeyBytes);
-            var hash = algorithm.ComputeHash(encodedPathAndQueryBytes);
+        url += "&client=gme-skillsfundingagency";
+        var uri = new Uri(url);
 
-            // convert the bytes to string and make url-safe by replacing '+' and '/' characters
-            var signature = Convert.ToBase64String(hash).Replace("+", "-").Replace("/", "_");
+        var encoding = new ASCIIEncoding();
+        var encodedPathAndQueryBytes = encoding.GetBytes(uri.LocalPath + uri.Query);
 
-            // Add the signature to the existing URI.
-            return uri.Scheme + "://" + uri.Host + uri.LocalPath + uri.Query + "&signature=" + signature;
-        }
+        // compute the hash
+        var algorithm = new HMACSHA1(privateKeyBytes);
+        var hash = algorithm.ComputeHash(encodedPathAndQueryBytes);
+
+        // convert the bytes to string and make url-safe by replacing '+' and '/' characters
+        var signature = Convert.ToBase64String(hash).Replace("+", "-").Replace("/", "_");
+
+        // Add the signature to the existing URI.
+        return uri.Scheme + "://" + uri.Host + uri.LocalPath + uri.Query + "&signature=" + signature;
     }
 }

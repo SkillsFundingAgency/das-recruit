@@ -5,32 +5,31 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Reports;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Esfa.Recruit.Provider.Web.Controllers.Reports
+namespace Esfa.Recruit.Provider.Web.Controllers.Reports;
+
+[Route(RoutePaths.ProviderApplicationsReportRoutePath)]
+public class ProviderApplicationsReportController(IProviderApplicationsReportOrchestrator orchestrator) : Controller
 {
-    [Route(RoutePaths.ProviderApplicationsReportRoutePath)]
-    public class ProviderApplicationsReportController(IProviderApplicationsReportOrchestrator orchestrator) : Controller
+    [HttpGet("create", Name = RouteNames.ProviderApplicationsReportCreate_Get)]
+    public IActionResult Create([FromRoute]long ukprn)
     {
-        [HttpGet("create", Name = RouteNames.ProviderApplicationsReportCreate_Get)]
-        public IActionResult Create([FromRoute]long ukprn)
+        var vm = orchestrator.GetCreateViewModel();
+        vm.Ukprn = ukprn;
+        return View(vm);
+    }
+
+    [HttpPost("create", Name = RouteNames.ProviderApplicationsReportCreate_Post)]
+    public async Task<IActionResult> Create(ProviderApplicationsReportCreateEditModel m)
+    {
+        if (!ModelState.IsValid)
         {
-            var vm = orchestrator.GetCreateViewModel();
-            vm.Ukprn = ukprn;
+            var vm = orchestrator.GetCreateViewModel(m);
             return View(vm);
         }
 
-        [HttpPost("create", Name = RouteNames.ProviderApplicationsReportCreate_Post)]
-        public async Task<IActionResult> Create(ProviderApplicationsReportCreateEditModel m)
-        {
-            if (!ModelState.IsValid)
-            {
-                var vm = orchestrator.GetCreateViewModel(m);
-                return View(vm);
-            }
+        var reportId = await orchestrator.PostCreateViewModelAsync(m, User.ToVacancyUser());
+        TempData["NewReportId"] = reportId.ToString();
 
-            var reportId = await orchestrator.PostCreateViewModelAsync(m, User.ToVacancyUser());
-            TempData["NewReportId"] = reportId.ToString();
-
-            return RedirectToRoute(RouteNames.ReportDashboard_Get, new {Ukprn = m.Ukprn});
-        }
+        return RedirectToRoute(RouteNames.ReportDashboard_Get, new {Ukprn = m.Ukprn});
     }
 }

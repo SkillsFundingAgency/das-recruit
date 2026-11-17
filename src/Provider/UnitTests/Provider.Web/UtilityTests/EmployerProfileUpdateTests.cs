@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Shared.Web.Models;
@@ -9,79 +9,78 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
+namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests;
+
+public class EmployerProfileUpdateTests
 {
-    public class EmployerProfileUpdateTests
+    [Test, MoqAutoData]
+    public async Task Then_Does_Not_Update_If_No_Values_Supplied(
+        EmployerProfile employerProfile,
+        [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+        Utility utility)
     {
-        [Test, MoqAutoData]
-        public async Task Then_Does_Not_Update_If_No_Values_Supplied(
-            EmployerProfile employerProfile,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
-            Utility utility)
-        {
-            await utility.UpdateEmployerProfile(null, employerProfile, null);
+        await utility.UpdateEmployerProfile(null, employerProfile, null);
             
-            recruitVacancyClient.Verify(x=>x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>()), Times.Never);
-        }
+        recruitVacancyClient.Verify(x=>x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>()), Times.Never);
+    }
         
-        [Test, MoqAutoData]
-        public async Task Then_Updates_Profile_If_Has_Address(
-            Address address,
-            EmployerProfile employerProfile,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
-            Utility utility)
-        {
-            await utility.UpdateEmployerProfile(null, employerProfile, address);
+    [Test, MoqAutoData]
+    public async Task Then_Updates_Profile_If_Has_Address(
+        Address address,
+        EmployerProfile employerProfile,
+        [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+        Utility utility)
+    {
+        await utility.UpdateEmployerProfile(null, employerProfile, address);
             
-            recruitVacancyClient.Verify(x=>x.UpdateEmployerProfileAsync(It.Is<EmployerProfile>(c=>c.OtherLocations.Contains(address))));
-        }
+        recruitVacancyClient.Verify(x=>x.UpdateEmployerProfileAsync(It.Is<EmployerProfile>(c=>c.OtherLocations.Contains(address))));
+    }
         
-        [Test, MoqAutoData]
-        public async Task Then_Updates_Profile_If_Has_New_Trading_Name(
-            string tradingName,
-            Address address,
-            EmployerProfile employerProfile,
-            VacancyEmployerInfoModel model,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
-            Utility utility)
-        {
+    [Test, MoqAutoData]
+    public async Task Then_Updates_Profile_If_Has_New_Trading_Name(
+        string tradingName,
+        Address address,
+        EmployerProfile employerProfile,
+        VacancyEmployerInfoModel model,
+        [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+        Utility utility)
+    {
             
-            model.NewTradingName = tradingName;
-            model.EmployerIdentityOption = EmployerIdentityOption.NewTradingName;
+        model.NewTradingName = tradingName;
+        model.EmployerIdentityOption = EmployerIdentityOption.NewTradingName;
             
-            await utility.UpdateEmployerProfile(model, employerProfile, address);
+        await utility.UpdateEmployerProfile(model, employerProfile, address);
             
-            recruitVacancyClient.Verify(x=>x.UpdateEmployerProfileAsync(It.Is<EmployerProfile>(c=>c.TradingName.Equals(tradingName))));
-        }
+        recruitVacancyClient.Verify(x=>x.UpdateEmployerProfileAsync(It.Is<EmployerProfile>(c=>c.TradingName.Equals(tradingName))));
+    }
 
-        [Test, MoqAutoData]
-        public async Task Then_Does_Not_Update_Trading_Name_If_Not_New(
-            Address address,
-            EmployerProfile employerProfile,
-            VacancyEmployerInfoModel model,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
-            Utility utility)
-        {
-            model.EmployerIdentityOption = EmployerIdentityOption.ExistingTradingName;
+    [Test, MoqAutoData]
+    public async Task Then_Does_Not_Update_Trading_Name_If_Not_New(
+        Address address,
+        EmployerProfile employerProfile,
+        VacancyEmployerInfoModel model,
+        [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+        Utility utility)
+    {
+        model.EmployerIdentityOption = EmployerIdentityOption.ExistingTradingName;
             
-            await utility.UpdateEmployerProfile(null, employerProfile, null);
+        await utility.UpdateEmployerProfile(null, employerProfile, null);
             
-            recruitVacancyClient.Verify(x=>x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>()), Times.Never);
-        }
+        recruitVacancyClient.Verify(x=>x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>()), Times.Never);
+    }
 
-        [Test, MoqAutoData]
-        public async Task Then_If_No_AccountLegalEntityPublicHashedId_With_Profile_Then_Updated(
-            Address address,
-            EmployerProfile employerProfile,
-            VacancyEmployerInfoModel model,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
-            Utility utility)
-        {
-            employerProfile.AccountLegalEntityPublicHashedId = "";
+    [Test, MoqAutoData]
+    public async Task Then_If_No_AccountLegalEntityPublicHashedId_With_Profile_Then_Updated(
+        Address address,
+        EmployerProfile employerProfile,
+        VacancyEmployerInfoModel model,
+        [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+        Utility utility)
+    {
+        employerProfile.AccountLegalEntityPublicHashedId = "";
             
-            await utility.UpdateEmployerProfile(model, employerProfile, address);
+        await utility.UpdateEmployerProfile(model, employerProfile, address);
             
-            recruitVacancyClient.Verify(x=>x.UpdateEmployerProfileAsync(It.Is<EmployerProfile>(c=>c.AccountLegalEntityPublicHashedId.Equals(model.AccountLegalEntityPublicHashedId))));
-        }
+        recruitVacancyClient.Verify(x=>x.UpdateEmployerProfileAsync(It.Is<EmployerProfile>(c=>c.AccountLegalEntityPublicHashedId.Equals(model.AccountLegalEntityPublicHashedId))));
     }
 }

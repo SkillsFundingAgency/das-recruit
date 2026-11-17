@@ -9,131 +9,130 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 
-namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
+namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard;
+
+public class GetDashboardViewModelAsyncTests
 {
-    public class GetDashboardViewModelAsyncTests
+    private const string EmployerAccountId = "XXXXXX";
+    private const string UserId = "user id";
+
+    private readonly VacancyUser _user = new VacancyUser { UserId = UserId };
+    private Mock<IRecruitVacancyClient> _clientMock;
+    private Mock<IEmployerVacancyClient> _vacancyClientMock;
+
+    [Test]
+    public async Task WhenHasVacancies_ShouldReturnViewModelAsync()
     {
-        private const string EmployerAccountId = "XXXXXX";
-        private const string UserId = "user id";
-
-        private readonly VacancyUser _user = new VacancyUser { UserId = UserId };
-        private Mock<IRecruitVacancyClient> _clientMock;
-        private Mock<IEmployerVacancyClient> _vacancyClientMock;
-
-        [Test]
-        public async Task WhenHasVacancies_ShouldReturnViewModelAsync()
+        var dashboardOrchestrator = GetSut(new EmployerDashboardSummary
         {
-            var dashboardOrchestrator = GetSut(new EmployerDashboardSummary
-            {
-                Live = 6,
-                NumberClosingSoonWithNoApplications = 2,
-                NumberClosingSoon = 4,
-                NumberOfNewApplications = 3,
-                NumberOfAllSharedApplications = 2
-            });
+            Live = 6,
+            NumberClosingSoonWithNoApplications = 2,
+            NumberClosingSoon = 4,
+            NumberOfNewApplications = 3,
+            NumberOfAllSharedApplications = 2
+        });
 
-            var actualDashboard = await dashboardOrchestrator.GetDashboardViewModelAsync(EmployerAccountId, _user);
+        var actualDashboard = await dashboardOrchestrator.GetDashboardViewModelAsync(EmployerAccountId, _user);
 
-            actualDashboard.EmployerAccountId.Should().Be(EmployerAccountId);
-            actualDashboard.HasAnyVacancies.Should().BeTrue();
-            actualDashboard.NoOfVacanciesClosingSoonWithNoApplications.Should().Be(2);
-            actualDashboard.NoOfVacanciesClosingSoon.Should().Be(4);
-            actualDashboard.NoOfNewApplications.Should().Be(3);
-            actualDashboard.NoOfSharedApplications.Should().Be(2);
-            actualDashboard.Alerts.Should().NotBeNull();
-            actualDashboard.HasEmployerReviewPermission.Should().BeTrue();
-        }
+        actualDashboard.EmployerAccountId.Should().Be(EmployerAccountId);
+        actualDashboard.HasAnyVacancies.Should().BeTrue();
+        actualDashboard.NoOfVacanciesClosingSoonWithNoApplications.Should().Be(2);
+        actualDashboard.NoOfVacanciesClosingSoon.Should().Be(4);
+        actualDashboard.NoOfNewApplications.Should().Be(3);
+        actualDashboard.NoOfSharedApplications.Should().Be(2);
+        actualDashboard.Alerts.Should().NotBeNull();
+        actualDashboard.HasEmployerReviewPermission.Should().BeTrue();
+    }
 
-        [Test]
-        public async Task WhenSharedApplicationsHaveProgressed_NoOfSharedApplications_ShouldIncludeAllSharedNotJustNew()
+    [Test]
+    public async Task WhenSharedApplicationsHaveProgressed_NoOfSharedApplications_ShouldIncludeAllSharedNotJustNew()
+    {
+        var dashboardOrchestrator = GetSut(new EmployerDashboardSummary
         {
-            var dashboardOrchestrator = GetSut(new EmployerDashboardSummary
-            {
-                Live = 2,
-                NumberOfSharedApplications = 1,
-                NumberOfAllSharedApplications = 3
-            });
+            Live = 2,
+            NumberOfSharedApplications = 1,
+            NumberOfAllSharedApplications = 3
+        });
 
-            var actualDashboard = await dashboardOrchestrator.GetDashboardViewModelAsync(EmployerAccountId, _user);
+        var actualDashboard = await dashboardOrchestrator.GetDashboardViewModelAsync(EmployerAccountId, _user);
 
-            actualDashboard.NoOfSharedApplications.Should().Be(3);
-            actualDashboard.HasSharedApplications.Should().BeTrue();
-        }
+        actualDashboard.NoOfSharedApplications.Should().Be(3);
+        actualDashboard.HasSharedApplications.Should().BeTrue();
+    }
 
-        [Test]
-        public async Task WhenHasNoVacancies_ShouldReturnViewModelAsync()
-        {
-            var dashboardOrchestrator = GetSut(new EmployerDashboardSummary());
+    [Test]
+    public async Task WhenHasNoVacancies_ShouldReturnViewModelAsync()
+    {
+        var dashboardOrchestrator = GetSut(new EmployerDashboardSummary());
 
-            var actualDashboard = await dashboardOrchestrator.GetDashboardViewModelAsync(EmployerAccountId, _user);
+        var actualDashboard = await dashboardOrchestrator.GetDashboardViewModelAsync(EmployerAccountId, _user);
 
-            actualDashboard.EmployerAccountId.Should().Be(EmployerAccountId);
-            actualDashboard.HasAnyVacancies.Should().BeFalse();
-            actualDashboard.NoOfVacanciesClosingSoonWithNoApplications.Should().Be(0);
-            actualDashboard.NoOfVacanciesClosingSoon.Should().Be(0);
-            actualDashboard.Alerts.Should().NotBeNull();
-        }
+        actualDashboard.EmployerAccountId.Should().Be(EmployerAccountId);
+        actualDashboard.HasAnyVacancies.Should().BeFalse();
+        actualDashboard.NoOfVacanciesClosingSoonWithNoApplications.Should().Be(0);
+        actualDashboard.NoOfVacanciesClosingSoon.Should().Be(0);
+        actualDashboard.Alerts.Should().NotBeNull();
+    }
 
-        [Test]
-        public async Task WhenUserNotExists_ThenCreated()
-        {
-            var dashboardOrchestrator = GetSut(new EmployerDashboardSummary());
+    [Test]
+    public async Task WhenUserNotExists_ThenCreated()
+    {
+        var dashboardOrchestrator = GetSut(new EmployerDashboardSummary());
             
-            await dashboardOrchestrator.GetDashboardViewModelAsync(EmployerAccountId, new VacancyUser{UserId = "unknown", Email = "unknown"});
+        await dashboardOrchestrator.GetDashboardViewModelAsync(EmployerAccountId, new VacancyUser{UserId = "unknown", Email = "unknown"});
             
-            _clientMock.Verify(x=>x.UserSignedInAsync(It.Is<VacancyUser>(c=>
-                c.Name.Equals("First Last")
-                && c.Email.Equals("unknown")
-                && c.UserId.Equals("unknown")
-                ), UserType.Employer), Times.Once);
-        }
+        _clientMock.Verify(x=>x.UserSignedInAsync(It.Is<VacancyUser>(c=>
+            c.Name.Equals("First Last")
+            && c.Email.Equals("unknown")
+            && c.UserId.Equals("unknown")
+        ), UserType.Employer), Times.Once);
+    }
         
-        [Test]
-        public async Task WhenNoVacancies_ThenSetupEmployerEventCreated()
+    [Test]
+    public async Task WhenNoVacancies_ThenSetupEmployerEventCreated()
+    {
+        var dashboardOrchestrator = GetSut(new EmployerDashboardSummary());
+            
+        await dashboardOrchestrator.GetDashboardViewModelAsync(EmployerAccountId, new VacancyUser{UserId = "unknown", Email = "unknown"});
+            
+        _vacancyClientMock.Verify(x=>x.SetupEmployerAsync(EmployerAccountId), Times.Once);
+    }
+
+    private DashboardOrchestrator GetSut(EmployerDashboardSummary dashboardSummary)
+    {
+        _vacancyClientMock = new Mock<IEmployerVacancyClient>();
+        _vacancyClientMock.Setup(c => c.GetDashboardSummary(EmployerAccountId, UserId))
+            .ReturnsAsync(dashboardSummary);
+        _vacancyClientMock.Setup(c => c.GetDashboardSummary(EmployerAccountId, "unknown"))
+            .ReturnsAsync(dashboardSummary);
+
+        var permissionServiceMock = new Mock<IProviderRelationshipsService>();
+        permissionServiceMock.Setup(p => p.CheckEmployerHasPermissions(EmployerAccountId, OperationType.RecruitmentRequiresReview))
+            .ReturnsAsync(true);
+
+        var userDetails = new User();
+
+        _clientMock = new Mock<IRecruitVacancyClient>();
+        _clientMock.Setup(c => c.GetUsersDetailsAsync(UserId))
+            .ReturnsAsync(userDetails);
+            
+        _clientMock.SetupSequence(c => c.GetUsersDetailsAsync("unknown"))
+            .ReturnsAsync((User) null)
+            .ReturnsAsync(userDetails);
+
+        _clientMock.Setup(x => x.GetEmployerIdentifiersAsync("unknown", "unknown")).ReturnsAsync(new GetUserAccountsResponse
         {
-            var dashboardOrchestrator = GetSut(new EmployerDashboardSummary());
-            
-            await dashboardOrchestrator.GetDashboardViewModelAsync(EmployerAccountId, new VacancyUser{UserId = "unknown", Email = "unknown"});
-            
-            _vacancyClientMock.Verify(x=>x.SetupEmployerAsync(EmployerAccountId), Times.Once);
-        }
+            FirstName = "First",
+            LastName = "Last"
+        });
 
-        private DashboardOrchestrator GetSut(EmployerDashboardSummary dashboardSummary)
-        {
-            _vacancyClientMock = new Mock<IEmployerVacancyClient>();
-            _vacancyClientMock.Setup(c => c.GetDashboardSummary(EmployerAccountId, UserId))
-                .ReturnsAsync(dashboardSummary);
-            _vacancyClientMock.Setup(c => c.GetDashboardSummary(EmployerAccountId, "unknown"))
-                .ReturnsAsync(dashboardSummary);
+        var alertsViewModel = new AlertsViewModel(null, null, null, null);
+        var alertsFactoryMock = new Mock<IEmployerAlertsViewModelFactory>();
+        alertsFactoryMock.Setup(a => a.Create(EmployerAccountId, userDetails))
+            .ReturnsAsync(alertsViewModel);
 
-            var permissionServiceMock = new Mock<IProviderRelationshipsService>();
-            permissionServiceMock.Setup(p => p.CheckEmployerHasPermissions(EmployerAccountId, OperationType.RecruitmentRequiresReview))
-                .ReturnsAsync(true);
+        var dashboardOrchestrator = new DashboardOrchestrator(_vacancyClientMock.Object, _clientMock.Object, permissionServiceMock.Object);
 
-            var userDetails = new User();
-
-            _clientMock = new Mock<IRecruitVacancyClient>();
-            _clientMock.Setup(c => c.GetUsersDetailsAsync(UserId))
-                .ReturnsAsync(userDetails);
-            
-            _clientMock.SetupSequence(c => c.GetUsersDetailsAsync("unknown"))
-                .ReturnsAsync((User) null)
-                .ReturnsAsync(userDetails);
-
-            _clientMock.Setup(x => x.GetEmployerIdentifiersAsync("unknown", "unknown")).ReturnsAsync(new GetUserAccountsResponse
-            {
-                FirstName = "First",
-                LastName = "Last"
-            });
-
-            var alertsViewModel = new AlertsViewModel(null, null, null, null);
-            var alertsFactoryMock = new Mock<IEmployerAlertsViewModelFactory>();
-            alertsFactoryMock.Setup(a => a.Create(EmployerAccountId, userDetails))
-                .ReturnsAsync(alertsViewModel);
-
-            var dashboardOrchestrator = new DashboardOrchestrator(_vacancyClientMock.Object, _clientMock.Object, permissionServiceMock.Object);
-
-            return dashboardOrchestrator;
-        }
+        return dashboardOrchestrator;
     }
 }

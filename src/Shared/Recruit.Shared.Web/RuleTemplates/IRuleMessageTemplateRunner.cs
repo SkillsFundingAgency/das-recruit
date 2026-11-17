@@ -1,9 +1,8 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Rules;
 
-namespace Esfa.Recruit.Shared.Web.RuleTemplates
+namespace Esfa.Recruit.Shared.Web.RuleTemplates;
+
+public interface IRuleMessageTemplateRunner
 {
-    public interface IRuleMessageTemplateRunner
-    {
-        string ToText(RuleId ruleId, string data, string fieldName);
-    }
+    string ToText(RuleId ruleId, string data, string fieldName);
 }

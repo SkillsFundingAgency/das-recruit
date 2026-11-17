@@ -1,11 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum UserType
 {
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum UserType
-    {
-        Employer,
-        Provider
-    }
+    Employer,
+    Provider
 }

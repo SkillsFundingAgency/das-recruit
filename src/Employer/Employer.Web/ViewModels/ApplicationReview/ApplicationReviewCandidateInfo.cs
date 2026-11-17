@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+﻿using Esfa.Recruit.Employer.Web.RouteModel;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 

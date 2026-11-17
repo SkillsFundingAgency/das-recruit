@@ -1,8 +1,7 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Models
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Models;
+
+public enum OperationType
 {
-    public enum OperationType
-    {
-        Recruitment,
-        RecruitmentRequiresReview
-    }
+    Recruitment,
+    RecruitmentRequiresReview
 }

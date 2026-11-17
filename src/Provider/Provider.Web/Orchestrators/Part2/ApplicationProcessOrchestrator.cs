@@ -15,28 +15,20 @@ using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2;
 
-public class ApplicationProcessOrchestrator : VacancyValidatingOrchestrator<ApplicationProcessEditModel>
+public class ApplicationProcessOrchestrator(
+    IRecruitVacancyClient vacancyClient,
+    IOptions<ExternalLinksConfiguration> externalLinks,
+    ILogger<ApplicationProcessOrchestrator> logger,
+    IReviewSummaryService reviewSummaryService,
+    IUtility utility)
+    : VacancyValidatingOrchestrator<ApplicationProcessEditModel>(logger)
 {
     private const VacancyRuleSet ValidationRules = VacancyRuleSet.ApplicationMethod;
-    private readonly IRecruitVacancyClient _vacancyClient;
-    private readonly ExternalLinksConfiguration _externalLinks;
-    private readonly IReviewSummaryService _reviewSummaryService;
-    private readonly IUtility _utility;
-
-    public ApplicationProcessOrchestrator(IRecruitVacancyClient vacancyClient,
-        IOptions<ExternalLinksConfiguration> externalLinks, ILogger<ApplicationProcessOrchestrator> logger, 
-        IReviewSummaryService reviewSummaryService,
-        IUtility utility) : base(logger)
-    {
-        _vacancyClient = vacancyClient;
-        _externalLinks = externalLinks.Value;
-        _reviewSummaryService = reviewSummaryService;
-        _utility = utility;
-    }
+    private readonly ExternalLinksConfiguration _externalLinks = externalLinks.Value;
 
     public async Task<ApplicationProcessViewModel> GetApplicationProcessViewModelAsync(TaskListViewModel model)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.ApplicationProcess_Get);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.ApplicationProcess_Get);
 
         var vm = new ApplicationProcessViewModel
         {
@@ -51,12 +43,12 @@ public class ApplicationProcessOrchestrator : VacancyValidatingOrchestrator<Appl
 
         if (vacancy.Status == VacancyStatus.Referred)
         {
-            vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                 ReviewFieldMappingLookups.GetApplicationProcessFieldIndicators());
         }
 
         vm.IsTaskList = model.IsTaskList;
-        vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy) && !model.IsTaskList;
+        vm.IsTaskListCompleted = utility.IsTaskListCompleted(vacancy) && !model.IsTaskList;
         return vm;
     }
 
@@ -71,7 +63,7 @@ public class ApplicationProcessOrchestrator : VacancyValidatingOrchestrator<Appl
 
     public async Task<OrchestratorResponse> PostApplicationProcessEditModelAsync(ApplicationProcessEditModel m, VacancyUser user)
     {
-        var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.ApplicationProcess_Post);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.ApplicationProcess_Post);
 
         SetVacancyWithProviderReviewFieldIndicators(
             vacancy.ApplicationMethod,
@@ -118,8 +110,8 @@ public class ApplicationProcessOrchestrator : VacancyValidatingOrchestrator<Appl
 
         return await ValidateAndExecute(
             vacancy,
-            v => _vacancyClient.Validate(v, ValidationRules),
-            v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+            v => vacancyClient.Validate(v, ValidationRules),
+            v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
         );
     }
 

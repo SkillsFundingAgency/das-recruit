@@ -4,34 +4,33 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 
-namespace Esfa.Recruit.Employer.Web.Configuration
-{
-    public static class EsfaCookieOptions
-    {
-        public static CookieOptions GetDefaultHttpCookieOption(IWebHostEnvironment env) =>
-            new CookieOptions
-            {
-                Secure = !env.IsDevelopment(),
-                SameSite = !env.IsDevelopment() ? SameSiteMode.Strict : SameSiteMode.Lax,
-                HttpOnly = true
-            };
+namespace Esfa.Recruit.Employer.Web.Configuration;
 
-        public static CookieOptions GetSessionLifetimeHttpCookieOption(IWebHostEnvironment env) =>
-            GetDefaultHttpCookieOption(env)
+public static class EsfaCookieOptions
+{
+    public static CookieOptions GetDefaultHttpCookieOption(IWebHostEnvironment env) =>
+        new CookieOptions
+        {
+            Secure = !env.IsDevelopment(),
+            SameSite = !env.IsDevelopment() ? SameSiteMode.Strict : SameSiteMode.Lax,
+            HttpOnly = true
+        };
+
+    public static CookieOptions GetSessionLifetimeHttpCookieOption(IWebHostEnvironment env) =>
+        GetDefaultHttpCookieOption(env)
             .WithExpiryTime(DateTimeOffset.UtcNow.AddMinutes(30));
 
-        public static CookieOptions GetSingleDayLifetimeHttpCookieOption(IWebHostEnvironment env, ITimeProvider timeProvider) =>
-            GetDefaultHttpCookieOption(env)
+    public static CookieOptions GetSingleDayLifetimeHttpCookieOption(IWebHostEnvironment env, ITimeProvider timeProvider) =>
+        GetDefaultHttpCookieOption(env)
             .WithExpiryTime(timeProvider.NextDay);
 
-        public static CookieOptions GetTenYearHttpCookieOption(IWebHostEnvironment env) =>
-            GetDefaultHttpCookieOption(env)
+    public static CookieOptions GetTenYearHttpCookieOption(IWebHostEnvironment env) =>
+        GetDefaultHttpCookieOption(env)
             .WithExpiryTime(DateTimeOffset.UtcNow.AddYears(10));
 
-        public static CookieOptions WithExpiryTime(this CookieOptions cookieOptions, DateTimeOffset expires)
-        {
-            cookieOptions.Expires = expires;
-            return cookieOptions;
-        }
+    public static CookieOptions WithExpiryTime(this CookieOptions cookieOptions, DateTimeOffset expires)
+    {
+        cookieOptions.Expires = expires;
+        return cookieOptions;
     }
 }

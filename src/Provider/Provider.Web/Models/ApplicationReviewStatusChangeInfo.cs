@@ -1,8 +1,7 @@
-﻿namespace Esfa.Recruit.Provider.Web.Models
+﻿namespace Esfa.Recruit.Provider.Web.Models;
+
+public class ApplicationReviewStatusChangeInfo
 {
-    public class ApplicationReviewStatusChangeInfo
-    {
-        public string CandidateName { get; set; }
-        public bool ShouldMakeOthersUnsuccessful { get; set; }
-    }
+    public string CandidateName { get; set; }
+    public bool ShouldMakeOthersUnsuccessful { get; set; }
 }

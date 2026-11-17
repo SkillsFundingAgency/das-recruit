@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using FluentAssertions;
 using NUnit.Framework;

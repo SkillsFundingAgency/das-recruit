@@ -6,43 +6,33 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators
+namespace Esfa.Recruit.Employer.Web.Orchestrators;
+
+public class SubmittedOrchestrator(IRecruitVacancyClient vacancyClient, IUtility utility)
 {
-    public class SubmittedOrchestrator
+    public async Task<VacancySubmittedConfirmationViewModel> GetVacancySubmittedConfirmationViewModelAsync(VacancyRouteModel vrm, VacancyUser vacancyUser)
     {
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IUtility _utility;
+        var vacancy = await utility.GetAuthorisedVacancyAsync(vrm);
 
-        public SubmittedOrchestrator(IRecruitVacancyClient vacancyClient, IUtility utility)
+        if (vacancy.Status != VacancyStatus.Submitted)
+            throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotSubmittedSuccessfully, vacancy.Title));
+
+        var isResubmit = false;
+        if (vacancy.VacancyReference.HasValue)
         {
-            _vacancyClient = vacancyClient;
-            _utility = utility;
+            var review = await vacancyClient.GetCurrentReferredVacancyReviewAsync(vacancy.VacancyReference.Value);
+            isResubmit = review != null;
         }
 
-        public async Task<VacancySubmittedConfirmationViewModel> GetVacancySubmittedConfirmationViewModelAsync(VacancyRouteModel vrm, VacancyUser vacancyUser)
+        var vm = new VacancySubmittedConfirmationViewModel
         {
-            var vacancy = await _utility.GetAuthorisedVacancyAsync(vrm);
+            VacancyId = vacancy.Id,
+            EmployerAccountId = vacancy.EmployerAccountId,
+            Title = vacancy.Title,
+            VacancyReference = vacancy.VacancyReference?.ToString(),
+            IsResubmit = isResubmit,
+        };
 
-            if (vacancy.Status != VacancyStatus.Submitted)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotSubmittedSuccessfully, vacancy.Title));
-
-            var isResubmit = false;
-            if (vacancy.VacancyReference.HasValue)
-            {
-                var review = await _vacancyClient.GetCurrentReferredVacancyReviewAsync(vacancy.VacancyReference.Value);
-                isResubmit = review != null;
-            }
-
-            var vm = new VacancySubmittedConfirmationViewModel
-            {
-                VacancyId = vacancy.Id,
-                EmployerAccountId = vacancy.EmployerAccountId,
-                Title = vacancy.Title,
-                VacancyReference = vacancy.VacancyReference?.ToString(),
-                IsResubmit = isResubmit,
-            };
-
-            return vm;
-        }
+        return vm;
     }
 }

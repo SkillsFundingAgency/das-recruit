@@ -1,8 +1,7 @@
-namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
+public enum BlockedStatus 
 {
-    public enum BlockedStatus 
-    {
-        Blocked,
-        Unblocked
-    }
+    Blocked,
+    Unblocked
 }

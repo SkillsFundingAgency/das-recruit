@@ -2,10 +2,9 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Middleware;
 
-namespace Esfa.Recruit.Employer.Web.Interfaces
+namespace Esfa.Recruit.Employer.Web.Interfaces;
+
+public interface IEmployerAccountAuthorizationHandler
 {
-    public interface IEmployerAccountAuthorizationHandler
-    {
-        Task<bool> IsEmployerAuthorized(AuthorizationHandlerContext context, EmployerUserRole minimumAllowedRole);
-    }
+    Task<bool> IsEmployerAuthorized(AuthorizationHandlerContext context, EmployerUserRole minimumAllowedRole);
 }

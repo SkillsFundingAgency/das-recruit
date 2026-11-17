@@ -11,67 +11,66 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 
-namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
+namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1;
+
+public class CustomWageControllerTests
 {
-    public class CustomWageControllerTests
+    private Mock<ICustomWageOrchestrator> _orchestrator;
+    private CustomWageController _controller;
+    private Fixture _fixture;
+    private long _ukprn;
+
+    [SetUp]
+    public void Setup()
     {
-        private Mock<ICustomWageOrchestrator> _orchestrator;
-        private CustomWageController _controller;
-        private Fixture _fixture;
-        private long _ukprn;
+        _orchestrator = new Mock<ICustomWageOrchestrator>();
+        _fixture = new Fixture();
+        _ukprn = 10000234;
 
-        [SetUp]
-        public void Setup()
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
         {
-            _orchestrator = new Mock<ICustomWageOrchestrator>();
-            _fixture = new Fixture();
-            _ukprn = 10000234;
+            new Claim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier,_ukprn.ToString())
+        }));
 
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
-            {
-                new Claim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier,_ukprn.ToString())
-            }));
-
-            _controller = new CustomWageController(_orchestrator.Object);
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext { User = user }
-            };
-        }
-
-        [Test, MoqAutoData]
-        public async Task GET_CustomWage_ReturnsViewModel()
+        _controller = new CustomWageController(_orchestrator.Object);
+        _controller.ControllerContext = new ControllerContext
         {
-            var rm = _fixture.Create<VacancyRouteModel>();
-            var vm = _fixture.Create<CustomWageViewModel>();
-            _orchestrator.Setup(orchestrator => orchestrator.GetCustomWageViewModelAsync(It.Is<VacancyRouteModel>(x => x == rm)))
-                .ReturnsAsync(vm);
+            HttpContext = new DefaultHttpContext { User = user }
+        };
+    }
 
-            var result = await _controller.CustomWage(rm) as ViewResult;
+    [Test, MoqAutoData]
+    public async Task GET_CustomWage_ReturnsViewModel()
+    {
+        var rm = _fixture.Create<VacancyRouteModel>();
+        var vm = _fixture.Create<CustomWageViewModel>();
+        _orchestrator.Setup(orchestrator => orchestrator.GetCustomWageViewModelAsync(It.Is<VacancyRouteModel>(x => x == rm)))
+            .ReturnsAsync(vm);
 
-            result.Should().NotBeNull();
-            result!.Model.Should().Be(vm);
-        }
+        var result = await _controller.CustomWage(rm) as ViewResult;
 
-        [Test]
-        public async Task POST_CustomWage_RedirectsToAddExtraInformation()
-        {
-            var rm = _fixture.Create<VacancyRouteModel>();
-            var vm = _fixture.Create<CustomWageViewModel>();
-            var editModel = _fixture.Create<CustomWageEditModel>();
+        result.Should().NotBeNull();
+        result!.Model.Should().Be(vm);
+    }
 
-            _orchestrator.Setup(orchestrator => orchestrator.GetCustomWageViewModelAsync(It.Is<VacancyRouteModel>(x => x == rm)))
-                .ReturnsAsync(vm);
+    [Test]
+    public async Task POST_CustomWage_RedirectsToAddExtraInformation()
+    {
+        var rm = _fixture.Create<VacancyRouteModel>();
+        var vm = _fixture.Create<CustomWageViewModel>();
+        var editModel = _fixture.Create<CustomWageEditModel>();
 
-            _orchestrator.Setup(x => x.PostCustomWageEditModelAsync(It.Is<CustomWageEditModel>(x => x == editModel), It.IsAny<VacancyUser>()))
-                .ReturnsAsync(new OrchestratorResponse(true));
+        _orchestrator.Setup(orchestrator => orchestrator.GetCustomWageViewModelAsync(It.Is<VacancyRouteModel>(x => x == rm)))
+            .ReturnsAsync(vm);
 
-            var redirectResult = await _controller.CustomWage(editModel, false) as RedirectToRouteResult;
+        _orchestrator.Setup(x => x.PostCustomWageEditModelAsync(It.Is<CustomWageEditModel>(x => x == editModel), It.IsAny<VacancyUser>()))
+            .ReturnsAsync(new OrchestratorResponse(true));
 
-            Assert.That(redirectResult, Is.Not.Null);
-            Assert.That(RouteNames.AddExtraInformation_Get, Is.EqualTo(redirectResult.RouteName));
-            Assert.That(editModel.VacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
-            Assert.That(editModel.Ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
-        }
+        var redirectResult = await _controller.CustomWage(editModel, false) as RedirectToRouteResult;
+
+        Assert.That(redirectResult, Is.Not.Null);
+        Assert.That(RouteNames.AddExtraInformation_Get, Is.EqualTo(redirectResult.RouteName));
+        Assert.That(editModel.VacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+        Assert.That(editModel.Ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
     }
 }
