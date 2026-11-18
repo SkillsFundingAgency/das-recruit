@@ -70,7 +70,7 @@ public static class IoC
         services.AddTransient<IFieldReviewHelper, FieldReviewHelper>();
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         services.AddSingleton<IReviewFieldIndicatorService, ReviewFieldIndicatorService>();
-        services.AddSingleton<IVacancyLocationService, VacancyLocationService>();
+        services.AddSingleton<IEmployerVacancyLocationService, EmployerVacancyLocationService>();
     }
 
     private static void RegisterFluentValidators(IServiceCollection services)

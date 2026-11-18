@@ -32,7 +32,7 @@ public class LocationController(IWebHostEnvironment hostingEnvironment) : Employ
     
     [HttpGet("add-one-location", Name = RouteNames.AddOneLocation_Get)]
     public async Task<IActionResult> AddOneLocation(
-        [FromServices] IVacancyLocationService vacancyLocationService,
+        [FromServices] IProviderVacancyLocationService vacancyLocationService,
         [FromServices] IUtility utility,
         [FromServices] IReviewSummaryService reviewSummaryService,
         VacancyRouteModel vacancyRouteModel,
@@ -68,7 +68,7 @@ public class LocationController(IWebHostEnvironment hostingEnvironment) : Employ
     
     [HttpPost("add-one-location", Name = RouteNames.AddOneLocation_Post)]
     public async Task<IActionResult> AddOneLocation(
-        [FromServices] IVacancyLocationService vacancyLocationService,
+        [FromServices] IProviderVacancyLocationService vacancyLocationService,
         [FromServices] IUtility utility,
         [FromServices] IReviewSummaryService reviewSummaryService,
         AddOneLocationEditModel model,

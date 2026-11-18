@@ -29,7 +29,7 @@ public class EnterLocationManuallyController(IUtility utility) : Controller
     [HttpPost("enter-location", Name = RouteNames.EnterAddressManually_Post)]
     public async Task<IActionResult> EnterLocationManually(
         [FromServices] ILocationsService locationsService,
-        [FromServices] IVacancyLocationService vacancyLocationService,
+        [FromServices] IEmployerVacancyLocationService vacancyLocationService,
         EnterLocationManuallyEditModel model)
     {
         if (!ModelState.IsValid)

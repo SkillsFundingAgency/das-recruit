@@ -74,7 +74,7 @@ public class SelectLocationControllerTests
     [Test, MoqAutoData]
     public async Task When_Posting_SelectLocation_View_Without_Postcode_RedirectToRouteResult_Is_Returned(
         [Frozen] Vacancy vacancy,
-        IVacancyLocationService vacancyLocationService,
+        IEmployerVacancyLocationService vacancyLocationService,
         IGetAddressesClient getAddressesClient,
         [Greedy] SelectLocationController sut)
     {
@@ -99,7 +99,7 @@ public class SelectLocationControllerTests
     [Test, MoqAutoData]
     public async Task When_Posting_SelectLocation_View_And_Address_Cannot_Be_Found_View_Is_Returned(
         [Frozen] Vacancy vacancy,
-        IVacancyLocationService vacancyLocationService,
+        IEmployerVacancyLocationService vacancyLocationService,
         Mock<IGetAddressesClient> getAddressesClient,
         
         [Greedy] SelectLocationController sut)
@@ -132,7 +132,7 @@ public class SelectLocationControllerTests
     public async Task When_Posting_SelectLocation_View_With_Valid_Selected_Address_Redirects_To_AddManyLocations_Route(
         [Frozen] GetAddressesListResponse getAddressesListResponse,
         [Frozen] Vacancy vacancy,
-        Mock<IVacancyLocationService> vacancyLocationService,
+        Mock<IEmployerVacancyLocationService> vacancyLocationService,
         Mock<IGetAddressesClient> getAddressesClient,
         [Greedy] SelectLocationController sut)
     {
@@ -163,7 +163,7 @@ public class SelectLocationControllerTests
     public async Task When_Posting_SelectLocation_View_With_Valid_Duplicate_Selected_Address_Redirects_To_AddManyLocations_Route(
         [Frozen] GetAddressesListResponse getAddressesListResponse,
         [Frozen] Vacancy vacancy,
-        Mock<IVacancyLocationService> vacancyLocationService,
+        Mock<IEmployerVacancyLocationService> vacancyLocationService,
         Mock<IGetAddressesClient> getAddressesClient,
         [Greedy] SelectLocationController sut)
     {

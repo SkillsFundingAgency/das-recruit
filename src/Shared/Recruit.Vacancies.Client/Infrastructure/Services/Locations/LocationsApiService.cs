@@ -12,6 +12,7 @@ public interface ILocationsService
 {
     Task<bool?> IsPostcodeInEnglandAsync(string postcode);
     Task<Dictionary<string, PostcodeData>> GetBulkPostcodeDataAsync(List<string> postcodes);
+    Task<PostcodeData> GetPostcodeDataAsync(string postcode);
 }
 
 public class LocationsService(ILocationsClient locationsClient) : ILocationsService
@@ -67,5 +68,12 @@ public class LocationsService(ILocationsClient locationsClient) : ILocationsServ
         return normalised.Length > 3
             ? normalised[..^3]
             : normalised;
+    }
+
+    public async Task<PostcodeData> GetPostcodeDataAsync(string postcode)
+    {
+        var response = await locationsClient.GetPostcodeData(postcode);
+
+        return response?.Result == null ? null : response.Result;
     }
 }
