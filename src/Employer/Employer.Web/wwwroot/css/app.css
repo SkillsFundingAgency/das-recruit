@@ -222,6 +222,10 @@ a.app-card:focus .app-card__heading-text {
   font-weight: 700;
 }
 
+.govuk-radios__label .govuk-hint {
+    display: block;
+}
+
 @media (min-width: 40.0625em) {
   .app-summary-list__key {
     flex-basis: 30%;
