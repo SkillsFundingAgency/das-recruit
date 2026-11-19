@@ -4,16 +4,16 @@
 <div class="das-notification das-notification--information">
     <p class="das-notification__body">
         <a asp-route="@RouteNames.VacanciesGetAll" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.Transferred" class="govuk-link">@Model.CountCaption</a> from
-        <span class="govuk-!-font-weight-bold">@Model.ProviderNamesCaption</span> after you turned off their permissions.
+        <span class="govuk-!-font-weight-bold">@Model.ProviderNamesCaption</span> as they do not have permission to act on your behalf.
     </p>
-    <p class="das-notification__body">Live adverts transferred from the provider are now closed and any adverts sent for review are in draft.</p>
-    <p class="das-notification__body">You can clone closed or archived adverts if you want to republish them.</p>
+    <p class="das-notification__body">Live adverts transferred from the provider are now closed and any adverts sent for review are in draft. <br/>
+        You can clone closed or archived adverts to republish them with a different training provider.</p>
     <form asp-route="@RouteNames.Alerts_Dismiss_Post" asp-route-employerAccountId="@Model.EmployerAccountId">
         <p class="das-notification__body">
             @{ string returnUrl = ViewContext.HttpContext.Request.Path + ViewContext.HttpContext.Request.QueryString; }
             <input name="@nameof(AlertDismissalEditModel.ReturnUrl)" value="@returnUrl" type="hidden" />
             <input name="@nameof(AlertDismissalEditModel.AlertType)" value="@AlertType.TransferredVacanciesEmployerRevokedPermission" type="hidden" />
-            <button type="submit" class="das-button--inline-link">Hide notification</button>
+            <button type="submit" class="das-button--inline-link">Dismiss notification</button>
         </p>
     </form>
 </div>
