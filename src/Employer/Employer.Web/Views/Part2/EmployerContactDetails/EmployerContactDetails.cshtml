@@ -17,26 +17,26 @@
 
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-l">@Model.Title</span>
-            Contact details for @Model.EmployerTitle (optional)
+            Contact details for @Model.EmployerTitle
         </h1>
-        <p class="govuk-body">This should be someone an applicant can contact to ask questions about the apprenticeship position.</p>
+        <p class="govuk-body govuk-!-margin-bottom-8">This should be someone an applicant can contact to ask questions about the apprenticeship position.</p>
         <form asp-route="@RouteNames.EmployerContactDetails_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.IsTaskList" novalidate>
             <div esfa-validation-marker-for="EmployerContactName" class="govuk-form-group">
-                <label asp-for="EmployerContactName" class="govuk-label govuk-label--s">Contact name (optional)</label>
+                <label asp-for="EmployerContactName" class="govuk-label">Full name (optional)</label>
                 <span esfa-validation-message-for="EmployerContactName" class="govuk-error-message"></span>
-                <input asp-for="EmployerContactName" class="govuk-input govuk-!-width-two-thirds" maxlength="100" />
+                <input asp-for="EmployerContactName" class="govuk-input govuk-!-width-three-quarters" maxlength="100" />
             </div>
             <div esfa-validation-marker-for="EmployerContactEmail" class="govuk-form-group">
-                <label asp-for="EmployerContactEmail" class="govuk-label govuk-label--s">Contact email (optional)</label>
+                <label asp-for="EmployerContactEmail" class="govuk-label">Email address (optional)</label>
                 <span esfa-validation-message-for="EmployerContactEmail" class="govuk-error-message"></span>
-                <input asp-for="EmployerContactEmail" class="govuk-input govuk-!-width-two-thirds" maxlength="100" />
+                <input asp-for="EmployerContactEmail" class="govuk-input govuk-!-width-three-quarters" maxlength="100" />
             </div>
             <div esfa-validation-marker-for="EmployerContactPhone" class="govuk-form-group">
-                <label asp-for="EmployerContactPhone" class="govuk-label govuk-label--s">Contact number (optional)</label>
+                <label asp-for="EmployerContactPhone" class="govuk-label">Phone number (optional)</label>
                 <span esfa-validation-message-for="EmployerContactPhone" class="govuk-error-message"></span>
-                <input asp-for="EmployerContactPhone" class="govuk-input govuk-!-width-one-half" type="tel" maxlength="16" />
+                <input asp-for="EmployerContactPhone" class="govuk-input govuk-!-width-three-quarters" type="tel" maxlength="16" />
             </div>
-            <div class="govuk-button-group">
+            <div class="govuk-button-group govuk-!-margin-top-8">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
                 <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state">Cancel</a>
                 <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>

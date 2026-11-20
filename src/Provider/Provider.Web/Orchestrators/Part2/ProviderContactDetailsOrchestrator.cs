@@ -28,9 +28,6 @@ public class ProviderContactDetailsOrchestrator(
 
         var vm = new ProviderContactDetailsViewModel
         {
-            AddContactDetails = !string.IsNullOrEmpty(vacancy.ProviderContact?.Name) || 
-                                !string.IsNullOrEmpty(vacancy.ProviderContact?.Email) ||
-                                !string.IsNullOrEmpty(vacancy.ProviderContact?.Phone) ? true : (bool?) null,
             IsTaskList = vrm.IsTaskList,
             IsTaskListCompleted = utility.IsTaskListCompleted(vacancy) && !vrm.IsTaskList,
             ProviderContactEmail = vacancy.ProviderContact?.Email,
