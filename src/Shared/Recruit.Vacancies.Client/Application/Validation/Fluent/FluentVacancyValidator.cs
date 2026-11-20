@@ -861,7 +861,7 @@ public sealed class FluentVacancyValidator : AbstractValidator<Vacancy>
     {
         RuleFor(x => x.EmployerDescription)
             .NotEmpty()
-            .WithMessage("Enter details about the employer")
+            .WithMessage("Enter information about the organisation")
             .WithErrorCode("80")
             .WithState(_ => VacancyRuleSet.EmployerDescription)
             .MaximumLength(4000)
