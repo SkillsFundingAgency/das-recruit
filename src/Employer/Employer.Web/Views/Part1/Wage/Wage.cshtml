@@ -14,21 +14,12 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-
+        <partial name="@PartialNames.ValidationSummary" model="@(new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })" />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
-
+        <vacancy-heading vacancy-title="@Model.Title" heading="How much will the apprentice be paid?" class="govuk-!-margin-bottom-6" />
         <form asp-route="@RouteNames.Wage_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
-
             <div esfa-validation-marker-for="WageType" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-                        <h1 class="govuk-fieldset__heading">
-                            <span class="govuk-caption-l">@Model.Title</span>
-                            How much will the apprentice be paid?
-                        </h1>
-                    </legend>
                     <span esfa-validation-message-for="WageType" class="govuk-error-message"></span>
                     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
                         <div class="govuk-radios__item">
