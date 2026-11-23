@@ -31,24 +31,6 @@ public class ProviderContactDetailsController(ProviderContactDetailsOrchestrator
             return View(viewModel);
         }
 
-        if (m.AddContactDetails.GetValueOrDefault())
-        {
-            if (string.IsNullOrEmpty(m.ProviderContactEmail) 
-                && string.IsNullOrEmpty(m.ProviderContactName) 
-                && string.IsNullOrEmpty(m.ProviderContactPhone))
-            {
-                ModelState.AddModelError(nameof(m.AddContactDetails), "Enter contact details");
-                var viewModel = await orchestrator.GetProviderContactDetailsViewModelAsync(m);    
-                return View(viewModel);
-            }
-        }
-        else
-        {
-            m.ProviderContactEmail = null;
-            m.ProviderContactName = null;
-            m.ProviderContactPhone = null;
-        }
-            
         var response = await orchestrator.PostProviderContactDetailsEditModelAsync(m, User.ToVacancyUser());
 
         if (!response.Success)
