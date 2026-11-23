@@ -25,16 +25,18 @@
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
-        <vacancy-heading vacancy-title="@Model.VacancyTitle" heading="What training course will the apprentice take?" class="govuk-!-margin-bottom-6" />
+        <vacancy-heading vacancy-title="@Model.VacancyTitle" heading="What training course will the apprentice take?" class="govuk-!-margin-bottom-6s" />
         <form asp-route="@RouteNames.Training_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
-            <p class="govuk-body">
-                If you have not found training for this apprenticeship, you can ​use the
-                <a class="govuk-link govuk-link--no-visited-state" href="@externalLinks.Value.FindApprenticeshipTrainingUrl" target="_blank">Find apprenticeship training service (opens in new tab or window)</a>.
+            <p class="govuk-body govuk-!-margin-bottom-8">
+                If you have not found training for this apprenticeship, you can use the
+                <a class="govuk-link govuk-link--no-visited-state" href="@externalLinks.Value.FindApprenticeshipTrainingUrl" target="_blank">Find apprenticeship training service (opens in new tab)</a>.
             </p>
             <div esfa-validation-marker-for="SelectedProgrammeId" class="govuk-form-group">
-                <label asp-for="SelectedProgrammeId" class="govuk-label govuk-label-s">
-                    <span class="govuk-hint">Enter apprenticeship training title</span>
-                </label>
+                <h2 class="govuk-heading-s govuk-!-margin-bottom-2">
+                    <label asp-for="SelectedProgrammeId">
+                        Course name
+                    </label>
+                </h2>
                 <span esfa-validation-message-for="SelectedProgrammeId" class="govuk-error-message"></span>
                 <div class="govuk-!-margin-bottom-2">
                     <select asp-for="SelectedProgrammeId" class="govuk-select app-autocomplete">
@@ -49,7 +51,7 @@
                     <a asp-route="@RouteNames.Training_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-clear="true" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link govuk-link--no-visited-state">Clear search</a>
                 </p>
             </div>
-            <div class="govuk-button-group">
+            <div class="govuk-button-group govuk-!-margin-top-8">
                 <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
                 <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
                 <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
