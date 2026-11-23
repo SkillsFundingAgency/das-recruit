@@ -278,8 +278,8 @@ public sealed class FluentVacancyValidator : AbstractValidator<Vacancy>
     private void ValidateNumberOfPositions()
     {
         RuleFor(x => x.NumberOfPositions)
-            .Must(x => x.HasValue && x.Value > 0)
-            .WithMessage($"Enter the number of positions for this {VacancyContext}")
+            .Must(x => x is > 0)
+            .WithMessage($"Enter the number of positions available")
             .WithErrorCode("10")
             .WithState(_ => VacancyRuleSet.NumberOfPositions)
             .RunCondition(VacancyRuleSet.NumberOfPositions);
