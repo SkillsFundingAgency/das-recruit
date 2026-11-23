@@ -13,16 +13,7 @@
         <partial name="@PartialNames.ValidationSummary" model="new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}"/>
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
         <form asp-route="@RouteNames.NumberOfPositions_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
-            <h1 class="govuk-label-wrapper">
-                <span class="govuk-caption-l">@Model.VacancyTitle</span>
-                <label class="govuk-label govuk-label--xl" asp-for="NumberOfPositions">
-                    How many positions are available?
-                </label>
-            </h1>
-            <div esfa-validation-marker-for="NumberOfPositions" class="govuk-form-group">
-                <span esfa-validation-message-for="NumberOfPositions" class="govuk-error-message"></span>
-                <input asp-for="NumberOfPositions" class="govuk-input govuk-input--width-4" type="number" min="1" />
-            </div>
+            <partial name="_NumberOfPositionsFormPartial" model="new NumberOfPositionsFormViewModel { NumberOfPositions = Model.NumberOfPositions, VacancyTitle = Model.VacancyTitle }" />
             <div class="govuk-button-group">
                 <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
                 <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state">Cancel</a>
