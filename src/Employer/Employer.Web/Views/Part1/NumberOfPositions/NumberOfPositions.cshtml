@@ -1,30 +1,20 @@
-﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.NumberOfPositions.NumberOfPositionsViewModel
+﻿@using Esfa.Recruit.Shared.Web.ViewModels.Part1.NumberOfPositions
+@model Esfa.Recruit.Employer.Web.ViewModels.Part1.NumberOfPositions.NumberOfPositionsViewModel
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part1-number-of-positions";
-    ViewBag.Title = "How many positions are there for this apprenticeship?";
+    ViewBag.Title = "How many positions are available?";
     ViewBag.ZenDeskLabel = "recruit-how-many-positions-are-there-for-this-apprenticeship";
 }
-
 @section BackLink {
     <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
     <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters">
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}'/>
+        <partial name="@PartialNames.ValidationSummary" model="new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}"/>
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
         <form asp-route="@RouteNames.NumberOfPositions_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
-            <div esfa-validation-marker-for="NumberOfPositions" class="govuk-form-group">
-                <h1 class="govuk-label-wrapper">
-                    <span class="govuk-caption-l">@Model.VacancyTitle</span>
-                    <label class="govuk-label govuk-label--xl" asp-for="NumberOfPositions">
-                        How many positions are there for this apprenticeship?
-                    </label>
-                </h1>
-                <span esfa-validation-message-for="NumberOfPositions" class="govuk-error-message"></span>
-                <input asp-for="NumberOfPositions" class="govuk-input govuk-input--width-4" type="number" min="1" />
-            </div>
+            <partial name="_NumberOfPositionsFormPartial" model="new NumberOfPositionsFormViewModel { NumberOfPositions = Model.NumberOfPositions, VacancyTitle = Model.VacancyTitle }" />
             <div class="govuk-button-group">
                 <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
                 <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state">Cancel</a>

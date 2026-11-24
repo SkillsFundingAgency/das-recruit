@@ -6,7 +6,7 @@ public static class ValidationMessages
     {
         public static class TypeOfInteger
         {
-            public const string NumberOfPositions = "Enter the number of positions";
+            public const string NumberOfPositions = "Enter the number of positions available";
         }
     }
 

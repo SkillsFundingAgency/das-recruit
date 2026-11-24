@@ -1,0 +1,11 @@
+@model Esfa.Recruit.Shared.Web.ViewModels.Part1.NumberOfPositions.NumberOfPositionsFormViewModel
+<h1 class="govuk-label-wrapper">
+    <span class="govuk-caption-l">@Model.VacancyTitle</span>
+    <label class="govuk-label govuk-label--xl" asp-for="NumberOfPositions">
+        How many positions are available?
+    </label>
+</h1>
+<div esfa-validation-marker-for="NumberOfPositions" class="govuk-form-group">
+    <span esfa-validation-message-for="NumberOfPositions" class="govuk-error-message"></span>
+    <input asp-for="NumberOfPositions" class="govuk-input govuk-input--width-4" type="number" min="1" />
+</div>
