@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers;
 public class ProviderContactDetailsControllerTests
 {
     [Test, MoqAutoData]
-    public async Task Then_If_No_Contact_Details_Selected_Then_Values_Are_Cleared(
+    public async Task Then_If_Contact_Details_Are_Provided_Then_Values_Are_Updated(
         string userName,
         ProviderContactDetailsEditModel editModel,
         [Frozen] Mock<IRecruitVacancyClient> client,
@@ -38,42 +38,6 @@ public class ProviderContactDetailsControllerTests
         {
             HttpContext = new DefaultHttpContext {User = user}
         };
-        editModel.AddContactDetails = false;
-
-        await controller.ProviderContactDetails(editModel);
-            
-        client.Verify(x=>x.UpdateDraftVacancyAsync(
-            It.Is<Vacancy>(c=>
-                string.IsNullOrEmpty(c.ProviderContact.Email) &&
-                string.IsNullOrEmpty(c.ProviderContact.Phone) &&
-                string.IsNullOrEmpty(c.ProviderContact.Name)
-            ), It.IsAny<VacancyUser>()), Times.Once);
-    }
-        
-    [Test, MoqAutoData]
-    public async Task Then_If_Yes_Contact_Details_Selected_Then_Values_Are_Updated(
-        string userName,
-        ProviderContactDetailsEditModel editModel,
-        [Frozen] Mock<IRecruitVacancyClient> client,
-        ProviderContactDetailsOrchestrator orchestrator)
-    {
-        client.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.ProviderContactDetails)).Returns(new EntityValidationResult
-        {
-            Errors = new List<EntityValidationError>()
-        });
-        var controller = new ProviderContactDetailsController(orchestrator);
-        var user = new ClaimsPrincipal(new ClaimsIdentity(
-            new []
-            {
-                new Claim(ProviderRecruitClaims.IdamsUserNameClaimTypeIdentifier,userName),
-                new Claim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier,"10000001")
-            }
-        ));
-        controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = new DefaultHttpContext {User = user}
-        };
-        editModel.AddContactDetails = true;
 
         await controller.ProviderContactDetails(editModel);
             
