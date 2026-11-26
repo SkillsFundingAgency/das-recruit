@@ -18,6 +18,5 @@ public class ProviderContactDetailsViewModel : TaskListViewModel
         nameof(ProviderContactEmail),
         nameof(ProviderContactPhone)
     };
-    public bool? AddContactDetails { get; set; }
     public bool IsTaskListCompleted { get; set; }
 }

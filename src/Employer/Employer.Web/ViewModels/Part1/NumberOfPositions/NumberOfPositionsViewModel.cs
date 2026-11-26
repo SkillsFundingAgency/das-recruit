@@ -7,12 +7,12 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.NumberOfPositions;
 public class NumberOfPositionsViewModel : VacancyRouteModel
 {
     public PartOnePageInfoViewModel PageInfo { get; set; }
-    public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
-    public string NumberOfPositions { get; set; }
+    public ReviewSummaryViewModel Review { get; set; } = new();
     public IList<string> OrderedFieldNames => new List<string>
     {
         nameof(NumberOfPositions)
     };
     public string BackLinkRoute { get; set; }
     public string VacancyTitle { get; init; }
+    public string NumberOfPositions { get; set; }
 }

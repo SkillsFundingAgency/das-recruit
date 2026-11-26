@@ -278,8 +278,8 @@ public sealed class FluentVacancyValidator : AbstractValidator<Vacancy>
     private void ValidateNumberOfPositions()
     {
         RuleFor(x => x.NumberOfPositions)
-            .Must(x => x.HasValue && x.Value > 0)
-            .WithMessage($"Enter the number of positions for this {VacancyContext}")
+            .Must(x => x is > 0)
+            .WithMessage($"Enter the number of positions available")
             .WithErrorCode("10")
             .WithState(_ => VacancyRuleSet.NumberOfPositions)
             .RunCondition(VacancyRuleSet.NumberOfPositions);
@@ -370,11 +370,11 @@ public sealed class FluentVacancyValidator : AbstractValidator<Vacancy>
         {
             RuleFor(x => x.Wage.DurationUnit)
                 .NotEmpty()
-                .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
+                .WithMessage("Enter the apprenticeship length")
                 .WithErrorCode("34")
                 .WithState(_ => VacancyRuleSet.Duration)
                 .IsInEnum()
-                .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
+                .WithMessage("Enter the apprenticeship length")
                 .WithErrorCode("34")
                 .WithState(_ => VacancyRuleSet.Duration)
                 .RunCondition(VacancyRuleSet.Duration);
@@ -394,11 +394,11 @@ public sealed class FluentVacancyValidator : AbstractValidator<Vacancy>
         RuleFor(x => x.Wage.Duration)
             .Cascade(CascadeMode.Stop)
             .NotEmpty()
-            .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
+            .WithMessage("Enter the apprenticeship length")
             .WithErrorCode("34")
             .WithState(_ => VacancyRuleSet.Duration)
             .GreaterThan(0)
-            .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
+            .WithMessage("Enter the apprenticeship length")
             .WithErrorCode("34")
             .WithState(_ => VacancyRuleSet.Duration)
             .Must((vacancy, value) =>
@@ -478,7 +478,7 @@ public sealed class FluentVacancyValidator : AbstractValidator<Vacancy>
         {
             RuleFor(x => x.Wage.WeeklyHours)
                 .NotEmpty()
-                .WithMessage($"Enter how many hours the {ApplicantContext} will work each week, including training")
+                .WithMessage("Enter how many hours the apprentice will work each week")
                 .WithErrorCode("40")
                 .WithState(_ => VacancyRuleSet.WeeklyHours)
                 .GreaterThanOrEqualTo(16)
@@ -861,7 +861,7 @@ public sealed class FluentVacancyValidator : AbstractValidator<Vacancy>
     {
         RuleFor(x => x.EmployerDescription)
             .NotEmpty()
-            .WithMessage("Enter details about the employer")
+            .WithMessage("Enter information about the organisation")
             .WithErrorCode("80")
             .WithState(_ => VacancyRuleSet.EmployerDescription)
             .MaximumLength(4000)

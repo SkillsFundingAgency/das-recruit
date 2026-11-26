@@ -1,31 +1,18 @@
+@using Esfa.Recruit.Shared.Web.ViewModels.Part1.NumberOfPositions
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.NumberOfPositions.NumberOfPositionsViewModel
-
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-number-of-positions";
     ViewBag.Title = "How many positions are available?";
 }
-
 @section BackLink {
     <a asp-route="@Model.PageBackLink" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
-
 <div class="govuk-grid-row">
      <div class="govuk-grid-column-three-quarters">
-
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}'/>
+        <partial name="@PartialNames.ValidationSummary" model="new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}"/>
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
-        <span class="govuk-caption-xl">@Model.Title</span>
         <form asp-route="@RouteNames.NumberOfPositions_Post" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" novalidate>
-            <div esfa-validation-marker-for="NumberOfPositions" class="govuk-form-group">
-                <h1 class="govuk-label-wrapper">
-                    <label class="govuk-label govuk-label--xl"  asp-for="NumberOfPositions">
-                        How many positions are available?
-                    </label>
-                </h1>
-                <span esfa-validation-message-for="NumberOfPositions" class="govuk-error-message"></span>
-                <input asp-for="NumberOfPositions" class="govuk-input govuk-input--width-4" type="number" min="1" />
-            </div>
-
+            <partial name="_NumberOfPositionsFormPartial" model="new NumberOfPositionsFormViewModel { NumberOfPositions = Model.NumberOfPositions, VacancyTitle = Model.Title }" />
             <div class="govuk-button-group">
                 <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
                 <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>

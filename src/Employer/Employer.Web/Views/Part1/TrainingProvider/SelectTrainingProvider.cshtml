@@ -49,9 +49,11 @@
                 </div>
             </noscript>
             <div class="govuk-form-group das-js-show" id="js-search" esfa-validation-marker-for="TrainingProviderSearch">
-                <label class="govuk-label" asp-for="TrainingProviderSearch">
-                    Training provider name or UKPRN
-                </label>
+                <h2 class="govuk-heading-s govuk-!-margin-bottom-2">
+                    <label asp-for="TrainingProviderSearch">
+                        Training provider name or UKPRN
+                    </label>
+                </h2>
                 <span esfa-validation-message-for="TrainingProviderSearch" class="govuk-error-message"></span>
                 <input asp-for="TrainingProviderSearch" type="text" class="govuk-input app-provider-autocomplete"/>
             </div>

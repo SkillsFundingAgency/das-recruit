@@ -14,51 +14,30 @@
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
 
-         <form asp-route="@RouteNames.ProviderContactDetails_Post"  asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.IsTaskList" novalidate>
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-l">@Model.Title</span>
+            Your contact details
+        </h1>
+        <p class="govuk-body govuk-!-margin-bottom-8">This should be someone an applicant can contact to ask questions about the apprenticeship position.</p>
+        <form asp-route="@RouteNames.ProviderContactDetails_Post"  asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.IsTaskList" novalidate>
              <div class="govuk-form-group">
-                <span class="govuk-caption-xl">@Model.Title</span>
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-                        <h1 class="govuk-fieldset__heading">
-                            Do you want to add your contact details?
-                        </h1>
-                    </legend>
-                    <p>This should be someone an applicant can contact to ask questions about the apprenticeship position.</p>
-                    <div class="govuk-radios govuk-radios--conditional govuk-form-group" data-module="govuk-radios" esfa-validation-marker-for="AddContactDetails">
-                        <span esfa-validation-message-for="AddContactDetails" class="govuk-error-message"></span>                
-                        <div class="govuk-radios__item">
-                            <input asp-for="AddContactDetails" value="true" class="govuk-radios__input" id="contact-details-yes" type="radio" data-aria-controls="contact-details-panel">
-                            <label for="contact-details-yes" class="govuk-label govuk-radios__label">
-                                Yes
-                            </label>
-                        </div>
-                        <div id="contact-details-panel" class="govuk-radios__conditional govuk-radios__conditional--hidden">
-                            <div esfa-validation-marker-for="ProviderContactName" class="govuk-form-group">
-                                <label asp-for="ProviderContactName" class="govuk-label">First and last name (optional)</label>
-                                <span esfa-validation-message-for="ProviderContactName" class="govuk-error-message"></span>
-                                <input asp-for="ProviderContactName" class="govuk-input govuk-input--width-20" maxlength="100"/>
-                            </div>
-                            <div esfa-validation-marker-for="ProviderContactEmail" class="govuk-form-group">
-                                <label asp-for="ProviderContactEmail" class="govuk-label">Email address (optional)</label>
-                                <span esfa-validation-message-for="ProviderContactEmail" class="govuk-error-message"></span>
-                                <input asp-for="ProviderContactEmail" class="govuk-input govuk-input--width-20" maxlength="100"/>
-                            </div>
-                            <div esfa-validation-marker-for="ProviderContactPhone" class="govuk-form-group">
-                                <label asp-for="ProviderContactPhone" class="govuk-label">Phone number (optional)</label>
-                                <span esfa-validation-message-for="ProviderContactPhone" class="govuk-error-message"></span>
-                                <input asp-for="ProviderContactPhone" class="govuk-input govuk-input--width-20" type="tel" maxlength="16"/>
-                            </div>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input asp-for="AddContactDetails" value="false" class="govuk-radios__input" id="contact-details-no" type="radio" >
-                            <label for="contact-details-no" class="govuk-label govuk-radios__label">
-                                No
-                            </label>
-                        </div>
-                    </div>
-                </fieldset>
+                <div esfa-validation-marker-for="ProviderContactName" class="govuk-form-group">
+                    <label asp-for="ProviderContactName" class="govuk-label">Full name (optional)</label>
+                    <span esfa-validation-message-for="ProviderContactName" class="govuk-error-message"></span>
+                    <input asp-for="ProviderContactName" class="govuk-input govuk-!-width-three-quarters" maxlength="100" />
+                </div>
+                <div esfa-validation-marker-for="ProviderContactEmail" class="govuk-form-group">
+                    <label asp-for="ProviderContactEmail" class="govuk-label">Email address (optional)</label>
+                    <span esfa-validation-message-for="ProviderContactEmail" class="govuk-error-message"></span>
+                    <input asp-for="ProviderContactEmail" class="govuk-input govuk-!-width-three-quarters" maxlength="100" />
+                </div>
+                <div esfa-validation-marker-for="ProviderContactPhone" class="govuk-form-group">
+                    <label asp-for="ProviderContactPhone" class="govuk-label">Phone number (optional)</label>
+                    <span esfa-validation-message-for="ProviderContactPhone" class="govuk-error-message"></span>
+                    <input asp-for="ProviderContactPhone" class="govuk-input govuk-!-width-three-quarters" type="tel" maxlength="16" />
+                </div>
              </div>
-             <div class="govuk-button-group">
+             <div class="govuk-button-group govuk-!-margin-top-8">
                  <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button"/>
                  <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
               </div>
