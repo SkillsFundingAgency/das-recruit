@@ -46,7 +46,7 @@ public class EnterLocationManuallyControllerTests
     
     [Test, MoqAutoData]
     public async Task When_Postcode_Is_Definitely_Not_In_England_View_Is_Returned(
-        IVacancyLocationService vacancyLocationService,
+        IProviderVacancyLocationService vacancyLocationService,
         [Frozen] Mock<ILocationsService> locationsService,
         [Frozen] Vacancy vacancy,
         [Greedy] EnterLocationManuallyController sut)
@@ -79,7 +79,7 @@ public class EnterLocationManuallyControllerTests
     
     [Test, MoqAutoData]
     public async Task When_Postcode_Is_Unknown_Redirects_To_AddManyLocations_Route(
-        IVacancyLocationService vacancyLocationService,
+        IProviderVacancyLocationService vacancyLocationService,
         [Frozen] Mock<ILocationsService> locationsService,
         [Frozen] Vacancy vacancy,
         [Greedy] EnterLocationManuallyController sut)
@@ -114,7 +114,7 @@ public class EnterLocationManuallyControllerTests
     
     [Test, MoqAutoData]
     public async Task When_Posting_Valid_Data_Redirects_To_AddManyLocations_Route(
-        Mock<IVacancyLocationService> vacancyLocationService,
+        Mock<IProviderVacancyLocationService> vacancyLocationService,
         [Frozen] Mock<ILocationsService> locationsService,
         [Frozen] Vacancy vacancy,
         [Greedy] EnterLocationManuallyController sut)

@@ -33,7 +33,7 @@ public class SelectLocationController(IUtility utility) : Controller
     
     [HttpPost("select-location", Name = RouteNames.SelectAnAddress_Post)]
     public async Task<IActionResult> SelectLocation(
-        [FromServices] IVacancyLocationService vacancyLocationService,
+        [FromServices] IProviderVacancyLocationService vacancyLocationService,
         [FromServices] IGetAddressesClient getAddressesClient, 
         SelectLocationEditModel model)
     {

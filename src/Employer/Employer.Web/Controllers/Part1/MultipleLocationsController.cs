@@ -85,7 +85,7 @@ public class MultipleLocationsController : Controller
     
     [HttpGet("add-many-locations", Name = RouteNames.AddMoreThanOneLocation_Get)]
     public async Task<IActionResult> AddMoreThanOneLocation(
-        [FromServices] IVacancyLocationService vacancyLocationService,
+        [FromServices] IEmployerVacancyLocationService vacancyLocationService,
         [FromServices] IUtility utility,
         [FromServices] IReviewSummaryService reviewSummaryService,
         VacancyRouteModel model,
@@ -130,7 +130,7 @@ public class MultipleLocationsController : Controller
     
     [HttpPost("add-many-locations", Name = RouteNames.AddMoreThanOneLocation_Post)]
     public async Task<IActionResult> AddMoreThanOneLocation(
-        [FromServices] IVacancyLocationService vacancyLocationService,
+        [FromServices] IEmployerVacancyLocationService vacancyLocationService,
         [FromServices] IUtility utility,
         [FromServices] IReviewSummaryService reviewSummaryService,
         AddMoreThanOneLocationEditModel editModel,

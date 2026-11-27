@@ -10,6 +10,7 @@ using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.MultipleLocations;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -122,7 +123,7 @@ public class MultipleLocationsControllerTests
     public async Task When_Getting_AddMoreThanOneLocation_Then_The_View_Is_Returned(
         Vacancy vacancy,
         [Frozen] List<Address> locations,
-        Mock<IVacancyLocationService> vacancyLocationService,
+        Mock<IProviderVacancyLocationService> vacancyLocationService,
         Mock<IUtility> utility,
         VacancyRouteModel model,
         [Greedy] MultipleLocationsController sut)
@@ -153,7 +154,7 @@ public class MultipleLocationsControllerTests
     public async Task When_Getting_AddMoreThanOneLocation_Having_Returned_From_The_Add_New_Location_Pathway_Then_The_Previously_Selected_Values_Are_Restored(
         Vacancy vacancy,
         [Frozen] List<Address> locations,
-        Mock<IVacancyLocationService> vacancyLocationService,
+        Mock<IProviderVacancyLocationService> vacancyLocationService,
         Mock<IUtility> utility,
         VacancyRouteModel model,
         [Greedy] MultipleLocationsController sut)
@@ -184,7 +185,7 @@ public class MultipleLocationsControllerTests
     public async Task When_Posting_AddMoreThanOneLocation_With_Invalid_state_Then_The_View_Is_Returned(
         Vacancy vacancy,
         [Frozen] List<Address> locations,
-        Mock<IVacancyLocationService> vacancyLocationService,
+        Mock<IProviderVacancyLocationService> vacancyLocationService,
         Mock<IUtility> utility,
         AddMoreThanOneLocationEditModel model,
         [Greedy] MultipleLocationsController sut)
@@ -218,7 +219,7 @@ public class MultipleLocationsControllerTests
     public async Task When_Posting_AddMoreThanOneLocation_With_Valid_state_Then_You_Are_Redirected_To_Confirmation_Route(
         Vacancy vacancy,
         [Frozen] List<Address> locations,
-        Mock<IVacancyLocationService> vacancyLocationService,
+        Mock<IProviderVacancyLocationService> vacancyLocationService,
         Mock<IUtility> utility,
         AddMoreThanOneLocationEditModel model,
         [Greedy] MultipleLocationsController sut)
