@@ -22,7 +22,7 @@
                 @foreach (var location in group.Select(x => x.Value))
                 {
                     var address = location.ToAddressString();
-                    var controlId = $"selectedLocation_{index++}";
+                    var controlId = index++ == 0 ? "selected-location" : $"selectedLocation_{index - 1}";
                     <div class="govuk-checkboxes__item">
                         <input id="@controlId"
                                class="govuk-checkboxes__input"

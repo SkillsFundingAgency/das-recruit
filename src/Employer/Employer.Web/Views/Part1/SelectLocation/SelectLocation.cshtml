@@ -39,7 +39,7 @@
                 <div esfa-validation-marker-for="SelectedLocation" class="govuk-form-group address-item">
                     <label asp-show="true" asp-for="SelectedLocation" class="govuk-label">@countText</label>
                     <span esfa-validation-message-for="SelectedLocation" class="govuk-error-message"></span>
-                    <select class="govuk-select" asp-for="SelectedLocation" name="SelectedLocation">
+                    <select class="govuk-select" asp-for="SelectedLocation" name="SelectedLocation" id="selected-location">
                         <option value="">Select your address</option>
                         @foreach (var location in Model.Locations)
                         {

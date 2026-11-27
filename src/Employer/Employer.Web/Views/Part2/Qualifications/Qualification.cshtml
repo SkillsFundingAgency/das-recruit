@@ -32,7 +32,7 @@
     <div esfa-validation-marker-for="QualificationType" class="govuk-form-group">
         <label asp-for="QualificationType" class="govuk-label" id="@Anchors.QualificationsHeading">Type of qualification</label>
         <span esfa-validation-message-for="QualificationType" class="govuk-error-message"></span>
-        <select asp-for="QualificationType" class="govuk-select" data-select-conditional-reveal="true" id="error-message-QualificationType">
+        <select asp-for="QualificationType" class="govuk-select" data-select-conditional-reveal="true">
             <option value="">Select from list</option>
             @foreach (var qualificationType in Model.Qualifications)
             {

@@ -41,17 +41,17 @@
                                 {
                                     selectIndex++;
                                     <div class="govuk-radios__item">
-                                            <input asp-for="SelectedLocation" value="@location" id="OtherLocation_@selectIndex"
+                                    <input asp-for="SelectedLocation" value="@location" id="@(selectIndex == 1 ? "selected-location" : $"OtherLocation_{selectIndex}")"
                                                    class="govuk-radios__input" type="radio">
-                                            <label for="OtherLocation_@selectIndex" class="govuk-label govuk-radios__label">
+                                            <label for="@(selectIndex == 1 ? "selected-location" : $"OtherLocation_{selectIndex}")" class="govuk-label govuk-radios__label">
                                                 @location
                                             </label>
                                     </div>                                    
                                 }
                             }
                             <div class="govuk-radios__item">
-                                <input asp-for="SelectedLocation" value="@Model.UseOtherLocation" data-aria-controls="other-location-conditional" id="other-location" class="govuk-radios__input" type="radio">
-                                <label for="other-location" class="govuk-label govuk-radios__label">
+                                <input asp-for="SelectedLocation" value="@Model.UseOtherLocation" data-aria-controls="other-location-conditional" id="@(Model.AvailableLocations.Count == 0 ? "selected-location" : "other-location")" class="govuk-radios__input" type="radio">
+                                <label for="@(Model.AvailableLocations.Count == 0 ? "selected-location" : "other-location")" class="govuk-label govuk-radios__label">
                                     A different address
                                 </label>
                             </div>
